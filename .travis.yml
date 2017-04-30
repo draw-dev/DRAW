@@ -1,0 +1,15 @@
+language: dart
+sudo: false
+
+os:
+  - linux
+  - osx
+
+dart:
+  - dev
+  - stable
+
+dart_task:
+  - test: -p vm
+  - dartfmt
+  - dartanalyzer
