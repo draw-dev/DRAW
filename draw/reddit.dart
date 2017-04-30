@@ -2,8 +2,8 @@
 
 class reddit{
 
-	//Reddit Constructor
 	reddit(){
+	//Reddit Constructor
 	
 	}
 }
