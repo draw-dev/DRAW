@@ -1,9 +1,10 @@
-// Provides the reddit class
-
+/// An object that with the future ability to provide access to user data and subreddits along with HTTP capablities.
+///
+///Future private members include A Config Object, User Data Object, and much more!
 class reddit{
 
 	reddit(){
-	//Reddit Constructor
+	///This is currently a placeholder for the Reddit Constructor.
 	
 	}
 }
