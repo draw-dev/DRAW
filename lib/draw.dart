@@ -5,4 +5,4 @@
 
 library draw;
 
-import 'src/reddit.dart'
+export 'src/reddit.dart';
