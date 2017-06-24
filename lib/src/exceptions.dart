@@ -4,7 +4,7 @@
 // can be found in the LICENSE file.
 
 // TODO(bkonyi) document properly.
-class DRAWAuthenticationException implements Exception {
-  DRAWAuthenticationException(this.message);
+class DRAWAuthenticationError implements Exception {
+  DRAWAuthenticationError(this.message);
   String message;
 }

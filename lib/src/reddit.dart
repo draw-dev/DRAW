@@ -4,13 +4,11 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:oauth2/oauth2.dart' as oauth2;
 
 import 'auth.dart';
-import 'draw_common.dart';
+import 'exceptions.dart';
 
 /// The [Reddit] class provides access to Reddit's API and stores session state
 /// for the current [Reddit] instance. This class contains objects that can be
@@ -77,13 +75,13 @@ class Reddit {
         tokenEndpoint ?? defaultTokenEndpoint,
         secret: clientSecret);
     if (clientId == null) {
-      throw new DRAWAuthenticationException('clientId cannot be null.');
+      throw new DRAWAuthenticationError('clientId cannot be null.');
     }
     if (clientSecret == null) {
-      throw new DRAWAuthenticationException('clientSecret cannot be null.');
+      throw new DRAWAuthenticationError('clientSecret cannot be null.');
     }
     if (userAgent == null) {
-      throw new DRAWAuthenticationException('userAgent cannot be null.');
+      throw new DRAWAuthenticationError('userAgent cannot be null.');
     }
 
     // Check if we are creating an authorized client.

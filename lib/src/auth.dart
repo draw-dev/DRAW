@@ -5,13 +5,12 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:oauth2/oauth2.dart' as oauth2;
 import "package:oauth2/src/handle_access_token_response.dart";
 
-import 'draw_common.dart';
+import 'exceptions.dart';
 
 abstract class AuthorizerBase {
   AuthorizerBase(oauth2.AuthorizationCodeGrant grant)
@@ -58,7 +57,7 @@ abstract class AuthorizerBase {
   // in [accountInfo] and [_grant].
   Future _requestToken(Map<String, String> accountInfo) async {
     if (_client != null) {
-      throw new DRAWAuthorizationError('Token has already been requested.');
+      throw new DRAWAuthenticationError('Token has already been requested.');
     }
 
     // Retrieve the client ID and secret.
