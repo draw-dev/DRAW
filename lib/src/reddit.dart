@@ -27,7 +27,7 @@ class Reddit {
 
   /// A flag representing the initialization state of the current [Reddit]
   /// instance.
-  /// 
+  ///
   /// Returns a [Future<bool>] which represents whether or not the [Reddit]
   /// instance is initialized. This [Future] completes with 'false' if an error
   /// occurred during initialization, and 'true' if the instance is ready.
