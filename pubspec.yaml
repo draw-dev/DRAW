@@ -1,0 +1,12 @@
+name: draw
+version: 0.0.1
+description: 'A Reddit API wrapper for Dart, inspired by PRAW.'
+authors:
+  - Ben Konyi <bkonyi@google.com>
+
+dependencies:
+  http: 'any'
+  oauth2: '>= 1.1.0'
+
+dev_dependencies:
+  test: '^0.12.5' 
