@@ -7,4 +7,5 @@
 class DRAWAuthenticationError implements Exception {
   DRAWAuthenticationError(this.message);
   String message;
+  String toString() => 'DRAWAuthenticationError: $message';
 }
