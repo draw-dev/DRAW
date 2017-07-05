@@ -3,9 +3,9 @@
 
 import 'dart:io';
 import 'package:ini/ini.dart';
+import 'package:path/path.dart' as path;
 
-import 'exeptions.dart';
-
+import '../lib/src/exceptions.dart';
 
 class DrawConfigContext{
 
@@ -13,18 +13,44 @@ class DrawConfigContext{
 
   Map<String, String> customDataStructure;
 
-  String shortURL;
+  String _shortURL;
   String settings;
   String clientId;
   String redditURL;
   String password;
 
+  //Load Config File
   void _loadConfig(){
-    //TODO: Kartik (kc3454) impment
+    Uri currURI = Platform.script;
+    Uri path = Uri.parse(currURI.toFilePath());
 
-    throw new UnimplmentedError;
+    Map<String, String> environ = Platform.environment;
+    Uri osConfigPath = null;
+
+    if (Platform.isMacOS) {
+       osConfigPath = Uri.parse(path.join(environ['HOME'], '.config'));
+    }
+    else if (Platform.isLinux) {
+       osConfigPath = Uri.parse(environ['XDG_CONFIG_HOME']);
+    }
+    else if (Platform.isWindows) {
+       osConfigPath = Uri.parse(environ['APPDATA']);
+    }
+    String cwd = path.current;
+    List<Uri> locations = [Uri.parse(path.current)]
+
+    File file = new File();
+
+    throw new UnimplementedError();
   }
 
+  void shortURL(){
+    //TODO: Kartik implment (kc3454)
+  }
+
+  void longURL()
+    //TODO: Kartik implment (kc3454)
+  }
 
 
 }
