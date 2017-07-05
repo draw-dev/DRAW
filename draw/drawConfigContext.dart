@@ -27,6 +27,7 @@ class DrawConfigContext{
     Map<String, String> environ = Platform.environment;
     Uri osConfigPath = null;
 
+    //Load correct config path based on operating system
     if (Platform.isMacOS) {
        osConfigPath = Uri.parse(path.join(environ['HOME'], '.config'));
     }
@@ -36,10 +37,23 @@ class DrawConfigContext{
     else if (Platform.isWindows) {
        osConfigPath = Uri.parse(environ['APPDATA']);
     }
-    String cwd = path.current;
-    List<Uri> locations = [Uri.parse(path.current)]
 
-    File file = new File();
+    var context = new path.Context;
+    String cwd = context.current;
+
+    List<Uri> locations = [Uri.parse(path.join(cwd, 'praw.ini')), Uri.parse('praw.ini')];
+
+    if(osConfigPath != null) {
+      locations.add(Uri.parse(path.join(osConfigPath, 'praw.ini')));
+    }
+
+    var it = locations.iterator;
+    List<File> iniFiles;
+    while(it.moveNext()){
+        iniFiles.add(new File(Uri.parse(it.current)));
+    }
+
+    //File file = new File(locations); TODO (k5chopra): Implement a list of files for each praw.ini location
 
     throw new UnimplementedError();
   }
@@ -47,10 +61,5 @@ class DrawConfigContext{
   void shortURL(){
     //TODO: Kartik implment (kc3454)
   }
-
-  void longURL()
-    //TODO: Kartik implment (kc3454)
-  }
-
 
 }
