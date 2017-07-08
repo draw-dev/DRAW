@@ -7,12 +7,12 @@ import 'package:path/path.dart' as path;
 
 import '../lib/src/exceptions.dart';
 
-class DrawConfigContext{
+const String kFileName = 'praw.ini';
+const String kMacEnvVar = 'HOME';
+const String kLinuxEnvVar = 'XDG_CONFIG_HOME';
+const String kWindowsEnvVar = 'APPDATA';
 
-  static final fileName = 'praw.ini';
-  static final macEnvVar = 'HOME';
-  static final linuxEnvVar = 'XDG_CONFIG_HOME';
-  static final windowsEnvVar = 'APPDATA';
+class DrawConfigContext{
 
   File configFile;
 
@@ -41,13 +41,13 @@ class DrawConfigContext{
     Uri osConfigPath = null;
     //Load correct config path based on operating system
     if (Platform.isMacOS) {
-      osConfigPath = Uri.parse(path.join(environ[macEnvVar], '.config'));
+      osConfigPath = Uri.parse(path.join(environ[kMacEnvVar], '.config'));
     }
     else if (Platform.isLinux) {
-      osConfigPath = Uri.parse(environ[linuxEnvVar]);
+      osConfigPath = Uri.parse(environ[kLinuxEnvVar]);
     }
     else if (Platform.isWindows) {
-      osConfigPath = Uri.parse(environ[windowsEnvVar]);
+      osConfigPath = Uri.parse(environ[kWindowsEnvVar]);
     }
     return osConfigPath;
   }
@@ -58,19 +58,19 @@ class DrawConfigContext{
     path.Context context = new path.Context();
     String cwd = context.current;
 
-    List<Uri> locations = [Uri.parse(path.join(cwd, fileName)), Uri.parse(fileName)];
+    List<Uri> locations = [Uri.parse(path.join(cwd, kFileName)), Uri.parse(kFileName)];
 
     if(this._osConfigPath != null) {
-      locations.add(Uri.parse(path.join(this._osConfigPath.path, fileName)));
+      locations.add(Uri.parse(path.join(this._osConfigPath.path, kFileName)));
     }
 
     //TODO: Remove
     return locations;
   }
 
-  void shortURL(){
+  String shortURL(){
     //TODO: Kartik implment (kc3454)
-
+    return this._shortURL;
   }
 
 }
