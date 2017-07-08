@@ -9,57 +9,69 @@ import '../lib/src/exceptions.dart';
 
 class DrawConfigContext{
 
-  DrawConfigContext();
+  static final fileName = 'praw.ini';
+  static final macEnvVar = 'HOME';
+  static final linuxEnvVar = 'XDG_CONFIG_HOME';
+  static final windowsEnvVar = 'APPDATA';
 
-  Map<String, String> customDataStructure;
+  File configFile;
+
+  //Path to user level configuration file
+  Uri _osConfigPath;
+
+  Config _config;
+
+  DrawConfigContext(){
+    this._osConfigPath = _getConfigPath();
+    List<Uri> locations = _getLocations();
+    this._config = new Config.fromStrings(this.configFile.readAsLinesSync());
+  }
+
+  Map<String, String> settings;
 
   String _shortURL;
-  String settings;
   String clientId;
   String redditURL;
   String password;
 
-  //Load Config File
-  void _loadConfig(){
-    Uri currURI = Platform.script;
-    Uri path = Uri.parse(currURI.toFilePath());
-
+  //Returns Config location based on OS Enviroment
+  Uri _getConfigPath(){
     Map<String, String> environ = Platform.environment;
-    Uri osConfigPath = null;
 
+    Uri osConfigPath = null;
     //Load correct config path based on operating system
     if (Platform.isMacOS) {
-       osConfigPath = Uri.parse(path.join(environ['HOME'], '.config'));
+      osConfigPath = Uri.parse(path.join(environ[macEnvVar], '.config'));
     }
     else if (Platform.isLinux) {
-       osConfigPath = Uri.parse(environ['XDG_CONFIG_HOME']);
+      osConfigPath = Uri.parse(environ[linuxEnvVar]);
     }
     else if (Platform.isWindows) {
-       osConfigPath = Uri.parse(environ['APPDATA']);
+      osConfigPath = Uri.parse(environ[windowsEnvVar]);
     }
+    return osConfigPath;
+  }
 
-    var context = new path.Context;
+  //Returns list of URI potential locations of
+  List<Uri> _getLocations(){
+
+    path.Context context = new path.Context();
     String cwd = context.current;
 
-    List<Uri> locations = [Uri.parse(path.join(cwd, 'praw.ini')), Uri.parse('praw.ini')];
+    List<Uri> locations = [Uri.parse(path.join(cwd, fileName)), Uri.parse(fileName)];
 
-    if(osConfigPath != null) {
-      locations.add(Uri.parse(path.join(osConfigPath, 'praw.ini')));
+    if(this._osConfigPath != null) {
+      locations.add(Uri.parse(path.join(this._osConfigPath.path, fileName)));
     }
 
-    var it = locations.iterator;
-    List<File> iniFiles;
-    while(it.moveNext()){
-        iniFiles.add(new File(Uri.parse(it.current)));
-    }
-
-    //File file = new File(locations); TODO (k5chopra): Implement a list of files for each praw.ini location
-
-    throw new UnimplementedError();
+    //TODO: Remove
+    return locations;
   }
 
   void shortURL(){
     //TODO: Kartik implment (kc3454)
+
   }
 
 }
+
