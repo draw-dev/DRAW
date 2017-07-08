@@ -16,16 +16,12 @@ class DrawConfigContext{
 
   File configFile;
 
-  //Path to user level configuration file
-  Uri _osConfigPath;
-
   Config _config;
 
-  DrawConfigContext(){
-    this._osConfigPath = _getConfigPath();
-    List<Uri> locations = _getLocations();
-    this._config = new Config.fromStrings(this.configFile.readAsLinesSync());
-  }
+  //Path to Local, User, Global Config Files, with matching precedence
+  Uri _localConfigPath;
+  Uri _userConfigPath;
+  Uri _globalConfigPath;
 
   Map<String, String> settings;
 
@@ -34,8 +30,19 @@ class DrawConfigContext{
   String redditURL;
   String password;
 
-  //Returns Config location based on OS Enviroment
-  Uri _getConfigPath(){
+  DrawConfigContext(){
+    //Get file paths
+    this._localConfigPath = this._getLocalConfigPath();
+    this._userConfigPath = this._getUserConfigPath();
+    this._globalConfigPath = this._getGlobalConfigPath();
+
+    //TODO: check weather these files exist
+    //TODO: Load settings into master data-structure Settings
+    this._config = new Config.fromStrings(this.configFile.readAsLinesSync());
+  }
+
+  //Returns path user level configuration file
+  Uri _getUserConfigPath(){
     Map<String, String> environ = Platform.environment;
 
     Uri osConfigPath = null;
@@ -52,24 +59,20 @@ class DrawConfigContext{
     return osConfigPath;
   }
 
-  //Returns list of URI potential locations of
-  List<Uri> _getLocations(){
-
+  //Returns path to global configuration file
+  Uri _getGlobalConfigPath(){
     path.Context context = new path.Context();
     String cwd = context.current;
-
-    List<Uri> locations = [Uri.parse(path.join(cwd, kFileName)), Uri.parse(kFileName)];
-
-    if(this._osConfigPath != null) {
-      locations.add(Uri.parse(path.join(this._osConfigPath.path, kFileName)));
-    }
-
-    //TODO: Remove
-    return locations;
+    return Uri.parse(path.join(cwd, kFileName));
   }
 
+  //Returns path to local Configuration file
+  Uri _getLocalConfigPath(){
+    return Uri.parse(kFileName);
+  }
+
+  //TODO: Kartik implment (kc3454)
   String shortURL(){
-    //TODO: Kartik implment (kc3454)
     return this._shortURL;
   }
 
