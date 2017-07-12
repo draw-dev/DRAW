@@ -30,6 +30,10 @@ const String kUsernameKey = 'username';
 /// credentials, refreshing and revoking access tokens, and issuing HTTPS
 /// requests using OAuth2 credentials.
 abstract class Authenticator {
+  oauth2.AuthorizationCodeGrant _grant;
+  oauth2.Client _client;
+  String _userAgent;
+
   Authenticator(oauth2.AuthorizationCodeGrant grant, String userAgent)
       : _grant = grant,
         _userAgent = userAgent,
@@ -50,53 +54,50 @@ abstract class Authenticator {
     if (credentials == null) {
       return;
     }
-    List<Map> tokens = new List<Map>();
-    Map accessToken = {
+    final tokens = new List<Map>();
+    final accessToken = {
       kTokenKey: credentials.accessToken,
       kTokenTypeHintKey: 'access_token',
     };
     tokens.add(accessToken);
 
     if (credentials.refreshToken != null) {
-      Map refreshToken = {
+      final refreshToken = {
         kTokenKey: credentials.refreshToken,
         kTokenTypeHintKey: 'refresh_token',
       };
       tokens.add(refreshToken);
     }
-
-    for (int i = 0; i < tokens.length; i++) {
-      String token = tokens[i][kTokenKey];
-      String tokenType = tokens[i][kTokenTypeHintKey];
-      Map<String, String> revokeAccess = new Map<String, String>();
-      revokeAccess[kTokenKey] = token;
-      revokeAccess[kTokenTypeHintKey] = tokenType;
+    for (final token in tokens) {
+      final revokeAccess = new Map<String, String>();
+      revokeAccess[kTokenKey] = token[kTokenKey];
+      revokeAccess[kTokenTypeHintKey] = token[kTokenTypeHintKey];
 
       // TODO(bkonyi) we shouldn't have hardcoded urls like this. Move to common
       // file with all API related strings.
-      Uri path = Uri.parse(r'https://www.reddit.com/api/v1/revoke_token');
+      var path = Uri.parse(r'https://www.reddit.com/api/v1/revoke_token');
 
       // Retrieve the client ID and secret.
-      String clientId = _grant.identifier;
-      String clientSecret = _grant.secret;
+      final clientId = _grant.identifier;
+      final clientSecret = _grant.secret;
 
       if ((clientId != null) && (clientSecret != null)) {
-        String userInfo = '$clientId:$clientSecret';
+        final userInfo = '$clientId:$clientSecret';
         path = path.replace(userInfo: userInfo);
       }
 
-      Map<String, String> headers = new Map<String, String>();
+      final headers = new Map<String, String>();
       headers[kUserAgentKey] = _userAgent;
 
-      http.Client httpClient = new http.Client();
+      final httpClient = new http.Client();
 
       // Request the token from the server.
-      http.Response response =
+      final response =
           await httpClient.post(path, headers: headers, body: revokeAccess);
 
       if (response.statusCode != 204) {
         // We should always get a 204 response for this call.
-        Map parsed = JSON.decode(response.body);
+        final parsed = JSON.decode(response.body);
         _throwAuthenticationError(parsed);
       }
     }
@@ -134,12 +135,12 @@ abstract class Authenticator {
     if (!isValid) {
       refresh();
     }
-    http.Request request = new http.Request(type, path);
+    final request = new http.Request(type, path);
     if (body != null) {
       request.bodyFields = body;
     }
     final http.StreamedResponse response = await _client.send(request);
-    Map parsed = JSON.decode(await response.stream.bytesToString());
+    final parsed = JSON.decode(await response.stream.bytesToString());
     if (parsed.containsKey(kErrorKey)) {
       _throwAuthenticationError(parsed);
     }
@@ -150,34 +151,34 @@ abstract class Authenticator {
   /// in [accountInfo] and [_grant].
   Future _requestToken(Map<String, String> accountInfo) async {
     // Retrieve the client ID and secret.
-    String clientId = _grant.identifier;
-    String clientSecret = _grant.secret;
+    final clientId = _grant.identifier;
+    final clientSecret = _grant.secret;
     String userInfo = null;
 
     if ((clientId != null) && (clientSecret != null)) {
       userInfo = '$clientId:$clientSecret';
     }
 
-    http.Client httpClient = new http.Client();
-    DateTime start = new DateTime.now();
+    final httpClient = new http.Client();
+    final start = new DateTime.now();
 
-    Map<String, String> headers = new Map<String, String>();
+    final headers = new Map<String, String>();
     headers[kUserAgentKey] = _userAgent;
 
     // Request the token from the server.
-    http.Response response = await httpClient.post(
+    final response = await httpClient.post(
         _grant.tokenEndpoint.replace(userInfo: userInfo),
         headers: headers,
         body: accountInfo);
 
     // Check for error response.
-    Map responseMap = JSON.decode(response.body);
+    final responseMap = JSON.decode(response.body);
     if (responseMap.containsKey(kErrorKey)) {
       _throwAuthenticationError(responseMap);
     }
 
     // Create the Credentials object from the authentication token.
-    oauth2.Credentials credentials = handleAccessTokenResponse(
+    final credentials = handleAccessTokenResponse(
         response, _grant.tokenEndpoint, start, ['*'], ',');
 
     // Generate the OAuth2 client that will be used to query Reddit servers.
@@ -186,8 +187,8 @@ abstract class Authenticator {
   }
 
   void _throwAuthenticationError(Map response) {
-    String statusCode = response[kErrorKey];
-    String reason = response[kMessageKey];
+    final statusCode = response[kErrorKey];
+    final reason = response[kMessageKey];
     throw new DRAWAuthenticationError(
         'Status Code: ${statusCode} Reason: ${reason}');
   }
@@ -211,10 +212,6 @@ abstract class Authenticator {
   bool get isValid {
     return !(credentials?.isExpired ?? true);
   }
-
-  oauth2.AuthorizationCodeGrant _grant;
-  oauth2.Client _client;
-  String _userAgent;
 }
 
 /// The [ScriptAuthenticator] class allows for the creation of an [Authenticator]
@@ -223,7 +220,10 @@ abstract class Authenticator {
 /// https://github.com/reddit/reddit/wiki/OAuth2-App-Types for descriptions of
 /// valid app types.
 class ScriptAuthenticator extends Authenticator {
-  static Future<ScriptAuthenticator> Create(oauth2.AuthorizationCodeGrant grant,
+  String _username;
+  String _password;
+
+  static Future<ScriptAuthenticator> create(oauth2.AuthorizationCodeGrant grant,
       String userAgent, String username, String password) async {
     ScriptAuthenticator authenticator =
         new ScriptAuthenticator._(grant, userAgent, username, password);
@@ -249,9 +249,6 @@ class ScriptAuthenticator extends Authenticator {
     accountInfo[kDurationKey] = 'permanent';
     await _requestToken(accountInfo);
   }
-
-  String _username;
-  String _password;
 }
 
 /// The [ReadOnlyAuthenticator] class allows for the creation of an [Authenticator]
@@ -261,7 +258,9 @@ class ScriptAuthenticator extends Authenticator {
 /// account. Refer to https://github.com/reddit/reddit/wiki/OAuth2-App-Types for
 /// descriptions of valid app types.
 class ReadOnlyAuthenticator extends Authenticator {
-  static Future<ReadOnlyAuthenticator> Create(
+  Uri _redirect;
+
+  static Future<ReadOnlyAuthenticator> create(
       oauth2.AuthorizationCodeGrant grant, String userAgent) async {
     ReadOnlyAuthenticator authenticator =
         new ReadOnlyAuthenticator._(grant, userAgent);
@@ -292,7 +291,7 @@ class ReadOnlyAuthenticator extends Authenticator {
 /// https://github.com/reddit/reddit/wiki/OAuth2-App-Types for descriptions of
 /// valid app types.
 class WebAuthenticator extends Authenticator {
-  static WebAuthenticator Create(
+  static WebAuthenticator create(
       oauth2.AuthorizationCodeGrant grant, String userAgent, Uri redirect) {
     WebAuthenticator authenticator =
         new WebAuthenticator._(grant, userAgent, redirect);
@@ -378,6 +377,4 @@ class WebAuthenticator extends Authenticator {
     }
     _client = await _client.refreshCredentials();
   }
-
-  Uri _redirect;
 }

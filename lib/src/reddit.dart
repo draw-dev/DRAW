@@ -81,27 +81,27 @@ class Reddit {
     if (userAgent == null) {
       throw new DRAWAuthenticationError('userAgent cannot be null.');
     }
-    oauth2.AuthorizationCodeGrant grant = new oauth2.AuthorizationCodeGrant(
+    final grant = new oauth2.AuthorizationCodeGrant(
         clientId,
         authEndpoint ?? defaultAuthEndpoint,
         tokenEndpoint ?? defaultTokenEndpoint,
         secret: clientSecret);
     if ((username == null) && (password == null) && (redirectUri == null)) {
       ReadOnlyAuthenticator
-          .Create(grant, userAgent)
+          .create(grant, userAgent)
           .then(_initializationCallback);
       _readOnly = true;
     } else if ((username != null) && (password != null)) {
       // Check if we are creating an authorized client.
       ScriptAuthenticator
-          .Create(grant, userAgent, username, password)
+          .create(grant, userAgent, username, password)
           .then(_initializationCallback);
       _readOnly = false;
     } else if ((username == null) &&
         (password == null) &&
         (redirectUri != null)) {
       _initializationCallback(
-          WebAuthenticator.Create(grant, userAgent, redirectUri));
+          WebAuthenticator.create(grant, userAgent, redirectUri));
       _readOnly = false;
     } else {
       throw new UnimplementedError('Unsupported authentication type.');
