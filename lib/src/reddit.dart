@@ -40,7 +40,7 @@ class Reddit {
 
   Authenticator _auth;
   bool _readOnly = true;
-  final Completer _initializedCompleter = new Completer();
+  final _initializedCompleter = new Completer();
 
   // TODO(bkonyi) update clientId entry to show hyperlink.
   /// Creates a new authenticated [Reddit] instance.

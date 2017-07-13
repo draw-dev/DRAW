@@ -161,7 +161,6 @@ abstract class Authenticator {
 
     final httpClient = new http.Client();
     final start = new DateTime.now();
-
     final headers = new Map<String, String>();
     headers[kUserAgentKey] = _userAgent;
 
