@@ -133,7 +133,7 @@ abstract class Authenticator {
           'The authenticator does not have a valid token.');
     }
     if (!isValid) {
-      refresh();
+      await refresh();
     }
     final request = new http.Request(type, path);
     if (body != null) {
@@ -223,26 +223,26 @@ class ScriptAuthenticator extends Authenticator {
   String _username;
   String _password;
 
-  static Future<ScriptAuthenticator> create(oauth2.AuthorizationCodeGrant grant,
-      String userAgent, String username, String password) async {
-    ScriptAuthenticator authenticator =
-        new ScriptAuthenticator._(grant, userAgent, username, password);
-    await authenticator._authenticationFlow();
-    return authenticator;
-  }
-
   ScriptAuthenticator._(oauth2.AuthorizationCodeGrant grant, String userAgent,
       String username, String password)
       : _username = username,
         _password = password,
         super(grant, userAgent);
 
+  static Future<ScriptAuthenticator> create(oauth2.AuthorizationCodeGrant grant,
+      String userAgent, String username, String password) async {
+    final ScriptAuthenticator authenticator =
+        new ScriptAuthenticator._(grant, userAgent, username, password);
+    await authenticator._authenticationFlow();
+    return authenticator;
+  }
+
   /// Initiates the authorization flow. This method should populate a
   /// [Map<String,String>] with information needed for authentication, and then
   /// call [_requestToken] to authenticate.
   @override
   Future _authenticationFlow() async {
-    Map<String, String> accountInfo = new Map<String, String>();
+    final accountInfo = new Map<String, String>();
     accountInfo[kUsernameKey] = _username;
     accountInfo[kPasswordKey] = _password;
     accountInfo[kGrantTypeKey] = 'password';
@@ -258,23 +258,23 @@ class ScriptAuthenticator extends Authenticator {
 /// account. Refer to https://github.com/reddit/reddit/wiki/OAuth2-App-Types for
 /// descriptions of valid app types.
 class ReadOnlyAuthenticator extends Authenticator {
+  ReadOnlyAuthenticator._(oauth2.AuthorizationCodeGrant grant, String userAgent)
+      : super(grant, userAgent);
+
   static Future<ReadOnlyAuthenticator> create(
       oauth2.AuthorizationCodeGrant grant, String userAgent) async {
-    ReadOnlyAuthenticator authenticator =
+    final ReadOnlyAuthenticator authenticator =
         new ReadOnlyAuthenticator._(grant, userAgent);
     await authenticator._authenticationFlow();
     return authenticator;
   }
-
-  ReadOnlyAuthenticator._(oauth2.AuthorizationCodeGrant grant, String userAgent)
-      : super(grant, userAgent);
 
   /// Initiates the authorization flow. This method should populate a
   /// [Map<String,String>] with information needed for authentication, and then
   /// call [_requestToken] to authenticate.
   @override
   Future _authenticationFlow() async {
-    Map<String, String> accountInfo = new Map<String, String>();
+    final accountInfo = new Map<String, String>();
     accountInfo[kGrantTypeKey] = 'client_credentials';
     await _requestToken(accountInfo);
   }
@@ -291,18 +291,18 @@ class ReadOnlyAuthenticator extends Authenticator {
 class WebAuthenticator extends Authenticator {
   Uri _redirect;
 
-  static WebAuthenticator create(
-      oauth2.AuthorizationCodeGrant grant, String userAgent, Uri redirect) {
-    WebAuthenticator authenticator =
-        new WebAuthenticator._(grant, userAgent, redirect);
-    return authenticator;
-  }
-
   WebAuthenticator._(
       oauth2.AuthorizationCodeGrant grant, String userAgent, Uri redirect)
       : _redirect = redirect,
         super(grant, userAgent) {
     assert(_redirect != null);
+  }
+
+  static WebAuthenticator create(
+      oauth2.AuthorizationCodeGrant grant, String userAgent, Uri redirect) {
+    final WebAuthenticator authenticator =
+        new WebAuthenticator._(grant, userAgent, redirect);
+    return authenticator;
   }
 
   /// Generates the authentication URL used for Reddit user verification in a
@@ -332,7 +332,7 @@ class WebAuthenticator extends Authenticator {
     }
     // getAuthorizationUrl returns a Uri which is missing the duration field, so
     // we need to add it here.
-    Map queryParameters = new Map.from(redditAuthUri.queryParameters);
+    final queryParameters = new Map.from(redditAuthUri.queryParameters);
     queryParameters[kDurationKey] = duration;
     redditAuthUri = redditAuthUri.replace(queryParameters: queryParameters);
     if (compactLogin) {
