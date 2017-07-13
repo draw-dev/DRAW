@@ -153,7 +153,7 @@ abstract class Authenticator {
     // Retrieve the client ID and secret.
     final clientId = _grant.identifier;
     final clientSecret = _grant.secret;
-    String userInfo = null;
+    String userInfo;
 
     if ((clientId != null) && (clientSecret != null)) {
       userInfo = '$clientId:$clientSecret';
@@ -258,8 +258,6 @@ class ScriptAuthenticator extends Authenticator {
 /// account. Refer to https://github.com/reddit/reddit/wiki/OAuth2-App-Types for
 /// descriptions of valid app types.
 class ReadOnlyAuthenticator extends Authenticator {
-  Uri _redirect;
-
   static Future<ReadOnlyAuthenticator> create(
       oauth2.AuthorizationCodeGrant grant, String userAgent) async {
     ReadOnlyAuthenticator authenticator =
@@ -291,6 +289,8 @@ class ReadOnlyAuthenticator extends Authenticator {
 /// https://github.com/reddit/reddit/wiki/OAuth2-App-Types for descriptions of
 /// valid app types.
 class WebAuthenticator extends Authenticator {
+  Uri _redirect;
+
   static WebAuthenticator create(
       oauth2.AuthorizationCodeGrant grant, String userAgent, Uri redirect) {
     WebAuthenticator authenticator =
