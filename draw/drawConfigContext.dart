@@ -60,7 +60,7 @@ class DrawConfigContext{
     }
     return osConfigPath;
   }
-w
+
   //Returns path to global configuration file
   Uri _getGlobalConfigPath(){
     path.Context context = new path.Context();
