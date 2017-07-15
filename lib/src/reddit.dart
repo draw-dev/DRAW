@@ -21,7 +21,7 @@ class Reddit {
 
   /// The default [Uri] used to authenticate an authorization token from Reddit.
   static final Uri defaultAuthEndpoint =
-      Uri.parse('https://oauth.reddit.com/api/v1/authorize');
+      Uri.parse(r'https://reddit.com/api/v1/authorize');
 
   /// A flag representing the initialization state of the current [Reddit]
   /// instance.
@@ -35,9 +35,12 @@ class Reddit {
   /// read requests.
   bool get readOnly => _readOnly;
 
-  AuthorizerBase _session;
-  bool _readOnly = false;
-  Completer _initializedCompleter = new Completer();
+  /// The authorized client used to interact with Reddit APIs.
+  Authenticator get auth => _auth;
+
+  Authenticator _auth;
+  bool _readOnly = true;
+  final Completer _initializedCompleter = new Completer();
 
   // TODO(bkonyi) update clientId entry to show hyperlink.
   /// Creates a new authenticated [Reddit] instance.
@@ -69,11 +72,6 @@ class Reddit {
       Uri redirectUri,
       Uri tokenEndpoint,
       Uri authEndpoint}) {
-    oauth2.AuthorizationCodeGrant grant = new oauth2.AuthorizationCodeGrant(
-        clientId,
-        authEndpoint ?? defaultAuthEndpoint,
-        tokenEndpoint ?? defaultTokenEndpoint,
-        secret: clientSecret);
     if (clientId == null) {
       throw new DRAWAuthenticationError('clientId cannot be null.');
     }
@@ -83,24 +81,35 @@ class Reddit {
     if (userAgent == null) {
       throw new DRAWAuthenticationError('userAgent cannot be null.');
     }
-
-    // Check if we are creating an authorized client.
-    if ((username != null) && (password != null)) {
-      ScriptAuthorizer
-          .Create(grant, username, password)
+    final grant = new oauth2.AuthorizationCodeGrant(
+        clientId,
+        authEndpoint ?? defaultAuthEndpoint,
+        tokenEndpoint ?? defaultTokenEndpoint,
+        secret: clientSecret);
+    if ((username == null) && (password == null) && (redirectUri == null)) {
+      ReadOnlyAuthenticator
+          .create(grant, userAgent)
+          .then(_initializationCallback);
+      _readOnly = true;
+    } else if ((username != null) && (password != null)) {
+      // Check if we are creating an authorized client.
+      ScriptAuthenticator
+          .create(grant, userAgent, username, password)
           .then(_initializationCallback);
       _readOnly = false;
-    } else if (redirectUri != null) {
-      // TODO(bkonyi) create web application session.
-      throw new UnimplementedError(
-          'Authentication for web applications is not yet supported.');
+    } else if ((username == null) &&
+        (password == null) &&
+        (redirectUri != null)) {
+      _initializationCallback(
+          WebAuthenticator.create(grant, userAgent, redirectUri));
+      _readOnly = false;
     } else {
       throw new UnimplementedError('Unsupported authentication type.');
     }
   }
 
-  void _initializationCallback(AuthorizerBase session) {
-    _session = session;
+  void _initializationCallback(Authenticator auth) {
+    _auth = auth;
     _initializedCompleter.complete(true);
   }
 }
