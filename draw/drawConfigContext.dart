@@ -38,9 +38,10 @@ class DrawConfigContext{
     this._userConfigPath = this._getUserConfigPath();
     this._globalConfigPath = this._getGlobalConfigPath();
 
-    //TODO: check weather these files exist
+    //TODO: check for file existence
     //TODO: Load settings into master data-structure Settings
-    this._config = new Config.fromStrings(this.configFile.readAsLinesSync());
+    //TODO: Load main file into configFile
+    //this._config = new Config.fromStrings(this.configFile.readAsLinesSync());
   }
 
   //Returns path user level configuration file
