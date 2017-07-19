@@ -64,8 +64,8 @@ class DrawConfigContext{
 
   //Returns path to global configuration file
   Uri _getGlobalConfigPath(){
-    path.Context context = new path.Context();
-    String cwd = context.current;
+    final path.Context context = new path.Context();
+    final String cwd = context.current;
     return Uri.parse(path.join(cwd, kFileName));
   }
 
