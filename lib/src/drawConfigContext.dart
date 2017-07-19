@@ -46,9 +46,9 @@ class DrawConfigContext{
 
   //Returns path user level configuration file
   Uri _getUserConfigPath(){
-    Map<String, String> environ = Platform.environment;
+   final Map<String, String> environ = Platform.environment;
 
-    Uri osConfigPath = null;
+    Uri osConfigPath;
     //Load correct config path based on operating system
     if (Platform.isMacOS) {
       osConfigPath = Uri.parse(path.join(environ[kMacEnvVar], '.config'));
