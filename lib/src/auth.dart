@@ -111,14 +111,14 @@ abstract class Authenticator {
 
   /// Make a simple `GET` request. [path] is the destination URI that the
   /// request will be made to.
-  Future<Map> get(Uri path) async {
-    return _request(kGetRequest, path);
+  Future<Map> get(Uri path, {Map params}) async {
+    return _request(kGetRequest, path, params: params);
   }
 
   /// Make a simple `POST` request. [path] is the destination URI and [body]
   /// contains the POST parameters that will be sent with the request.
   Future<Map> post(Uri path, Map<String, String> body) async {
-    return _request(kPostRequest, path, body);
+    return _request(kPostRequest, path, body: body);
   }
 
   /// Request data from Reddit using our OAuth2 client.
@@ -127,7 +127,7 @@ abstract class Authenticator {
   /// request parameters. [body] is an optional parameter which contains the
   /// body fields for a POST request.
   Future<Map> _request(String type, Uri path,
-      [Map<String, String> body]) async {
+      {Map<String, String> body, Map params}) async {
     if (_client == null) {
       throw new DRAWAuthenticationError(
           'The authenticator does not have a valid token.');
@@ -135,7 +135,8 @@ abstract class Authenticator {
     if (!isValid) {
       await refresh();
     }
-    final request = new http.Request(type, path);
+    final finalPath = path.replace(queryParameters: params);
+    final request = new http.Request(type, finalPath);
     if (body != null) {
       request.bodyFields = body;
     }
