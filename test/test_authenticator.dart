@@ -11,6 +11,7 @@ import 'package:collection/collection.dart';
 import 'package:reply/reply.dart';
 
 import 'package:draw/src/auth.dart';
+import 'package:draw/src/exceptions.dart';
 
 /// A drop-in replacement for [Authenticator], used for recording and replaying
 /// Reddit API interactions, used primarily for testing.
@@ -33,7 +34,7 @@ class TestAuthenticator extends Authenticator {
         _recordAuth = recordAuth,
         super(null, null) {
     if (isRecording) {
-      String rawRecording = new File(recordingPath).readAsStringSync();
+      final rawRecording = new File(recordingPath).readAsStringSync();
       _recording = new Recording.fromJson(JSON.decode(rawRecording),
           toRequest: (q) => q,
           toResponse: (r) => r,
@@ -101,5 +102,6 @@ class TestAuthenticator extends Authenticator {
               encodeRequest: (q) => q, encodeResponse: (r) => r))
           .toString());
     }
+    return null;
   }
 }

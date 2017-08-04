@@ -3,13 +3,15 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:test/test.dart';
 import 'package:draw/draw.dart';
 import 'package:draw/src/auth.dart';
 
 import 'test_authenticator.dart';
 
-void main() async {
+Future main() async {
   test('api/v1/me_RawTest', () async {
     final testAuth = new TestAuthenticator('test/records/api_v1_me_raw.json');
     final reddit = new Reddit.fromAuthenticator(testAuth);
@@ -20,7 +22,7 @@ void main() async {
     expect(response['name'], equals('DRAWApiOfficial'));
     expect(response['created'], equals(1501830779.0));
     expect(response['features'], isNot(null));
-    Map features = response['features'];
+    final features = response['features'];
     expect(features['do_not_track'], equals(true));
   });
 }
