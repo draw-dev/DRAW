@@ -59,16 +59,16 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<Map> get(Uri path) async {
+  Future<Map> get(Uri path, {Map params}) async {
     Map result;
     if (isRecording) {
       // TODO(bkonyi): grab the response based on query.
-      return _recording.reply([path.toString()]);
+      return _recording.reply([path.toString(), params]);
     } else {
       print(path.toString());
       result = await _recordAuth.get(path);
       // TODO(bkonyi): do we always want to reply?
-      _recorder.given([path.toString()]).reply(result).always();
+      _recorder.given([path.toString(), params]).reply(result).always();
     }
     return result;
   }
