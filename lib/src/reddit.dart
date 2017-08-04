@@ -135,6 +135,13 @@ class Reddit {
     return _objector.objectify(response);
   }
 
+  Reddit.fromAuthenticator(Authenticator auth) {
+    if (auth == null) {
+      throw new DRAWAuthenticationError('auth cannot be null.');
+    }
+    _initializationCallback(auth);
+  }
+
   void _initializationCallback(Authenticator auth) {
     _auth = auth;
     _initializedCompleter.complete(true);
