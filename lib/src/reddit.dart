@@ -95,9 +95,6 @@ class Reddit {
       throw new DRAWAuthenticationError('userAgent cannot be null.');
     }
 
-    _objector = new Objector(this);
-    _user = new User(this);
-
     final grant = new oauth2.AuthorizationCodeGrant(
         clientId,
         authEndpoint ?? defaultAuthEndpoint,
@@ -125,6 +122,13 @@ class Reddit {
     }
   }
 
+  Reddit.fromAuthenticator(Authenticator auth) {
+    if (auth == null) {
+      throw new DRAWAuthenticationError('auth cannot be null.');
+    }
+    _initializationCallback(auth);
+  }
+
   Future<RedditBase> get(String api, {Map params}) async {
     if (!(await initialized)) {
       throw new DRAWAuthenticationError(
@@ -135,15 +139,10 @@ class Reddit {
     return _objector.objectify(response);
   }
 
-  Reddit.fromAuthenticator(Authenticator auth) {
-    if (auth == null) {
-      throw new DRAWAuthenticationError('auth cannot be null.');
-    }
-    _initializationCallback(auth);
-  }
-
   void _initializationCallback(Authenticator auth) {
     _auth = auth;
+    _objector = new Objector(this);
+    _user = new User(this);
     _initializedCompleter.complete(true);
   }
 }

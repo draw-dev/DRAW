@@ -6,3 +6,11 @@
 library draw;
 
 export 'src/reddit.dart';
+export 'src/auth.dart';
+export 'src/base.dart';
+export 'src/exceptions.dart';
+export 'src/objector.dart';
+export 'src/user.dart';
+export 'src/models/multireddit.dart';
+export 'src/models/redditor.dart';
+export 'src/models/subreddit.dart';

@@ -7,18 +7,7 @@ import '../base.dart';
 import '../reddit.dart';
 
 // TODO(bkonyi) implement
-class Subreddit extends RedditBase {
-  final String _name;
-
-  Subreddit(Reddit reddit, String name)
-      : _name = name,
-        super.loadData(reddit, null);
-  Subreddit.parse(Reddit reddit, Map data)
+class Multireddit extends RedditBase {
+  Multireddit.parse(Reddit reddit, Map data)
       : super.loadData(reddit, data['data']);
-
-  int get hashCode => _name.hashCode;
-
-  bool operator ==(other) {
-    return (_name == other._name);
-  }
 }
