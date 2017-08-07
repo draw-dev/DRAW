@@ -27,10 +27,16 @@ class DrawConfigContext {
   Map<String, String> custom;
 
   String _shortURL;
-  String clientId;
-  String redditURL;
-  String password;
-
+  String _clientId;
+  String _clientSecret;
+  String _oauth_url;
+  String _userAgent;
+  String _username;
+  String _password;
+  String _redirectURI;
+  String _refreshToken;
+  String _redditURL;
+  
   DrawConfigContext() {
     //Get file paths
     this._localConfigPath = this._getLocalConfigPath();
@@ -69,14 +75,33 @@ class DrawConfigContext {
     //this._config = new Config.fromStrings(this.configFile.readAsLinesSync());
   }
 
-  String _fetch_default(string key) {
-    return this._customConfig[key];
-  }
 
   void _initializeAttributes() {
-    this._shortUrl = this._fetch_default('short_url');
-    this._oauthUrl = this._fetch_default('oauth_url');
-    this._username = this._fetch_default('client_id');
+    //Fetch Default
+    _shortUrl		= _fetchDefault('short_url');
+    _checkForUpdates 	= _configBool(_fetchDefault('check_for_updates'));
+    
+    //Fetch
+    _oauthUrl 		= _fetch('oauth_url');
+    _redditUrl		= _fetch('reddit_url');
+    
+    //Fetch_or_not_set_
+    _clientId		= _fetchOrNotSet('client_id');
+    _clientSecret	= _fetchOrNotSet('client_secret');
+    _httpProxy		= _fetchOrNotSet('http_proxy');
+    _httpsProxy		= _fetchOrNotSet('https_proxy');
+    _redirectUri   	= _fetchOrNotSet('redirect_uri');
+    _refreshToken       = _fetchOrNotSet('refresh_token');
+    _password		= _fetchOrNotSet('password');
+    _userAgent		= _fetchOrNotSet('user_agent');
+    _username 		= _fetchOrNotSet('username');
+
+
+
+  }
+
+  String _fetch_default(String key) {
+    return this._customConfig.get("default", key);
   }
 
   //Returns path to user level configuration file
