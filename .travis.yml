@@ -12,6 +12,4 @@ dart:
 dart_task:
   - test: -p vm
   - dartfmt
-
-script:
-  - dartanalyzer --strong --fatal-warnings --fatal-lints .
+  - dartanalyzer: --strong --fatal-warnings --fatal-lints .

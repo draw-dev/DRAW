@@ -111,13 +111,13 @@ abstract class Authenticator {
 
   /// Make a simple `GET` request. [path] is the destination URI that the
   /// request will be made to.
-  Future<Map> get(Uri path, {Map params}) async {
+  Future get(Uri path, {Map params}) async {
     return _request(kGetRequest, path, params: params);
   }
 
   /// Make a simple `POST` request. [path] is the destination URI and [body]
   /// contains the POST parameters that will be sent with the request.
-  Future<Map> post(Uri path, Map<String, String> body) async {
+  Future post(Uri path, Map<String, String> body) async {
     return _request(kPostRequest, path, body: body);
   }
 
@@ -126,7 +126,7 @@ abstract class Authenticator {
   /// [type] can be one of `GET`, `POST`, and `PUT`. [path] represents the
   /// request parameters. [body] is an optional parameter which contains the
   /// body fields for a POST request.
-  Future<Map> _request(String type, Uri path,
+  Future _request(String type, Uri path,
       {Map<String, String> body, Map params}) async {
     if (_client == null) {
       throw new DRAWAuthenticationError(
@@ -142,7 +142,7 @@ abstract class Authenticator {
     }
     final http.StreamedResponse response = await _client.send(request);
     final parsed = JSON.decode(await response.stream.bytesToString());
-    if (parsed.containsKey(kErrorKey)) {
+    if ((parsed is Map) && parsed.containsKey(kErrorKey)) {
       _throwAuthenticationError(parsed);
     }
     return parsed;
@@ -216,9 +216,9 @@ abstract class Authenticator {
 
 /// The [ScriptAuthenticator] class allows for the creation of an [Authenticator]
 /// instance which is associated with a valid Reddit user account. This is to be
-/// used with the 'Script' app type credentials. Refer to
-/// https://github.com/reddit/reddit/wiki/OAuth2-App-Types for descriptions of
-/// valid app types.
+/// used with the 'Script' app type credentials. Refer to Reddit's
+/// [documentation](https://github.com/reddit/reddit/wiki/OAuth2-App-Types)
+/// for descriptions of valid app types.
 class ScriptAuthenticator extends Authenticator {
   String _username;
   String _password;
@@ -255,7 +255,8 @@ class ScriptAuthenticator extends Authenticator {
 /// instance which is not associated with any reddit account. As the name
 /// implies, the [ReadOnlyAuthenticator] can only be used to make read-only
 /// requests to the Reddit API that do not require access to a valid Reddit user
-/// account. Refer to https://github.com/reddit/reddit/wiki/OAuth2-App-Types for
+/// account. Refer to Reddit's
+/// [documentation](https://github.com/reddit/reddit/wiki/OAuth2-App-Types) for
 /// descriptions of valid app types.
 class ReadOnlyAuthenticator extends Authenticator {
   ReadOnlyAuthenticator._(oauth2.AuthorizationCodeGrant grant, String userAgent)
@@ -285,9 +286,9 @@ class ReadOnlyAuthenticator extends Authenticator {
 /// a browser. The [url] method is used to generate the URL that the user uses
 /// to authenticate on www.reddit.com, and the [authorize] method retrieves the
 /// access token given the returned `code`. This is to be
-/// used with the 'Web' app type credentials. Refer to
-/// https://github.com/reddit/reddit/wiki/OAuth2-App-Types for descriptions of
-/// valid app types.
+/// used with the 'Web' app type credentials. Refer to Reddit's
+/// [documentation](https://github.com/reddit/reddit/wiki/OAuth2-App-Types)
+/// for descriptions of valid app types.
 class WebAuthenticator extends Authenticator {
   Uri _redirect;
 
