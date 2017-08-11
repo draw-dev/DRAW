@@ -7,7 +7,6 @@ import 'dart:async';
 
 import 'api_paths.dart';
 import 'base.dart';
-import 'exceptions.dart';
 import 'reddit.dart';
 import 'listing/listing_generator.dart';
 import 'models/multireddit.dart';

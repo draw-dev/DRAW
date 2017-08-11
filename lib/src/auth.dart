@@ -111,13 +111,13 @@ abstract class Authenticator {
 
   /// Make a simple `GET` request. [path] is the destination URI that the
   /// request will be made to.
-  Future<Map> get(Uri path, {Map params}) async {
+  Future get(Uri path, {Map params}) async {
     return _request(kGetRequest, path, params: params);
   }
 
   /// Make a simple `POST` request. [path] is the destination URI and [body]
   /// contains the POST parameters that will be sent with the request.
-  Future<Map> post(Uri path, Map<String, String> body) async {
+  Future post(Uri path, Map<String, String> body) async {
     return _request(kPostRequest, path, body: body);
   }
 
@@ -126,7 +126,7 @@ abstract class Authenticator {
   /// [type] can be one of `GET`, `POST`, and `PUT`. [path] represents the
   /// request parameters. [body] is an optional parameter which contains the
   /// body fields for a POST request.
-  Future<Map> _request(String type, Uri path,
+  Future _request(String type, Uri path,
       {Map<String, String> body, Map params}) async {
     if (_client == null) {
       throw new DRAWAuthenticationError(

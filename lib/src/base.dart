@@ -12,13 +12,24 @@ class RedditBase {
 
   RedditBase(this.reddit) : _data = null;
 
-  RedditBase.loadData(this.reddit, Map data) : _data = data;
+  RedditBase.loadData(this.reddit, Map data) : _data = data {
+  }
 
-  String _snakeCase(String name, [separator = '_']) => name.replaceAllMapped(
-      _snakecaseRegexp,
-      (Match match) =>
+  String _snakeCase(String name, [separator = '_']) =>
+      name.replaceAllMapped(
+          _snakecaseRegexp,
+              (Match match) =>
           (match.start != 0 ? separator : '') + match.group(0).toLowerCase());
 
+  @override
+  dynamic operator [](String key) {
+    if (_data != null) {
+      return _data[_snakeCase(key)];
+    }
+    return null;
+  }
+
+  @deprecated
   dynamic noSuchMethod(Invocation invocation) {
     // This is a dirty hack to allow for dynamic field population based on the
     // API response instead of hardcoding these fields and having to update them
@@ -40,5 +51,10 @@ class RedditBase {
           invocation.positionalArguments, invocation.namedArguments);
     }
     return _data[name];
+  }
+
+  @override
+  String toString() {
+    return _data?.toString();
   }
 }

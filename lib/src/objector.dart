@@ -27,7 +27,7 @@ class Objector extends RedditBase {
           data.containsKey('data'),
           'field "data" is expected in a response'
           'of type "LabeledMulti"');
-      return new Multireddit.parse(reddit, data['data']);
+      return new Multireddit.parse(reddit, data);
     } else if (data.containsKey('sr') &&
         data.containsKey('comment_karma') &&
         data.containsKey('link_karma')) {
@@ -43,8 +43,8 @@ class Objector extends RedditBase {
     }
   }
 
-  List<RedditBase> _objectifyList(List listing) {
-    final objectifiedListing = new List<RedditBase>(listing.length);
+  List _objectifyList(List listing) {
+    final objectifiedListing = new List(listing.length);
     for (var i = 0; i < listing.length; ++i) {
       objectifiedListing[i] = _objectifyDictionary(listing[i]);
     }

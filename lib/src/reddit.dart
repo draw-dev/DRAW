@@ -129,7 +129,7 @@ class Reddit {
     _initializationCallback(auth);
   }
 
-  Future<RedditBase> get(String api, {Map params}) async {
+  Future<dynamic> get(String api, {Map params}) async {
     if (!(await initialized)) {
       throw new DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');

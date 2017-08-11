@@ -13,8 +13,10 @@ class Subreddit extends RedditBase {
   Subreddit(Reddit reddit, String name)
       : _name = name,
         super.loadData(reddit, null);
+
   Subreddit.parse(Reddit reddit, Map data)
-      : super.loadData(reddit, data['data']);
+      : _name = null,
+        super.loadData(reddit, data['data']);
 
   int get hashCode => _name.hashCode;
 

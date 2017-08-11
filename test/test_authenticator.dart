@@ -1,4 +1,4 @@
-// Copyright (c) 2017, the Dart Reddit API Wrapper  project authors.
+// Copyright (c) 2017, the Dart Reddit API Wrapper project authors.
 // Please see the AUTHORS file for details. All rights reserved.
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
@@ -59,29 +59,25 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<Map> get(Uri path, {Map params}) async {
-    Map result;
+  Future get(Uri path, {Map params}) async {
+    var result;
     if (isRecording) {
-      // TODO(bkonyi): grab the response based on query.
-      return _recording.reply([path.toString(), params]);
+      return _recording.reply([path.toString(), params.toString()]);
     } else {
-      print(path.toString());
       result = await _recordAuth.get(path);
-      // TODO(bkonyi): do we always want to reply?
-      _recorder.given([path.toString(), params]).reply(result).always();
+      _recorder.given([path.toString(), params.toString()]).reply(result).always();
     }
     return result;
   }
 
   @override
-  Future<Map> post(Uri path, Map<String, String> body) async {
-    Map result;
+  Future post(Uri path, Map<String, String> body) async {
+    var result;
     if (isRecording) {
-      return _recording.reply([path.toString(), body]);
+      return _recording.reply([path.toString(), body.toString()]);
     } else {
-      print(path.toString());
       result = await _recordAuth.post(path, body);
-      _recorder.given([path.toString(), body]).reply(result).always();
+      _recorder.given([path.toString(), body.toString()]).reply(result).always();
     }
     return result;
   }

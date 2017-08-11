@@ -20,9 +20,11 @@ abstract class ListingGenerator {
   static Stream<T> generator<T>(final Reddit reddit, final String api,
       {int limit, Map params}) async* {
     final kLimitKey = 'limit';
+    final kAfterKey = 'after';
     final nullLimit = 1024;
     final paramsInternal = params ?? new Map();
     paramsInternal[kLimitKey] = (limit ?? nullLimit).toString();
+    paramsInternal[kAfterKey] = null;
     int yielded = 0;
     int index = 0;
     List<T> listing;
@@ -30,7 +32,7 @@ abstract class ListingGenerator {
     Future<List<T>> _nextBatch() async {
       final response = (await reddit.get(api, params: paramsInternal)) as Map;
       final newListing = response['listing'];
-      paramsInternal['after'] = response['after'];
+      paramsInternal[kAfterKey] = response[kAfterKey];
       if (newListing.length == 0) {
         return null;
       }
