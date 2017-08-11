@@ -38,8 +38,8 @@ Future main() async {
     final reddit = await createRedditTestInstance(
         'test/user/lib_user_contributorSubreddits.json');
     final subreddits = <Subreddit>[];
-    await for (final subreddit in reddit.user.contributorSubreddits(
-        limit: 101)) {
+    await for (final subreddit
+        in reddit.user.contributorSubreddits(limit: 101)) {
       subreddits.add(subreddit);
     }
     expect(subreddits.length, equals(1));
@@ -50,8 +50,8 @@ Future main() async {
   });
 
   test('lib/user/friends', () async {
-    final reddit = await createRedditTestInstance(
-        'test/user/lib_user_friends.json');
+    final reddit =
+        await createRedditTestInstance('test/user/lib_user_friends.json');
     final List<Redditor> friends = await reddit.user.friends();
     expect(friends.length, equals(1));
     final friend = friends[0];
@@ -84,8 +84,8 @@ Future main() async {
   });
 
   test('lib/user/multireddits', () async {
-    final reddit = await createRedditTestInstance(
-        'test/user/lib_user_multireddits.json');
+    final reddit =
+        await createRedditTestInstance('test/user/lib_user_multireddits.json');
     final multis = await reddit.user.multireddits();
     expect(multis.length, equals(1));
     final multi = multis[0];
@@ -97,8 +97,8 @@ Future main() async {
   });
 
   test('lib/user/subreddits', () async {
-    final reddit = await createRedditTestInstance(
-        'test/user/lib_user_subreddits.json');
+    final reddit =
+        await createRedditTestInstance('test/user/lib_user_subreddits.json');
     final subs = <Subreddit>[];
     await for (final subreddit in reddit.user.subreddits(limit: 101)) {
       subs.add(subreddit);

@@ -65,7 +65,10 @@ class TestAuthenticator extends Authenticator {
       return _recording.reply([path.toString(), params.toString()]);
     } else {
       result = await _recordAuth.get(path);
-      _recorder.given([path.toString(), params.toString()]).reply(result).always();
+      _recorder
+          .given([path.toString(), params.toString()])
+          .reply(result)
+          .always();
     }
     return result;
   }
@@ -77,7 +80,10 @@ class TestAuthenticator extends Authenticator {
       return _recording.reply([path.toString(), body.toString()]);
     } else {
       result = await _recordAuth.post(path, body);
-      _recorder.given([path.toString(), body.toString()]).reply(result).always();
+      _recorder
+          .given([path.toString(), body.toString()])
+          .reply(result)
+          .always();
     }
     return result;
   }
