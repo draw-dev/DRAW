@@ -9,5 +9,7 @@ dependencies:
   oauth2: '>= 1.1.0'
   ini: '>= 1.1.0'
   path: "^1.4.2"
+  test: '^0.12.5'
+
 dev_dependencies:
-  test: '^0.12.5' 
+  reply: '^0.1.2-dev'

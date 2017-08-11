@@ -1,4 +1,4 @@
-// Copyright (c) 2017, the Dart Reddit API Wrapper  project authors.
+// Copyright (c) 2017, the Dart Reddit API Wrapper project authors.
 // Please see the AUTHORS file for details. All rights reserved.
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
@@ -8,7 +8,10 @@ import 'dart:async';
 import 'package:oauth2/oauth2.dart' as oauth2;
 
 import 'auth.dart';
+import 'base.dart';
 import 'exceptions.dart';
+import 'objector.dart';
+import 'user.dart';
 
 /// The [Reddit] class provides access to Reddit's API and stores session state
 /// for the current [Reddit] instance. This class contains objects that can be
@@ -22,6 +25,9 @@ class Reddit {
   /// The default [Uri] used to authenticate an authorization token from Reddit.
   static final Uri defaultAuthEndpoint =
       Uri.parse(r'https://reddit.com/api/v1/authorize');
+
+  /// The default path to the Reddit API.
+  static final String defaultOAuthApiEndpoint = 'oauth.reddit.com';
 
   /// A flag representing the initialization state of the current [Reddit]
   /// instance.
@@ -38,9 +44,14 @@ class Reddit {
   /// The authorized client used to interact with Reddit APIs.
   Authenticator get auth => _auth;
 
+  /// Provides methods for the currently authenticated user.
+  User get user => _user;
+
   Authenticator _auth;
+  User _user;
   bool _readOnly = true;
-  final Completer _initializedCompleter = new Completer();
+  final _initializedCompleter = new Completer();
+  Objector _objector;
 
   // TODO(bkonyi) update clientId entry to show hyperlink.
   /// Creates a new authenticated [Reddit] instance.
@@ -59,13 +70,15 @@ class Reddit {
   /// These fields are required in order to perform any account actions or make
   /// posts.
   ///
-  /// [redirectUri]
+  /// [redirectUri] is the redirect URI associated with your Reddit application.
+  /// This field is unused for script and read-only instances.
   ///
   /// [tokenEndpoint] is a [Uri] to an alternative token endpoint. If not
   /// provided, [defaultTokenEndpoint] is used.
   ///
   /// [authEndpoint] is a [Uri] to an alternative authentication endpoint. If not
   /// provided, [defaultAuthTokenEndpoint] is used.
+  // TODO(bkonyi): inherit from some common base class.
   Reddit(String clientId, String clientSecret, String userAgent,
       {String username,
       String password,
@@ -81,6 +94,10 @@ class Reddit {
     if (userAgent == null) {
       throw new DRAWAuthenticationError('userAgent cannot be null.');
     }
+
+    _objector = new Objector(this);
+    _user = new User(this);
+
     final grant = new oauth2.AuthorizationCodeGrant(
         clientId,
         authEndpoint ?? defaultAuthEndpoint,
@@ -104,8 +121,25 @@ class Reddit {
           WebAuthenticator.create(grant, userAgent, redirectUri));
       _readOnly = false;
     } else {
-      throw new UnimplementedError('Unsupported authentication type.');
+      throw new DRAWUnimplementedError('Unsupported authentication type.');
     }
+  }
+
+  Future<RedditBase> get(String api, {Map params}) async {
+    if (!(await initialized)) {
+      throw new DRAWAuthenticationError(
+          'Cannot make requests using unauthenticated client.');
+    }
+    final path = new Uri.https(defaultOAuthApiEndpoint, api);
+    final response = await auth.get(path, params: params);
+    return _objector.objectify(response);
+  }
+
+  Reddit.fromAuthenticator(Authenticator auth) {
+    if (auth == null) {
+      throw new DRAWAuthenticationError('auth cannot be null.');
+    }
+    _initializationCallback(auth);
   }
 
   void _initializationCallback(Authenticator auth) {
