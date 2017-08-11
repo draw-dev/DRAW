@@ -12,8 +12,7 @@ class RedditBase {
 
   RedditBase(this.reddit) : _data = null;
 
-  RedditBase.loadData(this.reddit, Map data) : _data = data {
-  }
+  RedditBase.loadData(this.reddit, Map data) : _data = data;
 
   String _snakeCase(String name, [separator = '_']) =>
       name.replaceAllMapped(

@@ -19,7 +19,7 @@ Future<Reddit> createRedditTestInstance(String path, {bool live: false}) async {
   } else {
     testAuth = new TestAuthenticator(path);
   }
-  Reddit reddit = new Reddit.fromAuthenticator(testAuth);
+  final reddit = new Reddit.fromAuthenticator(testAuth);
   await reddit.initialized;
   return reddit;
 }
