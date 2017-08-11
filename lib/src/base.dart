@@ -8,16 +8,15 @@ import 'reddit.dart';
 class RedditBase {
   final Reddit reddit;
   final Map _data;
-  final RegExp _snakecaseRegexp = new RegExp("[A-Z]");
+  final RegExp _snakecaseRegExp = new RegExp("[A-Z]");
 
   RedditBase(this.reddit) : _data = null;
 
   RedditBase.loadData(this.reddit, Map data) : _data = data;
 
-  String _snakeCase(String name, [separator = '_']) =>
-      name.replaceAllMapped(
-          _snakecaseRegexp,
-              (Match match) =>
+  String _snakeCase(String name, [separator = '_']) => name.replaceAllMapped(
+      _snakecaseRegExp,
+      (Match match) =>
           (match.start != 0 ? separator : '') + match.group(0).toLowerCase());
 
   @override
