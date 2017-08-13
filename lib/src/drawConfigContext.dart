@@ -6,7 +6,6 @@
 import 'dart:io';
 import 'package:ini/ini.dart';
 import 'package:path/path.dart' as path;
-import 'dart:async';
 
 import './exceptions.dart';
 
@@ -17,6 +16,8 @@ const String kWindowsEnvVar = 'APPDATA';
 
 final kNotSet = null;
 
+///The [DrawConfigContext] class provides an iterface to store and load
+///the DRAW's configuration file [praw.ini].
 class DrawConfigContext {
   ///Path to Local, User, Global Config Files, with matching precedence
   Uri _localConfigPath;
@@ -29,23 +30,27 @@ class DrawConfigContext {
 
   String _shortURL;
   String _primarySiteName;
-  String _redirectUri;
 
+  //Required fields for basic configuration
   bool checkForUpdates;
+  String userAgent;
 
+  //Fields for Oauth workflow and configuration
+  String _redirectUri;
   String clientId;
   String clientSecret;
-  String oauthUrl;
-  String redditUrl;
-  String userAgent;
+  String refreshToken;
   String username;
   String password;
-  String refreshToken;
+
+  String oauthUrl;
+  String redditUrl;
   String redditURL;
   String httpProxy;
   String httpsProxy;
 
   get redirectUri => Uri.parse(_redirectUri);
+
   //Note this Accesor throws if _shortURL is not set
   get shortURL {
     if (_shortURL == kNotSet) {
@@ -54,8 +59,20 @@ class DrawConfigContext {
     return _shortURL;
   }
 
-  DrawConfigContext([String siteName = "default"]) {
+  /// Creates a new [DrawConfigContext] instance.
+  ///
+  /// [siteName] is the site name associated with the section of the ini file
+  /// that would like to be used to load additional configuration information.
+  /// The default behaviour is to map to the section [default].
+  ///
+  /// [userAgent] is an arbitrary identifier used by the Reddit API to diffrentiate
+  /// between client instances. Should be unqiue for example related to [sitenam].
+  ///
+  /// TODO: add ability to pass in additional prams directly
+  DrawConfigContext({String siteName = "default", String userAgent}) {
+    //Conigure custom fields if applicable
     _primarySiteName = siteName;
+    this.userAgent = userAgent ?? kNotSet;
 
     ///Get file paths
     _localConfigPath = _getLocalConfigPath();
@@ -64,11 +81,9 @@ class DrawConfigContext {
 
     ///Check for file existence
     File primaryFile = new File(this._localConfigPath.toString());
-
     if (primaryFile.exists() == false) {
       primaryFile = new File(this._userConfigPath.toString());
     }
-
     if (primaryFile.exists() == false) {
       primaryFile = new File(this._globalConfigPath.toString());
     }
@@ -89,31 +104,27 @@ class DrawConfigContext {
           print("Placeholder for catching error while initializing");
           print(e);
         });
-
-    ///TODO: Load settings into master data-structure Settings
-    ///TODO: Load main file into configFile
-    ///this._config = new Config.fromStrings(this.configFile.readAsLinesSync());
   }
 
+  //Initialize the attributes of the configuration object using the ini file
   void _initializeAttributes() {
-    ///Fetch Default
     _shortURL = _fetchDefault('short_url');
     checkForUpdates = _configBool(_fetchDefault('check_for_updates'));
 
-    ///Fetch
     oauthUrl = _fetch('oauth_url');
     redditUrl = _fetch('reddit_url');
 
-    ///Fetch_or_not_set_
-    clientId = _fetchOrNotSet('client_id');
-    clientSecret = _fetchOrNotSet('client_secret');
-    httpProxy = _fetchOrNotSet('http_proxy');
-    httpsProxy = _fetchOrNotSet('https_proxy');
-    _redirectUri = _fetchOrNotSet('redirect_uri');
-    refreshToken = _fetchOrNotSet('refresh_token');
-    password = _fetchOrNotSet('password');
-    userAgent = _fetchOrNotSet('user_agent');
-    username = _fetchOrNotSet('username');
+    ///The use of null aware operators here is to give highest precedence to
+    ///passed in values to the constructor.
+    clientId ??= _fetchOrNotSet('client_id');
+    clientSecret ??= _fetchOrNotSet('client_secret');
+    httpProxy ??= _fetchOrNotSet('http_proxy');
+    httpsProxy ??= _fetchOrNotSet('https_proxy');
+    _redirectUri ??= _fetchOrNotSet('redirect_uri');
+    refreshToken ??= _fetchOrNotSet('refresh_token');
+    password ??= _fetchOrNotSet('password');
+    userAgent ??= _fetchOrNotSet('user_agent');
+    username ??= _fetchOrNotSet('username');
   }
 
   ///Safely return the truth value associated with [item].
@@ -126,18 +137,20 @@ class DrawConfigContext {
     }
   }
 
+  ///Fetch the value under the default site section in the ini file
   String _fetchDefault(String key) {
     return this._customConfig.get("default", key);
   }
 
+  ///Fetch value based on the [_primarySiteName] in the ini file.
   String _fetch(String key) {
     String value =
         _customConfig.get(_primarySiteName, key) ?? _fetchDefault(key);
     return value;
   }
 
+  ///
   String _fetchOrNotSet(String key) {
-    //TODO: Check if key is part of passed in settings and return it
     //TODO:Check in env variables
     String iniValue = _fetchDefault(key);
     return iniValue ?? kNotSet;
