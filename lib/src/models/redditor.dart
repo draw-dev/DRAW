@@ -13,6 +13,7 @@ import '../listing/mixins/base.dart';
 import '../listing/mixins/gilded.dart';
 import '../listing/mixins/redditor.dart';
 import '../reddit.dart';
+import '../listing/listing_generator.dart';
 import 'comment.dart';
 import 'multireddit.dart';
 import 'submission.dart';
@@ -29,7 +30,6 @@ enum TimeFilter {
 
 class Redditor extends RedditBase {
   String _name;
-  Uri _path;
   final _userRegExp = new RegExp(r'{user}');
 
   Redditor.parse(Reddit reddit, Map data) : super.loadData(reddit, data) {
@@ -120,18 +120,24 @@ class RedditorStream extends RedditBase {
     throw new DRAWUnimplementedError();
   }
 
-  Stream<Submission> controversial({TimeFilter timeFilter: all, Map params}) {
+  Redditor.name(Reddit reddit, String name)
+      : _name = name,
+        super(reddit);
+
+  Stream<Submission> controversial(
+      {TimeFilter timeFilter: TimeFilter.all, Map params}) {
     throw new DRAWUnimplementedError();
   }
 
   Stream<RedditBase> downvoted({Map params}) =>
       ListingGenerator.generator<RedditBase>(
-          reddit, apiPath['downvoted'].replace(_userRegExp, _name),
+          reddit, apiPath['downvoted'].replaceAll(_userRegExp, _name),
           params: params);
 
-  // TODO(bkonyi) implement Reddit.put()?
   Future friend({String note = ''}) =>
-      reddit.put(apiPath['friend_v1'], {'name': _name, 'note': note});
+      reddit.put(
+          apiPath['friend_v1'].replaceAll(_userRegExp, _name),
+          body: JSON.encode({'note': note}));
 
   Future<Redditor> friendInfo() {
     throw new DRAWUnimplementedError();
@@ -139,8 +145,11 @@ class RedditorStream extends RedditBase {
 
   String get fullname => this['fullname'];
 
-  Future gild({int months = 1}) {
-    throw new DRAWUnimplementedError();
+  Future gild({int months = 1}) async {
+    final body = {
+      'months': months.toString(),
+    };
+    reddit.post(apiPath['gild_user'].replaceAll(_userRegExp, _name), body);
   }
 
   Stream<RedditBase> gilded({Map params}) {
@@ -177,9 +186,10 @@ class RedditorStream extends RedditBase {
 
   RedditorStream get stream => new RedditorStream(this);
 
-  SubmissionStream get submissions => throw new DRAWUnimplementedError();
+  // TODO(bkonyi): SubmissionStream
+  dynamic get submissions => throw new DRAWUnimplementedError();
 
-  Stream<RedditBase> top({TimeFilter timeFiler: all, Map params}) {
+  Stream<RedditBase> top({TimeFilter timeFiler: TimeFilter.all, Map params}) {
     throw new DRAWUnimplementedError();
   }
 
@@ -193,14 +203,14 @@ class RedditorStream extends RedditBase {
 
   Stream<RedditBase> upvoted({Map params}) =>
       ListingGenerator.generator<RedditBase>(
-          reddit, apiPath['upvoted'].replace(_userRegExp, _name),
+          reddit, apiPath['upvoted'].replaceAll(_userRegExp, _name),
           params: params);
 }
 
 class RedditorStream extends RedditBase {
   final Redditor redditor;
 
-  RedditorStream(this.redditor);
+  RedditorStream(this.redditor) : super(redditor.reddit);
 
   Stream<Comment> comments() {
     throw new DRAWUnimplementedError();

@@ -114,6 +114,20 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
+  Future put(Uri path, {/* Map<String, String>, String */ body}) async {
+    var result;
+    if (isRecording) {
+      result = _recording.reply([path.toString(), body.toString()]);
+    } else {
+      result = await _recordAuth.put(path, body: body);
+      _recorder.given([path.toString(), body.toString()])
+          .reply(result)
+          .always();
+    }
+    return result;
+  }
+
+  @override
   bool get isValid {
     return _recordAuth?.isValid ?? true;
   }
@@ -126,7 +140,7 @@ class TestAuthenticator extends Authenticator {
     if (!isRecording) {
       return (new File(_recordingPath)).writeAsString(JSON
           .encode(_recorder.toRecording().toJsonEncodable(
-              encodeRequest: (q) => q, encodeResponse: (r) => r))
+          encodeRequest: (q) => q, encodeResponse: (r) => r))
           .toString());
     }
     return null;
