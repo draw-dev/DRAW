@@ -12,7 +12,7 @@ import '../test_utils.dart';
 
 Future main() async {
   test('lib/user/me', () async {
-    final reddit = await createRedditTestInstance('test/user/lib_user_me.json');
+    final reddit = await createRedditTestInstance('test/user/lib_user_me.json', live: true);
     final Redditor me = await reddit.user.me();
     expect(me['name'], equals('DRAWApiOfficial'));
     expect(me['isEmployee'], isFalse);

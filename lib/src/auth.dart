@@ -14,6 +14,7 @@ import 'exceptions.dart';
 
 const String kGetRequest = 'GET';
 const String kPostRequest = 'POST';
+const String kPutRequest = 'PUT';
 
 const String kDurationKey = 'duration';
 const String kErrorKey = 'error';
@@ -93,7 +94,7 @@ abstract class Authenticator {
 
       // Request the token from the server.
       final response =
-          await httpClient.post(path, headers: headers, body: revokeAccess);
+      await httpClient.post(path, headers: headers, body: revokeAccess);
 
       if (response.statusCode != 204) {
         // We should always get a 204 response for this call.
@@ -121,13 +122,17 @@ abstract class Authenticator {
     return _request(kPostRequest, path, body: body);
   }
 
+  Future put(Uri path, { /* Map<String,String>, String */ body}) async {
+    return _request(kPutRequest, path, body: body);
+  }
+
   /// Request data from Reddit using our OAuth2 client.
   ///
   /// [type] can be one of `GET`, `POST`, and `PUT`. [path] represents the
   /// request parameters. [body] is an optional parameter which contains the
   /// body fields for a POST request.
   Future _request(String type, Uri path,
-      {Map<String, String> body, Map params}) async {
+      { /* Map<String,String>, String */ body, Map params}) async {
     if (_client == null) {
       throw new DRAWAuthenticationError(
           'The authenticator does not have a valid token.');
@@ -138,7 +143,11 @@ abstract class Authenticator {
     final finalPath = path.replace(queryParameters: params);
     final request = new http.Request(type, finalPath);
     if (body != null) {
-      request.bodyFields = body;
+      if (body is Map<String, String>) {
+        request.bodyFields = body;
+      } else {
+        request.body = body;
+      }
     }
     final http.StreamedResponse response = await _client.send(request);
     final parsed = JSON.decode(await response.stream.bytesToString());
@@ -232,7 +241,7 @@ class ScriptAuthenticator extends Authenticator {
   static Future<ScriptAuthenticator> create(oauth2.AuthorizationCodeGrant grant,
       String userAgent, String username, String password) async {
     final ScriptAuthenticator authenticator =
-        new ScriptAuthenticator._(grant, userAgent, username, password);
+    new ScriptAuthenticator._(grant, userAgent, username, password);
     await authenticator._authenticationFlow();
     return authenticator;
   }
@@ -265,7 +274,7 @@ class ReadOnlyAuthenticator extends Authenticator {
   static Future<ReadOnlyAuthenticator> create(
       oauth2.AuthorizationCodeGrant grant, String userAgent) async {
     final ReadOnlyAuthenticator authenticator =
-        new ReadOnlyAuthenticator._(grant, userAgent);
+    new ReadOnlyAuthenticator._(grant, userAgent);
     await authenticator._authenticationFlow();
     return authenticator;
   }
@@ -292,17 +301,17 @@ class ReadOnlyAuthenticator extends Authenticator {
 class WebAuthenticator extends Authenticator {
   Uri _redirect;
 
-  WebAuthenticator._(
-      oauth2.AuthorizationCodeGrant grant, String userAgent, Uri redirect)
+  WebAuthenticator._(oauth2.AuthorizationCodeGrant grant, String userAgent,
+      Uri redirect)
       : _redirect = redirect,
         super(grant, userAgent) {
     assert(_redirect != null);
   }
 
-  static WebAuthenticator create(
-      oauth2.AuthorizationCodeGrant grant, String userAgent, Uri redirect) {
+  static WebAuthenticator create(oauth2.AuthorizationCodeGrant grant,
+      String userAgent, Uri redirect) {
     final WebAuthenticator authenticator =
-        new WebAuthenticator._(grant, userAgent, redirect);
+    new WebAuthenticator._(grant, userAgent, redirect);
     return authenticator;
   }
 
@@ -326,7 +335,7 @@ class WebAuthenticator extends Authenticator {
       throw new DRAWAuthenticationError('Parameter scopes cannot be null.');
     }
     Uri redditAuthUri =
-        _grant.getAuthorizationUrl(_redirect, scopes: scopes, state: state);
+    _grant.getAuthorizationUrl(_redirect, scopes: scopes, state: state);
     if (redditAuthUri == null) {
       // TODO(bkonyi) throw meaningful exception.
       assert(false);

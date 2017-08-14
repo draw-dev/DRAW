@@ -20,11 +20,11 @@ import 'user.dart';
 class Reddit {
   /// The default [Uri] used to request an authorization token from Reddit.
   static final Uri defaultTokenEndpoint =
-      Uri.parse(r'https://www.reddit.com/api/v1/access_token');
+  Uri.parse(r'https://www.reddit.com/api/v1/access_token');
 
   /// The default [Uri] used to authenticate an authorization token from Reddit.
   static final Uri defaultAuthEndpoint =
-      Uri.parse(r'https://reddit.com/api/v1/authorize');
+  Uri.parse(r'https://reddit.com/api/v1/authorize');
 
   /// The default path to the Reddit API.
   static final String defaultOAuthApiEndpoint = 'oauth.reddit.com';
@@ -81,10 +81,10 @@ class Reddit {
   // TODO(bkonyi): inherit from some common base class.
   Reddit(String clientId, String clientSecret, String userAgent,
       {String username,
-      String password,
-      Uri redirectUri,
-      Uri tokenEndpoint,
-      Uri authEndpoint}) {
+        String password,
+        Uri redirectUri,
+        Uri tokenEndpoint,
+        Uri authEndpoint}) {
     if (clientId == null) {
       throw new DRAWAuthenticationError('clientId cannot be null.');
     }
@@ -136,6 +136,26 @@ class Reddit {
     }
     final path = new Uri.https(defaultOAuthApiEndpoint, api);
     final response = await auth.get(path, params: params);
+    return _objector.objectify(response);
+  }
+
+  Future<dynamic> post(String api, Map<String, String> body) async {
+    if (!(await initialized)) {
+      throw new DRAWAuthenticationError(
+          'Cannot make requests using unauthenticated client.');
+    }
+    final path = new Uri.https(defaultOAuthApiEndpoint, api);
+    final response = await auth.post(path, body);
+    return _objector.objectify(response);
+  }
+
+  Future put(String api, {/* Map<String, String>, String */ body}) async {
+    if (!(await initialized)) {
+      throw new DRAWAuthenticationError(
+          'Cannot make requests using unauthenticated client.');
+    }
+    final path = new Uri.https(defaultOAuthApiEndpoint, api);
+    final response = await auth.put(path, body: body);
     return _objector.objectify(response);
   }
 

@@ -19,6 +19,7 @@ class TestAuthenticator extends Authenticator {
   final String _recordingPath;
   final Authenticator _recordAuth;
   final _recorder = new Recorder<List, dynamic>();
+
   bool get isRecording => (_recordAuth == null);
   Recording _recording;
 
@@ -62,7 +63,7 @@ class TestAuthenticator extends Authenticator {
   Future get(Uri path, {Map params}) async {
     var result;
     if (isRecording) {
-      return _recording.reply([path.toString(), params.toString()]);
+      result = _recording.reply([path.toString(), params.toString()]);
     } else {
       result = await _recordAuth.get(path);
       _recorder
@@ -77,11 +78,25 @@ class TestAuthenticator extends Authenticator {
   Future post(Uri path, Map<String, String> body) async {
     var result;
     if (isRecording) {
-      return _recording.reply([path.toString(), body.toString()]);
+      result = _recording.reply([path.toString(), body.toString()]);
     } else {
       result = await _recordAuth.post(path, body);
       _recorder
           .given([path.toString(), body.toString()])
+          .reply(result)
+          .always();
+    }
+    return result;
+  }
+
+  @override
+  Future put(Uri path, {/* Map<String, String>, String */ body}) async {
+    var result;
+    if (isRecording) {
+      result = _recording.reply([path.toString(), body.toString()]);
+    } else {
+      result = await _recordAuth.put(path, body: body);
+      _recorder.given([path.toString(), body.toString()])
           .reply(result)
           .always();
     }
@@ -101,7 +116,7 @@ class TestAuthenticator extends Authenticator {
     if (!isRecording) {
       return (new File(_recordingPath)).writeAsString(JSON
           .encode(_recorder.toRecording().toJsonEncodable(
-              encodeRequest: (q) => q, encodeResponse: (r) => r))
+          encodeRequest: (q) => q, encodeResponse: (r) => r))
           .toString());
     }
     return null;
