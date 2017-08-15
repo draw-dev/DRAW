@@ -17,7 +17,7 @@ const String kWindowsEnvVar = 'APPDATA';
 final kNotSet = null;
 
 /// The [DrawConfigContext] class provides an iterface to store.
-/// Load the DRAW's configuration file [praw.ini].
+/// Load the DRAW's configuration file [draw.ini].
 class DrawConfigContext {
   /// Path to Local, User, Global Config Files, with matching precedence.
   Uri _localConfigPath;
@@ -54,22 +54,22 @@ class DrawConfigContext {
   //Note this Accesor throws if _shortURL is not set.
   String get shortURL {
     if (_shortURL == kNotSet) {
-      throw new DRAWClientException("No short domain specified");
+      throw new DRAWClientException('No short domain specified');
     }
     return _shortURL;
   }
 
   /// Creates a new [DrawConfigContext] instance.
-  /// 
+  ///
   /// [siteName] is the site name associated with the section of the ini file
   /// that would like to be used to load additional configuration information.
   /// The default behaviour is to map to the section [default].
-  /// 
+  ///
   /// [userAgent] is an arbitrary identifier used by the Reddit API to diffrentiate
-  /// between client instances. Should be unqiue for example related to [sitenam].
-  /// 
+  /// between client instances. Should be unqiue for example related to [siteName].
+  ///
   /// TODO(kc3454): add ability to pass in additional prams directly.
-  DrawConfigContext({String siteName = "default", String userAgent}) {
+  DrawConfigContext({String siteName = 'default', String userAgent}) {
     //Conigure custom fields if applicable.
     _primarySiteName = siteName;
     this.userAgent = userAgent ?? kNotSet;
@@ -80,7 +80,7 @@ class DrawConfigContext {
     _globalConfigPath = _getGlobalConfigPath();
 
     //Check for file existence.
-    File primaryFile = new File(this._localConfigPath.toString());
+    var primaryFile = new File(this._localConfigPath.toString());
     if (primaryFile.exists() == false) {
       primaryFile = new File(this._userConfigPath.toString());
     }
@@ -89,21 +89,8 @@ class DrawConfigContext {
     }
 
     //Parse the ini file.
-    primaryFile
-        .readAsLines()
-        .then((lines) => new Config.fromStrings(lines))
-        .then((Config config) {
-          this._customConfig = config;
-        })
-        .catchError((e) {
-          print("Placeholder for error while reading/parsing file");
-          print(e);
-        })
-        .then((_) => this._initializeAttributes())
-        .catchError((e) {
-          print("Placeholder for catching error while initializing");
-          print(e);
-        });
+    _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
+    _initializeAttributes();
   }
 
   /// Initialize the attributes of the configuration object using the ini file.
@@ -139,36 +126,31 @@ class DrawConfigContext {
 
   /// Fetch the value under the default site section in the ini file
   String _fetchDefault(String key) {
-    return this._customConfig.get("default", key);
+    return this._customConfig.get('default', key);
   }
 
   /// Fetch value based on the [_primarySiteName] in the ini file.
-  String _fetch(String key) {
-    String value =
-        _customConfig.get(_primarySiteName, key) ?? _fetchDefault(key);
-    return value;
-  }
+  String _fetch(String key) =>
+      (_customConfig.get(_primarySiteName, key) ?? _fetchDefault(key));
 
-  /// 
-  String _fetchOrNotSet(String key) {
-    //TODO:Check in env variables
-    String iniValue = _fetchDefault(key);
-    return iniValue ?? kNotSet;
-  }
+  /// Checks if [key] is contained in the parsed ini file, if not returns [kNotSet].
+  ///
+  /// [key] is the key to be searched in the draw.ini file.
+  String _fetchOrNotSet(String key) => (_fetchDefault(key) ?? kNotSet);
 
   /// Returns path to user level configuration file
   Uri _getUserConfigPath() {
-    final Map<String, String> environ = Platform.environment;
+    final environment = Platform.environment;
 
-    Uri osConfigPath;
+    var osConfigPath;
 
     /// Load correct config path based on operating system
     if (Platform.isMacOS) {
-      osConfigPath = Uri.parse(path.join(environ[kMacEnvVar], '.config'));
+      osConfigPath = Uri.parse(path.join(environment[kMacEnvVar], '.config'));
     } else if (Platform.isLinux) {
-      osConfigPath = Uri.parse(environ[kLinuxEnvVar]);
+      osConfigPath = Uri.parse(environment[kLinuxEnvVar]);
     } else if (Platform.isWindows) {
-      osConfigPath = Uri.parse(environ[kWindowsEnvVar]);
+      osConfigPath = Uri.parse(environment[kWindowsEnvVar]);
     }
     return osConfigPath;
   }
