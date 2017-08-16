@@ -4,6 +4,8 @@
 /// can be found in the LICENSE file.
 
 import 'dart:io';
+import 'dart:async';
+
 import 'package:ini/ini.dart';
 import 'package:path/path.dart' as path;
 
@@ -84,8 +86,6 @@ class DrawConfigContext {
     return _shortURL;
   }
 
-  bool doesNot(bool value) => value == false ? true : false;
-
   /// Creates a new [DrawConfigContext] instance.
   ///
   /// [siteName] is the site name associated with the section of the ini file
@@ -100,32 +100,45 @@ class DrawConfigContext {
     //Conigure custom fields if applicable.
     _primarySiteName = siteName;
     this.userAgent = userAgent ?? kNotSet;
-
     _initializeFilePaths();
     var primaryFile = _loadCorrectFile();
-
     //Parse the ini file.
     _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
     fieldList.forEach((key, value) => _fieldInitializer(key, value));
   }
 
-
   ///Retrive filePaths and load into private members.
-  void _initializeFilePaths(){
+  void _initializeFilePaths() {
     _localConfigPath = _getLocalConfigPath();
     _userConfigPath = _getUserConfigPath();
     _globalConfigPath = _getGlobalConfigPath();
   }
 
-  File _loadCorrectFile(){
-    //Check for file existence.
+  bool _checkForExistance(File primaryFile) {
+    bool fileLoaded;
+    Future fileExistance = primaryFile.exists();
+    fileExistance.then((bool fileExists) => fileLoaded = fileExists);
+    return fileLoaded;
+  }
+
+  ///Loads file from [_localConfigPath] or [_userConfigPath] or [_globalConfigPath].
+  File _loadCorrectFile() {
+    //Check if file exists locally.
     var primaryFile = new File(this._localConfigPath.toString());
-    if (primaryFile.exists() == false) {
-      primaryFile = new File(this._userConfigPath.toString());
+    if (_checkForExistance(primaryFile)) {
+      return primaryFile;
     }
-    if (primaryFile.exists() == false) {
-      primaryFile = new File(this._globalConfigPath.toString());
+    //Check if File exists in user directory
+    primaryFile = new File(this._userConfigPath.toString());
+    if (_checkForExistance(primaryFile)) {
+      return primaryFile;
     }
+    //Check if File Exists in Global Directory
+    primaryFile = new File(this._globalConfigPath.toString());
+    if (_checkForExistance(primaryFile)) {
+      return primaryFile;
+    }
+    throw new DRAWClientException('$kFileName, does not exist');
   }
 
   void _fieldInitializer(type, params) {
@@ -136,11 +149,11 @@ class DrawConfigContext {
   void _initializeField(String type, String param) {
     if (type == kShortUrl) {
       _shortURL = _fetchDefault('short_url');
-    } else if (type = kCheckForUpdates) {
+    } else if (type == kCheckForUpdates) {
       checkForUpdates = _configBool(_fetchDefault('check_for_updates'));
-    } else if (type = kKind) {
+    } else if (type == kKind) {
       //TODO(kc3454): Learn how to do this one.
-    } else if (type = kOptionalField) {
+    } else if (type == kOptionalField) {
       String value = _fetchOrNotSet(param);
       if (value != null) {
         switch (param) {
@@ -171,7 +184,7 @@ class DrawConfigContext {
             break;
         }
       }
-    } else if (type = kRequiredField) {
+    } else if (type == kRequiredField) {
       String value = _fetch(param);
       if (value != null) {
         switch (param) {
