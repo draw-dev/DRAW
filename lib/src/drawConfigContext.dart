@@ -16,34 +16,49 @@ const String kMacEnvVar = 'HOME';
 const String kLinuxEnvVar = 'XDG_CONFIG_HOME';
 const String kWindowsEnvVar = 'APPDATA';
 
-//fieldListConstants
+//fieldMapConstants
 const String kShortUrl = 'short_url';
 const String kCheckForUpdates = 'check_for_updates';
 const String kKind = 'kind';
 const String kOptionalField = 'optional_field';
 const String kRequiredField = 'required_field';
 
+const String kComment = 'comment';
+const String kMessage = 'message';
+const String kRedditor = 'redditor';
+const String kSubmission = 'submission';
+const String kSubReddit = 'subreddit';
+const String kClientId = 'client_id ';
+const String kClientSecret = 'child_secret ';
+const String kHttpProxy = 'http_proxy ';
+const String kHttpsProxy = 'https_proxy ';
+const String kRedirectUri = 'redirect_uri ';
+const String kRefreshToken = 'refresh_token ';
+const String kPassword = 'password ';
+const String kUserAgent = 'user_agent ';
+const String kUsername = 'username ';
+
 final kNotSet = null;
 
 /// The [DrawConfigContext] class provides an iterface to store.
 /// Load the DRAW's configuration file [draw.ini].
 class DrawConfigContext {
-  static Map<String, String> fieldList = {
-    'short_url': ['short_url'],
-    'check_for_updates': ['check_for_updates'],
-    'kind': ['comment', 'message', 'redditor', 'submission', 'subdreddit'],
-    'optional_field': [
-      'client_id',
-      'client_secret',
-      'http_proxy',
-      'https_proxy',
-      'redirect_uri',
-      'refresh_token',
-      'password',
-      'user_agent',
-      'username'
+  static Map<String, String> fieldMap = {
+    kShortUrl: [kShortUrl],
+    kCheckForUpdates: [kCheckForUpdates],
+    kKind: [kComment, kMessage, kRedditor, kSubmission, kSubReddit],
+    kOptionalField: [
+      kClientId,
+      kClientSecret,
+      kHttpProxy,
+      kHttpsProxy,
+      kRedirectUri,
+      kRefreshToken,
+      kPassword,
+      kUserAgent,
+      kUsername,
     ],
-    'required_field': ['oauth_url', 'reddit_url']
+    kRequiredField: ['oauth_url', 'reddit_url']
   };
 
   /// Path to Local, User, Global Config Files, with matching precedence.
@@ -104,7 +119,7 @@ class DrawConfigContext {
     var primaryFile = _loadCorrectFile();
     //Parse the ini file.
     _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
-    fieldList.forEach((key, value) => _fieldInitializer(key, value));
+    fieldMap.forEach((key, value) => _fieldInitializer(key, value));
   }
 
   ///Retrive filePaths and load into private members.
@@ -157,30 +172,36 @@ class DrawConfigContext {
       String value = _fetchOrNotSet(param);
       if (value != null) {
         switch (param) {
-          case 'cliend_id':
+          case kClientId:
             clientId = value;
             break;
-          case 'client_secret':
+          case kClientSecret:
             clientSecret = value;
             break;
-          case 'http_proxy':
+          case kHttpProxy:
             httpProxy = value;
             break;
-          case 'https_proxy':
+          case kHttpsProxy:
             httpsProxy = value;
             break;
-          case 'redirect_uri':
+          case kRedirectUri:
             _redirectUri = value;
             break;
-          case 'refresh_token':
+          case kRefreshToken:
             refreshToken = value;
             break;
-          case 'password':
+          case kPassword:
             password = value;
+            break;
+          case kUserAgent:
+            userAgent = value;
+            break;
+          case kUsername:
+            username = value;
             break;
           default:
             throw new DRAWInternalError(
-                'Param $param does not exist in the fieldList for $type');
+                'Param $param does not exist in the fieldMap for $type');
             break;
         }
       }
@@ -196,7 +217,7 @@ class DrawConfigContext {
             break;
           default:
             throw new DRAWInternalError(
-                'Param $param does not exist in the fieldList for $type');
+                'Param $param does not exist in the fieldMap for $type');
             break;
         }
       }
