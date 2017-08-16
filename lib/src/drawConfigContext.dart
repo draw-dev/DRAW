@@ -43,7 +43,7 @@ final kNotSet = null;
 /// The [DrawConfigContext] class provides an iterface to store.
 /// Load the DRAW's configuration file [draw.ini].
 class DrawConfigContext {
-  static Map<String, String> fieldMap = {
+  static Map<String, List<String>> fieldMap = {
     kShortUrl: [kShortUrl],
     kCheckForUpdates: [kCheckForUpdates],
     kKind: [kComment, kMessage, kRedditor, kSubmission, kSubReddit],
@@ -116,7 +116,7 @@ class DrawConfigContext {
     _primarySiteName = siteName;
     this.userAgent = userAgent ?? kNotSet;
     _initializeFilePaths();
-    var primaryFile = _loadCorrectFile();
+    final primaryFile = _loadCorrectFile();
     //Parse the ini file.
     _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
     fieldMap.forEach((key, value) => _fieldInitializer(key, value));
@@ -169,7 +169,7 @@ class DrawConfigContext {
     } else if (type == kKind) {
       //TODO(kc3454): Learn how to do this one.
     } else if (type == kOptionalField) {
-      String value = _fetchOrNotSet(param);
+      final value = _fetchOrNotSet(param);
       if (value != null) {
         switch (param) {
           case kClientId:
@@ -206,7 +206,7 @@ class DrawConfigContext {
         }
       }
     } else if (type == kRequiredField) {
-      String value = _fetch(param);
+      final value = _fetch(param);
       if (value != null) {
         switch (param) {
           case 'oauth_url':
@@ -225,7 +225,7 @@ class DrawConfigContext {
   }
 
   /// Safely return the truth value associated with [item].
-  bool _configBool(var item) {
+  bool _configBool(final item) {
     if (item is bool) {
       return item;
     } else {
@@ -246,7 +246,7 @@ class DrawConfigContext {
   /// Checks if [key] is contained in the parsed ini file, if not returns [kNotSet].
   ///
   /// [key] is the key to be searched in the draw.ini file.
-  String _fetchOrNotSet(String key) => (_fetchDefault(key) ?? kNotSet);
+  String _fetchOrNotSet(final key) => (_fetchDefault(key) ?? kNotSet);
 
   /// Returns path to user level configuration file
   Uri _getUserConfigPath() {
