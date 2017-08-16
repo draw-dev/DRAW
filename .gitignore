@@ -25,8 +25,3 @@ doc/api/
 # (Library packages only! Remove pattern if developing an application package)
 pubspec.lock
 
-
-# Temporary and Test files
-a.dart
-praw.ini
-*.swp

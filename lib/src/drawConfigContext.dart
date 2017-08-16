@@ -14,11 +14,36 @@ const String kMacEnvVar = 'HOME';
 const String kLinuxEnvVar = 'XDG_CONFIG_HOME';
 const String kWindowsEnvVar = 'APPDATA';
 
+//fieldListConstants
+const String kShortUrl = 'short_url';
+const String kCheckForUpdates = 'check_for_updates';
+const String kKind = 'kind';
+const String kOptionalField = 'optional_field';
+const String kRequiredField = 'required_field';
+
 final kNotSet = null;
 
 /// The [DrawConfigContext] class provides an iterface to store.
 /// Load the DRAW's configuration file [draw.ini].
 class DrawConfigContext {
+  static Map<String, String> fieldList = {
+    'short_url': ['short_url'],
+    'check_for_updates': ['check_for_updates'],
+    'kind': ['comment', 'message', 'redditor', 'submission', 'subdreddit'],
+    'optional_field': [
+      'client_id',
+      'client_secret',
+      'http_proxy',
+      'https_proxy',
+      'redirect_uri',
+      'refresh_token',
+      'password',
+      'user_agent',
+      'username'
+    ],
+    'required_field': ['oauth_url', 'reddit_url']
+  };
+
   /// Path to Local, User, Global Config Files, with matching precedence.
   Uri _localConfigPath;
   Uri _userConfigPath;
@@ -59,6 +84,8 @@ class DrawConfigContext {
     return _shortURL;
   }
 
+  bool doesNot(bool value) => value == false ? true : false;
+
   /// Creates a new [DrawConfigContext] instance.
   ///
   /// [siteName] is the site name associated with the section of the ini file
@@ -74,11 +101,23 @@ class DrawConfigContext {
     _primarySiteName = siteName;
     this.userAgent = userAgent ?? kNotSet;
 
-    //Get the file paths.
+    _initializeFilePaths();
+    var primaryFile = _loadCorrectFile();
+
+    //Parse the ini file.
+    _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
+    fieldList.forEach((key, value) => _fieldInitializer(key, value));
+  }
+
+
+  ///Retrive filePaths and load into private members.
+  void _initializeFilePaths(){
     _localConfigPath = _getLocalConfigPath();
     _userConfigPath = _getUserConfigPath();
     _globalConfigPath = _getGlobalConfigPath();
+  }
 
+  File _loadCorrectFile(){
     //Check for file existence.
     var primaryFile = new File(this._localConfigPath.toString());
     if (primaryFile.exists() == false) {
@@ -87,31 +126,68 @@ class DrawConfigContext {
     if (primaryFile.exists() == false) {
       primaryFile = new File(this._globalConfigPath.toString());
     }
+  }
 
-    //Parse the ini file.
-    _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
-    _initializeAttributes();
+  void _fieldInitializer(type, params) {
+    params.forEach((value) => _initializeField(type, value));
   }
 
   /// Initialize the attributes of the configuration object using the ini file.
-  void _initializeAttributes() {
-    _shortURL = _fetchDefault('short_url');
-    checkForUpdates = _configBool(_fetchDefault('check_for_updates'));
-
-    oauthUrl = _fetch('oauth_url');
-    redditUrl = _fetch('reddit_url');
-
-    //The use of null aware operators here is to give highest precedence to
-    //passed in values to the constructor.
-    clientId ??= _fetchOrNotSet('client_id');
-    clientSecret ??= _fetchOrNotSet('client_secret');
-    httpProxy ??= _fetchOrNotSet('http_proxy');
-    httpsProxy ??= _fetchOrNotSet('https_proxy');
-    _redirectUri ??= _fetchOrNotSet('redirect_uri');
-    refreshToken ??= _fetchOrNotSet('refresh_token');
-    password ??= _fetchOrNotSet('password');
-    userAgent ??= _fetchOrNotSet('user_agent');
-    username ??= _fetchOrNotSet('username');
+  void _initializeField(String type, String param) {
+    if (type == kShortUrl) {
+      _shortURL = _fetchDefault('short_url');
+    } else if (type = kCheckForUpdates) {
+      checkForUpdates = _configBool(_fetchDefault('check_for_updates'));
+    } else if (type = kKind) {
+      //TODO(kc3454): Learn how to do this one.
+    } else if (type = kOptionalField) {
+      String value = _fetchOrNotSet(param);
+      if (value != null) {
+        switch (param) {
+          case 'cliend_id':
+            clientId = value;
+            break;
+          case 'client_secret':
+            clientSecret = value;
+            break;
+          case 'http_proxy':
+            httpProxy = value;
+            break;
+          case 'https_proxy':
+            httpsProxy = value;
+            break;
+          case 'redirect_uri':
+            _redirectUri = value;
+            break;
+          case 'refresh_token':
+            refreshToken = value;
+            break;
+          case 'password':
+            password = value;
+            break;
+          default:
+            throw new DRAWInternalError(
+                'Param $param does not exist in the fieldList for $type');
+            break;
+        }
+      }
+    } else if (type = kRequiredField) {
+      String value = _fetch(param);
+      if (value != null) {
+        switch (param) {
+          case 'oauth_url':
+            oauthUrl = value;
+            break;
+          case 'reddit_url':
+            redditUrl = value;
+            break;
+          default:
+            throw new DRAWInternalError(
+                'Param $param does not exist in the fieldList for $type');
+            break;
+        }
+      }
+    }
   }
 
   /// Safely return the truth value associated with [item].

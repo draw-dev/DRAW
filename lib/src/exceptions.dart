@@ -4,7 +4,7 @@
 // can be found in the LICENSE file.
 
 
-/// Thrown when client has  
+/// Thrown when client side configures api incorrectly.
 class DRAWClientException implements Exception {
 	DRAWClientException(this.message);
 	String message;
