@@ -12,17 +12,16 @@ import 'package:path/path.dart' as path;
 import './exceptions.dart';
 
 const String kFileName = 'draw.ini';
+
 const String kMacEnvVar = 'HOME';
 const String kLinuxEnvVar = 'XDG_CONFIG_HOME';
 const String kWindowsEnvVar = 'APPDATA';
 
-//fieldMapConstants
 const String kShortUrl = 'short_url';
 const String kCheckForUpdates = 'check_for_updates';
 const String kKind = 'kind';
 const String kOptionalField = 'optional_field';
 const String kRequiredField = 'required_field';
-
 const String kComment = 'comment';
 const String kMessage = 'message';
 const String kRedditor = 'redditor';
@@ -37,6 +36,8 @@ const String kRefreshToken = 'refresh_token ';
 const String kPassword = 'password ';
 const String kUserAgent = 'user_agent ';
 const String kUsername = 'username ';
+const String kOauthUrl = 'oauth_url';
+const String kRedditUrl = 'reddit_url';
 
 final kNotSet = null;
 
@@ -58,7 +59,7 @@ class DrawConfigContext {
       kUserAgent,
       kUsername,
     ],
-    kRequiredField: ['oauth_url', 'reddit_url']
+    kRequiredField: [kOauthUrl, kRedditUrl]
   };
 
   /// Path to Local, User, Global Config Files, with matching precedence.
@@ -73,11 +74,9 @@ class DrawConfigContext {
   String _shortURL;
   String _primarySiteName;
 
-  //Required fields for basic configuration.
   bool checkForUpdates;
   String userAgent;
 
-  //Fields for Oauth workflow and configuration.
   String _redirectUri;
   String clientId;
   String clientSecret;
@@ -112,12 +111,10 @@ class DrawConfigContext {
   ///
   /// TODO(kc3454): add ability to pass in additional prams directly.
   DrawConfigContext({String siteName = 'default', String userAgent}) {
-    //Conigure custom fields if applicable.
     _primarySiteName = siteName;
     this.userAgent = userAgent ?? kNotSet;
     _initializeFilePaths();
     final primaryFile = _loadCorrectFile();
-    //Parse the ini file.
     _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
     fieldMap.forEach((key, value) => _fieldInitializer(key, value));
   }
@@ -129,14 +126,15 @@ class DrawConfigContext {
     _globalConfigPath = _getGlobalConfigPath();
   }
 
-  bool _checkForExistance(File primaryFile) {
+  /// Check for the existence of the [primaryFile].
+  bool _checkForExistance(final primaryFile) {
     bool fileLoaded;
     Future fileExistance = primaryFile.exists();
     fileExistance.then((bool fileExists) => fileLoaded = fileExists);
     return fileLoaded;
   }
 
-  ///Loads file from [_localConfigPath] or [_userConfigPath] or [_globalConfigPath].
+  /// Loads file from [_localConfigPath] or [_userConfigPath] or [_globalConfigPath].
   File _loadCorrectFile() {
     //Check if file exists locally.
     var primaryFile = new File(this._localConfigPath.toString());
@@ -148,7 +146,7 @@ class DrawConfigContext {
     if (_checkForExistance(primaryFile)) {
       return primaryFile;
     }
-    //Check if File Exists in Global Directory
+    //Check if file exists in global directory
     primaryFile = new File(this._globalConfigPath.toString());
     if (_checkForExistance(primaryFile)) {
       return primaryFile;
@@ -156,6 +154,8 @@ class DrawConfigContext {
     throw new DRAWClientException('$kFileName, does not exist');
   }
 
+  /// Take in the [type] which reflects the key in the [fieldMap]
+  /// [params] is the list of values found in [kFileName] file.
   void _fieldInitializer(type, params) {
     params.forEach((value) => _initializeField(type, value));
   }
@@ -209,10 +209,10 @@ class DrawConfigContext {
       final value = _fetch(param);
       if (value != null) {
         switch (param) {
-          case 'oauth_url':
+          case kOauthUrl:
             oauthUrl = value;
             break;
-          case 'reddit_url':
+          case kRedditUrl:
             redditUrl = value;
             break;
           default:
