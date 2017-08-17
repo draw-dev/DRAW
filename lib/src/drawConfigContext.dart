@@ -119,7 +119,7 @@ class DrawConfigContext {
     fieldMap.forEach((key, value) => _fieldInitializer(key, value));
   }
 
-  ///Retrive filePaths and load into private members.
+  /// Retrive filePaths and load into private members.
   void _initializeFilePaths() {
     _localConfigPath = _getLocalConfigPath();
     _userConfigPath = _getUserConfigPath();
