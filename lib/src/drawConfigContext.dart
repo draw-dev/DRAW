@@ -45,7 +45,7 @@ final kNotSet = null;
 /// The [DrawConfigContext] class provides an iterface to store.
 /// Load the DRAW's configuration file [draw.ini].
 class DrawConfigContext {
-  final static Map<String, List<String>> fieldMap = {
+  static final Map<String, List<String>> fieldMap = {
     kShortUrl: [kShortUrl],
     kCheckForUpdates: [kCheckForUpdates],
     kKind: [kComment, kMessage, kRedditor, kSubmission, kSubReddit],
@@ -112,19 +112,18 @@ class DrawConfigContext {
   ///
   /// TODO(kc3454): add ability to pass in additional prams directly.
   DrawConfigContext({String siteName = 'default', String userAgent}) {
+    // Give passed in values highest precedence for assignemnt.
     _primarySiteName = siteName;
     this.userAgent = userAgent ?? kNotSet;
-    _initializeFilePaths();
-    final primaryFile = _loadCorrectFile();
-    _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
-    fieldMap.forEach((key, value) => _fieldInitializer(key, value));
-  }
-
-  /// Retrive filePaths and load into private members.
-  void _initializeFilePaths() {
+    // Initialize Paths.
     _localConfigPath = _getLocalConfigPath();
     _userConfigPath = _getUserConfigPath();
     _globalConfigPath = _getGlobalConfigPath();
+    // Load the first file found in order of path preference.
+    final primaryFile = _loadCorrectFile();
+    _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
+    // Load values found in the ini file, into the object fields. 
+    fieldMap.forEach((key, value) => _fieldInitializer(key, value));
   }
 
   /// Check for the existence of the [primaryFile].
@@ -137,7 +136,7 @@ class DrawConfigContext {
 
   /// Loads file from [_localConfigPath] or [_userConfigPath] or [_globalConfigPath].
   File _loadCorrectFile() {
-    //Check if file exists locally.
+    // Check if file exists locally.
     var primaryFile = new File(_localConfigPath.toString());
     if (_checkForExistance(primaryFile)) {
       return primaryFile;
@@ -195,7 +194,7 @@ class DrawConfigContext {
             password = value;
             break;
           case kUserAgent:
-            userAgent = value;
+            userAgent ??= value;
             break;
           case kUsername:
             username = value;
