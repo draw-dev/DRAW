@@ -142,12 +142,12 @@ class DrawConfigContext {
     if (_checkForExistance(primaryFile)) {
       return primaryFile;
     }
-    //Check if File exists in user directory
+    // Check if File exists in user directory
     primaryFile = new File(_userConfigPath.toString());
     if (_checkForExistance(primaryFile)) {
       return primaryFile;
     }
-    //Check if file exists in global directory
+    // Check if file exists in global directory
     primaryFile = new File(_globalConfigPath.toString());
     if (_checkForExistance(primaryFile)) {
       return primaryFile;
@@ -168,7 +168,7 @@ class DrawConfigContext {
     } else if (type == kCheckForUpdates) {
       checkForUpdates = _configBool(_fetchDefault('check_for_updates'));
     } else if (type == kKind) {
-      //TODO(kc3454): Learn how to do this one.
+      // TODO(kc3454): Learn how to do this one.
     } else if (type == kOptionalField) {
       final value = _fetchOrNotSet(param);
       if (value != null) {
