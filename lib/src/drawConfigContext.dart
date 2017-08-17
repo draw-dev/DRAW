@@ -129,7 +129,7 @@ class DrawConfigContext {
   /// Check for the existence of the [primaryFile].
   bool _checkForExistance(final primaryFile) {
     bool fileLoaded;
-    Future fileExistance = primaryFile.exists();
+    final fileExistance = primaryFile.exists();
     fileExistance.then((final fileExists) => fileLoaded = fileExists);
     return fileLoaded;
   }
