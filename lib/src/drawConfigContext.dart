@@ -4,7 +4,6 @@
 /// can be found in the LICENSE file.
 
 import 'dart:io';
-import 'dart:async';
 
 import 'package:ini/ini.dart';
 import 'package:path/path.dart' as path;
@@ -39,12 +38,14 @@ const String kUsername = 'username ';
 const String kOauthUrl = 'oauth_url';
 const String kRedditUrl = 'reddit_url';
 
+const String kDefaultShortUrl = 'https://redd.it';
+
 final kNotSet = null;
 
 /// The [DrawConfigContext] class provides an iterface to store.
 /// Load the DRAW's configuration file [draw.ini].
 class DrawConfigContext {
-  static Map<String, List<String>> fieldMap = {
+  final static Map<String, List<String>> fieldMap = {
     kShortUrl: [kShortUrl],
     kCheckForUpdates: [kCheckForUpdates],
     kKind: [kComment, kMessage, kRedditor, kSubmission, kSubReddit],
@@ -137,17 +138,17 @@ class DrawConfigContext {
   /// Loads file from [_localConfigPath] or [_userConfigPath] or [_globalConfigPath].
   File _loadCorrectFile() {
     //Check if file exists locally.
-    var primaryFile = new File(this._localConfigPath.toString());
+    var primaryFile = new File(_localConfigPath.toString());
     if (_checkForExistance(primaryFile)) {
       return primaryFile;
     }
     //Check if File exists in user directory
-    primaryFile = new File(this._userConfigPath.toString());
+    primaryFile = new File(_userConfigPath.toString());
     if (_checkForExistance(primaryFile)) {
       return primaryFile;
     }
     //Check if file exists in global directory
-    primaryFile = new File(this._globalConfigPath.toString());
+    primaryFile = new File(_globalConfigPath.toString());
     if (_checkForExistance(primaryFile)) {
       return primaryFile;
     }
@@ -163,7 +164,7 @@ class DrawConfigContext {
   /// Initialize the attributes of the configuration object using the ini file.
   void _initializeField(String type, String param) {
     if (type == kShortUrl) {
-      _shortURL = _fetchDefault('short_url');
+      _shortURL = _fetchDefault('short_url') ?? kDefaultShortUrl;
     } else if (type == kCheckForUpdates) {
       checkForUpdates = _configBool(_fetchDefault('check_for_updates'));
     } else if (type == kKind) {
@@ -217,9 +218,12 @@ class DrawConfigContext {
             break;
           default:
             throw new DRAWInternalError(
-                'Param $param does not exist in the fieldMap for $type');
+                'Paramater $param does not exist in the fieldMap for $type');
             break;
         }
+      } else {
+        throw new DRAWClientException(
+            'The required field $param, was not found in $kFileName');
       }
     }
   }
@@ -236,7 +240,7 @@ class DrawConfigContext {
 
   /// Fetch the value under the default site section in the ini file
   String _fetchDefault(String key) {
-    return this._customConfig.get('default', key);
+    return _customConfig.get('default', key);
   }
 
   /// Fetch value based on the [_primarySiteName] in the ini file.
