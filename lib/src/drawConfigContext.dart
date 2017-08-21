@@ -87,7 +87,8 @@ class DRAWConfigContext {
   String _httpProxy;
   String _httpsProxy;
 
-  String notSetCheck(String privateField) => (privateField == kNotSet) ? 'Field Not Set' : privateField;
+  String notSetCheck(String privateField) =>
+      (privateField == kNotSet) ? 'Field Not Set' : privateField;
 
   Uri get redirectUri => Uri.parse(_redirectUri);
 
