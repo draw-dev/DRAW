@@ -5,8 +5,8 @@
 
 
 /// Thrown when client side configures api incorrectly.
-class DRAWClientException implements Exception {
-	DRAWClientException(this.message);
+class DRAWClientError implements Exception {
+	DRAWClientError(this.message);
 	String message;
 	String toString() => 'DRAWClientError: $message';
 }

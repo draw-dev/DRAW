@@ -10,45 +10,42 @@ import 'package:path/path.dart' as path;
 
 import './exceptions.dart';
 
-const String kFileName = 'draw.ini';
-
-const String kMacEnvVar = 'HOME';
-const String kLinuxEnvVar = 'XDG_CONFIG_HOME';
-const String kWindowsEnvVar = 'APPDATA';
-
-const String kShortUrl = 'short_url';
 const String kCheckForUpdates = 'check_for_updates';
-const String kKind = 'kind';
-const String kOptionalField = 'optional_field';
-const String kRequiredField = 'required_field';
-const String kComment = 'comment';
-const String kMessage = 'message';
-const String kRedditor = 'redditor';
-const String kSubmission = 'submission';
-const String kSubReddit = 'subreddit';
 const String kClientId = 'client_id ';
 const String kClientSecret = 'child_secret ';
+const String kComment = 'comment';
+const String kDefaultShortUrl = 'https://redd.it';
+const String kFileName = 'draw.ini';
 const String kHttpProxy = 'http_proxy ';
 const String kHttpsProxy = 'https_proxy ';
+const String kKind = 'kind';
+const String kLinuxEnvVar = 'XDG_CONFIG_HOME';
+const String kMacEnvVar = 'HOME';
+const String kMessage = 'message';
+const String kOauthUrl = 'oauth_url';
+const String kOptionalField = 'optional_field';
+const String kPassword = '_password ';
+const String kRedditUrl = 'reddit_url';
+const String kRedditor = 'redditor';
 const String kRedirectUri = 'redirect_uri ';
 const String kRefreshToken = 'refresh_token ';
-const String kPassword = 'password ';
+const String kRequiredField = 'required_field';
+const String kShortUrl = 'short_url';
+const String kSubreddit = 'subreddit';
+const String kSubmission = 'submission';
 const String kUserAgent = 'user_agent ';
-const String kUsername = 'username ';
-const String kOauthUrl = 'oauth_url';
-const String kRedditUrl = 'reddit_url';
-
-const String kDefaultShortUrl = 'https://redd.it';
+const String kUsername = '_username ';
+const String kWindowsEnvVar = 'APPDATA';
 
 final kNotSet = null;
 
-/// The [DrawConfigContext] class provides an iterface to store.
-/// Load the DRAW's configuration file [draw.ini].
-class DrawConfigContext {
+/// The [DRAWConfigContext] class provides an interface to store.
+/// Load the DRAW's configuration file draw.ini.
+class DRAWConfigContext {
   static final Map<String, List<String>> fieldMap = {
     kShortUrl: [kShortUrl],
     kCheckForUpdates: [kCheckForUpdates],
-    kKind: [kComment, kMessage, kRedditor, kSubmission, kSubReddit],
+    kKind: [kComment, kMessage, kRedditor, kSubmission, kSubreddit],
     kOptionalField: [
       kClientId,
       kClientSecret,
@@ -76,45 +73,57 @@ class DrawConfigContext {
   String _primarySiteName;
 
   bool checkForUpdates;
-  String userAgent;
+  String _userAgent;
 
   String _redirectUri;
-  String clientId;
-  String clientSecret;
-  String refreshToken;
-  String username;
-  String password;
+  String _clientId;
+  String _clientSecret;
+  String _refreshToken;
+  String _username;
+  String _password;
 
-  String oauthUrl;
-  String redditUrl;
-  String redditURL;
-  String httpProxy;
-  String httpsProxy;
+  String _oauthUrl;
+  String _redditUrl;
+  String _httpProxy;
+  String _httpsProxy;
+
+  String notSetCheck(String privateField) => privateField ?? 'Field Not Set';
 
   Uri get redirectUri => Uri.parse(_redirectUri);
 
-  //Note this Accesor throws if _shortURL is not set.
+  String get userAgent => notSetCheck(_userAgent);
+  String get clientId => notSetCheck(_clientId);
+  String get clientSecret => notSetCheck(_clientSecret);
+  String get refreshToken => notSetCheck(_refreshToken);
+  String get username => notSetCheck(_username);
+  String get password => notSetCheck(_password);
+  String get oauthUrl => notSetCheck(_oauthUrl);
+  String get redditUrl => notSetCheck(_redditUrl);
+  String get httpProxy => notSetCheck(_httpProxy);
+  String get httpsProxy => notSetCheck(_httpsProxy);
+
+  //Note this accessor throws if _shortURL is not set.
   String get shortURL {
     if (_shortURL == kNotSet) {
-      throw new DRAWClientException('No short domain specified');
+      throw new DRAWClientError('No short domain specified');
     }
     return _shortURL;
   }
 
-  /// Creates a new [DrawConfigContext] instance.
+  /// Creates a new [DRAWConfigContext] instance.
   ///
   /// [siteName] is the site name associated with the section of the ini file
   /// that would like to be used to load additional configuration information.
   /// The default behaviour is to map to the section [default].
   ///
-  /// [userAgent] is an arbitrary identifier used by the Reddit API to diffrentiate
-  /// between client instances. Should be unqiue for example related to [siteName].
+  /// [_userAgent] is an arbitrary identifier used by the Reddit API to differentiate
+  /// between client instances. Should be unique for example related to [siteName].
   ///
   /// TODO(kc3454): add ability to pass in additional prams directly.
-  DrawConfigContext({String siteName = 'default', String userAgent}) {
-    // Give passed in values highest precedence for assignemnt.
+  DRAWConfigContext({String siteName = 'default', String userAgent}) {
+    // Give passed in values highest precedence for assignment.
     _primarySiteName = siteName;
-    this.userAgent = userAgent ?? kNotSet;
+    this._userAgent = userAgent ?? kNotSet;
     // Initialize Paths.
     _localConfigPath = _getLocalConfigPath();
     _userConfigPath = _getUserConfigPath();
@@ -122,36 +131,28 @@ class DrawConfigContext {
     // Load the first file found in order of path preference.
     final primaryFile = _loadCorrectFile();
     _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
-    // Load values found in the ini file, into the object fields. 
+    // Load values found in the ini file, into the object fields.
     fieldMap.forEach((key, value) => _fieldInitializer(key, value));
-  }
-
-  /// Check for the existence of the [primaryFile].
-  bool _checkForExistance(final primaryFile) {
-    bool fileLoaded;
-    final fileExistance = primaryFile.exists();
-    fileExistance.then((final fileExists) => fileLoaded = fileExists);
-    return fileLoaded;
   }
 
   /// Loads file from [_localConfigPath] or [_userConfigPath] or [_globalConfigPath].
   File _loadCorrectFile() {
     // Check if file exists locally.
     var primaryFile = new File(_localConfigPath.toString());
-    if (_checkForExistance(primaryFile)) {
+    if (primaryFile.existsSync()) {
       return primaryFile;
     }
-    // Check if File exists in user directory
+    // Check if file exists in user directory.
     primaryFile = new File(_userConfigPath.toString());
-    if (_checkForExistance(primaryFile)) {
+    if (primaryFile.existsSync()) {
       return primaryFile;
     }
-    // Check if file exists in global directory
+    // Check if file exists in global directory.
     primaryFile = new File(_globalConfigPath.toString());
-    if (_checkForExistance(primaryFile)) {
+    if (primaryFile.existsSync()) {
       return primaryFile;
     }
-    throw new DRAWClientException('$kFileName, does not exist');
+    throw new DRAWClientError('$kFileName, does not exist');
   }
 
   /// Take in the [type] which reflects the key in the [fieldMap]
@@ -173,35 +174,35 @@ class DrawConfigContext {
       if (value != null) {
         switch (param) {
           case kClientId:
-            clientId = value;
+            _clientId = value;
             break;
           case kClientSecret:
-            clientSecret = value;
+            _clientSecret = value;
             break;
           case kHttpProxy:
-            httpProxy = value;
+            _httpProxy = value;
             break;
           case kHttpsProxy:
-            httpsProxy = value;
+            _httpsProxy = value;
             break;
           case kRedirectUri:
             _redirectUri = value;
             break;
           case kRefreshToken:
-            refreshToken = value;
+            _refreshToken = value;
             break;
           case kPassword:
-            password = value;
+            _password = value;
             break;
           case kUserAgent:
-            userAgent ??= value;
+            _userAgent ??= value;
             break;
           case kUsername:
-            username = value;
+            _username = value;
             break;
           default:
             throw new DRAWInternalError(
-                'Param $param does not exist in the fieldMap for $type');
+                'Parameter $param does not exist in the fieldMap for $type');
             break;
         }
       }
@@ -210,18 +211,18 @@ class DrawConfigContext {
       if (value != null) {
         switch (param) {
           case kOauthUrl:
-            oauthUrl = value;
+            _oauthUrl = value;
             break;
           case kRedditUrl:
-            redditUrl = value;
+            _redditUrl = value;
             break;
           default:
             throw new DRAWInternalError(
-                'Paramater $param does not exist in the fieldMap for $type');
+                'Parameter $param does not exist in the fieldMap for $type');
             break;
         }
       } else {
-        throw new DRAWClientException(
+        throw new DRAWClientError(
             'The required field $param, was not found in $kFileName');
       }
     }
@@ -237,7 +238,7 @@ class DrawConfigContext {
     }
   }
 
-  /// Fetch the value under the default site section in the ini file
+  /// Fetch the value under the default site section in the ini file.
   String _fetchDefault(String key) {
     return _customConfig.get('default', key);
   }
@@ -251,13 +252,13 @@ class DrawConfigContext {
   /// [key] is the key to be searched in the draw.ini file.
   String _fetchOrNotSet(final key) => (_fetchDefault(key) ?? kNotSet);
 
-  /// Returns path to user level configuration file
+  /// Returns path to user level configuration file.
   Uri _getUserConfigPath() {
     final environment = Platform.environment;
 
     var osConfigPath;
 
-    /// Load correct config path based on operating system
+    /// Load correct path for user level configuration paths  based on operating system.
     if (Platform.isMacOS) {
       osConfigPath = Uri.parse(path.join(environment[kMacEnvVar], '.config'));
     } else if (Platform.isLinux) {
@@ -268,14 +269,14 @@ class DrawConfigContext {
     return osConfigPath;
   }
 
-  /// Returns path to global configuration file
+  /// Returns path to global configuration file.
   Uri _getGlobalConfigPath() {
     final path.Context context = new path.Context();
     final cwd = context.current;
     return Uri.parse(path.join(cwd, kFileName));
   }
 
-  /// Returns path to local Configuration file
+  /// Returns path to local configuration file.
   Uri _getLocalConfigPath() {
     return Uri.parse(kFileName);
   }
