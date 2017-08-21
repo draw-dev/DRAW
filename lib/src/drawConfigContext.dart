@@ -266,6 +266,8 @@ class DRAWConfigContext {
       osConfigPath = Uri.parse(environment[kLinuxEnvVar]);
     } else if (Platform.isWindows) {
       osConfigPath = Uri.parse(environment[kWindowsEnvVar]);
+    } else {
+      throw new DRAWInternalError('OS not Recognized by DRAW');
     }
     return osConfigPath;
   }
