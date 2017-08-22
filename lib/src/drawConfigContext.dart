@@ -11,30 +11,30 @@ import 'package:path/path.dart' as path;
 import 'exceptions.dart';
 
 const String kCheckForUpdates = 'check_for_updates';
-const String kClientId = 'client_id ';
-const String kClientSecret = 'child_secret ';
+const String kClientId = 'client_id';
+const String kClientSecret = 'client_secret';
 const String kComment = 'comment';
 const String kDefaultShortUrl = 'https://redd.it';
 const String kFileName = 'draw.ini';
-const String kHttpProxy = 'http_proxy ';
-const String kHttpsProxy = 'https_proxy ';
+const String kHttpProxy = 'http_proxy';
+const String kHttpsProxy = 'https_proxy';
 const String kKind = 'kind';
 const String kLinuxEnvVar = 'XDG_CONFIG_HOME';
 const String kMacEnvVar = 'HOME';
 const String kMessage = 'message';
 const String kOauthUrl = 'oauth_url';
 const String kOptionalField = 'optional_field';
-const String kPassword = '_password ';
+const String kPassword = 'password';
 const String kRedditUrl = 'reddit_url';
 const String kRedditor = 'redditor';
-const String kRedirectUri = 'redirect_uri ';
-const String kRefreshToken = 'refresh_token ';
+const String kRedirectUri = 'redirect_uri';
+const String kRefreshToken = 'refresh_token';
 const String kRequiredField = 'required_field';
 const String kShortUrl = 'short_url';
 const String kSubreddit = 'subreddit';
 const String kSubmission = 'submission';
-const String kUserAgent = 'user_agent ';
-const String kUsername = '_username ';
+const String kUserAgent = 'user_agent';
+const String kUsername = 'username';
 const String kWindowsEnvVar = 'APPDATA';
 
 final kNotSet = null;
@@ -87,7 +87,6 @@ class DRAWConfigContext {
   String _httpProxy;
   String _httpsProxy;
 
-
   String get userAgent => _userAgent;
   String get clientId => _clientId;
   String get clientSecret => _clientSecret;
@@ -128,10 +127,11 @@ class DRAWConfigContext {
     _globalConfigPath = _getGlobalConfigPath();
     // Load the first file found in order of path preference.
     final primaryFile = _loadCorrectFile();
-    try{
-        _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
-    } catch(exception, stackTrace){
-        throw new DRAWClientError('There was an issue parsing the draw.ini file.');
+    try {
+      _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
+    } catch (exception) {
+      throw new DRAWClientError(
+          'There was an issue parsing the draw.ini file.');
     }
     // Load values found in the ini file, into the object fields.
     fieldMap.forEach((key, value) => _fieldInitializer(key, value));

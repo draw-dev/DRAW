@@ -1,15 +1,15 @@
-import 'dart:io';
-
 import 'package:test/test.dart';
 import 'package:draw/src/drawConfigContext.dart';
-import 'package:draw/src/exceptions.dart';
 
 main() {
-  test('Tests Initialization of Constructor', () {
+  test('Tests for default section of local file', () {
     var configContext = new DRAWConfigContext();
-    expect(configContext.password, equals(null));
     expect(configContext.oauthUrl, equals('https://oauth.reddit.com'));
     expect(configContext.shortUrl, equals('https://redd.it'));
     expect(configContext.redditUrl, equals('https://www.reddit.com'));
+    expect(configContext.clientId, equals('Y4PJOclpDQy3xZ'));
+    expect(configContext.clientSecret, equals('UkGLTe6oqsMk5nHCJTHLrwgvHpr'));
+    expect(configContext.password, equals('pni9ubeht4wd50gk'));
+    expect(configContext.username, equals('fakebot1'));
   });
 }
