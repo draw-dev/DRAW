@@ -128,7 +128,11 @@ class DRAWConfigContext {
     _globalConfigPath = _getGlobalConfigPath();
     // Load the first file found in order of path preference.
     final primaryFile = _loadCorrectFile();
-    _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
+    try{
+        _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
+    } catch(exception, stackTrace){
+        throw new DRAWClientError('There was an issue parsing the draw.ini file.');
+    }
     // Load values found in the ini file, into the object fields.
     fieldMap.forEach((key, value) => _fieldInitializer(key, value));
   }
@@ -232,7 +236,7 @@ class DRAWConfigContext {
       return item;
     } else {
       final trueValues = ['1', 'yes', 'true', 'on'];
-      return trueValues.contains(item.toLowerCase());
+      return trueValues.contains(item?.toLowerCase());
     }
   }
 
