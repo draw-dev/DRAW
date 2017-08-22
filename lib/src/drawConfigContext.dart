@@ -8,7 +8,7 @@ import 'dart:io';
 import 'package:ini/ini.dart';
 import 'package:path/path.dart' as path;
 
-import './exceptions.dart';
+import 'exceptions.dart';
 
 const String kCheckForUpdates = 'check_for_updates';
 const String kClientId = 'client_id ';
@@ -87,21 +87,18 @@ class DRAWConfigContext {
   String _httpProxy;
   String _httpsProxy;
 
-  String notSetCheck(String privateField) =>
-      (privateField == kNotSet) ? 'Field Not Set' : privateField;
-
   Uri get redirectUri => Uri.parse(_redirectUri);
 
-  String get userAgent => notSetCheck(_userAgent);
-  String get clientId => notSetCheck(_clientId);
-  String get clientSecret => notSetCheck(_clientSecret);
-  String get refreshToken => notSetCheck(_refreshToken);
-  String get username => notSetCheck(_username);
-  String get password => notSetCheck(_password);
-  String get oauthUrl => notSetCheck(_oauthUrl);
-  String get redditUrl => notSetCheck(_redditUrl);
-  String get httpProxy => notSetCheck(_httpProxy);
-  String get httpsProxy => notSetCheck(_httpsProxy);
+  String get userAgent => _userAgent;
+  String get clientId => _clientId;
+  String get clientSecret => _clientSecret;
+  String get refreshToken => _refreshToken;
+  String get username => _username;
+  String get password => _password;
+  String get oauthUrl => _oauthUrl;
+  String get redditUrl => _redditUrl;
+  String get httpProxy => _httpProxy;
+  String get httpsProxy => _httpsProxy;
 
   //Note this accessor throws if _shortURL is not set.
   String get shortURL {
