@@ -87,11 +87,11 @@ class DRAWConfigContext {
   String _httpProxy;
   String _httpsProxy;
 
-  Uri get redirectUri => Uri.parse(_redirectUri);
 
   String get userAgent => _userAgent;
   String get clientId => _clientId;
   String get clientSecret => _clientSecret;
+  String get redirectUri => _redirectUri;
   String get refreshToken => _refreshToken;
   String get username => _username;
   String get password => _password;
@@ -101,7 +101,7 @@ class DRAWConfigContext {
   String get httpsProxy => _httpsProxy;
 
   //Note this accessor throws if _shortURL is not set.
-  String get shortURL {
+  String get shortUrl {
     if (_shortURL == kNotSet) {
       throw new DRAWClientError('No short domain specified');
     }
