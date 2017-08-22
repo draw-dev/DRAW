@@ -3,7 +3,7 @@ import 'package:draw/src/drawConfigContext.dart';
 
 main() {
   test('Tests for default section of local file', () {
-    var configContext = new DRAWConfigContext();
+    final configContext = new DRAWConfigContext();
     expect(configContext.oauthUrl, equals('https://oauth.reddit.com'));
     expect(configContext.shortUrl, equals('https://redd.it'));
     expect(configContext.redditUrl, equals('https://www.reddit.com'));
