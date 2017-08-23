@@ -131,8 +131,7 @@ class DRAWConfigContext {
     try {
       _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
     } catch (exception) {
-      throw new DRAWClientError(
-          'There was an issue parsing the draw.ini file.');
+      throw new DRAWClientError('Could not parse configuration file.');
     }
     // Load values found in the ini file, into the object fields.
     fieldMap.forEach((key, value) => _fieldInitializer(key, value));
