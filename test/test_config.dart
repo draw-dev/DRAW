@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
-import 'package:draw/src/drawConfigContext.dart';
+import 'package:draw/src/draw_config_context.dart';
 
-int main() {
+void main() {
   test('Tests for default section of local file', () {
     final DRAWConfigContext configContext = new DRAWConfigContext();
     expect(configContext.oauthUrl, equals('https://oauth.reddit.com'));
@@ -12,5 +12,4 @@ int main() {
     expect(configContext.password, equals('pni9ubeht4wd50gk'));
     expect(configContext.username, equals('fakebot1'));
   });
-  return 0;
 }
