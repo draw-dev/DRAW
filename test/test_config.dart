@@ -14,4 +14,17 @@ void main() {
     expect(configContext.password, equals('pni9ubeht4wd50gk'));
     expect(configContext.username, equals('fakebot1'));
   });
+
+  test('Basic test for non-default section of local file for values set in the non-defualt section', () {
+    final DRAWConfigContext configContext =
+        new DRAWConfigContext(siteName: 'section');
+        expect(configContext.password, equals('different'));
+  });
+
+  test('Basic test for non-default section fo local file for values not set in the non-defualt section', () {
+    final DRAWConfigContext configContext =
+         new DRAWConfigContext(siteName: 'section1');
+        expect(configContext.password, equals('pni9ubeht4wd50gk'));
+        expect(configContext.username, equals('sectionbot'));
+  });
 }

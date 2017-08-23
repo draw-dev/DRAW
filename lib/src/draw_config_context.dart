@@ -245,6 +245,10 @@ class DRAWConfigContext {
     return _customConfig.get('default', key);
   }
 
+  String _fetchOptional(String key) {
+    return _customConfig.get(_primarySiteName, key);
+  }
+
   /// Fetch value based on the [_primarySiteName] in the ini file.
   String _fetch(String key) =>
       (_customConfig.get(_primarySiteName, key) ?? _fetchDefault(key));
@@ -252,7 +256,7 @@ class DRAWConfigContext {
   /// Checks if [key] is contained in the parsed ini file, if not returns [kNotSet].
   ///
   /// [key] is the key to be searched in the draw.ini file.
-  String _fetchOrNotSet(final key) => (_fetchDefault(key) ?? kNotSet);
+  String _fetchOrNotSet(final key) => (_fetchOptional(key) ?? _fetchDefault(key) ?? kNotSet);
 
   /// Returns path to user level configuration file.
   Uri _getUserConfigPath() {
