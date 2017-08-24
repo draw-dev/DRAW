@@ -3,6 +3,14 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
+
+/// Thrown when client side configures api incorrectly.
+class DRAWClientError implements Exception {
+	DRAWClientError(this.message);
+	String message;
+	String toString() => 'DRAWClientError: $message';
+}
+
 /// Thrown when there is an error during the authentication flow.
 class DRAWAuthenticationError implements Exception {
   DRAWAuthenticationError(this.message);
