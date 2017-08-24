@@ -256,7 +256,8 @@ class DRAWConfigContext {
   /// Checks if [key] is contained in the parsed ini file, if not returns [kNotSet].
   ///
   /// [key] is the key to be searched in the draw.ini file.
-  String _fetchOrNotSet(final key) => (_fetchOptional(key) ?? _fetchDefault(key) ?? kNotSet);
+  String _fetchOrNotSet(final key) =>
+      (_fetchOptional(key) ?? _fetchDefault(key) ?? kNotSet);
 
   /// Returns path to user level configuration file.
   Uri _getUserConfigPath() {
