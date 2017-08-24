@@ -168,7 +168,7 @@ class DRAWConfigContext {
     if (type == kShortUrl) {
       _shortURL = _fetchDefault('short_url') ?? kDefaultShortUrl;
     } else if (type == kCheckForUpdates) {
-      checkForUpdates = _configBool(_fetchDefault('check_for_updates'));
+      checkForUpdates = _configBool(_fetchOrNotSet('check_for_updates'));
     } else if (type == kKind) {
       // TODO(kc3454): Learn how to do this one.
     } else if (type == kOptionalField) {

@@ -15,16 +15,52 @@ void main() {
     expect(configContext.username, equals('fakebot1'));
   });
 
-  test('Basic test for non-default section of local file for values set in the non-defualt section', () {
+  test(
+      'Basic test for non-default section of local file for values set in the non-defualt section',
+      () {
     final DRAWConfigContext configContext =
         new DRAWConfigContext(siteName: 'section');
-        expect(configContext.password, equals('different'));
+    expect(configContext.password, equals('different'));
   });
 
-  test('Basic test for non-default section fo local file for values not set in the non-defualt section', () {
+  test(
+      'Basic test for non-default section of local file for values not set in the non-defualt section',
+      () {
     final DRAWConfigContext configContext =
-         new DRAWConfigContext(siteName: 'section1');
-        expect(configContext.password, equals('pni9ubeht4wd50gk'));
-        expect(configContext.username, equals('sectionbot'));
+        new DRAWConfigContext(siteName: 'section1');
+    expect(configContext.password, equals('pni9ubeht4wd50gk'));
+    expect(configContext.username, equals('sectionbot'));
+  });
+
+  test(
+      'Basic test for non-default section of local file for non-defualt section set parameters with empty strings',
+      () {
+    final DRAWConfigContext configContext =
+        new DRAWConfigContext(siteName: 'emptyTest');
+    expect(configContext.username, equals(''));
+  });
+
+  test('Basic test to check for default values for paramters not set', () {
+    final DRAWConfigContext configContext = new DRAWConfigContext();
+    expect(configContext.shortUrl, equals(Uri.parse('https://redd.it')));
+    expect(configContext.checkForUpdates, equals(false));
+  });
+
+  test('Test for CheckForUpdates Truth value check', () {
+    final DRAWConfigContext configContext =
+        new DRAWConfigContext(siteName: 'testUpdateCheck1');
+    expect(configContext.checkForUpdates, equals(true));
+    final DRAWConfigContext configContext1 =
+        new DRAWConfigContext(siteName: 'testUpdateCheckOn');
+    expect(configContext1.checkForUpdates, equals(true));
+    final DRAWConfigContext configContext2 =
+        new DRAWConfigContext(siteName: 'testUpdateCheckTrue');
+    expect(configContext2.checkForUpdates, equals(true));
+    final DRAWConfigContext configContext3 =
+        new DRAWConfigContext(siteName: 'testUpdateCheckYes');
+    expect(configContext3.checkForUpdates, equals(true));
+    final DRAWConfigContext configContext4 =
+        new DRAWConfigContext(siteName: 'testUpdateCheckFalse');
+    expect(configContext4.checkForUpdates, equals(false));
   });
 }
