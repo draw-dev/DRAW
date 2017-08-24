@@ -2,7 +2,7 @@ import 'package:test/test.dart';
 import 'package:draw/src/draw_config_context.dart';
 
 void main() {
-  test('Tests for default section of local file', () {
+  test('Simple tests for default section of local file.', () {
     final DRAWConfigContext configContext = new DRAWConfigContext();
     expect(
         configContext.oauthUrl, equals(Uri.parse('https://oauth.reddit.com')));
@@ -15,16 +15,14 @@ void main() {
     expect(configContext.username, equals('fakebot1'));
   });
 
-  test(
-      'Basic test for non-default section of local file for values set in the non-defualt section',
-      () {
+  test('Testing non-default section.', () {
     final DRAWConfigContext configContext =
         new DRAWConfigContext(siteName: 'section');
     expect(configContext.password, equals('different'));
   });
 
   test(
-      'Basic test for non-default section of local file for values not set in the non-defualt section',
+      'Testing non-default section for parameters not present in default site.',
       () {
     final DRAWConfigContext configContext =
         new DRAWConfigContext(siteName: 'section1');
@@ -32,15 +30,13 @@ void main() {
     expect(configContext.username, equals('sectionbot'));
   });
 
-  test(
-      'Basic test for non-default section of local file for non-defualt section set parameters with empty strings',
-      () {
+  test('Testing non-default parameters with empty strings.', () {
     final DRAWConfigContext configContext =
         new DRAWConfigContext(siteName: 'emptyTest');
     expect(configContext.username, equals(''));
   });
 
-  test('Basic test to check for default values for paramters not set', () {
+  test('Testing default values for unset parameters.', () {
     final DRAWConfigContext configContext = new DRAWConfigContext();
     expect(configContext.shortUrl, equals(Uri.parse('https://redd.it')));
     expect(configContext.checkForUpdates, equals(false));
