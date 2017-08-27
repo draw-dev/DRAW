@@ -19,8 +19,9 @@ import 'user.dart';
 /// used to interact with Reddit posts, comments, subreddits, multireddits, and
 /// users.
 class Reddit {
+  ///TODO(bkonyi) should this be removed now that we can use the config object?
   /// The default path to the Reddit API.
-  static final String defaultOAuthApiEndpoint = _config.oauthUrl;
+  static final String defaultOAuthApiEndpoint = 'oauth.reddit.com';
 
   /// A flag representing the initialization state of the current [Reddit]
   /// instance.
