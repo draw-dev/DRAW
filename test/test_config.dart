@@ -4,8 +4,6 @@ import 'package:draw/src/draw_config_context.dart';
 void main() {
   test('Simple tests for default section of local file.', () {
     final DRAWConfigContext configContext = new DRAWConfigContext();
-    expect(
-        configContext.oauthUrl, equals(Uri.parse('https://oauth.reddit.com')));
     expect(configContext.shortUrl, equals(Uri.parse('https://redd.it')));
     expect(
         configContext.redditUrl, equals(Uri.parse('https://www.reddit.com')));
@@ -19,6 +17,7 @@ void main() {
     final DRAWConfigContext configContext =
         new DRAWConfigContext(siteName: 'section');
     expect(configContext.password, equals('different'));
+    expect(configContext.oauthUrl, equals('https://oauth.reddit.com'));
   });
 
   test(
@@ -42,6 +41,11 @@ void main() {
     expect(configContext.checkForUpdates, equals(false));
     expect(configContext.revokeToken,
         equals(Uri.parse('https://www.reddit.com/api/v1/revoke_token')));
+    expect(configContext.oauthUrl, equals('oauth.reddit.com'));
+    expect(configContext.authorizeUri,
+        equals(Uri.parse('https://reddit.com/api/v1/authorize')));
+    expect(configContext.accessToken,
+        equals(Uri.parse('https://www.reddit.com/api/v1/access_token')));
   });
 
   test('Test for CheckForUpdates Truth value check', () {

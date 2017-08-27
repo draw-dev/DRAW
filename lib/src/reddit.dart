@@ -9,6 +9,7 @@ import 'package:oauth2/oauth2.dart' as oauth2;
 
 import 'auth.dart';
 import 'base.dart';
+import 'draw_config_context.dart';
 import 'exceptions.dart';
 import 'objector.dart';
 import 'user.dart';
@@ -18,16 +19,15 @@ import 'user.dart';
 /// used to interact with Reddit posts, comments, subreddits, multireddits, and
 /// users.
 class Reddit {
+  final DRAWConfigContext _config = new DRAWConfigContext();
   /// The default [Uri] used to request an authorization token from Reddit.
-  static final Uri defaultTokenEndpoint =
-      Uri.parse(r'https://www.reddit.com/api/v1/access_token');
+  static final Uri defaultTokenEndpoint = _config.accessToken;
 
   /// The default [Uri] used to authenticate an authorization token from Reddit.
-  static final Uri defaultAuthEndpoint =
-      Uri.parse(r'https://reddit.com/api/v1/authorize');
+  static final Uri defaultAuthEndpoint = _config.authorizeUri;
 
   /// The default path to the Reddit API.
-  static final String defaultOAuthApiEndpoint = 'oauth.reddit.com';
+  static final String defaultOAuthApiEndpoint = _config.oauthUrl;
 
   /// A flag representing the initialization state of the current [Reddit]
   /// instance.

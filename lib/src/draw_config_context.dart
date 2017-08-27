@@ -10,10 +10,17 @@ import 'package:path/path.dart' as path;
 
 import 'exceptions.dart';
 
+const String kAccessToken = 'access_token';
+const String kAuthorizeUri = 'authorize_uri';
 const String kCheckForUpdates = 'check_for_updates';
 const String kClientId = 'client_id';
 const String kClientSecret = 'client_secret';
 const String kComment = 'comment';
+const String kDefaultAccessToken =
+    r'https://www.reddit.com/api/v1/access_token';
+const String kDefaultAuthorizeUri = r'https://reddit.com/api/v1/authorize';
+const String kDefaultOauthUrl = 'oauth.reddit.com';
+const String kDefaultRedditUrl = 'https://www.reddit.com';
 const String kDefaultRevokeToken =
     r'https://www.reddit.com/api/v1/revoke_token';
 const String kDefaultShortUrl = 'https://redd.it';
@@ -26,16 +33,17 @@ const String kMacEnvVar = 'HOME';
 const String kMessage = 'message';
 const String kOauthUrl = 'oauth_url';
 const String kOptionalField = 'optional_field';
+const String kOptionalWithDefaultValues = 'optional_with_default';
 const String kPassword = 'password';
 const String kRedditUrl = 'reddit_url';
 const String kRedditor = 'redditor';
 const String kRedirectUri = 'redirect_uri';
 const String kRefreshToken = 'refresh_token';
-const String kRevokeToken = 'revoke_token';
 const String kRequiredField = 'required_field';
+const String kRevokeToken = 'revoke_token';
 const String kShortUrl = 'short_url';
-const String kSubreddit = 'subreddit';
 const String kSubmission = 'submission';
+const String kSubreddit = 'subreddit';
 const String kUserAgent = 'user_agent';
 const String kUsername = 'username';
 const String kWindowsEnvVar = 'APPDATA';
@@ -50,7 +58,6 @@ class DRAWConfigContext {
     kCheckForUpdates: [kCheckForUpdates],
     kKind: [kComment, kMessage, kRedditor, kSubmission, kSubreddit],
     kOptionalField: [
-      kRevokeToken,
       kClientId,
       kClientSecret,
       kHttpProxy,
@@ -61,10 +68,15 @@ class DRAWConfigContext {
       kUserAgent,
       kUsername,
     ],
+    kOptionalWithDefaultValues: [
+      kAuthorizeUri,
+      kAccessToken,
+      kRevokeToken,
+    ],
     kRequiredField: [kOauthUrl, kRedditUrl]
   };
 
-  /// Path to Local, User, Global Config Files, with matching precedence.
+  /// Path to Local, User, Global Configuration Files, with matching precedence.
   Uri _localConfigPath;
   Uri _userConfigPath;
   Uri _globalConfigPath;
@@ -73,38 +85,40 @@ class DRAWConfigContext {
 
   Map<String, String> custom;
 
-  String _shortURL;
-  String _primarySiteName;
-
   bool checkForUpdates;
-  String _userAgent;
 
-  String _redirectUri;
+  String _accessToken;
+  String _authorizeUri;
   String _clientId;
   String _clientSecret;
-  String _refreshToken;
-  String _revokeToken;
-  String _username;
-  String _password;
-
-  String _oauthUrl;
-  String _redditUrl;
   String _httpProxy;
   String _httpsProxy;
+  String _oauthUrl;
+  String _password;
+  String _primarySiteName;
+  String _redditUrl;
+  String _redirectUri;
+  String _refreshToken;
+  String _revokeToken;
+  String _shortURL;
+  String _userAgent;
+  String _username;
 
-  Uri get oauthUrl => Uri.parse(_oauthUrl);
+  Uri get accessToken => Uri.parse(_accessToken);
+  Uri get authorizeUri => Uri.parse(_authorizeUri);
   Uri get redditUrl => Uri.parse(_redditUrl);
   Uri get redirectUri => Uri.parse(_redirectUri);
   Uri get revokeToken => Uri.parse(_revokeToken);
 
-  String get userAgent => _userAgent;
   String get clientId => _clientId;
   String get clientSecret => _clientSecret;
-  String get refreshToken => _refreshToken;
-  String get username => _username;
-  String get password => _password;
   String get httpProxy => _httpProxy;
   String get httpsProxy => _httpsProxy;
+  String get oauthUrl => _oauthUrl;
+  String get password => _password;
+  String get refreshToken => _refreshToken;
+  String get userAgent => _userAgent;
+  String get username => _username;
 
   //Note this accessor throws if _shortURL is not set.
   Uri get shortUrl {
@@ -214,32 +228,37 @@ class DRAWConfigContext {
                 'Parameter $param does not exist in the fieldMap for $type');
             break;
         }
-      } else {
-        //Go through parameters with default values available.
-        switch (param) {
-          case kRevokeToken:
-            _revokeToken = value ?? kDefaultRevokeToken;
-            break;
-        }
+      }
+    } else if (type == kOptionalWithDefaultValues) {
+      final value = _fetchOrNotSet(param);
+      switch (param) {
+        case kAccessToken:
+          _accessToken = value ?? kDefaultAccessToken;
+          break;
+        case kAuthorizeUri:
+          _authorizeUri = value ?? kDefaultAuthorizeUri;
+          break;
+        case kRevokeToken:
+          _revokeToken = value ?? kDefaultRevokeToken;
+          break;
+        default:
+          throw new DRAWInternalError(
+              'Parameter $param does not exist in the fieldMap for $type');
+          break;
       }
     } else if (type == kRequiredField) {
-      final value = _fetch(param);
-      if (value != null) {
-        switch (param) {
-          case kOauthUrl:
-            _oauthUrl = value;
-            break;
-          case kRedditUrl:
-            _redditUrl = value;
-            break;
-          default:
-            throw new DRAWInternalError(
-                'Parameter $param does not exist in the fieldMap for $type');
-            break;
-        }
-      } else {
-        throw new DRAWClientError(
-            'The required field $param, was not found in $kFileName');
+      final value = _fetchOrNotSet(param);
+      switch (param) {
+        case kOauthUrl:
+          _oauthUrl = value ?? kDefaultOauthUrl;
+          break;
+        case kRedditUrl:
+          _redditUrl = value ?? kDefaultRedditUrl;
+          break;
+        default:
+          throw new DRAWInternalError(
+              'Parameter $param does not exist in the fieldMap for $type');
+          break;
       }
     }
   }
@@ -262,10 +281,6 @@ class DRAWConfigContext {
   String _fetchOptional(String key) {
     return _customConfig.get(_primarySiteName, key);
   }
-
-  /// Fetch value based on the [_primarySiteName] in the ini file.
-  String _fetch(String key) =>
-      (_customConfig.get(_primarySiteName, key) ?? _fetchDefault(key));
 
   /// Checks if [key] is contained in the parsed ini file, if not returns [kNotSet].
   ///
