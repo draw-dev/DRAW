@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:oauth2/oauth2.dart' as oauth2;
 import "package:oauth2/src/handle_access_token_response.dart";
 
+import 'draw_config_context.dart';
 import 'exceptions.dart';
 
 const String kGetRequest = 'GET';
@@ -33,6 +34,7 @@ abstract class Authenticator {
   oauth2.AuthorizationCodeGrant _grant;
   oauth2.Client _client;
   String _userAgent;
+  final DRAWConfigContext _config = new DRAWConfigContext();
 
   Authenticator(oauth2.AuthorizationCodeGrant grant, String userAgent)
       : _grant = grant,
@@ -75,7 +77,7 @@ abstract class Authenticator {
 
       // TODO(bkonyi) we shouldn't have hardcoded urls like this. Move to common
       // file with all API related strings.
-      var path = Uri.parse(r'https://www.reddit.com/api/v1/revoke_token');
+      var path = _config.revokeToken;
 
       // Retrieve the client ID and secret.
       final clientId = _grant.identifier;

@@ -40,6 +40,8 @@ void main() {
     final DRAWConfigContext configContext = new DRAWConfigContext();
     expect(configContext.shortUrl, equals(Uri.parse('https://redd.it')));
     expect(configContext.checkForUpdates, equals(false));
+    expect(configContext.revokeToken,
+        equals(Uri.parse('https://www.reddit.com/api/v1/revoke_token')));
   });
 
   test('Test for CheckForUpdates Truth value check', () {

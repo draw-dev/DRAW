@@ -14,6 +14,8 @@ const String kCheckForUpdates = 'check_for_updates';
 const String kClientId = 'client_id';
 const String kClientSecret = 'client_secret';
 const String kComment = 'comment';
+const String kDefaultRevokeToken =
+    r'https://www.reddit.com/api/v1/revoke_token';
 const String kDefaultShortUrl = 'https://redd.it';
 const String kFileName = 'draw.ini';
 const String kHttpProxy = 'http_proxy';
@@ -29,6 +31,7 @@ const String kRedditUrl = 'reddit_url';
 const String kRedditor = 'redditor';
 const String kRedirectUri = 'redirect_uri';
 const String kRefreshToken = 'refresh_token';
+const String kRevokeToken = 'revoke_token';
 const String kRequiredField = 'required_field';
 const String kShortUrl = 'short_url';
 const String kSubreddit = 'subreddit';
@@ -47,6 +50,7 @@ class DRAWConfigContext {
     kCheckForUpdates: [kCheckForUpdates],
     kKind: [kComment, kMessage, kRedditor, kSubmission, kSubreddit],
     kOptionalField: [
+      kRevokeToken,
       kClientId,
       kClientSecret,
       kHttpProxy,
@@ -79,6 +83,7 @@ class DRAWConfigContext {
   String _clientId;
   String _clientSecret;
   String _refreshToken;
+  String _revokeToken;
   String _username;
   String _password;
 
@@ -90,6 +95,7 @@ class DRAWConfigContext {
   Uri get oauthUrl => Uri.parse(_oauthUrl);
   Uri get redditUrl => Uri.parse(_redditUrl);
   Uri get redirectUri => Uri.parse(_redirectUri);
+  Uri get revokeToken => Uri.parse(_revokeToken);
 
   String get userAgent => _userAgent;
   String get clientId => _clientId;
@@ -197,6 +203,7 @@ class DRAWConfigContext {
             _password = value;
             break;
           case kUserAgent:
+            //Null aware operator is here to give precedence to passed in values.
             _userAgent ??= value;
             break;
           case kUsername:
@@ -205,6 +212,13 @@ class DRAWConfigContext {
           default:
             throw new DRAWInternalError(
                 'Parameter $param does not exist in the fieldMap for $type');
+            break;
+        }
+      } else {
+        //Go through parameters with default values available.
+        switch (param) {
+          case kRevokeToken:
+            _revokeToken = value ?? kDefaultRevokeToken;
             break;
         }
       }
