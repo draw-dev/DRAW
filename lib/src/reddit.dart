@@ -19,13 +19,6 @@ import 'user.dart';
 /// used to interact with Reddit posts, comments, subreddits, multireddits, and
 /// users.
 class Reddit {
-  final DRAWConfigContext _config = new DRAWConfigContext();
-  /// The default [Uri] used to request an authorization token from Reddit.
-  static final Uri defaultTokenEndpoint = _config.accessToken;
-
-  /// The default [Uri] used to authenticate an authorization token from Reddit.
-  static final Uri defaultAuthEndpoint = _config.authorizeUri;
-
   /// The default path to the Reddit API.
   static final String defaultOAuthApiEndpoint = _config.oauthUrl;
 
@@ -85,6 +78,18 @@ class Reddit {
       Uri redirectUri,
       Uri tokenEndpoint,
       Uri authEndpoint}) {
+    final DRAWConfigContext _config = new DRAWConfigContext();
+
+    clientId ??= _config.clientId;
+    clientSecret ??= _config.clientSecret;
+    userAgent ??= _config.userAgent;
+    username ??= _config.username;
+    password ??= _config.password;
+
+    redirectUri ??= _config.redirectUri;
+    tokenEndpoint ??= _config.accessToken;
+    authEndpoint ??= _config.authorizeUri;
+
     if (clientId == null) {
       throw new DRAWAuthenticationError('clientId cannot be null.');
     }
@@ -100,8 +105,8 @@ class Reddit {
 
     final grant = new oauth2.AuthorizationCodeGrant(
         clientId,
-        authEndpoint ?? defaultAuthEndpoint,
-        tokenEndpoint ?? defaultTokenEndpoint,
+        authEndpoint,
+        tokenEndpoint,
         secret: clientSecret);
     if ((username == null) && (password == null) && (redirectUri == null)) {
       ReadOnlyAuthenticator
