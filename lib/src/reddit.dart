@@ -19,9 +19,15 @@ import 'user.dart';
 /// used to interact with Reddit posts, comments, subreddits, multireddits, and
 /// users.
 class Reddit {
-  ///TODO(bkonyi) should this be removed now that we can use the config object?
+  /// The default [Uri] used to request an authorization token from Reddit.
+  static final Uri defaultTokenEndpoint = DRAWConfigContext.defaultAccessToken;
+
+  /// The default [Uri] used to authenticate an authorization token from Reddit.
+  static final Uri defaultAuthEndpoint = DRAWConfigContext.defaultAuthorizeUri;
+
   /// The default path to the Reddit API.
-  static final String defaultOAuthApiEndpoint = 'oauth.reddit.com';
+  static final String defaultOAuthApiEndpoint =
+      DRAWConfigContext.defaultOAuthUrl;
 
   /// A flag representing the initialization state of the current [Reddit]
   /// instance.
@@ -106,8 +112,8 @@ class Reddit {
 
     final grant = new oauth2.AuthorizationCodeGrant(
         clientId,
-        authEndpoint,
-        tokenEndpoint,
+        authEndpoint ?? defaultAuthEndpoint,
+        tokenEndpoint ?? defaultTokenEndpoint,
         secret: clientSecret);
     if ((username == null) && (password == null) && (redirectUri == null)) {
       ReadOnlyAuthenticator

@@ -41,7 +41,7 @@ void main() {
     expect(configContext.checkForUpdates, equals(false));
     expect(configContext.revokeToken,
         equals(Uri.parse('https://www.reddit.com/api/v1/revoke_token')));
-    expect(configContext.oauthUrl, equals('oauth.reddit.com'));
+    expect(configContext.oauthUrl, equals('https://oauth.reddit.com'));
     expect(configContext.authorizeUri,
         equals(Uri.parse('https://reddit.com/api/v1/authorize')));
     expect(configContext.accessToken,

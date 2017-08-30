@@ -19,7 +19,7 @@ const String kComment = 'comment';
 const String kDefaultAccessToken =
     r'https://www.reddit.com/api/v1/access_token';
 const String kDefaultAuthorizeUri = r'https://reddit.com/api/v1/authorize';
-const String kDefaultOauthUrl = r'https://oauth.reddit.com';
+const String kDefaultOAuthUrl = r'https://oauth.reddit.com';
 const String kDefaultRedditUrl = 'https://www.reddit.com';
 const String kDefaultRevokeToken =
     r'https://www.reddit.com/api/v1/revoke_token';
@@ -53,18 +53,15 @@ final kNotSet = null;
 /// The [DRAWConfigContext] class provides an interface to store.
 /// Load the DRAW's configuration file draw.ini.
 class DRAWConfigContext {
-  //Commenting these static fields out until I here back from Ben
-  /*
+  static final String defaultOAuthUrl = r'https://oauth.reddit.com';
   static final Uri defaultAccessToken =
       Uri.parse(r'https://www.reddit.com/api/v1/access_token');
   static final Uri defaultAuthorizeUri =
       Uri.parse(r'https://reddit.com/api/v1/authorize');
-  static final Uri defaultOauthUrl = Uri.parse(r'https://oauth.reddit.com');
-  static final Uri defaultRedditUrl = Uri.parse(r'https://www.reddit.com');
+  static final Uri defaultRedditUri = Uri.parse(r'https://www.reddit.com');
   static final Uri defaultRevokeToken =
       Uri.parse(r'https://www.reddit.com/api/v1/revoke_token');
-  static final Uri defaultShortUrl = Uri.parse(r'https://redd.it');
-  */
+  static final Uri defaultShortUri = Uri.parse(r'https://redd.it');
 
   static final Map<String, List<String>> fieldMap = {
     kShortUrl: [kShortUrl],
@@ -263,7 +260,7 @@ class DRAWConfigContext {
       final value = _fetchOrNotSet(param);
       switch (param) {
         case kOauthUrl:
-          _oauthUrl = value ?? kDefaultOauthUrl;
+          _oauthUrl = value ?? kDefaultOAuthUrl;
           break;
         case kRedditUrl:
           _redditUrl = value ?? kDefaultRedditUrl;
