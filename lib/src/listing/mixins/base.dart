@@ -45,15 +45,14 @@ abstract class BaseListingMixin {
   String get path;
 
   Stream<UserContent> _buildGenerator(Map params, String sort) {
-    Map _params = params;
     if (this is Redditor) {
-      _params ??= new Map();
-      _params['sort'] = sort;
+      params ??= new Map();
+      params['sort'] = sort;
       return ListingGenerator.generator<UserContent>(reddit, path + 'overview',
-          limit: ListingGenerator.getLimit(params), params: _params);
+          limit: ListingGenerator.getLimit(params), params: params);
     }
     return ListingGenerator.generator<UserContent>(reddit, path + sort,
-        limit: ListingGenerator.getLimit(_params), params: _params);
+        limit: ListingGenerator.getLimit(params), params: params);
   }
 
   Stream<UserContent> _buildTimeFilterGenerator(
@@ -62,9 +61,9 @@ abstract class BaseListingMixin {
       // TODO(bkonyi): Create DRAWArgumentError
       throw new UnimplementedError();
     }
-    final _params = params ?? new Map();
-    _params['t'] = _timeFilterToString(timeFilter);
-    return _buildGenerator(_params, sort);
+    params ??= new Map();
+    params['t'] = _timeFilterToString(timeFilter);
+    return _buildGenerator(params, sort);
   }
 
   /// Returns a [Stream] of controversial comments and submissions. [timeFilter]
