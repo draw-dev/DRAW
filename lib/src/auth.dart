@@ -12,6 +12,7 @@ import "package:oauth2/src/handle_access_token_response.dart";
 
 import 'exceptions.dart';
 
+const String kDeleteRequest = 'DELETE';
 const String kGetRequest = 'GET';
 const String kPostRequest = 'POST';
 const String kPutRequest = 'PUT';
@@ -94,7 +95,7 @@ abstract class Authenticator {
 
       // Request the token from the server.
       final response =
-      await httpClient.post(path, headers: headers, body: revokeAccess);
+          await httpClient.post(path, headers: headers, body: revokeAccess);
 
       if (response.statusCode != 204) {
         // We should always get a 204 response for this call.
@@ -122,8 +123,12 @@ abstract class Authenticator {
     return _request(kPostRequest, path, body: body);
   }
 
-  Future put(Uri path, { /* Map<String,String>, String */ body}) async {
+  Future put(Uri path, {/* Map<String,String>, String */ body}) async {
     return _request(kPutRequest, path, body: body);
+  }
+
+  Future delete(Uri path, {/* Map<String,String>, String */ body}) async {
+    return _request(kDeleteRequest, path, body: body);
   }
 
   /// Request data from Reddit using our OAuth2 client.
@@ -132,7 +137,7 @@ abstract class Authenticator {
   /// request parameters. [body] is an optional parameter which contains the
   /// body fields for a POST request.
   Future _request(String type, Uri path,
-      { /* Map<String,String>, String */ body, Map params}) async {
+      {/* Map<String,String>, String */ body, Map params}) async {
     if (_client == null) {
       throw new DRAWAuthenticationError(
           'The authenticator does not have a valid token.');
@@ -149,8 +154,9 @@ abstract class Authenticator {
         request.body = body;
       }
     }
-    final http.StreamedResponse response = await _client.send(request);
-    final parsed = JSON.decode(await response.stream.bytesToString());
+    final response = await (await _client.send(request)).stream.bytesToString();
+    if (response.isEmpty) return null;
+    final parsed = JSON.decode(response);
     if ((parsed is Map) && parsed.containsKey(kErrorKey)) {
       _throwAuthenticationError(parsed);
     }
@@ -241,7 +247,7 @@ class ScriptAuthenticator extends Authenticator {
   static Future<ScriptAuthenticator> create(oauth2.AuthorizationCodeGrant grant,
       String userAgent, String username, String password) async {
     final ScriptAuthenticator authenticator =
-    new ScriptAuthenticator._(grant, userAgent, username, password);
+        new ScriptAuthenticator._(grant, userAgent, username, password);
     await authenticator._authenticationFlow();
     return authenticator;
   }
@@ -274,7 +280,7 @@ class ReadOnlyAuthenticator extends Authenticator {
   static Future<ReadOnlyAuthenticator> create(
       oauth2.AuthorizationCodeGrant grant, String userAgent) async {
     final ReadOnlyAuthenticator authenticator =
-    new ReadOnlyAuthenticator._(grant, userAgent);
+        new ReadOnlyAuthenticator._(grant, userAgent);
     await authenticator._authenticationFlow();
     return authenticator;
   }
@@ -301,17 +307,17 @@ class ReadOnlyAuthenticator extends Authenticator {
 class WebAuthenticator extends Authenticator {
   Uri _redirect;
 
-  WebAuthenticator._(oauth2.AuthorizationCodeGrant grant, String userAgent,
-      Uri redirect)
+  WebAuthenticator._(
+      oauth2.AuthorizationCodeGrant grant, String userAgent, Uri redirect)
       : _redirect = redirect,
         super(grant, userAgent) {
     assert(_redirect != null);
   }
 
-  static WebAuthenticator create(oauth2.AuthorizationCodeGrant grant,
-      String userAgent, Uri redirect) {
+  static WebAuthenticator create(
+      oauth2.AuthorizationCodeGrant grant, String userAgent, Uri redirect) {
     final WebAuthenticator authenticator =
-    new WebAuthenticator._(grant, userAgent, redirect);
+        new WebAuthenticator._(grant, userAgent, redirect);
     return authenticator;
   }
 
@@ -335,7 +341,7 @@ class WebAuthenticator extends Authenticator {
       throw new DRAWAuthenticationError('Parameter scopes cannot be null.');
     }
     Uri redditAuthUri =
-    _grant.getAuthorizationUrl(_redirect, scopes: scopes, state: state);
+        _grant.getAuthorizationUrl(_redirect, scopes: scopes, state: state);
     if (redditAuthUri == null) {
       // TODO(bkonyi) throw meaningful exception.
       assert(false);

@@ -3,9 +3,10 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
+import '../base.dart';
 import '../reddit.dart';
-import 'user_content.dart';
 
-class Submission extends UserContent {
-  Submission.parse(Reddit reddit, Map data) : super.loadData(reddit, data);
+abstract class UserContent extends RedditBase {
+  UserContent.loadData(Reddit reddit, Map data)
+      : super.loadData(reddit, data['data']);
 }

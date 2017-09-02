@@ -3,14 +3,19 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
+import 'dart:async';
 import 'reddit.dart';
 
 class RedditBase {
   final Reddit reddit;
-  final Map _data;
   final RegExp _snakecaseRegExp = new RegExp("[A-Z]");
+  Map _data;
+  Map get data => _data;
+  String _infoPath;
 
-  RedditBase(this.reddit) : _data = null;
+  RedditBase(this.reddit);
+
+  RedditBase.withPath(this.reddit, String infoPath) : _infoPath = infoPath;
 
   RedditBase.loadData(this.reddit, Map data) : _data = data;
 
@@ -19,36 +24,18 @@ class RedditBase {
       (Match match) =>
           (match.start != 0 ? separator : '') + match.group(0).toLowerCase());
 
-  @override
-  dynamic operator [](String key) {
-    if (_data != null) {
+  Future<Map> _fetch() async => reddit.get(_infoPath);
+
+  Future property(String key) async {
+    if (_data == null) {
+      _data = await _fetch();
+      // TODO(bkonyi): should we throw an exception here instead?
+      assert(_data != null);
+    }
+    if (_data.containsKey(_snakeCase(key))) {
       return _data[_snakeCase(key)];
     }
     return null;
-  }
-
-  @deprecated
-  dynamic noSuchMethod(Invocation invocation) {
-    // This is a dirty hack to allow for dynamic field population based on the
-    // API response instead of hardcoding these fields and having to update them
-    // when the API updates. Invocation.memberName is a Symbol, which
-    // unfortunately doesn't have a getName method due to code minification
-    // restrictions in dart2js, so the only way to get the name properly is
-    // using the dart:mirrors library. Unfortunately, dart:mirrors isn't
-    // supported in Flutter/Dart AOT, which makes it unacceptable to use in this
-    // library. However, Symbol.toString() returns a string in the form of
-    // Symbol("memberName") consistently on the Dart VM. We're abusing this
-    // behaviour here, and there's no promise that this will work in the future,
-    // but there's no reason to assume that this behaviour will change any time
-    // soon.
-    var name = invocation.memberName.toString();
-    name = _snakeCase(name.substring(8, name.length - 2));
-    if (!invocation.isGetter || (_data == null) || !_data.containsKey(name)) {
-      // Check that the accessed field is a getter and the property exists.
-      throw new NoSuchMethodError(this, invocation.memberName,
-          invocation.positionalArguments, invocation.namedArguments);
-    }
-    return _data[name];
   }
 
   @override
