@@ -68,7 +68,8 @@ class Redditor extends RedditBase
     final body = {
       'months': months.toString(),
     };
-    reddit.post(apiPath['gild_user'].replaceAll(_userRegExp, _name), body);
+    await reddit.post(
+        apiPath['gild_user'].replaceAll(_userRegExp, _name), body);
   }
 
   /// Send a message to the [Redditor]. [subject] is the subject of the message,
