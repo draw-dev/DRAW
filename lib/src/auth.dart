@@ -12,8 +12,10 @@ import "package:oauth2/src/handle_access_token_response.dart";
 
 import 'exceptions.dart';
 
+const String kDeleteRequest = 'DELETE';
 const String kGetRequest = 'GET';
 const String kPostRequest = 'POST';
+const String kPutRequest = 'PUT';
 
 const String kDurationKey = 'duration';
 const String kErrorKey = 'error';
@@ -121,13 +123,21 @@ abstract class Authenticator {
     return _request(kPostRequest, path, body: body);
   }
 
+  Future put(Uri path, {/* Map<String,String>, String */ body}) async {
+    return _request(kPutRequest, path, body: body);
+  }
+
+  Future delete(Uri path, {/* Map<String,String>, String */ body}) async {
+    return _request(kDeleteRequest, path, body: body);
+  }
+
   /// Request data from Reddit using our OAuth2 client.
   ///
   /// [type] can be one of `GET`, `POST`, and `PUT`. [path] represents the
   /// request parameters. [body] is an optional parameter which contains the
   /// body fields for a POST request.
   Future _request(String type, Uri path,
-      {Map<String, String> body, Map params}) async {
+      {/* Map<String,String>, String */ body, Map params}) async {
     if (_client == null) {
       throw new DRAWAuthenticationError(
           'The authenticator does not have a valid token.');
@@ -138,10 +148,15 @@ abstract class Authenticator {
     final finalPath = path.replace(queryParameters: params);
     final request = new http.Request(type, finalPath);
     if (body != null) {
-      request.bodyFields = body;
+      if (body is Map<String, String>) {
+        request.bodyFields = body;
+      } else {
+        request.body = body;
+      }
     }
-    final http.StreamedResponse response = await _client.send(request);
-    final parsed = JSON.decode(await response.stream.bytesToString());
+    final response = await (await _client.send(request)).stream.bytesToString();
+    if (response.isEmpty) return null;
+    final parsed = JSON.decode(response);
     if ((parsed is Map) && parsed.containsKey(kErrorKey)) {
       _throwAuthenticationError(parsed);
     }

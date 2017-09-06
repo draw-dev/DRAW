@@ -13,6 +13,18 @@ import '../reddit.dart';
 abstract class ListingGenerator {
   static const defaultRequestLimit = 100;
 
+  static int getLimit(Map params) {
+    if ((params != null) && params.containsKey('limit')) {
+      return params['limit'];
+    }
+    return null;
+  }
+
+  static Stream<T> createBasicGenerator<T>(
+          final Reddit reddit, final String path,
+          {Map params}) =>
+      generator<T>(reddit, path, limit: getLimit(params), params: params);
+
   /// An asynchronous iterator method used to make Reddit API calls as defined
   /// by [api] in blocks of size [limit]. The default [limit] is specified by
   /// [defaultRequestLimit]. Returns a [Stream<T>] which can be iterated over
@@ -23,8 +35,8 @@ abstract class ListingGenerator {
     final kAfterKey = 'after';
     final nullLimit = 1024;
     final paramsInternal = params ?? new Map();
-    paramsInternal[kLimitKey] = (limit ?? nullLimit).toString();
-    paramsInternal[kAfterKey] = null;
+    final _limit = limit ?? nullLimit;
+    paramsInternal[kLimitKey] = limit.toString();
     int yielded = 0;
     int index = 0;
     List<T> listing;
@@ -40,7 +52,7 @@ abstract class ListingGenerator {
       return newListing;
     }
 
-    while (yielded < limit) {
+    while (yielded < _limit) {
       if ((listing == null) || (index >= listing.length)) {
         if (listing != null &&
             listing.length < int.parse(paramsInternal[kLimitKey])) {

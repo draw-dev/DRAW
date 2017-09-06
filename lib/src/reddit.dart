@@ -8,7 +8,6 @@ import 'dart:async';
 import 'package:oauth2/oauth2.dart' as oauth2;
 
 import 'auth.dart';
-import 'base.dart';
 import 'exceptions.dart';
 import 'objector.dart';
 import 'user.dart';
@@ -136,6 +135,36 @@ class Reddit {
     }
     final path = new Uri.https(defaultOAuthApiEndpoint, api);
     final response = await auth.get(path, params: params);
+    return _objector.objectify(response);
+  }
+
+  Future<dynamic> post(String api, Map<String, String> body) async {
+    if (!(await initialized)) {
+      throw new DRAWAuthenticationError(
+          'Cannot make requests using unauthenticated client.');
+    }
+    final path = new Uri.https(defaultOAuthApiEndpoint, api);
+    final response = await auth.post(path, body);
+    return _objector.objectify(response);
+  }
+
+  Future put(String api, {/* Map<String, String>, String */ body}) async {
+    if (!(await initialized)) {
+      throw new DRAWAuthenticationError(
+          'Cannot make requests using unauthenticated client.');
+    }
+    final path = new Uri.https(defaultOAuthApiEndpoint, api);
+    final response = await auth.put(path, body: body);
+    return _objector.objectify(response);
+  }
+
+  Future delete(String api, {/* Map<String, String>, String */ body}) async {
+    if (!(await initialized)) {
+      throw new DRAWAuthenticationError(
+          'Cannot make requests using unauthenticated client.');
+    }
+    final path = new Uri.https(defaultOAuthApiEndpoint, api);
+    final response = await auth.delete(path, body: body);
     return _objector.objectify(response);
   }
 

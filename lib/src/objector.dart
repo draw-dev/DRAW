@@ -3,11 +3,15 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
+import 'dart:convert';
+
 import 'base.dart';
 import 'exceptions.dart';
 import 'reddit.dart';
+import 'models/comment.dart';
 import 'models/multireddit.dart';
 import 'models/redditor.dart';
+import 'models/submission.dart';
 import 'models/subreddit.dart';
 
 /// Converts responses from the Reddit API into instances of [RedditBase].
@@ -18,9 +22,11 @@ class Objector extends RedditBase {
     if (data.containsKey('name')) {
       // Redditor type.
       return new Redditor.parse(reddit, data);
-    } else if (data.containsKey('data') &&
-        (data['data'] is Map) &&
-        data['data'].containsKey('subreddit_type')) {
+    } else if (data.containsKey('kind') && (data['kind'] == 't1')) {
+      return new Comment.parse(reddit, data);
+    } else if (data.containsKey('kind') && (data['kind'] == 't3')) {
+      return new Submission.parse(reddit, data);
+    } else if (data.containsKey('kind') && (data['kind'] == 't5')) {
       return new Subreddit.parse(reddit, data);
     } else if (data.containsKey('kind') && (data['kind'] == 'LabeledMulti')) {
       assert(
@@ -31,7 +37,6 @@ class Objector extends RedditBase {
     } else if (data.containsKey('sr') &&
         data.containsKey('comment_karma') &&
         data.containsKey('link_karma')) {
-      final karmaMap = new Map<Subreddit, Map<String, int>>();
       final subreddit = new Subreddit(reddit, data['sr']);
       final value = {
         'commentKarma': data['comment_karma'],
@@ -39,6 +44,7 @@ class Objector extends RedditBase {
       };
       return {subreddit: value};
     } else {
+      print(new JsonEncoder.withIndent('  ').convert(data));
       throw new DRAWUnimplementedError('Cannot objectify unsupported response');
     }
   }
@@ -56,6 +62,9 @@ class Objector extends RedditBase {
   /// [Map], and the return type is one of [RedditBase], [List<RedditBase>], or
   /// [Map<RedditBase>] depending on the response type.
   dynamic objectify(dynamic data) {
+    if (data == null) {
+      return null;
+    }
     if (data is List) {
       return _objectifyList(data);
     } else if (data is! Map) {
@@ -86,6 +95,10 @@ class Objector extends RedditBase {
           karmaMap.addAll(map);
         });
         return karmaMap;
+      } else if (kind == 't2') {
+        // Account information about a redditor who isn't the currently
+        // authenticated user.
+        return data['data'];
       }
       throw new DRAWUnimplementedError('response kind, ${kind}, is not '
           'currently implemented.');

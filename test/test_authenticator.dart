@@ -19,6 +19,7 @@ class TestAuthenticator extends Authenticator {
   final String _recordingPath;
   final Authenticator _recordAuth;
   final _recorder = new Recorder<List, dynamic>();
+
   bool get isRecording => (_recordAuth == null);
   Recording _recording;
 
@@ -62,13 +63,13 @@ class TestAuthenticator extends Authenticator {
   Future get(Uri path, {Map params}) async {
     var result;
     if (isRecording) {
-      return _recording.reply([path.toString(), params.toString()]);
+      result = _recording.reply([path.toString(), params.toString()]);
     } else {
-      result = await _recordAuth.get(path);
+      result = await _recordAuth.get(path, params: params);
       _recorder
           .given([path.toString(), params.toString()])
           .reply(result)
-          .always();
+          .once();
     }
     return result;
   }
@@ -77,15 +78,39 @@ class TestAuthenticator extends Authenticator {
   Future post(Uri path, Map<String, String> body) async {
     var result;
     if (isRecording) {
-      return _recording.reply([path.toString(), body.toString()]);
+      result = _recording.reply([path.toString(), body.toString()]);
     } else {
       result = await _recordAuth.post(path, body);
-      _recorder
-          .given([path.toString(), body.toString()])
-          .reply(result)
-          .always();
+      _recorder.given([path.toString(), body.toString()]).reply(result).once();
     }
     return result;
+  }
+
+  @override
+  Future put(Uri path, {/* Map<String, String>, String */ body}) async {
+    var result;
+    if (isRecording) {
+      result = _recording.reply([path.toString(), body.toString()]);
+    } else {
+      result = await _recordAuth.put(path, body: body);
+      _recorder.given([path.toString(), body.toString()]).reply(result).once();
+    }
+    return result;
+  }
+
+  @override
+  Future delete(Uri path, {/* Map<String, String>, String */ body}) async {
+    var result;
+    if (isRecording) {
+      result = _recording.reply([path.toString(), body.toString()]);
+    } else {
+      result = await _recordAuth.delete(path, body: body);
+      _recorder
+          .given([path.toString(), body.toString()])
+          .reply(result ?? '')
+          .once();
+    }
+    return (result == '') ? null : result;
   }
 
   @override
