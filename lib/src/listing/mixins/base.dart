@@ -10,6 +10,7 @@ import '../../reddit.dart';
 import '../../models/user_content.dart';
 import '../../models/redditor.dart';
 import '../listing_generator.dart';
+import 'redditor.dart';
 
 enum TimeFilter {
   all,
@@ -46,10 +47,14 @@ abstract class BaseListingMixin {
 
   Stream<UserContent> _buildGenerator(Map params, String sort) {
     Map _params = params;
-    if (this is Redditor) {
+    if ((this is Redditor) || (this is SubListing)) {
+      var arg = '';
+      if (this is Redditor) {
+        arg = 'overview';
+      }
       _params ??= new Map();
       _params['sort'] = sort;
-      return ListingGenerator.generator<UserContent>(reddit, path + 'overview',
+      return ListingGenerator.generator<UserContent>(reddit, path + arg,
           limit: ListingGenerator.getLimit(params), params: _params);
     }
     return ListingGenerator.generator<UserContent>(reddit, path + sort,

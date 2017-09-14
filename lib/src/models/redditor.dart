@@ -13,6 +13,7 @@ import '../listing/mixins/base.dart';
 import '../listing/mixins/gilded.dart';
 import '../listing/mixins/redditor.dart';
 import '../reddit.dart';
+import '../util.dart';
 import 'comment.dart';
 import 'multireddit.dart';
 import 'submission.dart';
@@ -88,7 +89,7 @@ class Redditor extends RedditBase
   // TODO(bkonyi): Add code samples.
   /// Provides a [RedditorStream] for the current [Redditor].
   ///
-  /// [RedditorStream] can be used to retrieve new comment and submissions made
+  /// [RedditorStream] can be used to retrieve new comments and submissions made
   /// by a [Redditor] indefinitely.
   RedditorStream get stream => new RedditorStream(this);
 
@@ -101,17 +102,31 @@ class Redditor extends RedditBase
       reddit.delete(apiPath['friend_v1'].replaceAll(_userRegExp, _name));
 }
 
-// TODO(bkonyi): implement.
+/// Provides [Comment] and [Submission] streams for a particular [Redditor].
 class RedditorStream extends RedditBase {
   final Redditor redditor;
 
   RedditorStream(this.redditor) : super(redditor.reddit);
 
-  Stream<Comment> comments() {
-    throw new DRAWUnimplementedError();
-  }
+  /// Returns a [Stream<Comment>] which listens for new comments as they become
+  /// available.
+  ///
+  /// Comments are streamed oldest first, and up to 100 historical comments will
+  /// be returned initially. [pauseAfter] determines how many comments will be
+  /// listened for before returning `null`, allowing for an opportunity to
+  /// perform specific actions. If [pauseAfter] is not provided, `null` will not
+  /// be received.
+  Stream<Comment> comments({int pauseAfter}) =>
+      streamGenerator(redditor.comments.newest, pauseAfter: pauseAfter);
 
-  Stream<Submission> submissions() {
-    throw new DRAWUnimplementedError();
-  }
+  /// Returns a [Stream<Submissions>] which listens for new submissions as they
+  /// become available.
+  ///
+  /// Submissions are streamed oldest first, and up to 100 historical
+  /// submissions will be returned initially. [pauseAfter] determines how many
+  /// submissions will be listened for before returning `null`, allowing for an
+  /// opportunity to perform specific actions. If [pauseAfter] is not provided,
+  /// `null` will not be received.
+  Stream<Submission> submissions() =>
+      streamGenerator(redditor.submissions.newest, pauseAfter: pauseAfter);
 }
