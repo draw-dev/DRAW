@@ -7,6 +7,8 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:io';
 
+import 'models/user_content.dart';
+
 /// A set that can only contain up to a max number of elements. If the set is
 /// full and another item is added, the oldest item in the set is removed.
 class BoundedSet<T> {
@@ -71,7 +73,7 @@ Stream<UserContent> streamGenerator(function, {int pauseAfter}) async* {
       withoutBeforeCounter = (withoutBeforeCounter + 1) % 30;
     }
 
-    var results = [];
+    final results = [];
     await for (final item
         in function(params: {'limit': limit, 'before': beforeFullname})) {
       results.add(item);
