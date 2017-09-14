@@ -69,7 +69,6 @@ abstract class RedditorListingMixin {
 class SubListing extends Object with BaseListingMixin {
   final Reddit reddit;
   String _path;
-
   String get path => _path;
 
   SubListing(this.reddit, final String path, final String api) {

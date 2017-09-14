@@ -36,7 +36,7 @@ abstract class ListingGenerator {
     final nullLimit = 1024;
     final paramsInternal = params ?? new Map();
     final _limit = limit ?? nullLimit;
-    paramsInternal[kLimitKey] = limit.toString();
+    paramsInternal[kLimitKey] = _limit.toString();
     int yielded = 0;
     int index = 0;
     List<T> listing;
@@ -54,8 +54,8 @@ abstract class ListingGenerator {
 
     while (yielded < _limit) {
       if ((listing == null) || (index >= listing.length)) {
-        if (listing != null &&
-            listing.length < int.parse(paramsInternal[kLimitKey])) {
+        if ((listing != null) &&
+            (listing.length < int.parse(paramsInternal[kLimitKey]))) {
           break;
         }
         listing = await _nextBatch();
