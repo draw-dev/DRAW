@@ -127,6 +127,6 @@ class RedditorStream extends RedditBase {
   /// submissions will be listened for before returning `null`, allowing for an
   /// opportunity to perform specific actions. If [pauseAfter] is not provided,
   /// `null` will not be received.
-  Stream<Submission> submissions() =>
+  Stream<Submission> submissions({int pauseAfter}) =>
       streamGenerator(redditor.submissions.newest, pauseAfter: pauseAfter);
 }
