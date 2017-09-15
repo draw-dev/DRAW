@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:oauth2/oauth2.dart' as oauth2;
 
 import 'auth.dart';
+import 'base.dart';
 import 'exceptions.dart';
 import 'objector.dart';
 import 'user.dart';
@@ -94,6 +95,9 @@ class Reddit {
       throw new DRAWAuthenticationError('userAgent cannot be null.');
     }
 
+    _objector = new Objector(this);
+    _user = new User(this);
+
     final grant = new oauth2.AuthorizationCodeGrant(
         clientId,
         authEndpoint ?? defaultAuthEndpoint,
@@ -119,6 +123,16 @@ class Reddit {
     } else {
       throw new DRAWUnimplementedError('Unsupported authentication type.');
     }
+  }
+
+  Future<RedditBase> get(String api, {Map params}) async {
+    if (!(await initialized)) {
+      throw new DRAWAuthenticationError(
+          'Cannot make requests using unauthenticated client.');
+    }
+    final path = new Uri.https(defaultOAuthApiEndpoint, api);
+    final response = await auth.get(path, params: params);
+    return _objector.objectify(response);
   }
 
   Reddit.fromAuthenticator(Authenticator auth) {
