@@ -12,6 +12,9 @@ import '../../models/redditor.dart';
 import '../listing_generator.dart';
 import 'redditor.dart';
 
+import 'redditor.dart';
+
+
 enum TimeFilter {
   all,
   day,
