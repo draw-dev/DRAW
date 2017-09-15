@@ -7,11 +7,16 @@ import 'dart:async';
 
 import 'api_paths.dart';
 import 'base.dart';
+import 'exceptions.dart';
 import 'reddit.dart';
 import 'listing/listing_generator.dart';
-import 'models/multireddit.dart';
 import 'models/redditor.dart';
 import 'models/subreddit.dart';
+
+/// The [Reddit] class provides access to Reddit's API and stores session state
+/// for the current [Reddit] instance. This class contains objects that can be
+/// used to interact with Reddit posts, comments, subreddits, multireddits, and
+/// users.
 
 /// The [User] class provides methods to access information about the currently
 /// authenticated user.
