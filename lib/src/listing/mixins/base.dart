@@ -10,7 +10,9 @@ import '../../reddit.dart';
 import '../../models/user_content.dart';
 import '../../models/redditor.dart';
 import '../listing_generator.dart';
+
 import 'redditor.dart';
+
 
 enum TimeFilter {
   all,

@@ -89,6 +89,49 @@ class Redditor extends RedditBase
   // TODO(bkonyi): Add code samples.
   /// Provides a [RedditorStream] for the current [Redditor].
   ///
+  /// [RedditorStream] can be used to retrieve new comment and submissions made
+  /// by a [Redditor] indefinitely.
+  RedditorStream get stream => new RedditorStream(this);
+
+  // TODO(bkonyi): implement.
+  /// Unblock the [Redditor].
+  Future unblock() async => throw new DRAWUnimplementedError();
+
+  /// Unfriend the [Redditor].
+  Future unfriend() async =>
+      reddit.delete(apiPath['friend_v1'].replaceAll(_userRegExp, _name));
+}
+
+// TODO(bkonyi): implement.
+class RedditorStream extends RedditBase {
+  final Redditor redditor;
+
+  RedditorStream(this.redditor) : super(redditor.reddit);
+
+  Stream<Comment> comments() {
+    throw new DRAWUnimplementedError();
+  }
+
+  Stream<Submission> submissions() {
+    throw new DRAWUnimplementedError();
+  }
+
+  /// Send a message to the [Redditor]. [subject] is the subject of the message,
+  /// [message] is the content of the message, and [fromSubreddit] is a
+  /// [Subreddit] that the message should be sent from. [fromSubreddit] must be
+  /// a subreddit that the current user is a moderator of and has permissions to
+  /// send mail on behalf of the subreddit.
+  Future message(String subject, String message,
+          {Subreddit fromSubreddit}) async =>
+      throw new DRAWUnimplementedError();
+
+  /// Returns a [List] of the [Redditor]'s public [Multireddit]'s.
+  Future<List<Multireddit>> multireddits() async =>
+      reddit.get(apiPath['multi_user'].replaceAll(_userRegExp, _name));
+
+  // TODO(bkonyi): Add code samples.
+  /// Provides a [RedditorStream] for the current [Redditor].
+  ///
   /// [RedditorStream] can be used to retrieve new comments and submissions made
   /// by a [Redditor] indefinitely.
   RedditorStream get stream => new RedditorStream(this);
