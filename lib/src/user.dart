@@ -39,16 +39,11 @@ class User extends RedditBase {
 
   /// Returns a [Future<List<Redditor>>] of friends.
   Future<List<Redditor>> friends() async {
-<<<<<<< HEAD
     return reddit.get(apiPath['friends']);
-=======
-    throw new DRAWUnimplementedError();
->>>>>>> 375f6c3
   }
 
   /// Returns a [Future<Map>] mapping subreddits to karma earned on the given
   /// subreddit.
-<<<<<<< HEAD
   Future<Map<Subreddit, Map<String, int>>> karma() async {
     return reddit.get(apiPath['karma']);
   }
@@ -57,15 +52,6 @@ class User extends RedditBase {
   /// Returns a [Future<Redditor>] which represents the current user.
   Future<Redditor> me({useCache: true}) async {
     return reddit.get(apiPath['me']);
-=======
-  Future<Map> karma() async {
-    throw new DRAWUnimplementedError();
-  }
-
-  /// Returns a [Future<Redditor>] which represents the current user.
-  Future<Redditor> me({useCache: true}) async {
-    throw new DRAWUnimplementedError();
->>>>>>> 375f6c3
   }
 
   /// Returns a [Stream] of [Subreddit]s the currently authenticated user is a
@@ -77,21 +63,12 @@ class User extends RedditBase {
       ListingGenerator.generator<Subreddit>(reddit, apiPath['my_moderator'],
           limit: limit, params: params);
 
-<<<<<<< HEAD
-=======
-  // TODO(bkonyi) create Multireddit class.
->>>>>>> 375f6c3
   /// Returns a [Stream] of [Multireddit]s that belongs to the currently
   /// authenticated user. [limit] is the number of [Subreddit]s to request, and
   /// [params] should contain any additional parameters that should be sent as
   /// part of the API request.
-<<<<<<< HEAD
   Future<List<Multireddit>> multireddits() async {
     return reddit.get(apiPath['my_multireddits']);
-=======
-  Stream multireddits() {
-    throw new DRAWUnimplementedError();
->>>>>>> 375f6c3
   }
 
   /// Returns a [Stream] of [Subreddit]s the currently authenticated user is a
