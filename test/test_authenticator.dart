@@ -60,7 +60,6 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-<<<<<<< HEAD
   Future get(Uri path, {Map params}) async {
     var result;
     if (isRecording) {
@@ -71,18 +70,6 @@ class TestAuthenticator extends Authenticator {
           .given([path.toString(), params.toString()])
           .reply(result)
           .once();
-=======
-  Future<Map> get(Uri path, {Map params}) async {
-    Map result;
-    if (isRecording) {
-      // TODO(bkonyi): grab the response based on query.
-      return _recording.reply([path.toString(), params]);
-    } else {
-      print(path.toString());
-      result = await _recordAuth.get(path);
-      // TODO(bkonyi): do we always want to reply?
-      _recorder.given([path.toString(), params]).reply(result).always();
->>>>>>> 375f6c3
     }
     return result;
   }
