@@ -83,7 +83,7 @@ class TestAuthenticator extends Authenticator {
       result = await _recordAuth.post(path, body);
       _recorder.given([path.toString(), body.toString()]).reply(result).once();
     }
-    return result;
+    return (result == '') ? null : result;
   }
 
   @override
