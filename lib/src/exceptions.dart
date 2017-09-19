@@ -24,3 +24,11 @@ class DRAWInternalError implements Exception {
   String message;
   String toString() => 'DRAWInternalError: $message';
 }
+
+/// Thrown due to a error on the side of the client due to incorrect integration of DRAW.
+class DRAWClientError implements Exception {
+  DRAWClientError(this.message);
+  String message;
+  String toString() =>
+      'DRAWClientError: $message This is likely due to issues with your ini file.';
+}
