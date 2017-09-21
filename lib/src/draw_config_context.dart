@@ -19,7 +19,7 @@ const String kComment = 'comment';
 const String kDefaultAccessToken =
     r'https://www.reddit.com/api/v1/access_token';
 const String kDefaultAuthorizeUri = r'https://reddit.com/api/v1/authorize';
-const String kDefaultOAuthUrl = r'https://oauth.reddit.com';
+const String kDefaultOAuthUrl = r'oauth.reddit.com';
 const String kDefaultRedditUrl = 'https://www.reddit.com';
 const String kDefaultRevokeToken =
     r'https://www.reddit.com/api/v1/revoke_token';
@@ -53,15 +53,15 @@ final kNotSet = null;
 /// The [DRAWConfigContext] class provides an interface to store.
 /// Load the DRAW's configuration file draw.ini.
 class DRAWConfigContext {
-  static final String defaultOAuthUrl = r'https://oauth.reddit.com';
-  static final Uri defaultAccessToken =
+  static final Uri kDefaultAccessToken =
       Uri.parse(r'https://www.reddit.com/api/v1/access_token');
-  static final Uri defaultAuthorizeUri =
+  static final Uri kDefaultAuthorizeUri =
       Uri.parse(r'https://reddit.com/api/v1/authorize');
-  static final Uri defaultRedditUri = Uri.parse(r'https://www.reddit.com');
-  static final Uri defaultRevokeToken =
+  static final String kDefaultOAuthUrl = r'oauth.reddit.com';
+  static final Uri kDefaultRedditUri = Uri.parse(r'https://www.reddit.com');
+  static final Uri kDefaultRevokeToken =
       Uri.parse(r'https://www.reddit.com/api/v1/revoke_token');
-  static final Uri defaultShortUri = Uri.parse(r'https://redd.it');
+  static final Uri kDefaultShortUri = Uri.parse(r'https://redd.it');
 
   static final Map<String, List<String>> fieldMap = {
     kShortUrl: [kShortUrl],
@@ -148,10 +148,28 @@ class DRAWConfigContext {
   /// between client instances. Should be unique for example related to [siteName].
   ///
   /// TODO(kc3454): add ability to pass in additional prams directly.
-  DRAWConfigContext({String siteName = 'default', String userAgent}) {
+  DRAWConfigContext({
+    String clientId,
+    String clientSecret,
+    String userAgent,
+    String username,
+    String password,
+    Uri redirectUri,
+    Uri accessToken,
+    Uri authorizeUri,
+    String siteName = 'default',
+  }) {
     // Give passed in values highest precedence for assignment.
     _primarySiteName = siteName;
-    this._userAgent = userAgent ?? kNotSet;
+    _clientId = clientId ?? kNotSet;
+    _clientSecret = clientSecret ?? kNotSet;
+    _username = username ?? kNotSet;
+    _password = password ?? kNotSet;
+    _redirectUri = redirectUri ?? kNotSet;
+    _accessToken = accessToken ?? kNotSet;
+    _authorizeUri = authorizeUri ?? kNotSet;
+    _userAgent = userAgent ?? kNotSet;
+
     // Initialize Paths.
     _localConfigPath = _getLocalConfigPath();
     _userConfigPath = _getUserConfigPath();

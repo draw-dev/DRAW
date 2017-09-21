@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:oauth2/oauth2.dart' as oauth2;
 
 import 'auth.dart';
+import 'draw_config_context.dart';
 import 'exceptions.dart';
 import 'objector.dart';
 import 'user.dart';
@@ -18,15 +19,14 @@ import 'user.dart';
 /// users.
 class Reddit {
   /// The default [Uri] used to request an authorization token from Reddit.
-  static final Uri defaultTokenEndpoint =
-      Uri.parse(r'https://www.reddit.com/api/v1/access_token');
+  static final Uri defaultTokenEndpoint = DRAWConfigContext.kDefaultAccessToken;
 
   /// The default [Uri] used to authenticate an authorization token from Reddit.
-  static final Uri defaultAuthEndpoint =
-      Uri.parse(r'https://reddit.com/api/v1/authorize');
+  static final Uri defaultAuthEndpoint = DRAWConfigContext.kDefaultAuthorizeUri;
 
   /// The default path to the Reddit API.
-  static final String defaultOAuthApiEndpoint = 'oauth.reddit.com';
+  static final String defaultOAuthApiEndpoint =
+      DRAWConfigContext.kDefaultOAuthUrl;
 
   /// A flag representing the initialization state of the current [Reddit]
   /// instance.
@@ -84,13 +84,23 @@ class Reddit {
       Uri redirectUri,
       Uri tokenEndpoint,
       Uri authEndpoint}) {
-    if (clientId == null) {
+    final DRAWConfigContext config = new DRAWConfigContext(
+        clientId: clientId,
+        clientSecret: clientSecret,
+        userAgent: userAgent,
+        username: username,
+        password: password,
+        redirectUri: redirectUri,
+        accessToken: tokenEndpoint,
+        authorizeUri: authEndpoint);
+
+    if (clientId == null && config.clientId == null) {
       throw new DRAWAuthenticationError('clientId cannot be null.');
     }
-    if (clientSecret == null) {
+    if (clientSecret == null && config.clientSecret == null) {
       throw new DRAWAuthenticationError('clientSecret cannot be null.');
     }
-    if (userAgent == null) {
+    if (userAgent == null && config.userAgent == null) {
       throw new DRAWAuthenticationError('userAgent cannot be null.');
     }
 
@@ -99,20 +109,24 @@ class Reddit {
         authEndpoint ?? defaultAuthEndpoint,
         tokenEndpoint ?? defaultTokenEndpoint,
         secret: clientSecret);
-    if ((username == null) && (password == null) && (redirectUri == null)) {
+
+    if ((username == null && config.username == null) &&
+        (password == null && config.password == null) &&
+        (redirectUri == null && config.redirectUri == null)) {
       ReadOnlyAuthenticator
           .create(grant, userAgent)
           .then(_initializationCallback);
       _readOnly = true;
-    } else if ((username != null) && (password != null)) {
+    } else if ((username != null && config.username == null) &&
+        (password != null && config.password == null)) {
       // Check if we are creating an authorized client.
       ScriptAuthenticator
           .create(grant, userAgent, username, password)
           .then(_initializationCallback);
       _readOnly = false;
-    } else if ((username == null) &&
-        (password == null) &&
-        (redirectUri != null)) {
+    } else if ((username == null && config.username == null) &&
+        (password == null && config.password == null) &&
+        (redirectUri != null && config.redirectUri == null)) {
       _initializationCallback(
           WebAuthenticator.create(grant, userAgent, redirectUri));
       _readOnly = false;
