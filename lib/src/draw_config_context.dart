@@ -19,7 +19,7 @@ const String kComment = 'comment';
 const String kDefaultAccessToken =
     r'https://www.reddit.com/api/v1/access_token';
 const String kDefaultAuthorizeUri = r'https://reddit.com/api/v1/authorize';
-const String kDefaultOAuthUrl = r'https://oauth.reddit.com';
+const String kDefaultOAuthUrl = r'oauth.reddit.com';
 const String kDefaultRedditUrl = 'https://www.reddit.com';
 const String kDefaultRevokeToken =
     r'https://www.reddit.com/api/v1/revoke_token';
@@ -53,7 +53,7 @@ final kNotSet = null;
 /// The [DRAWConfigContext] class provides an interface to store.
 /// Load the DRAW's configuration file draw.ini.
 class DRAWConfigContext {
-  static final String kDefaultOAuthUrl = r'https://oauth.reddit.com';
+  static final String kDefaultOAuthUrl = r'oauth.reddit.com';
   static final Uri kDefaultAccessToken =
       Uri.parse(r'https://www.reddit.com/api/v1/access_token');
   static final Uri kDefaultAuthorizeUri =
