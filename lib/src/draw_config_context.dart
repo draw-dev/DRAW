@@ -53,11 +53,11 @@ final kNotSet = null;
 /// The [DRAWConfigContext] class provides an interface to store.
 /// Load the DRAW's configuration file draw.ini.
 class DRAWConfigContext {
-  static final String kDefaultOAuthUrl = r'oauth.reddit.com';
   static final Uri kDefaultAccessToken =
       Uri.parse(r'https://www.reddit.com/api/v1/access_token');
   static final Uri kDefaultAuthorizeUri =
       Uri.parse(r'https://reddit.com/api/v1/authorize');
+  static final String kDefaultOAuthUrl = r'oauth.reddit.com';
   static final Uri kDefaultRedditUri = Uri.parse(r'https://www.reddit.com');
   static final Uri kDefaultRevokeToken =
       Uri.parse(r'https://www.reddit.com/api/v1/revoke_token');
