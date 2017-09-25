@@ -28,6 +28,21 @@ class Reddit {
   static final String defaultOAuthApiEndpoint =
       DRAWConfigContext.kDefaultOAuthUrl;
 
+  /// The default object kind mapping for [Comment].
+  static final String defaultCommentKind = DRAWConfigContext.kCommentKind;
+
+  /// The default object kind mapping for [Message].
+  static final String defaultMessageKind = DRAWConfigContext.kMessageKind;
+
+  /// The default object kind mapping for [Redditor].
+  static final String defaultRedditorKind = DRAWConfigContext.kRedditorKind;
+
+  /// The default object kind mapping for [Submission].
+  static final String defaultSubmissionKind = DRAWConfigContext.kSubmissionKind;
+
+  /// The default object kind mapping for [Subreddit].
+  static final String defaultSubredditKind = DRAWConfigContext.kSubredditKind;
+
   /// A flag representing the initialization state of the current [Reddit]
   /// instance.
   ///

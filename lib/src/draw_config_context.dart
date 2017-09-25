@@ -63,6 +63,12 @@ class DRAWConfigContext {
       Uri.parse(r'https://www.reddit.com/api/v1/revoke_token');
   static final Uri kDefaultShortUri = Uri.parse(r'https://redd.it');
 
+  static final String kCommentKind = 't1';
+  static final String kMessageKind = 't4';
+  static final String kRedditorKind = 't2';
+  static final String kSubmissionKind = 't3';
+  static final String kSubredditKind = 't5';
+
   static final Map<String, List<String>> fieldMap = {
     kShortUrl: [kShortUrl],
     kCheckForUpdates: [kCheckForUpdates],
