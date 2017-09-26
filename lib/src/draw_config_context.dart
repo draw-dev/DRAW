@@ -53,15 +53,15 @@ final kNotSet = null;
 /// The [DRAWConfigContext] class provides an interface to store.
 /// Load the DRAW's configuration file draw.ini.
 class DRAWConfigContext {
-  static final Uri kDefaultAccessToken =
-      Uri.parse(r'https://www.reddit.com/api/v1/access_token');
-  static final Uri kDefaultAuthorizeUri =
-      Uri.parse(r'https://reddit.com/api/v1/authorize');
+  static final String kDefaultAccessToken =
+      r'https://www.reddit.com/api/v1/access_token';
+  static final String kDefaultAuthorizeUri =
+      r'https://reddit.com/api/v1/authorize';
   static final String kDefaultOAuthUrl = r'oauth.reddit.com';
-  static final Uri kDefaultRedditUri = Uri.parse(r'https://www.reddit.com');
-  static final Uri kDefaultRevokeToken =
-      Uri.parse(r'https://www.reddit.com/api/v1/revoke_token');
-  static final Uri kDefaultShortUri = Uri.parse(r'https://redd.it');
+  static final String kDefaultRedditUri = r'https://www.reddit.com';
+  static final String kDefaultRevokeToken =
+      r'https://www.reddit.com/api/v1/revoke_token';
+  static final String kDefaultShortUri = r'https://redd.it';
 
   // Object kind mapping for used for data array as a key.
   // Provides context of value stored.
@@ -122,28 +122,28 @@ class DRAWConfigContext {
   String _userAgent;
   String _username;
 
-  Uri get accessToken => Uri.parse(_accessToken);
-  Uri get authorizeUri => Uri.parse(_authorizeUri);
-  Uri get redditUrl => Uri.parse(_redditUrl);
-  Uri get redirectUri => Uri.parse(_redirectUri);
-  Uri get revokeToken => Uri.parse(_revokeToken);
 
+  String get accessToken => _accessToken;
+  String get authorizeUri => _authorizeUri;
   String get clientId => _clientId;
   String get clientSecret => _clientSecret;
   String get httpProxy => _httpProxy;
   String get httpsProxy => _httpsProxy;
   String get oauthUrl => _oauthUrl;
   String get password => _password;
+  String get redditUrl => _redditUrl;
+  String get redirectUri => _redirectUri;
   String get refreshToken => _refreshToken;
+  String get revokeToken => _revokeToken;
   String get userAgent => _userAgent;
   String get username => _username;
 
   //Note this accessor throws if _shortURL is not set.
-  Uri get shortUrl {
+  String get shortUrl {
     if (_shortURL == kNotSet) {
       throw new DRAWClientError('No short domain specified');
     }
-    return Uri.parse(_shortURL);
+    return _shortURL;
   }
 
   /// Creates a new [DRAWConfigContext] instance.
@@ -162,9 +162,9 @@ class DRAWConfigContext {
     String userAgent,
     String username,
     String password,
-    Uri redirectUri,
-    Uri accessToken,
-    Uri authorizeUri,
+    String redirectUri,
+    String accessToken,
+    String authorizeUri,
     String siteName = 'default',
   }) {
     // Give passed in values highest precedence for assignment.
