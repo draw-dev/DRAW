@@ -63,7 +63,8 @@ class DRAWConfigContext {
       Uri.parse(r'https://www.reddit.com/api/v1/revoke_token');
   static final Uri kDefaultShortUri = Uri.parse(r'https://redd.it');
 
-  //Object kind mapping for used for data array as a key. Provides context of value stored.
+  // Object kind mapping for used for data array as a key. 
+  // Provides context of value stored.
   static final String kCommentKind = 't1';
   static final String kMessageKind = 't4';
   static final String kRedditorKind = 't2';
