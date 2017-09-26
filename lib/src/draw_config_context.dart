@@ -63,7 +63,7 @@ class DRAWConfigContext {
       Uri.parse(r'https://www.reddit.com/api/v1/revoke_token');
   static final Uri kDefaultShortUri = Uri.parse(r'https://redd.it');
 
-  // Object kind mapping for used for data array as a key. 
+  // Object kind mapping for used for data array as a key.
   // Provides context of value stored.
   static final String kCommentKind = 't1';
   static final String kMessageKind = 't4';
@@ -327,20 +327,18 @@ class DRAWConfigContext {
   /// Returns path to user level configuration file.
   Uri _getUserConfigPath() {
     final environment = Platform.environment;
-
-    var osConfigPath;
-
-    /// Load correct path for user level configuration paths  based on operating system.
+    String osConfigPath;
+    // Load correct path for user level configuration paths based on operating system.
     if (Platform.isMacOS) {
-      osConfigPath = Uri.parse(path.join(environment[kMacEnvVar], '.config'));
+      osConfigPath = path.join(environment[kMacEnvVar], '.config');
     } else if (Platform.isLinux) {
-      osConfigPath = Uri.parse(environment[kLinuxEnvVar]);
+      osConfigPath = environment[kLinuxEnvVar];
     } else if (Platform.isWindows) {
-      osConfigPath = Uri.parse(environment[kWindowsEnvVar]);
+      osConfigPath = environment[kWindowsEnvVar];
     } else {
       throw new DRAWInternalError('OS not Recognized by DRAW');
     }
-    return osConfigPath;
+    return Uri.parse(path.join(osConfigPath, kFileName));
   }
 
   /// Returns path to global configuration file.
@@ -352,6 +350,8 @@ class DRAWConfigContext {
 
   /// Returns path to local configuration file.
   Uri _getLocalConfigPath() {
-    return Uri.parse(kFileName);
+    final path.Context context = new path.Context();
+    final cwd = context.current;
+    return Uri.parse(path.join(cwd, kFileName));
   }
 }
