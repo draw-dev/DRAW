@@ -122,7 +122,6 @@ class DRAWConfigContext {
   String _userAgent;
   String _username;
 
-
   String get accessToken => _accessToken;
   String get authorizeUri => _authorizeUri;
   String get clientId => _clientId;
