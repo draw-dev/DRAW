@@ -19,10 +19,12 @@ import 'user.dart';
 /// users.
 class Reddit {
   /// The default [Uri] used to request an authorization token from Reddit.
-  static final Uri defaultTokenEndpoint = DRAWConfigContext.kDefaultAccessToken;
+  static final Uri defaultTokenEndpoint =
+      Uri.parse(DRAWConfigContext.kDefaultAccessToken);
 
   /// The default [Uri] used to authenticate an authorization token from Reddit.
-  static final Uri defaultAuthEndpoint = DRAWConfigContext.kDefaultAuthorizeUri;
+  static final Uri defaultAuthEndpoint =
+      Uri.parse(DRAWConfigContext.kDefaultAuthorizeUri);
 
   /// The default path to the Reddit API.
   static final String defaultOAuthApiEndpoint =
@@ -99,51 +101,49 @@ class Reddit {
       Uri redirectUri,
       Uri tokenEndpoint,
       Uri authEndpoint}) {
+    //Loading passed in values into config file.
     final DRAWConfigContext config = new DRAWConfigContext(
         clientId: clientId,
         clientSecret: clientSecret,
         userAgent: userAgent,
         username: username,
         password: password,
-        redirectUri: redirectUri,
-        accessToken: tokenEndpoint,
-        authorizeUri: authEndpoint);
+        redirectUri: redirectUri.toString(),
+        accessToken: tokenEndpoint.toString(),
+        authorizeUri: authEndpoint.toString());
 
-    if (clientId == null && config.clientId == null) {
+    if (config.clientId == null) {
       throw new DRAWAuthenticationError('clientId cannot be null.');
     }
-    if (clientSecret == null && config.clientSecret == null) {
+    if (config.clientSecret == null) {
       throw new DRAWAuthenticationError('clientSecret cannot be null.');
     }
-    if (userAgent == null && config.userAgent == null) {
+    if (config.userAgent == null) {
       throw new DRAWAuthenticationError('userAgent cannot be null.');
     }
 
-    final grant = new oauth2.AuthorizationCodeGrant(
-        clientId,
-        authEndpoint ?? defaultAuthEndpoint,
-        tokenEndpoint ?? defaultTokenEndpoint,
-        secret: clientSecret);
+    final grant = new oauth2.AuthorizationCodeGrant(config.clientId,
+        Uri.parse(config.authorizeUri), Uri.parse(config.accessToken),
+        secret: config.clientSecret);
 
-    if ((username == null && config.username == null) &&
-        (password == null && config.password == null) &&
-        (redirectUri == null && config.redirectUri == null)) {
+    if (config.username == null &&
+        config.password == null &&
+        config.redirectUri == null) {
       ReadOnlyAuthenticator
-          .create(grant, userAgent)
+          .create(grant, config.userAgent)
           .then(_initializationCallback);
       _readOnly = true;
-    } else if ((username != null && config.username == null) &&
-        (password != null && config.password == null)) {
+    } else if (config.username == null && config.password != null) {
       // Check if we are creating an authorized client.
       ScriptAuthenticator
-          .create(grant, userAgent, username, password)
+          .create(grant, config.userAgent, config.username, config.password)
           .then(_initializationCallback);
       _readOnly = false;
-    } else if ((username == null && config.username == null) &&
-        (password == null && config.password == null) &&
-        (redirectUri != null && config.redirectUri == null)) {
-      _initializationCallback(
-          WebAuthenticator.create(grant, userAgent, redirectUri));
+    } else if (config.username == null &&
+        config.password == null &&
+        config.redirectUri != null) {
+      _initializationCallback(WebAuthenticator.create(
+          grant, config.userAgent, Uri.parse(config.redirectUri)));
       _readOnly = false;
     } else {
       throw new DRAWUnimplementedError('Unsupported authentication type.');
