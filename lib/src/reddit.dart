@@ -99,9 +99,9 @@ class Reddit {
         userAgent: userAgent,
         username: username,
         password: password,
-        redirectUri: redirectUri.toString(),
+        redirectUrl: redirectUri.toString(),
         accessToken: tokenEndpoint.toString(),
-        authorizeUri: authEndpoint.toString());
+        authorizeUrl: authEndpoint.toString());
 
     if (config.clientId == null) {
       throw new DRAWAuthenticationError('clientId cannot be null.');
@@ -114,12 +114,12 @@ class Reddit {
     }
 
     final grant = new oauth2.AuthorizationCodeGrant(config.clientId,
-        Uri.parse(config.authorizeUri), Uri.parse(config.accessToken),
+        Uri.parse(config.authorizeUrl), Uri.parse(config.accessToken),
         secret: config.clientSecret);
 
     if (config.username == null &&
         config.password == null &&
-        config.redirectUri == null) {
+        config.redirectUrl == null) {
       ReadOnlyAuthenticator
           .create(grant, config.userAgent)
           .then(_initializationCallback);
@@ -132,9 +132,9 @@ class Reddit {
       _readOnly = false;
     } else if (config.username == null &&
         config.password == null &&
-        config.redirectUri != null) {
+        config.redirectUrl != null) {
       _initializationCallback(WebAuthenticator.create(
-          grant, config.userAgent, Uri.parse(config.redirectUri)));
+          grant, config.userAgent, Uri.parse(config.redirectUrl)));
       _readOnly = false;
     } else {
       throw new DRAWUnimplementedError('Unsupported authentication type.');

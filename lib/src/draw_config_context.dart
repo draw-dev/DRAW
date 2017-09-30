@@ -11,14 +11,14 @@ import 'package:path/path.dart' as path;
 import 'exceptions.dart';
 
 const String kAccessToken = 'access_token';
-const String kAuthorizeUri = 'authorize_uri';
+const String kAuthorizeUrl = 'authorize_uri';
 const String kCheckForUpdates = 'check_for_updates';
 const String kClientId = 'client_id';
 const String kClientSecret = 'client_secret';
 const String kComment = 'comment';
 const String kDefaultAccessToken =
     r'https://www.reddit.com/api/v1/access_token';
-const String kDefaultAuthorizeUri = r'https://reddit.com/api/v1/authorize';
+const String kDefaultAuthorizeUrl = r'https://reddit.com/api/v1/authorize';
 const String kDefaultOAuthUrl = r'oauth.reddit.com';
 const String kDefaultRedditUrl = 'https://www.reddit.com';
 const String kDefaultRevokeToken =
@@ -37,7 +37,7 @@ const String kOptionalWithDefaultValues = 'optional_with_default';
 const String kPassword = 'password';
 const String kRedditUrl = 'reddit_url';
 const String kRedditor = 'redditor';
-const String kRedirectUri = 'redirect_uri';
+const String kRedirectUrl = 'redirect_uri';
 const String kRefreshToken = 'refresh_token';
 const String kRequiredField = 'required_field';
 const String kRevokeToken = 'revoke_token';
@@ -77,14 +77,14 @@ class DRAWConfigContext {
       kClientSecret,
       kHttpProxy,
       kHttpsProxy,
-      kRedirectUri,
+      kRedirectUrl,
       kRefreshToken,
       kPassword,
       kUserAgent,
       kUsername,
     ],
     kOptionalWithDefaultValues: [
-      kAuthorizeUri,
+      kAuthorizeUrl,
       kAccessToken,
       kRevokeToken,
     ],
@@ -103,7 +103,7 @@ class DRAWConfigContext {
   bool checkForUpdates;
 
   String _accessToken;
-  String _authorizeUri;
+  String _authorizeUrl;
   String _clientId;
   String _clientSecret;
   String _httpProxy;
@@ -112,7 +112,7 @@ class DRAWConfigContext {
   String _password;
   String _primarySiteName;
   String _redditUrl;
-  String _redirectUri;
+  String _redirectUrl;
   String _refreshToken;
   String _revokeToken;
   String _shortURL;
@@ -120,7 +120,7 @@ class DRAWConfigContext {
   String _username;
 
   String get accessToken => _accessToken;
-  String get authorizeUri => _authorizeUri;
+  String get authorizeUrl => _authorizeUrl;
   String get clientId => _clientId;
   String get clientSecret => _clientSecret;
   String get httpProxy => _httpProxy;
@@ -128,7 +128,7 @@ class DRAWConfigContext {
   String get oauthUrl => _oauthUrl;
   String get password => _password;
   String get redditUrl => _redditUrl;
-  String get redirectUri => _redirectUri;
+  String get redirectUrl => _redirectUrl;
   String get refreshToken => _refreshToken;
   String get revokeToken => _revokeToken;
   String get userAgent => _userAgent;
@@ -158,9 +158,9 @@ class DRAWConfigContext {
     String userAgent,
     String username,
     String password,
-    String redirectUri,
+    String redirectUrl,
     String accessToken,
-    String authorizeUri,
+    String authorizeUrl,
     String siteName = 'default',
   }) {
     // Give passed in values highest precedence for assignment.
@@ -169,9 +169,9 @@ class DRAWConfigContext {
     _clientSecret = clientSecret ?? kNotSet;
     _username = username ?? kNotSet;
     _password = password ?? kNotSet;
-    _redirectUri = redirectUri ?? kNotSet;
+    _redirectUrl = redirectUrl ?? kNotSet;
     _accessToken = accessToken ?? kNotSet;
-    _authorizeUri = authorizeUri ?? kNotSet;
+    _authorizeUrl = authorizeUrl ?? kNotSet;
     _userAgent = userAgent ?? kNotSet;
 
     // Initialize Paths.
@@ -239,8 +239,8 @@ class DRAWConfigContext {
           case kHttpsProxy:
             _httpsProxy = value;
             break;
-          case kRedirectUri:
-            _redirectUri = value;
+          case kRedirectUrl:
+            _redirectUrl = value;
             break;
           case kRefreshToken:
             _refreshToken = value;
@@ -267,8 +267,8 @@ class DRAWConfigContext {
         case kAccessToken:
           _accessToken = value ?? kDefaultAccessToken;
           break;
-        case kAuthorizeUri:
-          _authorizeUri = value ?? kDefaultAuthorizeUri;
+        case kAuthorizeUrl:
+          _authorizeUrl = value ?? kDefaultAuthorizeUrl;
           break;
         case kRevokeToken:
           _revokeToken = value ?? kDefaultRevokeToken;
