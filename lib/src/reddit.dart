@@ -18,17 +18,8 @@ import 'user.dart';
 /// used to interact with Reddit posts, comments, subreddits, multireddits, and
 /// users.
 class Reddit {
-  /// The default [Uri] used to request an authorization token from Reddit.
-  static final Uri defaultTokenEndpoint =
-      Uri.parse(DRAWConfigContext.kDefaultAccessToken);
-
-  /// The default [Uri] used to authenticate an authorization token from Reddit.
-  static final Uri defaultAuthEndpoint =
-      Uri.parse(DRAWConfigContext.kDefaultAuthorizeUri);
-
-  /// The default path to the Reddit API.
-  static final String defaultOAuthApiEndpoint =
-      DRAWConfigContext.kDefaultOAuthUrl;
+  ///The default Url for the OAuthEndpoint
+  static final String defaultOAuthApiEndpoint = r'oauth.reddit.com';
 
   /// The default object kind mapping for [Comment].
   static final String defaultCommentKind = DRAWConfigContext.kCommentKind;

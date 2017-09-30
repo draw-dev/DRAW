@@ -53,22 +53,19 @@ final kNotSet = null;
 /// The [DRAWConfigContext] class provides an interface to store.
 /// Load the DRAW's configuration file draw.ini.
 class DRAWConfigContext {
-  static final String kDefaultAccessToken =
-      r'https://www.reddit.com/api/v1/access_token';
-  static final String kDefaultAuthorizeUri =
-      r'https://reddit.com/api/v1/authorize';
-  static final String kDefaultOAuthUrl = r'oauth.reddit.com';
-  static final String kDefaultRedditUri = r'https://www.reddit.com';
-  static final String kDefaultRevokeToken =
-      r'https://www.reddit.com/api/v1/revoke_token';
-  static final String kDefaultShortUri = r'https://redd.it';
-
-  // Object kind mapping for used for data array as a key.
-  // Provides context of value stored.
+  /// The default Object Mapping key for [Comment].
   static final String kCommentKind = 't1';
+
+  /// The default Object Mapping key for [Message].
   static final String kMessageKind = 't4';
+
+  /// The default Object Mapping key for [Redditor].
   static final String kRedditorKind = 't2';
+
+  /// The default Object Mapping key for [Submission].
   static final String kSubmissionKind = 't3';
+
+  /// The default Object Mapping key for [Subreddit].
   static final String kSubredditKind = 't5';
 
   static final Map<String, List<String>> fieldMap = {
