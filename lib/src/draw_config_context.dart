@@ -54,19 +54,19 @@ final kNotSet = null;
 /// Load the DRAW's configuration file draw.ini.
 class DRAWConfigContext {
   /// The default Object Mapping key for [Comment].
-  static final String kCommentKind = 't1';
+  static const String kCommentKind = 't1';
 
   /// The default Object Mapping key for [Message].
-  static final String kMessageKind = 't4';
+  static const String kMessageKind = 't4';
 
   /// The default Object Mapping key for [Redditor].
-  static final String kRedditorKind = 't2';
+  static const String kRedditorKind = 't2';
 
   /// The default Object Mapping key for [Submission].
-  static final String kSubmissionKind = 't3';
+  static const String kSubmissionKind = 't3';
 
   /// The default Object Mapping key for [Subreddit].
-  static final String kSubredditKind = 't5';
+  static const String kSubredditKind = 't5';
 
   static final Map<String, List<String>> fieldMap = {
     kShortUrl: [kShortUrl],
