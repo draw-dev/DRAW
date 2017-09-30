@@ -68,11 +68,11 @@ class DRAWConfigContext {
   /// The default Object Mapping key for [Subreddit].
   static const String kSubredditKind = 't5';
 
-  static final Map<String, List<String>> fieldMap = {
-    kShortUrl: [kShortUrl],
-    kCheckForUpdates: [kCheckForUpdates],
-    kKind: [kComment, kMessage, kRedditor, kSubmission, kSubreddit],
-    kOptionalField: [
+  static final Map<String, List<String>> fieldMap = const {
+    kShortUrl: const [kShortUrl],
+    kCheckForUpdates: const [kCheckForUpdates],
+    kKind: const [kComment, kMessage, kRedditor, kSubmission, kSubreddit],
+    kOptionalField: const [
       kClientId,
       kClientSecret,
       kHttpProxy,
@@ -83,12 +83,12 @@ class DRAWConfigContext {
       kUserAgent,
       kUsername,
     ],
-    kOptionalWithDefaultValues: [
+    kOptionalWithDefaultValues: const [
       kAuthorizeUrl,
       kAccessToken,
       kRevokeToken,
     ],
-    kRequiredField: [kOauthUrl, kRedditUrl]
+    kRequiredField: const [kOauthUrl, kRedditUrl]
   };
 
   /// Path to Local, User, Global Configuration Files, with matching precedence.
