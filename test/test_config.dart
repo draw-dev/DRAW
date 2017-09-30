@@ -9,7 +9,7 @@ void main() {
     expect(configContext.password, equals('pni9ubeht4wd50gk'));
     expect(configContext.username, equals('fakebot1'));
   });
-/*
+
   test('Testing non-default section.', () {
     final DRAWConfigContext configContext =
         new DRAWConfigContext(siteName: 'section');
@@ -34,15 +34,15 @@ void main() {
 
   test('Testing default values for unset parameters.', () {
     final DRAWConfigContext configContext = new DRAWConfigContext();
-    expect(configContext.shortUrl, equals(Uri.parse('https://redd.it')));
+    expect(configContext.shortUrl, equals('https://redd.it'));
     expect(configContext.checkForUpdates, equals(false));
     expect(configContext.revokeToken,
-        equals(Uri.parse('https://www.reddit.com/api/v1/revoke_token')));
-    expect(configContext.oauthUrl, equals('https://oauth.reddit.com'));
-    expect(configContext.authorizeUri,
-        equals(Uri.parse('https://reddit.com/api/v1/authorize')));
+        equals('https://www.reddit.com/api/v1/revoke_token'));
+    expect(configContext.oauthUrl, equals('oauth.reddit.com'));
+    expect(configContext.authorizeUrl,
+        equals('https://reddit.com/api/v1/authorize'));
     expect(configContext.accessToken,
-        equals(Uri.parse('https://www.reddit.com/api/v1/access_token')));
+        equals('https://www.reddit.com/api/v1/access_token'));
   });
 
   test('Test for CheckForUpdates Truth value check', () {
@@ -62,5 +62,4 @@ void main() {
         new DRAWConfigContext(siteName: 'testUpdateCheckFalse');
     expect(configContext4.checkForUpdates, equals(false));
   });
-  */
 }
