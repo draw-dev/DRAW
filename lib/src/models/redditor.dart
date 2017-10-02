@@ -26,6 +26,7 @@ class Redditor extends RedditBase
   String _path;
   static final _userRegExp = new RegExp(r'{user}');
 
+  String get displayName => _name;
   String get path => _path;
 
   Redditor.parse(Reddit reddit, Map data) : super.loadData(reddit, data) {

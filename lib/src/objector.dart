@@ -37,7 +37,7 @@ class Objector extends RedditBase {
     } else if (data.containsKey('sr') &&
         data.containsKey('comment_karma') &&
         data.containsKey('link_karma')) {
-      final subreddit = new Subreddit(reddit, data['sr']);
+      final subreddit = new Subreddit.parse(reddit, data['sr']);
       final value = {
         'commentKarma': data['comment_karma'],
         'linkKarma': data['link_karma'],

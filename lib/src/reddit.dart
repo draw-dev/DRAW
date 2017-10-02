@@ -152,13 +152,17 @@ class Reddit {
     return _objector.objectify(response);
   }
 
-  Future<dynamic> post(String api, Map<String, String> body) async {
+  Future<dynamic> post(String api, Map<String, String> body,
+      {bool discardResponse: false}) async {
     if (!(await initialized)) {
       throw new DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
     final path = new Uri.https(defaultOAuthApiEndpoint, api);
     final response = await auth.post(path, body);
+    if (discardResponse) {
+      return null;
+    }
     return _objector.objectify(response);
   }
 
