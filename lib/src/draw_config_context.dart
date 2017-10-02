@@ -11,6 +11,7 @@ import 'package:path/path.dart' as path;
 import 'exceptions.dart';
 
 const String kAccessToken = 'access_token';
+//TODO: (@kc3454) Think about changing the name for this variable since it isn't a URL.
 const String kAuthorizeUrl = 'authorize_uri';
 const String kCheckForUpdates = 'check_for_updates';
 const String kClientId = 'client_id';
@@ -68,7 +69,7 @@ class DRAWConfigContext {
   /// The default Object Mapping key for [Subreddit].
   static const String kSubredditKind = 't5';
 
-  static final Map<String, List<String>> fieldMap = const {
+  static const Map<String, List<String>> fieldMap = const {
     kShortUrl: const [kShortUrl],
     kCheckForUpdates: const [kCheckForUpdates],
     kKind: const [kComment, kMessage, kRedditor, kSubmission, kSubreddit],
