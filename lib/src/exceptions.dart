@@ -10,10 +10,11 @@ class DRAWAuthenticationError implements Exception {
   String toString() => 'DRAWAuthenticationError: $message';
 }
 
-/// Thrown by unfinished code that hasn't yet implemented all the features it
-/// needs.
-class DRAWUnimplementedError extends UnimplementedError {
-  DRAWUnimplementedError([String message]) : super(message);
+/// Thrown due to invalid arguments being provided to a DRAW method.
+class DRAWArgumentError implements Exception {
+  DRAWArgumentError(this.message);
+  String message;
+  String toString() => 'DRAWArgumentError: $message';
 }
 
 /// Thrown due to a fatal error encountered inside DRAW. If you're not adding
@@ -31,4 +32,16 @@ class DRAWClientError implements Exception {
   String message;
   String toString() =>
       'DRAWClientError: $message This is likely due to issues with your ini file.';
+
+class DRAWRedirectResponse implements Exception {
+  final String path;
+  final response;
+  DRAWRedirectResponse(this.path, this.response);
+  String toString() => 'DRAWRedirectResponse: Unexpected redirect to ${path}.';
+}
+
+/// Thrown by unfinished code that hasn't yet implemented all the features it
+/// needs.
+class DRAWUnimplementedError extends UnimplementedError {
+  DRAWUnimplementedError([String message]) : super(message);
 }

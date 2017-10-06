@@ -11,6 +11,7 @@ class RedditBase {
   final RegExp _snakecaseRegExp = new RegExp("[A-Z]");
   Map _data;
   Map get data => _data;
+  String get infoPath => _infoPath;
   String _infoPath;
 
   RedditBase(this.reddit);

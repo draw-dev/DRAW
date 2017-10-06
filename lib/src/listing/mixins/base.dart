@@ -21,7 +21,7 @@ enum TimeFilter {
   year,
 }
 
-String _timeFilterToString(TimeFilter filter) {
+String timeFilterToString(TimeFilter filter) {
   switch (filter) {
     case TimeFilter.all:
       return 'all';
@@ -68,7 +68,7 @@ abstract class BaseListingMixin {
       throw new UnimplementedError();
     }
     final _params = params ?? new Map();
-    _params['t'] = _timeFilterToString(timeFilter);
+    _params['t'] = timeFilterToString(timeFilter);
     return _buildGenerator(_params, sort);
   }
 

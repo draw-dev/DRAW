@@ -43,9 +43,15 @@ class Objector extends RedditBase {
         'linkKarma': data['link_karma'],
       };
       return {subreddit: value};
+    } else if ((data.length == 3) &&
+        data.containsKey('day') &&
+        data.containsKey('hour') &&
+        data.containsKey('month')) {
+      // Subreddit.traffic() response is just a map.
+      return data;
     } else {
-      print(new JsonEncoder.withIndent('  ').convert(data));
-      throw new DRAWUnimplementedError('Cannot objectify unsupported response');
+      throw new DRAWUnimplementedError('Cannot objectify unsupported'
+          ' response:\n$data');
     }
   }
 
@@ -102,6 +108,14 @@ class Objector extends RedditBase {
       }
       throw new DRAWUnimplementedError('response kind, ${kind}, is not '
           'currently implemented.');
+    } else if (data.containsKey('json') && data['json'].containsKey('data')) {
+      // Response from Subreddit.submit.
+      if (data['json']['data'].containsKey('url')) {
+        return new Submission.parse(reddit, data['json']['data']);
+      } else {
+        // TODO(bkonyi): better error message here.
+        throw new DRAWUnimplementedError('Invalid json response');
+      }
     }
     return _objectifyDictionary(data);
   }

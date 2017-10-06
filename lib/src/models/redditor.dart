@@ -25,7 +25,6 @@ class Redditor extends RedditBase
   String _name;
   String _path;
   static final _userRegExp = new RegExp(r'{user}');
-
   String get displayName => _name;
   String get path => _path;
 

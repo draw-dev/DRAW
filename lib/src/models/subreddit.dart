@@ -4,6 +4,7 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:math';
 
 import '../api_paths.dart';
 import '../base.dart';
@@ -16,10 +17,10 @@ import '../listing/mixins/subreddit.dart';
 import '../reddit.dart';
 import '../util.dart';
 import 'comment.dart';
+import 'mixins/messageable.dart';
 import 'redditor.dart';
 import 'submission.dart';
 import 'user_content.dart';
-import 'mixins/messageable.dart';
 
 /// A class representing a particular Reddit community, also known as a
 /// Subreddit.
@@ -38,7 +39,7 @@ class Subreddit extends RedditBase
   ModeratorRelationship _moderator;
   Modmail _modmail;
   SubredditRelationship _muted;
-  SubredditQuarantine _quaran;
+  SubredditQuarantine _quarantine;
   SubredditStream _stream;
   SubredditStyleSheet _stylesheet;
   SubredditWiki _wiki;
@@ -107,11 +108,11 @@ class Subreddit extends RedditBase
     return _muted;
   }
 
-  SubredditQuarantine get quaran {
-    if (_quaran == null) {
-      _quaran = new SubredditQuarantine(this);
+  SubredditQuarantine get quarantine {
+    if (_quarantine == null) {
+      _quarantine = new SubredditQuarantine(this);
     }
-    return _quaran;
+    return _quarantine;
   }
 
   SubredditStream get stream {
@@ -156,14 +157,19 @@ class Subreddit extends RedditBase
 
   /// Returns a random submission from the [Subreddit].
   Future<Submission> random() async {
-    throw new DRAWUnimplementedError();
+    try {
+      await reddit
+          .get(apiPath['subreddit_random'].replaceAll(_subredditRegExp, _name));
+    } on DRAWRedirectResponse catch (e) {
+      // We expect this request to redirect to our random submission.
+      return new Submission.withPath(reddit, e.path);
+    }
   }
 
   /// Return the rules for the subreddit.
   Future<String> rules() async =>
       reddit.get(apiPath['rules'].replaceAll(_subredditRegExp, _name));
 
-  // TODO(bkonyi): implement.
   // TODO(bkonyi): use enums for some of these?
   /// Returns a [Stream] of [UserContent] that match [query].
   ///
@@ -174,21 +180,35 @@ class Subreddit extends RedditBase
   Stream<UserContent> search(String query,
       {String sort: 'relevance',
       String syntax: 'lucene',
-      String timeFilter = 'all',
+      TimeFilter timeFilter: TimeFilter.all,
       Map params}) {
-    throw new DRAWUnimplementedError();
+    final timeStr = timeFilterToString(timeFilter);
+    final isNotAll = !(_name.toLowerCase() == 'all');
+    final data = (params != null) ? new Map.from(params) : new Map();
+    data['q'] = query;
+    data['restrict_sr'] = isNotAll.toString();
+    data['sort'] = sort;
+    data['syntax'] = syntax;
+    data['t'] = timeStr;
+    return ListingGenerator.createBasicGenerator(
+        reddit, apiPath['search'].replaceAll(_subredditRegExp, _name),
+        params: data);
   }
 
-  // TODO(bkonyi): implement.
   /// Return a [Submission] that has been stickied on the subreddit.
   ///
   /// [number] is used to specify which stickied [Submission] to return, where 1
   /// corresponds to the top sticky, 2 the second, etc.
-  Future<Submission> sticky({int number = 1}) {
-    throw new DRAWUnimplementedError();
+  Future<Submission> sticky({int number = 1}) async {
+    try {
+      await reddit.get(
+          apiPath['about_sticky'].replaceAll(_subredditRegExp, _name),
+          params: {'num': number.toString()});
+    } on DRAWRedirectResponse catch (e) {
+      return new Submission.withPath(reddit, e.path);
+    }
   }
 
-  // TODO(bkonyi): implement.
   /// Yield [Submission]s created between [start] and [end].
   ///
   /// [start] and [end] indicate the earliest and latest creation times
@@ -196,10 +216,48 @@ class Subreddit extends RedditBase
   /// results.
   Stream<Submission> submissions(
       {DateTime start, DateTime end, String extraQuery}) async* {
-    throw new DRAWUnimplementedError();
+    // Calculate the correct time range with respect to PST time.
+    const utcOffset = 60 * 60 * 8; // Offset for PST from UTC.
+    final currentTime =
+        (new DateTime.now().millisecondsSinceEpoch / 1000).round() + utcOffset;
+    final startSec = max(
+        (start != null)
+            ? ((start.millisecondsSinceEpoch / 1000).round() + utcOffset)
+            : 0,
+        0);
+    var endSec = min(
+        ((end != null)
+            ? (end.millisecondsSinceEpoch / 1000).round() + utcOffset
+            : currentTime),
+        currentTime);
+
+    var foundNewSubmission = true;
+    var lastIds = new Set();
+    final params = {};
+    var count = 0;
+    while (foundNewSubmission) {
+      var query = 'timestamp:$startSec..$endSec';
+      if (extraQuery != null) {
+        query = '(and $query $extraQuery)';
+      }
+      var currentIds = new Set();
+      foundNewSubmission = false;
+      await for (final submission in search(query,
+          params: params, sort: 'new', syntax: 'cloudsearch')) {
+        final id = await submission.property('id');
+        currentIds.add(id);
+        endSec = min(endSec, (await submission.property('created')).round());
+        if (!lastIds.contains(id)) {
+          foundNewSubmission = true;
+        }
+        yield submission;
+        ++count;
+        params['after'] = await submission.property('name');
+      }
+      lastIds = currentIds;
+    }
   }
 
-  // TODO(bkonyi): implement.
   /// Creates a [Submission] on the [Subreddit].
   ///
   /// [title] is the title of the submission. [selftext] is markdown formatted
@@ -219,16 +277,49 @@ class Subreddit extends RedditBase
       String flairText,
       bool resubmit: true,
       bool sendReplies: true}) async {
-    throw new DRAWUnimplementedError();
+    if ((selftext == null && url == null) ||
+        (selftext != null && url != null)) {
+      throw new DRAWArgumentError('One of either selftext or url must be '
+          'provided');
+    }
+
+    final data = {
+      'api_type': 'json',
+      'sr': displayName,
+      'resubmit': resubmit.toString(),
+      'sendreplies': sendReplies.toString(),
+      'title': title,
+    };
+
+    if (flairId != null) {
+      data['flair_id'] = flairId;
+    }
+
+    if (flairText != null) {
+      data['flair_text'] = flairText;
+    }
+
+    if (selftext != null) {
+      data['kind'] = 'self';
+      data['text'] = selftext;
+    } else {
+      data['kind'] = 'link';
+      data['url'] = url;
+    }
+    return reddit.post(apiPath['submit'], data);
   }
 
-  // TODO(bkonyi): implement.
   /// Subscribes to the subreddit.
   ///
   /// When [otherSubreddits] is provided, the provided subreddits will also be
   /// subscribed to.
   Future subscribe({List<Subreddit> otherSubreddits}) {
-    throw new DRAWUnimplementedError();
+    final data = {
+      'action': 'sub',
+      'skip_initial_defaults': 'true',
+      'sr_name': _subredditList(this, otherSubreddits),
+    };
+    reddit.post(apiPath['subscribe'], data, discardResponse: true);
   }
 
   /// Returns a dictionary of the [Subreddit]'s traffic statistics.
@@ -238,17 +329,32 @@ class Subreddit extends RedditBase
   Future<Map> traffic() async =>
       reddit.get(apiPath['about_traffic'].replaceAll(_subredditRegExp, _name));
 
-  // TODO(bkonyi): implement.
   /// Unsubscribes from the subreddit.
   ///
   /// When [otherSubreddits] is provided, the provided subreddits will also be
   /// unsubscribed from.
   Future unsubscribe({List<Subreddit> otherSubreddits}) async {
-    throw new DRAWUnimplementedError();
+    final data = {
+      'action': 'unsub',
+      'sr_name': _subredditList(this, otherSubreddits),
+    };
+    reddit.post(apiPath['subscribe'], data, discardResponse: true);
   }
 
   static String _generateInfoPath(String name) =>
       apiPath['subreddit_about'].replaceAll(_subredditRegExp, name);
+
+  static String _subredditList(Subreddit subreddit, [List<Subreddit> others]) {
+    if (others != null) {
+      final srs = <String>[];
+      srs.add(subreddit.displayName);
+      others.forEach((s) {
+        srs.add(s.displayName);
+      });
+      return srs.join(',');
+    }
+    return subreddit.displayName;
+  }
 }
 
 // TODO(bkonyi): implement.

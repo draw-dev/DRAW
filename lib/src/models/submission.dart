@@ -7,5 +7,13 @@ import '../reddit.dart';
 import 'user_content.dart';
 
 class Submission extends UserContent {
-  Submission.parse(Reddit reddit, Map data) : super.loadData(reddit, data);
+  final String _id;
+  final String _name;
+  Submission.parse(Reddit reddit, Map data)
+      : _id = data['id'],
+        _name = data['name'],
+        super.loadData(reddit, data);
+
+  Submission.withPath(Reddit reddit, String path)
+      : super.withPath(reddit, path);
 }
