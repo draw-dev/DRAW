@@ -11,12 +11,11 @@ import 'package:path/path.dart' as path;
 import 'exceptions.dart';
 
 const String kAccessToken = 'access_token';
-//TODO: (@kc3454) Think about changing the name for this variable since it isn't a URL.
-const String kAuthorizeUrl = 'authorize_uri';
+const String kAuthorize = 'authorize_uri';
 const String kCheckForUpdates = 'check_for_updates';
 const String kClientId = 'client_id';
 const String kClientSecret = 'client_secret';
-const String kComment = 'comment';
+const String kComment = 'comment_kind';
 const String kDefaultAccessToken =
     r'https://www.reddit.com/api/v1/access_token';
 const String kDefaultAuthorizeUrl = r'https://reddit.com/api/v1/authorize';
@@ -31,20 +30,20 @@ const String kHttpsProxy = 'https_proxy';
 const String kKind = 'kind';
 const String kLinuxEnvVar = 'XDG_CONFIG_HOME';
 const String kMacEnvVar = 'HOME';
-const String kMessage = 'message';
+const String kMessage = 'message_kind';
 const String kOauthUrl = 'oauth_url';
 const String kOptionalField = 'optional_field';
 const String kOptionalWithDefaultValues = 'optional_with_default';
 const String kPassword = 'password';
 const String kRedditUrl = 'reddit_url';
-const String kRedditor = 'redditor';
+const String kRedditor = 'redditor_kind';
 const String kRedirectUrl = 'redirect_uri';
 const String kRefreshToken = 'refresh_token';
 const String kRequiredField = 'required_field';
 const String kRevokeToken = 'revoke_token';
 const String kShortUrl = 'short_url';
-const String kSubmission = 'submission';
-const String kSubreddit = 'subreddit';
+const String kSubmission = 'submission_kind';
+const String kSubreddit = 'subreddit_kind';
 const String kUserAgent = 'user_agent';
 const String kUsername = 'username';
 const String kWindowsEnvVar = 'APPDATA';
@@ -85,7 +84,7 @@ class DRAWConfigContext {
       kUsername,
     ],
     kOptionalWithDefaultValues: const [
-      kAuthorizeUrl,
+      kAuthorize,
       kAccessToken,
       kRevokeToken,
     ],
@@ -99,7 +98,7 @@ class DRAWConfigContext {
 
   Config _customConfig;
 
-  Map<String, String> custom;
+  Map<String, String> _kind;
 
   bool checkForUpdates;
 
@@ -124,14 +123,19 @@ class DRAWConfigContext {
   String get authorizeUrl => _authorizeUrl;
   String get clientId => _clientId;
   String get clientSecret => _clientSecret;
+  String get commentKind => _kind[kComment] ?? kCommentKind;
   String get httpProxy => _httpProxy;
   String get httpsProxy => _httpsProxy;
+  String get messageKind => _kind[kMessage] ?? kMessage;
   String get oauthUrl => _oauthUrl;
   String get password => _password;
   String get redditUrl => _redditUrl;
+  String get redditorKind => _kind[kRedditor] ?? kRedditor;
   String get redirectUrl => _redirectUrl;
   String get refreshToken => _refreshToken;
   String get revokeToken => _revokeToken;
+  String get submissionKind => _kind[kSubmission] ?? kSubmissionKind;
+  String get subredditKind => _kind[kSubreddit] ?? kSubredditKind;
   String get userAgent => _userAgent;
   String get username => _username;
 
@@ -152,7 +156,6 @@ class DRAWConfigContext {
   /// [_userAgent] is an arbitrary identifier used by the Reddit API to differentiate
   /// between client instances. Should be unique for example related to [siteName].
   ///
-  /// TODO(kc3454): add ability to pass in additional prams directly.
   DRAWConfigContext({
     String clientId,
     String clientSecret,
@@ -223,7 +226,10 @@ class DRAWConfigContext {
     } else if (type == kCheckForUpdates) {
       checkForUpdates = _configBool(_fetchOrNotSet('check_for_updates'));
     } else if (type == kKind) {
-      // TODO(kc3454): Learn how to do this one.
+      final value = _fetchOrNotSet(param);
+      if (value != null) {
+        _kind[param] = value;
+      }
     } else if (type == kOptionalField) {
       final value = _fetchOrNotSet(param);
       if (value != null) {
@@ -268,7 +274,7 @@ class DRAWConfigContext {
         case kAccessToken:
           _accessToken = value ?? kDefaultAccessToken;
           break;
-        case kAuthorizeUrl:
+        case kAuthorize:
           _authorizeUrl = value ?? kDefaultAuthorizeUrl;
           break;
         case kRevokeToken:
