@@ -29,7 +29,16 @@ class RedditBase {
 
   Future property(String key) async {
     if (_data == null) {
-      _data = await _fetch();
+      final response = await _fetch();
+      if (response is Map) {
+        _data = response;
+      } else if (response is List) {
+        // TODO(bkonyi): this is for populating a Submission, since requesting
+        // Submission returns a list of listings, containing a Submission at [0]
+        // and a listing of Comments at [1]. This probably needs to be changed
+        // at some point to be a bit more robust, but it works for now.
+        _data = response[0]['listing'][0].data;
+      }
       // TODO(bkonyi): should we throw an exception here instead?
       assert(_data != null);
     }

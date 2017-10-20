@@ -6,14 +6,14 @@
 /// Thrown when there is an error during the authentication flow.
 class DRAWAuthenticationError implements Exception {
   DRAWAuthenticationError(this.message);
-  String message;
+  final String message;
   String toString() => 'DRAWAuthenticationError: $message';
 }
 
 /// Thrown due to invalid arguments being provided to a DRAW method.
 class DRAWArgumentError implements Exception {
   DRAWArgumentError(this.message);
-  String message;
+  final String message;
   String toString() => 'DRAWArgumentError: $message';
 }
 
@@ -22,16 +22,17 @@ class DRAWArgumentError implements Exception {
 /// bug at github.com/draw-dev/DRAW/issues.
 class DRAWInternalError implements Exception {
   DRAWInternalError(this.message);
-  String message;
+  final String message;
   String toString() => 'DRAWInternalError: $message';
 }
 
 /// Thrown due to a error on the side of the client due to incorrect integration of DRAW.
 class DRAWClientError implements Exception {
   DRAWClientError(this.message);
-  String message;
+  final String message;
   String toString() =>
       'DRAWClientError: $message This is likely due to issues with your ini file.';
+}
 
 class DRAWRedirectResponse implements Exception {
   final String path;

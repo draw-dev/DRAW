@@ -22,6 +22,25 @@ import 'redditor.dart';
 import 'submission.dart';
 import 'user_content.dart';
 
+enum SearchSyntax {
+  cloudSearch,
+  lucene,
+  plain,
+}
+
+String searchSyntaxToString(SearchSyntax s) {
+  switch (s) {
+    case SearchSyntax.cloudSearch:
+      return 'cloudsearch';
+    case SearchSyntax.lucene:
+      return 'lucene';
+    case SearchSyntax.plain:
+      return 'plain';
+    default:
+      throw new DRAWInternalError('SearchSyntax $s is not supported');
+  }
+}
+
 /// A class representing a particular Reddit community, also known as a
 /// Subreddit.
 class Subreddit extends RedditBase
@@ -164,13 +183,13 @@ class Subreddit extends RedditBase
       // We expect this request to redirect to our random submission.
       return new Submission.withPath(reddit, e.path);
     }
+    return null; // Shut the analyzer up.
   }
 
   /// Return the rules for the subreddit.
-  Future<String> rules() async =>
+  Future<List<Rule>> rules() async =>
       reddit.get(apiPath['rules'].replaceAll(_subredditRegExp, _name));
 
-  // TODO(bkonyi): use enums for some of these?
   /// Returns a [Stream] of [UserContent] that match [query].
   ///
   /// [query] is the query string to be searched for. [sort] can be one of:
@@ -178,8 +197,8 @@ class Subreddit extends RedditBase
   /// 'lucene', 'plain'. [timeFilter] can be one of: all, day, hour, month,
   /// week, year.
   Stream<UserContent> search(String query,
-      {String sort: 'relevance',
-      String syntax: 'lucene',
+      {Sort sort: Sort.relevance,
+      SearchSyntax syntax: SearchSyntax.lucene,
       TimeFilter timeFilter: TimeFilter.all,
       Map params}) {
     final timeStr = timeFilterToString(timeFilter);
@@ -187,8 +206,8 @@ class Subreddit extends RedditBase
     final data = (params != null) ? new Map.from(params) : new Map();
     data['q'] = query;
     data['restrict_sr'] = isNotAll.toString();
-    data['sort'] = sort;
-    data['syntax'] = syntax;
+    data['sort'] = sortToString(sort);
+    data['syntax'] = searchSyntaxToString(syntax);
     data['t'] = timeStr;
     return ListingGenerator.createBasicGenerator(
         reddit, apiPath['search'].replaceAll(_subredditRegExp, _name),
@@ -207,6 +226,7 @@ class Subreddit extends RedditBase
     } on DRAWRedirectResponse catch (e) {
       return new Submission.withPath(reddit, e.path);
     }
+    return null; // Shut the analyzer up.
   }
 
   /// Yield [Submission]s created between [start] and [end].
@@ -234,16 +254,17 @@ class Subreddit extends RedditBase
     var foundNewSubmission = true;
     var lastIds = new Set();
     final params = {};
-    var count = 0;
     while (foundNewSubmission) {
       var query = 'timestamp:$startSec..$endSec';
       if (extraQuery != null) {
         query = '(and $query $extraQuery)';
       }
-      var currentIds = new Set();
+      final currentIds = new Set();
       foundNewSubmission = false;
       await for (final submission in search(query,
-          params: params, sort: 'new', syntax: 'cloudsearch')) {
+          params: params,
+          sort: Sort.newest,
+          syntax: SearchSyntax.cloudSearch)) {
         final id = await submission.property('id');
         currentIds.add(id);
         endSec = min(endSec, (await submission.property('created')).round());
@@ -251,7 +272,6 @@ class Subreddit extends RedditBase
           foundNewSubmission = true;
         }
         yield submission;
-        ++count;
         params['after'] = await submission.property('name');
       }
       lastIds = currentIds;
@@ -320,6 +340,7 @@ class Subreddit extends RedditBase
       'sr_name': _subredditList(this, otherSubreddits),
     };
     reddit.post(apiPath['subscribe'], data, discardResponse: true);
+    return null; // Shut the analyzer up.
   }
 
   /// Returns a dictionary of the [Subreddit]'s traffic statistics.
@@ -338,7 +359,7 @@ class Subreddit extends RedditBase
       'action': 'unsub',
       'sr_name': _subredditList(this, otherSubreddits),
     };
-    reddit.post(apiPath['subscribe'], data, discardResponse: true);
+    await reddit.post(apiPath['subscribe'], data, discardResponse: true);
   }
 
   static String _generateInfoPath(String name) =>
@@ -423,8 +444,10 @@ class SubredditRelationship {
   SubredditRelationship(this._subreddit, this.relationship);
 
   Stream<Redditor> call({/* String, Redditor */ redditor, Map params}) {
-    final data = new Map.from(params);
-    data['user'] = _redditorNameHelper(redditor);
+    final data = (params != null) ? new Map.from(params) : null;
+    if (redditor != null) {
+      data['user'] = _redditorNameHelper(redditor);
+    }
     return ListingGenerator.createBasicGenerator(
         _subreddit.reddit,
         apiPath['list_${relationship}']
@@ -460,11 +483,55 @@ class SubredditRelationship {
     if (redditor is Redditor) {
       return redditor.displayName;
     } else if (redditor is! String) {
-      // TODO(bkonyi): create DRAWArgumentError.
-      throw new DRAWUnimplementedError('Parameter redditor must be either a'
+      throw new DRAWArgumentError('Parameter redditor must be either a'
           'String or Redditor');
     }
     return redditor;
+  }
+}
+
+/// Contains [Subreddit] traffic information for a specific time slice.
+/// [uniques] is the number of unique visitors during the period, [pageviews] is
+/// the total number of page views during the period, and [subscriptions] is the
+/// total number of new subscriptions during the period. [subscriptions] is only
+/// non-zero for time slices the length of one day. All time slices are
+/// in UTC time and can be found in [periodStart], with valid slices being
+/// either one hour, one day, or one month.
+class SubredditTraffic {
+  final DateTime periodStart;
+  final int pageviews;
+  final int subscriptions;
+  final int uniques;
+
+  static Map<String, List<SubredditTraffic>> parseTrafficResponse(
+      Map response) {
+    return {
+      'hour': _generateTrafficList(response['hour']),
+      'day': _generateTrafficList(response['day'], isDay: true),
+      'month': _generateTrafficList(response['month']),
+    };
+  }
+
+  static List<SubredditTraffic> _generateTrafficList(List<List<int>> values,
+      {bool isDay = false}) {
+    final traffic = <SubredditTraffic>[];
+    for (final entry in values) {
+      traffic.add(new SubredditTraffic(entry));
+    }
+    return traffic;
+  }
+
+  SubredditTraffic(List<int> rawTraffic, {bool isDay = false})
+      : pageviews = rawTraffic[2],
+        periodStart =
+            new DateTime.fromMillisecondsSinceEpoch(rawTraffic[0] * 1000)
+                .toUtc(),
+        subscriptions = (isDay ? rawTraffic[3] : 0),
+        uniques = rawTraffic[1];
+
+  String toString() {
+    return '${periodStart.toUtc()} => unique visits: $uniques, page views: $pageviews'
+        ' subscriptions: $subscriptions';
   }
 }
 
@@ -500,6 +567,34 @@ class Modmail {
   Modmail(this._subreddit) {
     throw new DRAWUnimplementedError();
   }
+}
+
+/// A wrapper class for a [Rule] of a [Subreddit].
+class Rule {
+  bool get isLink => _isLink;
+  String get description => _description;
+  String get shortName => _shortName;
+  String get violationReason => _violationReason;
+  double get createdUtc => _createdUtc;
+  int get priority => _priority;
+
+  bool _isLink;
+  String _description;
+  String _shortName;
+  String _violationReason;
+  double _createdUtc;
+  int _priority;
+
+  Rule.parse(Map data) {
+    _isLink = (data['kind'] == 'link');
+    _description = data['description'];
+    _shortName = data['short_name'];
+    _violationReason = data['violation_reason'];
+    _createdUtc = data['created_utc'];
+    _priority = data['priority'];
+  }
+
+  String toString() => '$_shortName: $_violationReason';
 }
 
 /// Provides [Comment] and [Submission] streams for the subreddit.

@@ -41,6 +41,31 @@ String timeFilterToString(TimeFilter filter) {
   }
 }
 
+enum Sort {
+  relevance,
+  hot,
+  top,
+  newest,
+  comments,
+}
+
+String sortToString(Sort sort) {
+  switch (sort) {
+    case Sort.relevance:
+      return 'relevance';
+    case Sort.hot:
+      return 'hot';
+    case Sort.top:
+      return 'top';
+    case Sort.newest:
+      return 'new';
+    case Sort.comments:
+      return 'comments';
+    default:
+      throw new DRAWInternalError('Sort $sort is not supported');
+  }
+}
+
 abstract class BaseListingMixin {
   Reddit get reddit;
   String get path;

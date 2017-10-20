@@ -159,6 +159,7 @@ class DRAWConfigContext {
     Uri authorizeUri,
     String siteName = 'default',
   }) {
+    return;
     // Give passed in values highest precedence for assignment.
     _primarySiteName = siteName;
     _clientId = clientId ?? kNotSet;

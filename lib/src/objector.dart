@@ -3,8 +3,6 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
-import 'dart:convert';
-
 import 'base.dart';
 import 'exceptions.dart';
 import 'reddit.dart';
@@ -47,8 +45,13 @@ class Objector extends RedditBase {
         data.containsKey('day') &&
         data.containsKey('hour') &&
         data.containsKey('month')) {
-      // Subreddit.traffic() response is just a map.
-      return data;
+      return SubredditTraffic.parseTrafficResponse(data);
+    } else if (data.containsKey('rules')) {
+      final rules = <Rule>[];
+      for (final rawRule in data['rules']) {
+        rules.add(new Rule.parse(rawRule));
+      }
+      return rules;
     } else {
       throw new DRAWUnimplementedError('Cannot objectify unsupported'
           ' response:\n$data');
@@ -58,7 +61,7 @@ class Objector extends RedditBase {
   List _objectifyList(List listing) {
     final objectifiedListing = new List(listing.length);
     for (var i = 0; i < listing.length; ++i) {
-      objectifiedListing[i] = _objectifyDictionary(listing[i]);
+      objectifiedListing[i] = objectify(listing[i]);
     }
     return objectifiedListing;
   }
@@ -105,6 +108,8 @@ class Objector extends RedditBase {
         // Account information about a redditor who isn't the currently
         // authenticated user.
         return data['data'];
+      } else {
+        return _objectifyDictionary(data);
       }
       throw new DRAWUnimplementedError('response kind, ${kind}, is not '
           'currently implemented.');
