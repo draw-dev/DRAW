@@ -30,7 +30,8 @@ class Redditor extends RedditBase
 
   Redditor.parse(Reddit reddit, Map data) : super.loadData(reddit, data) {
     if (!data.containsKey('name') &&
-        !(data.containsKey('kind') && data['kind'] == 't2')) {
+        !(data.containsKey('kind') &&
+            data['kind'] == Reddit.defaultRedditorKind)) {
       // TODO(bkonyi) throw invalid object exception
       throw new DRAWUnimplementedError();
     }

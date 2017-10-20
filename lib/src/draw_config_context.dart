@@ -11,14 +11,14 @@ import 'package:path/path.dart' as path;
 import 'exceptions.dart';
 
 const String kAccessToken = 'access_token';
-const String kAuthorizeUri = 'authorize_uri';
+const String kAuthorize = 'authorize_uri';
 const String kCheckForUpdates = 'check_for_updates';
 const String kClientId = 'client_id';
 const String kClientSecret = 'client_secret';
-const String kComment = 'comment';
+const String kComment = 'comment_kind';
 const String kDefaultAccessToken =
     r'https://www.reddit.com/api/v1/access_token';
-const String kDefaultAuthorizeUri = r'https://reddit.com/api/v1/authorize';
+const String kDefaultAuthorizeUrl = r'https://reddit.com/api/v1/authorize';
 const String kDefaultOAuthUrl = r'oauth.reddit.com';
 const String kDefaultRedditUrl = 'https://www.reddit.com';
 const String kDefaultRevokeToken =
@@ -30,20 +30,20 @@ const String kHttpsProxy = 'https_proxy';
 const String kKind = 'kind';
 const String kLinuxEnvVar = 'XDG_CONFIG_HOME';
 const String kMacEnvVar = 'HOME';
-const String kMessage = 'message';
+const String kMessage = 'message_kind';
 const String kOauthUrl = 'oauth_url';
 const String kOptionalField = 'optional_field';
 const String kOptionalWithDefaultValues = 'optional_with_default';
 const String kPassword = 'password';
 const String kRedditUrl = 'reddit_url';
-const String kRedditor = 'redditor';
-const String kRedirectUri = 'redirect_uri';
+const String kRedditor = 'redditor_kind';
+const String kRedirectUrl = 'redirect_uri';
 const String kRefreshToken = 'refresh_token';
 const String kRequiredField = 'required_field';
 const String kRevokeToken = 'revoke_token';
 const String kShortUrl = 'short_url';
-const String kSubmission = 'submission';
-const String kSubreddit = 'subreddit';
+const String kSubmission = 'submission_kind';
+const String kSubreddit = 'subreddit_kind';
 const String kUserAgent = 'user_agent';
 const String kUsername = 'username';
 const String kWindowsEnvVar = 'APPDATA';
@@ -53,37 +53,42 @@ final kNotSet = null;
 /// The [DRAWConfigContext] class provides an interface to store.
 /// Load the DRAW's configuration file draw.ini.
 class DRAWConfigContext {
-  static final Uri kDefaultAccessToken =
-      Uri.parse(r'https://www.reddit.com/api/v1/access_token');
-  static final Uri kDefaultAuthorizeUri =
-      Uri.parse(r'https://reddit.com/api/v1/authorize');
-  static final String kDefaultOAuthUrl = r'oauth.reddit.com';
-  static final Uri kDefaultRedditUri = Uri.parse(r'https://www.reddit.com');
-  static final Uri kDefaultRevokeToken =
-      Uri.parse(r'https://www.reddit.com/api/v1/revoke_token');
-  static final Uri kDefaultShortUri = Uri.parse(r'https://redd.it');
+  /// The default Object Mapping key for [Comment].
+  static const String kCommentKind = 't1';
 
-  static final Map<String, List<String>> fieldMap = {
-    kShortUrl: [kShortUrl],
-    kCheckForUpdates: [kCheckForUpdates],
-    kKind: [kComment, kMessage, kRedditor, kSubmission, kSubreddit],
-    kOptionalField: [
+  /// The default Object Mapping key for [Message].
+  static const String kMessageKind = 't4';
+
+  /// The default Object Mapping key for [Redditor].
+  static const String kRedditorKind = 't2';
+
+  /// The default Object Mapping key for [Submission].
+  static const String kSubmissionKind = 't3';
+
+  /// The default Object Mapping key for [Subreddit].
+  static const String kSubredditKind = 't5';
+
+  static const Map<String, List<String>> fieldMap = const {
+    kShortUrl: const [kShortUrl],
+    kCheckForUpdates: const [kCheckForUpdates],
+    kKind: const [kComment, kMessage, kRedditor, kSubmission, kSubreddit],
+    kOptionalField: const [
       kClientId,
       kClientSecret,
       kHttpProxy,
       kHttpsProxy,
-      kRedirectUri,
+      kRedirectUrl,
       kRefreshToken,
       kPassword,
       kUserAgent,
       kUsername,
     ],
-    kOptionalWithDefaultValues: [
-      kAuthorizeUri,
+    kOptionalWithDefaultValues: const [
+      kAuthorize,
       kAccessToken,
       kRevokeToken,
     ],
-    kRequiredField: [kOauthUrl, kRedditUrl]
+    kRequiredField: const [kOauthUrl, kRedditUrl]
   };
 
   /// Path to Local, User, Global Configuration Files, with matching precedence.
@@ -93,12 +98,12 @@ class DRAWConfigContext {
 
   Config _customConfig;
 
-  Map<String, String> custom;
+  Map<String, String> _kind;
 
   bool checkForUpdates;
 
   String _accessToken;
-  String _authorizeUri;
+  String _authorizeUrl;
   String _clientId;
   String _clientSecret;
   String _httpProxy;
@@ -107,35 +112,39 @@ class DRAWConfigContext {
   String _password;
   String _primarySiteName;
   String _redditUrl;
-  String _redirectUri;
+  String _redirectUrl;
   String _refreshToken;
   String _revokeToken;
   String _shortURL;
   String _userAgent;
   String _username;
 
-  Uri get accessToken => Uri.parse(_accessToken);
-  Uri get authorizeUri => Uri.parse(_authorizeUri);
-  Uri get redditUrl => Uri.parse(_redditUrl);
-  Uri get redirectUri => Uri.parse(_redirectUri);
-  Uri get revokeToken => Uri.parse(_revokeToken);
-
+  String get accessToken => _accessToken;
+  String get authorizeUrl => _authorizeUrl;
   String get clientId => _clientId;
   String get clientSecret => _clientSecret;
+  String get commentKind => _kind[kComment] ?? kCommentKind;
   String get httpProxy => _httpProxy;
   String get httpsProxy => _httpsProxy;
+  String get messageKind => _kind[kMessage] ?? kMessage;
   String get oauthUrl => _oauthUrl;
   String get password => _password;
+  String get redditUrl => _redditUrl;
+  String get redditorKind => _kind[kRedditor] ?? kRedditor;
+  String get redirectUrl => _redirectUrl;
   String get refreshToken => _refreshToken;
+  String get revokeToken => _revokeToken;
+  String get submissionKind => _kind[kSubmission] ?? kSubmissionKind;
+  String get subredditKind => _kind[kSubreddit] ?? kSubredditKind;
   String get userAgent => _userAgent;
   String get username => _username;
 
   //Note this accessor throws if _shortURL is not set.
-  Uri get shortUrl {
+  String get shortUrl {
     if (_shortURL == kNotSet) {
       throw new DRAWClientError('No short domain specified');
     }
-    return Uri.parse(_shortURL);
+    return _shortURL;
   }
 
   /// Creates a new [DRAWConfigContext] instance.
@@ -147,16 +156,15 @@ class DRAWConfigContext {
   /// [_userAgent] is an arbitrary identifier used by the Reddit API to differentiate
   /// between client instances. Should be unique for example related to [siteName].
   ///
-  /// TODO(kc3454): add ability to pass in additional prams directly.
   DRAWConfigContext({
     String clientId,
     String clientSecret,
     String userAgent,
     String username,
     String password,
-    Uri redirectUri,
-    Uri accessToken,
-    Uri authorizeUri,
+    String redirectUrl,
+    String accessToken,
+    String authorizeUrl,
     String siteName = 'default',
   }) {
     return;
@@ -166,9 +174,9 @@ class DRAWConfigContext {
     _clientSecret = clientSecret ?? kNotSet;
     _username = username ?? kNotSet;
     _password = password ?? kNotSet;
-    _redirectUri = redirectUri ?? kNotSet;
+    _redirectUrl = redirectUrl ?? kNotSet;
     _accessToken = accessToken ?? kNotSet;
-    _authorizeUri = authorizeUri ?? kNotSet;
+    _authorizeUrl = authorizeUrl ?? kNotSet;
     _userAgent = userAgent ?? kNotSet;
 
     // Initialize Paths.
@@ -219,7 +227,10 @@ class DRAWConfigContext {
     } else if (type == kCheckForUpdates) {
       checkForUpdates = _configBool(_fetchOrNotSet('check_for_updates'));
     } else if (type == kKind) {
-      // TODO(kc3454): Learn how to do this one.
+      final value = _fetchOrNotSet(param);
+      if (value != null) {
+        _kind[param] = value;
+      }
     } else if (type == kOptionalField) {
       final value = _fetchOrNotSet(param);
       if (value != null) {
@@ -236,8 +247,8 @@ class DRAWConfigContext {
           case kHttpsProxy:
             _httpsProxy = value;
             break;
-          case kRedirectUri:
-            _redirectUri = value;
+          case kRedirectUrl:
+            _redirectUrl = value;
             break;
           case kRefreshToken:
             _refreshToken = value;
@@ -264,8 +275,8 @@ class DRAWConfigContext {
         case kAccessToken:
           _accessToken = value ?? kDefaultAccessToken;
           break;
-        case kAuthorizeUri:
-          _authorizeUri = value ?? kDefaultAuthorizeUri;
+        case kAuthorize:
+          _authorizeUrl = value ?? kDefaultAuthorizeUrl;
           break;
         case kRevokeToken:
           _revokeToken = value ?? kDefaultRevokeToken;
@@ -320,20 +331,18 @@ class DRAWConfigContext {
   /// Returns path to user level configuration file.
   Uri _getUserConfigPath() {
     final environment = Platform.environment;
-
-    var osConfigPath;
-
-    /// Load correct path for user level configuration paths  based on operating system.
+    String osConfigPath;
+    // Load correct path for user level configuration paths based on operating system.
     if (Platform.isMacOS) {
-      osConfigPath = Uri.parse(path.join(environment[kMacEnvVar], '.config'));
+      osConfigPath = path.join(environment[kMacEnvVar], '.config');
     } else if (Platform.isLinux) {
-      osConfigPath = Uri.parse(environment[kLinuxEnvVar]);
+      osConfigPath = environment[kLinuxEnvVar];
     } else if (Platform.isWindows) {
-      osConfigPath = Uri.parse(environment[kWindowsEnvVar]);
+      osConfigPath = environment[kWindowsEnvVar];
     } else {
       throw new DRAWInternalError('OS not Recognized by DRAW');
     }
-    return osConfigPath;
+    return Uri.parse(path.join(osConfigPath, kFileName));
   }
 
   /// Returns path to global configuration file.
@@ -345,6 +354,8 @@ class DRAWConfigContext {
 
   /// Returns path to local configuration file.
   Uri _getLocalConfigPath() {
-    return Uri.parse(kFileName);
+    final path.Context context = new path.Context();
+    final cwd = context.current;
+    return Uri.parse(path.join(cwd, kFileName));
   }
 }

@@ -20,11 +20,14 @@ class Objector extends RedditBase {
     if (data.containsKey('name')) {
       // Redditor type.
       return new Redditor.parse(reddit, data);
-    } else if (data.containsKey('kind') && (data['kind'] == 't1')) {
+    } else if (data.containsKey('kind') &&
+        (data['kind'] == Reddit.defaultCommentKind)) {
       return new Comment.parse(reddit, data);
-    } else if (data.containsKey('kind') && (data['kind'] == 't3')) {
+    } else if (data.containsKey('kind') &&
+        (data['kind'] == Reddit.defaultSubmissionKind)) {
       return new Submission.parse(reddit, data);
-    } else if (data.containsKey('kind') && (data['kind'] == 't5')) {
+    } else if (data.containsKey('kind') &&
+        (data['kind'] == Reddit.defaultSubredditKind)) {
       return new Subreddit.parse(reddit, data);
     } else if (data.containsKey('kind') && (data['kind'] == 'LabeledMulti')) {
       assert(
