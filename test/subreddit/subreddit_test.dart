@@ -85,8 +85,8 @@ Future main() async {
     // expect to return the same.
     int count = 0;
     await for (final post in subreddit.submissions(
-        start: new DateTime(2016, 11, 8, 0, 0),
-        end: new DateTime(2016, 11, 9, 0, 0))) {
+        start: new DateTime.utc(2016, 11, 8, 8, 0), // These dates are 12AM PST.
+        end: new DateTime.utc(2016, 11, 9, 8, 0))) {
       ++count;
     }
     expect(count, equals(753));
