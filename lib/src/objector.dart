@@ -3,8 +3,6 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
-import 'dart:convert';
-
 import 'base.dart';
 import 'exceptions.dart';
 import 'reddit.dart';
@@ -40,22 +38,33 @@ class Objector extends RedditBase {
     } else if (data.containsKey('sr') &&
         data.containsKey('comment_karma') &&
         data.containsKey('link_karma')) {
-      final subreddit = new Subreddit(reddit, data['sr']);
+      final subreddit = new Subreddit.parse(reddit, data['sr']);
       final value = {
         'commentKarma': data['comment_karma'],
         'linkKarma': data['link_karma'],
       };
       return {subreddit: value};
+    } else if ((data.length == 3) &&
+        data.containsKey('day') &&
+        data.containsKey('hour') &&
+        data.containsKey('month')) {
+      return SubredditTraffic.parseTrafficResponse(data);
+    } else if (data.containsKey('rules')) {
+      final rules = <Rule>[];
+      for (final rawRule in data['rules']) {
+        rules.add(new Rule.parse(rawRule));
+      }
+      return rules;
     } else {
-      print(new JsonEncoder.withIndent('  ').convert(data));
-      throw new DRAWUnimplementedError('Cannot objectify unsupported response');
+      throw new DRAWUnimplementedError('Cannot objectify unsupported'
+          ' response:\n$data');
     }
   }
 
   List _objectifyList(List listing) {
     final objectifiedListing = new List(listing.length);
     for (var i = 0; i < listing.length; ++i) {
-      objectifiedListing[i] = _objectifyDictionary(listing[i]);
+      objectifiedListing[i] = objectify(listing[i]);
     }
     return objectifiedListing;
   }
@@ -102,9 +111,19 @@ class Objector extends RedditBase {
         // Account information about a redditor who isn't the currently
         // authenticated user.
         return data['data'];
+      } else {
+        return _objectifyDictionary(data);
       }
       throw new DRAWUnimplementedError('response kind, ${kind}, is not '
           'currently implemented.');
+    } else if (data.containsKey('json') && data['json'].containsKey('data')) {
+      // Response from Subreddit.submit.
+      if (data['json']['data'].containsKey('url')) {
+        return new Submission.parse(reddit, data['json']['data']);
+      } else {
+        // TODO(bkonyi): better error message here.
+        throw new DRAWUnimplementedError('Invalid json response');
+      }
     }
     return _objectifyDictionary(data);
   }

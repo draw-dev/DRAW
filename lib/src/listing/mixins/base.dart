@@ -21,7 +21,7 @@ enum TimeFilter {
   year,
 }
 
-String _timeFilterToString(TimeFilter filter) {
+String timeFilterToString(TimeFilter filter) {
   switch (filter) {
     case TimeFilter.all:
       return 'all';
@@ -38,6 +38,31 @@ String _timeFilterToString(TimeFilter filter) {
     default:
       throw new DRAWInternalError('TimeFilter $filter is not'
           'supported');
+  }
+}
+
+enum Sort {
+  relevance,
+  hot,
+  top,
+  newest,
+  comments,
+}
+
+String sortToString(Sort sort) {
+  switch (sort) {
+    case Sort.relevance:
+      return 'relevance';
+    case Sort.hot:
+      return 'hot';
+    case Sort.top:
+      return 'top';
+    case Sort.newest:
+      return 'new';
+    case Sort.comments:
+      return 'comments';
+    default:
+      throw new DRAWInternalError('Sort $sort is not supported');
   }
 }
 
@@ -68,7 +93,7 @@ abstract class BaseListingMixin {
       throw new UnimplementedError();
     }
     final _params = params ?? new Map();
-    _params['t'] = _timeFilterToString(timeFilter);
+    _params['t'] = timeFilterToString(timeFilter);
     return _buildGenerator(_params, sort);
   }
 

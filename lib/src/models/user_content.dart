@@ -9,4 +9,7 @@ import '../reddit.dart';
 abstract class UserContent extends RedditBase {
   UserContent.loadData(Reddit reddit, Map data)
       : super.loadData(reddit, data['data']);
+
+  UserContent.withPath(Reddit reddit, String infoPath)
+      : super.withPath(reddit, infoPath);
 }

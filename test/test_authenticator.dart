@@ -61,11 +61,21 @@ class TestAuthenticator extends Authenticator {
 
   @override
   Future get(Uri path, {Map params}) async {
+    const redirectResponseStr = 'DRAWRedirectResponse';
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), params.toString()]);
+      if ((result is List) && (result[0] == redirectResponseStr)) {
+        throw new DRAWRedirectResponse(result[1], null);
+      }
     } else {
-      result = await _recordAuth.get(path, params: params);
+      try {
+        result = await _recordAuth.get(path, params: params);
+      } on DRAWRedirectResponse catch (e) {
+        _recorder.given([path.toString(), params.toString()]).reply(
+            [redirectResponseStr, e.path]).once();
+        throw e;
+      }
       _recorder
           .given([path.toString(), params.toString()])
           .reply(result)

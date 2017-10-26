@@ -147,6 +147,13 @@ abstract class Authenticator {
     }
     final finalPath = path.replace(queryParameters: params);
     final request = new http.Request(type, finalPath);
+
+    // Some API requests initiate a redirect (i.e., random submission from a
+    // subreddit) but the redirect doesn't forward the OAuth credentials
+    // automatically. We disable redirects here and throw a DRAWRedirectResponse
+    // so that we can handle the redirect manually on a case-by-case basis.
+    request.followRedirects = false;
+
     if (body != null) {
       if (body is Map<String, String>) {
         request.bodyFields = body;
@@ -154,7 +161,15 @@ abstract class Authenticator {
         request.body = body;
       }
     }
-    final response = await (await _client.send(request)).stream.bytesToString();
+    final responseStream = await _client.send(request);
+    if (responseStream.isRedirect) {
+      var redirectStr = Uri.parse(responseStream.headers['location']).path;
+      if (redirectStr.endsWith('.json')) {
+        redirectStr = redirectStr.substring(0, redirectStr.length - 5);
+      }
+      throw new DRAWRedirectResponse(redirectStr, responseStream);
+    }
+    final response = await responseStream.stream.bytesToString();
     if (response.isEmpty) return null;
     final parsed = JSON.decode(response);
     if ((parsed is Map) && parsed.containsKey(kErrorKey)) {

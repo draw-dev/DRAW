@@ -34,17 +34,25 @@ abstract class ListingGenerator {
     final kLimitKey = 'limit';
     final kAfterKey = 'after';
     final nullLimit = 1024;
-    final paramsInternal = params ?? new Map();
+    final paramsInternal = (params == null) ? new Map() : new Map.from(params);
     final _limit = limit ?? nullLimit;
     paramsInternal[kLimitKey] = _limit.toString();
     int yielded = 0;
     int index = 0;
     List<T> listing;
+    bool exhausted = false;
 
     Future<List<T>> _nextBatch() async {
+      if (exhausted) {
+        return null;
+      }
       final response = (await reddit.get(api, params: paramsInternal)) as Map;
       final newListing = response['listing'];
-      paramsInternal[kAfterKey] = response[kAfterKey];
+      if (response[kAfterKey] == null) {
+        exhausted = true;
+      } else {
+        paramsInternal[kAfterKey] = response[kAfterKey];
+      }
       if (newListing.length == 0) {
         return null;
       }
@@ -52,12 +60,8 @@ abstract class ListingGenerator {
       return newListing;
     }
 
-    while (yielded < _limit) {
+    while ((_limit == null) || (yielded < _limit)) {
       if ((listing == null) || (index >= listing.length)) {
-        if ((listing != null) &&
-            (listing.length < int.parse(paramsInternal[kLimitKey]))) {
-          break;
-        }
         listing = await _nextBatch();
         if (listing == null) {
           break;
