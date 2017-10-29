@@ -95,7 +95,6 @@ class DRAWConfigContext {
   /// Path to Local, User, Global Configuration Files, with matching precedence.
   Uri _localConfigPath;
   Uri _userConfigPath;
-  Uri _globalConfigPath;
 
   Config _customConfig;
 
@@ -182,7 +181,6 @@ class DRAWConfigContext {
     // Initialize Paths.
     _localConfigPath = _getLocalConfigPath();
     _userConfigPath = _getUserConfigPath();
-    _globalConfigPath = _getGlobalConfigPath();
     // Load the first file found in order of path preference.
     final primaryFile = _loadCorrectFile();
     try {
@@ -194,7 +192,7 @@ class DRAWConfigContext {
     fieldMap.forEach((key, value) => _fieldInitializer(key, value));
   }
 
-  /// Loads file from [_localConfigPath] or [_userConfigPath] or [_globalConfigPath].
+  /// Loads file from [_localConfigPath] or [_userConfigPath].
   File _loadCorrectFile() {
     // Check if file exists locally.
     var primaryFile = new File(_localConfigPath.toString());
@@ -203,11 +201,6 @@ class DRAWConfigContext {
     }
     // Check if file exists in user directory.
     primaryFile = new File(_userConfigPath.toString());
-    if (primaryFile.existsSync()) {
-      return primaryFile;
-    }
-    // Check if file exists in global directory.
-    primaryFile = new File(_globalConfigPath.toString());
     if (primaryFile.existsSync()) {
       return primaryFile;
     }
@@ -346,13 +339,6 @@ class DRAWConfigContext {
     }
     osConfigPath ??= '/';
     return Uri.parse(path.join(osConfigPath, kFileName));
-  }
-
-  /// Returns path to global configuration file.
-  Uri _getGlobalConfigPath() {
-    final path.Context context = new path.Context();
-    final cwd = context.current;
-    return Uri.parse(path.join(cwd, kFileName));
   }
 
   /// Returns path to local configuration file.
