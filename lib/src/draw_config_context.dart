@@ -29,6 +29,7 @@ const String kHttpProxy = 'http_proxy';
 const String kHttpsProxy = 'https_proxy';
 const String kKind = 'kind';
 const String kLinuxEnvVar = 'XDG_CONFIG_HOME';
+const String kLinuxHomeEnvVar = 'HOME';
 const String kMacEnvVar = 'HOME';
 const String kMessage = 'message_kind';
 const String kOauthUrl = 'oauth_url';
@@ -328,6 +329,7 @@ class DRAWConfigContext {
       (_fetchOptional(key) ?? _fetchDefault(key) ?? kNotSet);
 
   /// Returns path to user level configuration file.
+  /// Special Behaviour: if User Config Enviroment var unset, uses [$HOME] or ['/']
   Uri _getUserConfigPath() {
     final environment = Platform.environment;
     String osConfigPath;
@@ -335,12 +337,13 @@ class DRAWConfigContext {
     if (Platform.isMacOS) {
       osConfigPath = path.join(environment[kMacEnvVar], '.config');
     } else if (Platform.isLinux) {
-      osConfigPath = environment[kLinuxEnvVar] ?? '~';
+      osConfigPath = environment[kLinuxEnvVar] ?? environment[kLinuxHomeEnvVar];
     } else if (Platform.isWindows) {
       osConfigPath = environment[kWindowsEnvVar];
     } else {
       throw new DRAWInternalError('OS not Recognized by DRAW');
     }
+    osConfigPath ??= '/';
     return Uri.parse(path.join(osConfigPath, kFileName));
   }
 
