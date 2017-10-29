@@ -330,8 +330,8 @@ class DRAWConfigContext {
     if (Platform.isMacOS) {
       osConfigPath = path.join(environment[kMacEnvVar], '.config');
     } else if (Platform.isLinux) {
-      osConfigPath = environment[kLinuxEnvVar] ?? 
-        path.join(environment[kLinuxHomeEnvVar], '.config');
+      osConfigPath = environment[kLinuxEnvVar] ??
+          path.join(environment[kLinuxHomeEnvVar], '.config');
     } else if (Platform.isWindows) {
       osConfigPath = environment[kWindowsEnvVar];
     } else {
