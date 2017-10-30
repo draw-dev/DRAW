@@ -322,7 +322,7 @@ class DRAWConfigContext {
       (_fetchOptional(key) ?? _fetchDefault(key) ?? kNotSet);
 
   /// Returns path to user level configuration file.
-  /// Special Behaviour: if User Config Enviroment var unset, uses [$HOME] or ['/']
+  /// Special Behaviour: if User Config Enviroment var unset, uses [$HOME] or the corresponding root path for the os.
   Uri _getUserConfigPath() {
     final environment = Platform.environment;
     String osConfigPath;
