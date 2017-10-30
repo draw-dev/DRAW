@@ -337,14 +337,19 @@ class DRAWConfigContext {
     } else {
       throw new DRAWInternalError('OS not Recognized by DRAW');
     }
-    osConfigPath ??= '/';
+    if (osConfigPath == null) {
+      // Sets osConfigPath to the corresponding root path based on the os.
+      final path.Context osDir = new path.Context();
+      final cwd = osDir.current;
+      osConfigPath = osDir.rootPrefix(cwd);
+    }
     return Uri.parse(path.join(osConfigPath, kFileName));
   }
 
   /// Returns path to local configuration file.
   Uri _getLocalConfigPath() {
-    final path.Context context = new path.Context();
-    final cwd = context.current;
+    final path.Context osDir = new path.Context();
+    final cwd = osDir.current;
     return Uri.parse(path.join(cwd, kFileName));
   }
 }
