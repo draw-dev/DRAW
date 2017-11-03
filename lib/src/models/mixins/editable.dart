@@ -11,7 +11,7 @@ import '../../reddit.dart';
 import '../user_content.dart';
 
 /// Interface for classes that can be edited and deleted.
-abstract class EditableMixin {
+abstract class EditableMixin implements RedditBase {
   Reddit get reddit;
   String get fullname;
 
@@ -28,6 +28,6 @@ abstract class EditableMixin {
     // TODO(bkonyi): figure out what needs to be done here.
     final updated = await reddit.post(apiPath['edit'], data);
     setData(this, updated[0].data);
-    return this;
+    return this as UserContent;
   }
 }

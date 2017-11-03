@@ -4,6 +4,7 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
+import 'exceptions.dart';
 import 'reddit.dart';
 
 void setData(RedditBase base, Map data) {
@@ -17,7 +18,6 @@ abstract class RedditBase {
   Map get data => _data;
   String get infoPath => _infoPath;
   String _infoPath;
-  String set _infoPath(String infoPath);
 
   RedditBase(this.reddit);
 
@@ -59,7 +59,8 @@ abstract class RedditBase {
       // at some point to be a bit more robust, but it works for now.
       _data = response[0]['listing'][0].data;
     } else {
-      _data = response.data;
+      throw new DRAWInternalError('Refresh response is of unknown type: '
+          '${response.runtimeType}.');
     }
   }
 

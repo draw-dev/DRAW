@@ -46,7 +46,11 @@ class Reddit {
   /// Provides methods for the currently authenticated user.
   User get user => _user;
 
+  /// The configuration for the current [Reddit] instance.
+  DRAWConfigContext get config => _config;
+
   Authenticator _auth;
+  DRAWConfigContext _config;
   User _user;
   bool _readOnly = true;
   bool _initialized = false;
@@ -123,7 +127,7 @@ class Reddit {
       Uri configUri,
       String siteName) {
     // Loading passed in values into config file.
-    final DRAWConfigContext config = new DRAWConfigContext(
+    _config = new DRAWConfigContext(
         clientId: clientId,
         clientSecret: clientSecret,
         userAgent: userAgent,
@@ -135,38 +139,38 @@ class Reddit {
         configUrl: configUri.toString(),
         siteName: siteName);
 
-    if (config.clientId == null) {
+    if (_config.clientId == null) {
       throw new DRAWAuthenticationError('clientId cannot be null.');
     }
-    if (config.clientSecret == null) {
+    if (_config.clientSecret == null) {
       throw new DRAWAuthenticationError('clientSecret cannot be null.');
     }
-    if (config.userAgent == null) {
+    if (_config.userAgent == null) {
       throw new DRAWAuthenticationError('userAgent cannot be null.');
     }
 
-    final grant = new oauth2.AuthorizationCodeGrant(config.clientId,
-        Uri.parse(config.authorizeUrl), Uri.parse(config.accessToken),
-        secret: config.clientSecret);
+    final grant = new oauth2.AuthorizationCodeGrant(_config.clientId,
+        Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
+        secret: _config.clientSecret);
 
-    if (config.username == null &&
-        config.password == null &&
-        config.redirectUrl == null) {
+    if (_config.username == null &&
+        _config.password == null &&
+        _config.redirectUrl == null) {
       ReadOnlyAuthenticator
-          .create(grant, config.userAgent)
+          .create(grant, _config.userAgent)
           .then(_initializationCallback);
       _readOnly = true;
-    } else if (config.username != null && config.password != null) {
+    } else if (_config.username != null && _config.password != null) {
       // Check if we are creating an authorized client.
       ScriptAuthenticator
-          .create(grant, config.userAgent, config.username, config.password)
+          .create(grant, _config.userAgent, _config.username, _config.password)
           .then(_initializationCallback);
       _readOnly = false;
-    } else if (config.username == null &&
-        config.password == null &&
-        config.redirectUrl != null) {
+    } else if (_config.username == null &&
+        _config.password == null &&
+        _config.redirectUrl != null) {
       _initializationCallback(WebAuthenticator.create(
-          grant, config.userAgent, Uri.parse(config.redirectUrl)));
+          grant, _config.userAgent, Uri.parse(_config.redirectUrl)));
       _readOnly = false;
     } else {
       throw new DRAWUnimplementedError('Unsupported authentication type.');

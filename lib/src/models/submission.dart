@@ -43,7 +43,7 @@ class Submission extends UserContent {
   // SubmissionModeration get mod;
 
   // TODO(bkonyi): implement
-  Uri get shortlink;
+  Uri get shortlink => Uri.parse(reddit.config.shortUrl + _id);
 
   // TODO(bkonyi): allow for paths without trailing '/'.
   /// Retrieve a submission ID from a given URL.
