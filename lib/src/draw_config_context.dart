@@ -98,7 +98,7 @@ class DRAWConfigContext {
 
   Config _customConfig;
 
-  Map<String, String> _kind;
+  Map<String, String> _kind = new Map<String, String>();
 
   bool checkForUpdates;
 
@@ -106,6 +106,7 @@ class DRAWConfigContext {
   String _authorizeUrl;
   String _clientId;
   String _clientSecret;
+  String _configUrl;
   String _httpProxy;
   String _httpsProxy;
   String _oauthUrl;
@@ -124,6 +125,7 @@ class DRAWConfigContext {
   String get clientId => _clientId;
   String get clientSecret => _clientSecret;
   String get commentKind => _kind[kComment] ?? kCommentKind;
+  String get configUrl => _configUrl;
   String get httpProxy => _httpProxy;
   String get httpsProxy => _httpsProxy;
   String get messageKind => _kind[kMessage] ?? kMessage;
@@ -165,12 +167,16 @@ class DRAWConfigContext {
     String redirectUrl,
     String accessToken,
     String authorizeUrl,
+    String configUrl,
     String siteName = 'default',
   }) {
     // Give passed in values highest precedence for assignment.
     _primarySiteName = siteName;
+    // TODO(bkonyi): we probably don't need to set the fields as kNotSet since
+    // uninitialized fields are always null in Dart.
     _clientId = clientId ?? kNotSet;
     _clientSecret = clientSecret ?? kNotSet;
+    _configUrl = configUrl ?? kNotSet;
     _username = username ?? kNotSet;
     _password = password ?? kNotSet;
     _redirectUrl = redirectUrl ?? kNotSet;
@@ -194,14 +200,22 @@ class DRAWConfigContext {
 
   /// Loads file from [_localConfigPath] or [_userConfigPath].
   File _loadCorrectFile() {
+    if (_configUrl != null) {
+      var primaryFile = new File(_configUrl);
+      if (primaryFile.existsSync()) {
+        return primaryFile;
+      }
+    }
     // Check if file exists locally.
     var primaryFile = new File(_localConfigPath.toString());
     if (primaryFile.existsSync()) {
+      _configUrl = _localConfigPath.toString();
       return primaryFile;
     }
     // Check if file exists in user directory.
     primaryFile = new File(_userConfigPath.toString());
     if (primaryFile.existsSync()) {
+      _configUrl = _userConfigPath.toString();
       return primaryFile;
     }
     throw new DRAWClientError('$kFileName, does not exist');

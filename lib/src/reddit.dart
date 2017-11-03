@@ -36,14 +36,6 @@ class Reddit {
   /// The default object kind mapping for [Subreddit].
   static final String defaultSubredditKind = DRAWConfigContext.kSubredditKind;
 
-  /// A flag representing the initialization state of the current [Reddit]
-  /// instance.
-  ///
-  /// Returns a [Future<bool>] which represents whether or not the [Reddit]
-  /// instance is initialized. This [Future] completes with 'false' if an error
-  /// occurred during initialization, and 'true' if the instance is ready.
-  Future<bool> get initialized => _initializedCompleter.future;
-
   /// A flag representing whether or not this [Reddit] instance can only make
   /// read requests.
   bool get readOnly => _readOnly;
@@ -57,6 +49,7 @@ class Reddit {
   Authenticator _auth;
   User _user;
   bool _readOnly = true;
+  bool _initialized = false;
   final _initializedCompleter = new Completer();
   Objector _objector;
 
@@ -85,14 +78,51 @@ class Reddit {
   ///
   /// [authEndpoint] is a [Uri] to an alternative authentication endpoint. If not
   /// provided, [defaultAuthTokenEndpoint] is used.
-  // TODO(bkonyi): inherit from some common base class.
-  Reddit(String clientId, String clientSecret, String userAgent,
-      {String username,
+  ///
+  /// [siteName] is the name of the configuration to use from draw.ini. Defaults
+  /// to 'default'.
+  static Future<Reddit> createInstance(
+      {String clientId,
+      String clientSecret,
+      String userAgent,
+      String username,
       String password,
       Uri redirectUri,
       Uri tokenEndpoint,
-      Uri authEndpoint}) {
-    //Loading passed in values into config file.
+      Uri authEndpoint,
+      Uri configUri,
+      String siteName}) async {
+    final reddit = new Reddit._(
+        clientId,
+        clientSecret,
+        userAgent,
+        username,
+        password,
+        redirectUri,
+        tokenEndpoint,
+        authEndpoint,
+        configUri,
+        siteName);
+    final initialized = await reddit._initializedCompleter.future;
+    if (initialized) {
+      return reddit;
+    }
+    throw DRAWAuthenticationError('Unable to authenticate with Reddit');
+  }
+
+  // TODO(bkonyi): inherit from some common base class.
+  Reddit._(
+      String clientId,
+      String clientSecret,
+      String userAgent,
+      String username,
+      String password,
+      Uri redirectUri,
+      Uri tokenEndpoint,
+      Uri authEndpoint,
+      Uri configUri,
+      String siteName) {
+    // Loading passed in values into config file.
     final DRAWConfigContext config = new DRAWConfigContext(
         clientId: clientId,
         clientSecret: clientSecret,
@@ -101,7 +131,9 @@ class Reddit {
         password: password,
         redirectUrl: redirectUri.toString(),
         accessToken: tokenEndpoint.toString(),
-        authorizeUrl: authEndpoint.toString());
+        authorizeUrl: authEndpoint.toString(),
+        configUrl: configUri.toString(),
+        siteName: siteName);
 
     if (config.clientId == null) {
       throw new DRAWAuthenticationError('clientId cannot be null.');
@@ -124,7 +156,7 @@ class Reddit {
           .create(grant, config.userAgent)
           .then(_initializationCallback);
       _readOnly = true;
-    } else if (config.username == null && config.password != null) {
+    } else if (config.username != null && config.password != null) {
       // Check if we are creating an authorized client.
       ScriptAuthenticator
           .create(grant, config.userAgent, config.username, config.password)
@@ -149,7 +181,7 @@ class Reddit {
   }
 
   Future<dynamic> get(String api, {Map params}) async {
-    if (!(await initialized)) {
+    if (!_initialized) {
       throw new DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
@@ -160,7 +192,7 @@ class Reddit {
 
   Future<dynamic> post(String api, Map<String, String> body,
       {bool discardResponse: false}) async {
-    if (!(await initialized)) {
+    if (!_initialized) {
       throw new DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
@@ -173,7 +205,7 @@ class Reddit {
   }
 
   Future put(String api, {/* Map<String, String>, String */ body}) async {
-    if (!(await initialized)) {
+    if (!_initialized) {
       throw new DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
@@ -183,7 +215,7 @@ class Reddit {
   }
 
   Future delete(String api, {/* Map<String, String>, String */ body}) async {
-    if (!(await initialized)) {
+    if (!_initialized) {
       throw new DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
@@ -196,6 +228,7 @@ class Reddit {
     _auth = auth;
     _objector = new Objector(this);
     _user = new User(this);
+    _initialized = true;
     _initializedCompleter.complete(true);
   }
 }
