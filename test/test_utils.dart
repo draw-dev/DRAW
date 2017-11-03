@@ -11,15 +11,11 @@ import 'test_authenticator.dart';
 Future<Reddit> createRedditTestInstance(String path, {bool live: false}) async {
   var testAuth;
   if (live) {
-    final tempReddit = new Reddit(
-        'Db_4C6XcNCNqow', 'jwf1U9Nto49rDD7jSFNXBqvG-7s', 'clientAgent',
-        username: 'DRAWApiOfficial', password: 'flutterlaurier2017');
-    await tempReddit.initialized;
+    final tempReddit = await Reddit.createInstance(
+        configUri: Uri.parse('~/draw.ini'), siteName: 'DRAWApiOfficial');
     testAuth = new TestAuthenticator(path, recordAuth: tempReddit.auth);
   } else {
     testAuth = new TestAuthenticator(path);
   }
-  final reddit = new Reddit.fromAuthenticator(testAuth);
-  await reddit.initialized;
-  return reddit;
+  return new Reddit.fromAuthenticator(testAuth);
 }
