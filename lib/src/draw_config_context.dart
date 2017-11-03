@@ -98,7 +98,7 @@ class DRAWConfigContext {
 
   Config _customConfig;
 
-  Map<String, String> _kind = new Map<String, String>();
+  final Map<String, String> _kind = new Map<String, String>();
 
   bool checkForUpdates;
 
@@ -201,7 +201,7 @@ class DRAWConfigContext {
   /// Loads file from [_localConfigPath] or [_userConfigPath].
   File _loadCorrectFile() {
     if (_configUrl != null) {
-      var primaryFile = new File(_configUrl);
+      final primaryFile = new File(_configUrl);
       if (primaryFile.existsSync()) {
         return primaryFile;
       }

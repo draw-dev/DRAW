@@ -107,7 +107,7 @@ class Reddit {
     if (initialized) {
       return reddit;
     }
-    throw DRAWAuthenticationError('Unable to authenticate with Reddit');
+    throw new DRAWAuthenticationError('Unable to authenticate with Reddit');
   }
 
   // TODO(bkonyi): inherit from some common base class.
