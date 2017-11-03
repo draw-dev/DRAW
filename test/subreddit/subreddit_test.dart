@@ -41,9 +41,7 @@ Future main() async {
   });
 
   test('lib/subreddit/random', () async {
-    const randomTitle = '"I wonder which one would be first; me unboxing an'
-        ' unusual or the Pyro update."';
-
+    const randomTitle = 'A sentry slacking on the job';
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_random.json');
 

@@ -124,7 +124,7 @@ class Reddit {
           .create(grant, config.userAgent)
           .then(_initializationCallback);
       _readOnly = true;
-    } else if (config.username == null && config.password != null) {
+    } else if (config.username != null && config.password != null) {
       // Check if we are creating an authorized client.
       ScriptAuthenticator
           .create(grant, config.userAgent, config.username, config.password)

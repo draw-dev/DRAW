@@ -167,7 +167,6 @@ class DRAWConfigContext {
     String authorizeUrl,
     String siteName = 'default',
   }) {
-    return;
     // Give passed in values highest precedence for assignment.
     _primarySiteName = siteName;
     _clientId = clientId ?? kNotSet;
@@ -175,10 +174,13 @@ class DRAWConfigContext {
     _username = username ?? kNotSet;
     _password = password ?? kNotSet;
     _redirectUrl = redirectUrl ?? kNotSet;
-    _accessToken = accessToken ?? kNotSet;
-    _authorizeUrl = authorizeUrl ?? kNotSet;
+    // _accessToken = accessToken ?? kNotSet;
+    // _authorizeUrl = authorizeUrl ?? kNotSet;
+    _accessToken = kDefaultAccessToken;
+    _authorizeUrl = kDefaultAuthorizeUrl;
     _userAgent = userAgent ?? kNotSet;
 
+    return;
     // Initialize Paths.
     _localConfigPath = _getLocalConfigPath();
     _userConfigPath = _getUserConfigPath();
