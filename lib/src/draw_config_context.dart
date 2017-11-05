@@ -180,13 +180,10 @@ class DRAWConfigContext {
     _username = username ?? kNotSet;
     _password = password ?? kNotSet;
     _redirectUrl = redirectUrl ?? kNotSet;
-    // _accessToken = accessToken ?? kNotSet;
-    // _authorizeUrl = authorizeUrl ?? kNotSet;
-    _accessToken = kDefaultAccessToken;
-    _authorizeUrl = kDefaultAuthorizeUrl;
+    _accessToken = accessToken ?? kNotSet;
+    _authorizeUrl = authorizeUrl ?? kNotSet;
     _userAgent = userAgent ?? kNotSet;
 
-    return;
     // Initialize Paths.
     _localConfigPath = _getLocalConfigPath();
     _userConfigPath = _getUserConfigPath();
