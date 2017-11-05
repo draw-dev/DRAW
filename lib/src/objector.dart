@@ -22,10 +22,10 @@ class Objector extends RedditBase {
       return new Redditor.parse(reddit, data);
     } else if (data.containsKey('kind') &&
         (data['kind'] == Reddit.defaultCommentKind)) {
-      return new Comment.parse(reddit, data);
+      return new Comment.parse(reddit, data['data']);
     } else if (data.containsKey('kind') &&
         (data['kind'] == Reddit.defaultSubmissionKind)) {
-      return new Submission.parse(reddit, data);
+      return new Submission.parse(reddit, data['data']);
     } else if (data.containsKey('kind') &&
         (data['kind'] == Reddit.defaultSubredditKind)) {
       return new Subreddit.parse(reddit, data);
@@ -120,9 +120,11 @@ class Objector extends RedditBase {
       // Response from Subreddit.submit.
       if (data['json']['data'].containsKey('url')) {
         return new Submission.parse(reddit, data['json']['data']);
+      } else if (data['json']['data'].containsKey('things')) {
+        return _objectifyList(data['json']['data']['things']);
       } else {
         // TODO(bkonyi): better error message here.
-        throw new DRAWUnimplementedError('Invalid json response');
+        throw new DRAWUnimplementedError('Invalid json response: $data');
       }
     }
     return _objectifyDictionary(data);

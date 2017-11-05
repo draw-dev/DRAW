@@ -5,10 +5,28 @@
 
 import '../base.dart';
 import '../reddit.dart';
+import 'mixins/editable.dart';
+import 'mixins/gildable.dart';
+import 'mixins/inboxtoggleable.dart';
+import 'mixins/replyable.dart';
+import 'mixins/reportable.dart';
+import 'mixins/saveable.dart';
+import 'mixins/voteable.dart';
 
-abstract class UserContent extends RedditBase {
+abstract class UserContent extends RedditBase
+    with
+        EditableMixin,
+        GildableMixin,
+        InboxToggleableMixin,
+        ReplyableMixin,
+        ReportableMixin,
+        SaveableMixin,
+        VoteableMixin {
   UserContent.loadData(Reddit reddit, Map data)
       : super.loadData(reddit, data['data']);
+
+  UserContent.loadDataWithPath(Reddit reddit, Map data, String path)
+      : super.loadDataWithPath(reddit, data, path);
 
   UserContent.withPath(Reddit reddit, String infoPath)
       : super.withPath(reddit, infoPath);

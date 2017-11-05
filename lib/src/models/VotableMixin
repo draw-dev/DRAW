@@ -3,4 +3,13 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
-export 'base_impl.dart' hide setData;
+import 'dart:async';
+
+import '../../api_paths.dart';
+import '../../reddit.dart';
+import '../subreddit.dart';
+
+abstract class UserContentMixin {
+  Reddit get reddit;
+  String get displayName;
+}
