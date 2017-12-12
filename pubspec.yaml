@@ -6,9 +6,10 @@ authors:
 
 dependencies:
   http: 'any'
+  ini: '^1.1.0'
   oauth2: '>= 1.1.0'
-  test: '^0.12.5'
-  ini: "^1.1.0"
+  quiver: '>=0.26.2 <0.27.0'
 
 dev_dependencies:
   reply: '^0.1.2-dev'
+  test: '^0.12.5'

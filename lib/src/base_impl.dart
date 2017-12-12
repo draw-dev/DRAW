@@ -34,7 +34,7 @@ abstract class RedditBase {
       (Match match) =>
           (match.start != 0 ? separator : '') + match.group(0).toLowerCase());
 
-  Future<Map> _fetch() async => reddit.get(_infoPath);
+  Future fetch() async => reddit.get(_infoPath);
 
   Future property(String key) async {
     if (_data == null) {
@@ -49,7 +49,7 @@ abstract class RedditBase {
   }
 
   Future refresh() async {
-    final response = await _fetch();
+    final response = await fetch();
     if (response is Map) {
       _data = response;
     } else if (response is List) {
@@ -58,10 +58,12 @@ abstract class RedditBase {
       // and a listing of Comments at [1]. This probably needs to be changed
       // at some point to be a bit more robust, but it works for now.
       _data = response[0]['listing'][0].data;
+      return [this, response[1]['listing']];
     } else {
       throw new DRAWInternalError('Refresh response is of unknown type: '
           '${response.runtimeType}.');
     }
+    return this;
   }
 
   @override
