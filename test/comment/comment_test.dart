@@ -30,8 +30,8 @@ Future prettyPrint(comments, depth) async {
 
 Future main() async {
   test('lib/comment/continue_test', () async {
-    final reddit = await
-      createRedditTestInstance('test/comment/continue_test.json');
+    final reddit =
+        await createRedditTestInstance('test/comment/continue_test.json');
     final submission = reddit.submission(id: '7czz1q');
     final comments = await submission.comments;
     final printer = () async {
@@ -39,17 +39,18 @@ Future main() async {
     };
 
     var output = "";
-    await runZoned(printer, zoneSpecification: new ZoneSpecification(print: (self,
-            parent, zone, message) {
+    await runZoned(printer, zoneSpecification:
+        new ZoneSpecification(print: (self, parent, zone, message) {
       output += message + '\n';
     }));
-    final actual = new File('test/comment/continue_test_expected.out').readAsStringSync();
+    final actual =
+        new File('test/comment/continue_test_expected.out').readAsStringSync();
     expect(output, equals(actual));
   });
 
   test('lib/comment/tons_of_comments_test', () async {
-    final reddit = await
-      createRedditTestInstance('test/comment/tons_of_comments_test.json');
+    final reddit = await createRedditTestInstance(
+        'test/comment/tons_of_comments_test.json');
     final submission = reddit.submission(id: '7gylz9');
     final comments = await submission.comments;
     final printer = () async {
@@ -58,13 +59,13 @@ Future main() async {
 
     var output = "";
     var count = 0;
-    await runZoned(printer, zoneSpecification: new ZoneSpecification(print: (self,
-            parent, zone, message) {
+    await runZoned(printer, zoneSpecification:
+        new ZoneSpecification(print: (self, parent, zone, message) {
       count++;
       output += "$count" + message + '\n';
     }));
-    final actual = new File('test/comment/tons_of_comments_expected.out').readAsStringSync();
+    final actual = new File('test/comment/tons_of_comments_expected.out')
+        .readAsStringSync();
     expect(output, equals(actual));
   });
-
 }
