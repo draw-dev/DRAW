@@ -1,4 +1,4 @@
-// Copyright (c) 2017, the Dart Reddit API Wrapper  project authors.
+// Copyright (c) 2017, the Dart Reddit API Wrapper project authors.
 // Please see the AUTHORS file for details. All rights reserved.
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
@@ -8,7 +8,7 @@ import 'dart:async';
 import '../../api_paths.dart';
 import '../../reddit.dart';
 
-/// Interface for ReddieBase classes that can be saved.
+/// Mixin for ReddieBase classes that can be saved.
 abstract class SaveableMixin {
   Reddit get reddit;
   String get fullname;

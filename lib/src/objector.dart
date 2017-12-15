@@ -91,9 +91,11 @@ class Objector extends RedditBase {
   }
 
   /// Converts a response from the Reddit API into an instance of [RedditBase]
-  /// or a container of [RedditBase] objects. [data] should be one of [List] or
-  /// [Map], and the return type is one of [RedditBase], [List<RedditBase>], or
-  /// [Map<RedditBase>] depending on the response type.
+  /// or a container of [RedditBase] objects.
+  ///
+  /// [data] should be one of [List] or [Map], and the return type is one of
+  /// [RedditBase], [List<RedditBase>], or [Map<RedditBase>] depending on the
+  /// response type.
   dynamic objectify(dynamic data) {
     if (data == null) {
       return null;

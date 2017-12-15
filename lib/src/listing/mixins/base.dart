@@ -12,6 +12,7 @@ import '../../models/redditor.dart';
 import '../listing_generator.dart';
 import 'redditor.dart';
 
+/// An enum used to specify how to filter results based on time.
 enum TimeFilter {
   all,
   day,
@@ -21,6 +22,7 @@ enum TimeFilter {
   year,
 }
 
+/// Converts a [TimeFilter] into a simple [String].
 String timeFilterToString(TimeFilter filter) {
   switch (filter) {
     case TimeFilter.all:
@@ -41,6 +43,7 @@ String timeFilterToString(TimeFilter filter) {
   }
 }
 
+/// An enum used to specify how to sort results.
 enum Sort {
   relevance,
   hot,
@@ -49,6 +52,7 @@ enum Sort {
   comments,
 }
 
+/// Converts a [Sort] into a simple [String].
 String sortToString(Sort sort) {
   switch (sort) {
     case Sort.relevance:
@@ -66,6 +70,8 @@ String sortToString(Sort sort) {
   }
 }
 
+/// A mixin with common listing functionality, including [ListingGenerator]
+/// creation and standard listing requests by [Sort] type.
 abstract class BaseListingMixin {
   Reddit get reddit;
   String get path;

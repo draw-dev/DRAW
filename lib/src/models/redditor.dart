@@ -22,11 +22,15 @@ import 'subreddit.dart';
 /// A class representing a particular Reddit user, also known as a Redditor.
 class Redditor extends RedditBase
     with BaseListingMixin, GildedListingMixin, RedditorListingMixin {
-  String _name;
-  String _path;
   static final _userRegExp = new RegExp(r'{user}');
+
+  /// The Redditor's display name (i.e., spez or XtremeCheese).
   String get displayName => _name;
+  String _name;
+
+  // TODO(bkonyi): is this needed anymore?
   String get path => _path;
+  String _path;
 
   Redditor.parse(Reddit reddit, Map data) : super.loadData(reddit, data) {
     if (!data.containsKey('name') &&
@@ -96,7 +100,7 @@ class Redditor extends RedditBase
 
   // TODO(bkonyi): implement.
   /// Unblock the [Redditor].
-  Future unblock() async => throw new DRAWUnimplementedError();
+  // Future unblock() async => throw new DRAWUnimplementedError();
 
   /// Unfriend the [Redditor].
   Future unfriend() async =>

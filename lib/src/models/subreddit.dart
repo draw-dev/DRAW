@@ -52,16 +52,16 @@ class Subreddit extends RedditBase
         SubredditListingMixin {
   SubredditRelationship _banned;
   ContributorRelationship _contributor;
-  SubredditFilters _filters;
-  SubredditFlair _flair;
-  SubredditModeration _mod;
-  ModeratorRelationship _moderator;
-  Modmail _modmail;
+  // SubredditFilters _filters; TODO(bkonyi): implement
+  // SubredditFlair _flair; TODO(bkonyi): implement
+  // SubredditModeration _mod; TODO(bkonyi): implement
+  // ModeratorRelationship _moderator; TODO(bkonyi): implement
+  // Modmail _modmail; TODO(bkonyi): implement
   SubredditRelationship _muted;
-  SubredditQuarantine _quarantine;
+  // SubredditQuarantine _quarantine; TODO(bkonyi): implement
   SubredditStream _stream;
-  SubredditStyleSheet _stylesheet;
-  SubredditWiki _wiki;
+  // SubredditStyleSheet _stylesheet; TODO(bkonyi): implement
+  // SubredditWiki _wiki; TODO(bkonyi): implement
 
   String _name;
   String _path;
@@ -85,6 +85,8 @@ class Subreddit extends RedditBase
     return _contributor;
   }
 
+// TODO(bkonyi): implement
+/*
   SubredditFilters get filters {
     if (_filters == null) {
       _filters = new SubredditFilters(this);
@@ -119,6 +121,7 @@ class Subreddit extends RedditBase
     }
     return _modmail;
   }
+*/
 
   SubredditRelationship get muted {
     if (_muted == null) {
@@ -127,12 +130,15 @@ class Subreddit extends RedditBase
     return _muted;
   }
 
+// TODO(bkonyi): implement
+/*
   SubredditQuarantine get quarantine {
     if (_quarantine == null) {
       _quarantine = new SubredditQuarantine(this);
     }
     return _quarantine;
   }
+*/
 
   SubredditStream get stream {
     if (_stream == null) {
@@ -141,6 +147,8 @@ class Subreddit extends RedditBase
     return _stream;
   }
 
+// TODO(bkonyi): implement
+/*
   SubredditStyleSheet get stylesheet {
     if (_stylesheet == null) {
       _stylesheet = new SubredditStyleSheet(this);
@@ -154,6 +162,7 @@ class Subreddit extends RedditBase
     }
     return _wiki;
   }
+*/
 
   Subreddit.name(Reddit reddit, String name)
       : _name = name,
@@ -380,60 +389,60 @@ class Subreddit extends RedditBase
 
 // TODO(bkonyi): implement.
 /// Provides functions to interact with the special [Subreddit]'s filters.
-class SubredditFilters {
+/*class SubredditFilters {
   final Subreddit _subreddit;
   SubredditFilters(this._subreddit) {
     throw new DRAWUnimplementedError();
   }
-}
+}*/
 
 // TODO(bkonyi): implement.
 /// Provides a set of functions to interact with a [Subreddit]'s flair.
-class SubredditFlair {
+/*class SubredditFlair {
   final Subreddit _subreddit;
   SubredditFlair(this._subreddit) {
     throw new DRAWUnimplementedError();
   }
-}
+}*/
 
 // TODO(bkonyi): implement.
 /// Provides functions to interact with a [Subreddit]'s flair templates.
-class SubredditFlairTemplates {
+/*class SubredditFlairTemplates {
   final Subreddit _subreddit;
   SubredditFlairTemplates(this._subreddit) {
     throw new DRAWUnimplementedError();
   }
-}
+}*/
 
 // TODO(bkonyi): implement.
 /// Provides functions to interact with [Redditor] flair templates.
-class SubredditRedditorFlairTemplates extends SubredditFlairTemplates {
+/*class SubredditRedditorFlairTemplates extends SubredditFlairTemplates {
   SubredditRedditorFlairTemplates(Subreddit subreddit) : super(subreddit);
-}
+}*/
 
 // TODO(bkonyi): implement.
 /// Provides functions to interact with link flair templates.
-class SubredditLinkFlairTemplates extends SubredditFlairTemplates {
+/*class SubredditLinkFlairTemplates extends SubredditFlairTemplates {
   SubredditLinkFlairTemplates(Subreddit subreddit) : super(subreddit);
-}
+}*/
 
 // TODO(bkonyi): implement.
 /// Provides a set of moderation functions to a [Subreddit].
-class SubredditModeration {
+/*class SubredditModeration {
   final Subreddit _subreddit;
   SubredditModeration(this._subreddit) {
     throw new DRAWUnimplementedError();
   }
-}
+}*/
 
 // TODO(bkonyi): implement.
 /// Provides subreddit quarantine related methods.
-class SubredditQuarantine {
+/*class SubredditQuarantine {
   final Subreddit _subreddit;
   SubredditQuarantine(this._subreddit) {
     throw new DRAWUnimplementedError();
   }
-}
+}*/
 
 /// Represents a relationship between a [Redditor] and a [Subreddit].
 class SubredditRelationship {
@@ -456,6 +465,10 @@ class SubredditRelationship {
   }
 
   // TODO(bkonyi): add field for 'other settings'.
+  /// Add a [Redditor] to this relationship.
+  ///
+  /// `redditor` can be either an instance of [Redditor] or the name of a
+  /// Redditor.
   Future add(/* String, Redditor */ redditor) async {
     final data = {
       'name': _redditorNameHelper(redditor),
@@ -467,6 +480,10 @@ class SubredditRelationship {
         discardResponse: true);
   }
 
+  /// Remove a [Redditor] from this relationship.
+  ///
+  /// `redditor` can be either an instance of [Redditor] or the name of a
+  /// Redditor.
   Future remove(/* String, Redditor */ redditor) async {
     final data = {
       'name': _redditorNameHelper(redditor),
@@ -503,6 +520,11 @@ class SubredditTraffic {
   final int subscriptions;
   final int uniques;
 
+  /// Build a map of [List<SubredditTraffic>] given raw traffic response from
+  /// the Reddit API.
+  ///
+  /// This is used by the [Objector] to parse the traffic response, and may be
+  /// made internal at some point.
   static Map<String, List<SubredditTraffic>> parseTrafficResponse(
       Map response) {
     return {
@@ -542,6 +564,7 @@ class ContributorRelationship extends SubredditRelationship {
   ContributorRelationship(Subreddit subreddit, String relationship)
       : super(subreddit, relationship);
 
+  /// Have the current [User] remove themself from the contributors list.
   Future leave() async {
     final data = {
       'id': await _subreddit.property('fullname'),
@@ -553,21 +576,21 @@ class ContributorRelationship extends SubredditRelationship {
 
 // TODO(bkonyi): implement.
 /// Provides methods to interact with a [Subreddit]'s moderators.
-class ModeratorRelationship extends SubredditRelationship {
+/*class ModeratorRelationship extends SubredditRelationship {
   ModeratorRelationship(Subreddit subreddit, String relationship)
       : super(subreddit, relationship) {
     throw new DRAWUnimplementedError();
   }
-}
+}*/
 
 // TODO(bkonyi): implement.
 /// Provides modmail functions for a [Subreddit].
-class Modmail {
+/*class Modmail {
   Subreddit _subreddit;
   Modmail(this._subreddit) {
     throw new DRAWUnimplementedError();
   }
-}
+}*/
 
 /// A wrapper class for a [Rule] of a [Subreddit].
 class Rule {
@@ -622,18 +645,18 @@ class SubredditStream {
 
 // TODO(bkonyi): implement
 /// Provides a set of stylesheet functions to a [Subreddit].
-class SubredditStyleSheet {
+/*class SubredditStyleSheet {
   final Subreddit _subreddit;
   SubredditStyleSheet(this._subreddit) {
     throw new DRAWUnimplementedError();
   }
-}
+}*/
 
 // TODO(bkonyi): implement
 /// Provides a set of wiki functions to a [Subreddit].
-class SubredditWiki {
+/*class SubredditWiki {
   final Subreddit _subreddit;
   SubredditWiki(this._subreddit) {
     throw new DRAWUnimplementedError();
   }
-}
+}*/

@@ -13,6 +13,8 @@ import 'mixins/reportable.dart';
 import 'mixins/saveable.dart';
 import 'mixins/voteable.dart';
 
+/// An abstract base class for user created content, which is one of
+/// [Submission] or [Comment].
 abstract class UserContent extends RedditBase
     with
         EditableMixin,

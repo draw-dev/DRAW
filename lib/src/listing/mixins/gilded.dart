@@ -9,6 +9,8 @@ import '../../reddit.dart';
 import '../../models/user_content.dart';
 import '../listing_generator.dart';
 
+/// A mixin which contains the functionality required to get a [Stream] of
+/// gilded content.
 abstract class GildedListingMixin {
   Reddit get reddit;
   String get path;

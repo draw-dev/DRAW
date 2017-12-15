@@ -24,9 +24,11 @@ class User extends RedditBase {
   }
 
   /// Returns a [Stream] of [Subreddit]s the currently authenticated user is a
-  /// contributor of. [limit] is the number of [Subreddit]s to request, and
-  /// [params] should contain any additional parameters that should be sent as
-  /// part of the API request.
+  /// contributor of.
+  ///
+  /// [limit] is the number of [Subreddit]s to request, and [params] should
+  /// contain any additional parameters that should be sent as part of the API
+  /// request.
   Stream<Subreddit> contributorSubreddits(
           {int limit = ListingGenerator.defaultRequestLimit, Map params}) =>
       ListingGenerator.generator<Subreddit>(reddit, apiPath['my_contributor'],
@@ -50,26 +52,32 @@ class User extends RedditBase {
   }
 
   /// Returns a [Stream] of [Subreddit]s the currently authenticated user is a
-  /// moderator of. [limit] is the number of [Subreddit]s to request, and
-  /// [params] should contain any additional parameters that should be sent as
-  /// part of the API request.
+  /// moderator of.
+  ///
+  /// [limit] is the number of [Subreddit]s to request, and [params] should
+  /// contain any additional parameters that should be sent as part of the API
+  /// request.
   Stream<Subreddit> moderatorSubreddits(
           {int limit = ListingGenerator.defaultRequestLimit, Map params}) =>
       ListingGenerator.generator<Subreddit>(reddit, apiPath['my_moderator'],
           limit: limit, params: params);
 
   /// Returns a [Stream] of [Multireddit]s that belongs to the currently
-  /// authenticated user. [limit] is the number of [Subreddit]s to request, and
-  /// [params] should contain any additional parameters that should be sent as
-  /// part of the API request.
+  /// authenticated user.
+  ///
+  /// [limit] is the number of [Subreddit]s to request, and [params] should
+  /// contain any additional parameters that should be sent as part of the API
+  /// request.
   Future<List<Multireddit>> multireddits() async {
     return reddit.get(apiPath['my_multireddits']);
   }
 
   /// Returns a [Stream] of [Subreddit]s the currently authenticated user is a
-  /// subscriber of. [limit] is the number of [Subreddit]s to request, and
-  /// [params] should contain any additional parameters that should be sent as
-  /// part of the API request.
+  /// subscriber of.
+  ///
+  /// [limit] is the number of [Subreddit]s to request, and [params] should
+  /// contain any additional parameters that should be sent as part of the API
+  /// request.
   Stream<Subreddit> subreddits(
           {int limit = ListingGenerator.defaultRequestLimit, Map params}) =>
       ListingGenerator.generator<Subreddit>(reddit, apiPath['my_subreddits'],

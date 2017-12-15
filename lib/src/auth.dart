@@ -13,20 +13,20 @@ import "package:oauth2/src/handle_access_token_response.dart";
 import 'draw_config_context.dart';
 import 'exceptions.dart';
 
-const String kDeleteRequest = 'DELETE';
-const String kGetRequest = 'GET';
-const String kPostRequest = 'POST';
-const String kPutRequest = 'PUT';
+const String _kDeleteRequest = 'DELETE';
+const String _kGetRequest = 'GET';
+const String _kPostRequest = 'POST';
+const String _kPutRequest = 'PUT';
 
-const String kDurationKey = 'duration';
-const String kErrorKey = 'error';
-const String kGrantTypeKey = 'grant_type';
-const String kMessageKey = 'message';
-const String kPasswordKey = 'password';
-const String kTokenKey = 'token';
-const String kTokenTypeHintKey = 'token_type_hint';
-const String kUserAgentKey = 'user-agent';
-const String kUsernameKey = 'username';
+const String _kDurationKey = 'duration';
+const String _kErrorKey = 'error';
+const String _kGrantTypeKey = 'grant_type';
+const String _kMessageKey = 'message';
+const String _kPasswordKey = 'password';
+const String _kTokenKey = 'token';
+const String _kTokenTypeHintKey = 'token_type_hint';
+const String _kUserAgentKey = 'user-agent';
+const String _kUsernameKey = 'username';
 
 /// The [Authenticator] class provides an interface to interact with the Reddit API
 /// using OAuth2. An [Authenticator] is responsible for keeping track of OAuth2
@@ -52,29 +52,29 @@ abstract class Authenticator {
     await _authenticationFlow();
   }
 
-  /// Revokes any outstanding tokens associated with the authenticator.
+  /// Revokes any outstanding tokens associated with the [Authenticator].
   Future revoke() async {
     if (credentials == null) {
       return;
     }
     final tokens = new List<Map>();
     final accessToken = {
-      kTokenKey: credentials.accessToken,
-      kTokenTypeHintKey: 'access_token',
+      _kTokenKey: credentials.accessToken,
+      _kTokenTypeHintKey: 'access_token',
     };
     tokens.add(accessToken);
 
     if (credentials.refreshToken != null) {
       final refreshToken = {
-        kTokenKey: credentials.refreshToken,
-        kTokenTypeHintKey: 'refresh_token',
+        _kTokenKey: credentials.refreshToken,
+        _kTokenTypeHintKey: 'refresh_token',
       };
       tokens.add(refreshToken);
     }
     for (final token in tokens) {
       final revokeAccess = new Map<String, String>();
-      revokeAccess[kTokenKey] = token[kTokenKey];
-      revokeAccess[kTokenTypeHintKey] = token[kTokenTypeHintKey];
+      revokeAccess[_kTokenKey] = token[_kTokenKey];
+      revokeAccess[_kTokenTypeHintKey] = token[_kTokenTypeHintKey];
 
       var path = Uri.parse(_config.revokeToken);
 
@@ -88,7 +88,7 @@ abstract class Authenticator {
       }
 
       final headers = new Map<String, String>();
-      headers[kUserAgentKey] = _config.userAgent;
+      headers[_kUserAgentKey] = _config.userAgent;
 
       final httpClient = new http.Client();
 
@@ -110,24 +110,35 @@ abstract class Authenticator {
   /// [Authenticator] must implement this method.
   Future _authenticationFlow();
 
-  /// Make a simple `GET` request. [path] is the destination URI that the
-  /// request will be made to.
+  /// Make a simple `GET` request.
+  ///
+  /// [path] is the destination URI that the request will be made to.
   Future get(Uri path, {Map params}) async {
-    return _request(kGetRequest, path, params: params);
+    return _request(_kGetRequest, path, params: params);
   }
 
-  /// Make a simple `POST` request. [path] is the destination URI and [body]
-  /// contains the POST parameters that will be sent with the request.
+  /// Make a simple `POST` request.
+  ///
+  /// [path] is the destination URI and [body] contains the POST parameters
+  /// that will be sent with the request.
   Future post(Uri path, Map<String, String> body) async {
-    return _request(kPostRequest, path, body: body);
+    return _request(_kPostRequest, path, body: body);
   }
 
+  /// Make a simple `PUT` request.
+  ///
+  /// [path] is the destination URI and [body] contains the PUT parameters that
+  /// will be sent with the request.
   Future put(Uri path, {/* Map<String,String>, String */ body}) async {
-    return _request(kPutRequest, path, body: body);
+    return _request(_kPutRequest, path, body: body);
   }
 
+  /// Make a simple `DELETE` request.
+  ///
+  /// [path] is the destination URI and [body] contains the DELETE parameters
+  /// that will be sent with the request.
   Future delete(Uri path, {/* Map<String,String>, String */ body}) async {
-    return _request(kDeleteRequest, path, body: body);
+    return _request(_kDeleteRequest, path, body: body);
   }
 
   /// Request data from Reddit using our OAuth2 client.
@@ -171,7 +182,7 @@ abstract class Authenticator {
     final response = await responseStream.stream.bytesToString();
     if (response.isEmpty) return null;
     final parsed = JSON.decode(response);
-    if ((parsed is Map) && parsed.containsKey(kErrorKey)) {
+    if ((parsed is Map) && parsed.containsKey(_kErrorKey)) {
       _throwAuthenticationError(parsed);
     }
     return parsed;
@@ -192,7 +203,7 @@ abstract class Authenticator {
     final httpClient = new http.Client();
     final start = new DateTime.now();
     final headers = new Map<String, String>();
-    headers[kUserAgentKey] = _config.userAgent;
+    headers[_kUserAgentKey] = _config.userAgent;
 
     // Request the token from the server.
     final response = await httpClient.post(
@@ -202,7 +213,7 @@ abstract class Authenticator {
 
     // Check for error response.
     final responseMap = JSON.decode(response.body);
-    if (responseMap.containsKey(kErrorKey)) {
+    if (responseMap.containsKey(_kErrorKey)) {
       _throwAuthenticationError(responseMap);
     }
 
@@ -216,8 +227,8 @@ abstract class Authenticator {
   }
 
   void _throwAuthenticationError(Map response) {
-    final statusCode = response[kErrorKey];
-    final reason = response[kMessageKey];
+    final statusCode = response[_kErrorKey];
+    final reason = response[_kMessageKey];
     throw new DRAWAuthenticationError(
         'Status Code: ${statusCode} Reason: ${reason}');
   }
@@ -270,10 +281,10 @@ class ScriptAuthenticator extends Authenticator {
   @override
   Future _authenticationFlow() async {
     final accountInfo = new Map<String, String>();
-    accountInfo[kUsernameKey] = _username;
-    accountInfo[kPasswordKey] = _password;
-    accountInfo[kGrantTypeKey] = 'password';
-    accountInfo[kDurationKey] = 'permanent';
+    accountInfo[_kUsernameKey] = _username;
+    accountInfo[_kPasswordKey] = _password;
+    accountInfo[_kGrantTypeKey] = 'password';
+    accountInfo[_kDurationKey] = 'permanent';
     await _requestToken(accountInfo);
   }
 }
@@ -304,7 +315,7 @@ class ReadOnlyAuthenticator extends Authenticator {
   @override
   Future _authenticationFlow() async {
     final accountInfo = new Map<String, String>();
-    accountInfo[kGrantTypeKey] = 'client_credentials';
+    accountInfo[_kGrantTypeKey] = 'client_credentials';
     await _requestToken(accountInfo);
   }
 }
@@ -362,7 +373,7 @@ class WebAuthenticator extends Authenticator {
     // getAuthorizationUrl returns a Uri which is missing the duration field, so
     // we need to add it here.
     final queryParameters = new Map.from(redditAuthUri.queryParameters);
-    queryParameters[kDurationKey] = duration;
+    queryParameters[_kDurationKey] = duration;
     redditAuthUri = redditAuthUri.replace(queryParameters: queryParameters);
     if (compactLogin) {
       String path = redditAuthUri.path;

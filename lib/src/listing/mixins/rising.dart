@@ -13,9 +13,11 @@ abstract class RisingListingMixin {
   Reddit get reddit;
   String get path;
 
+  /// Returns a random [UserContent] that is "rising".
   Stream<UserContent> randomRising({Map params}) => ListingGenerator
       .createBasicGenerator(reddit, path + 'randomrising', params: params);
 
+  /// Returns a [UserContent] that is "rising".
   Stream<UserContent> rising({Map params}) => ListingGenerator
       .createBasicGenerator(reddit, path + 'rising', params: params);
 }

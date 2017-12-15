@@ -34,6 +34,8 @@ class DRAWClientError implements Exception {
       'DRAWClientError: $message This is likely due to issues with your ini file.';
 }
 
+/// Thrown when a redirect is requested after a network call. Used to notify
+/// various APIs that additional work needs to be done.
 class DRAWRedirectResponse implements Exception {
   final String path;
   final response;

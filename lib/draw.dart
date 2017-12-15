@@ -1,4 +1,4 @@
-// Copyright (c) 2017, the Dart Reddit API Wrapper  project authors.
+// Copyright (c) 2017, the Dart Reddit API Wrapper project authors.
 // Please see the AUTHORS file for details. All rights reserved.
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
@@ -11,8 +11,6 @@ export 'src/base.dart';
 export 'src/exceptions.dart';
 export 'src/objector.dart';
 export 'src/user.dart';
-export 'src/listing/mixins/base.dart';
-export 'src/models/mixins/replyable.dart';
 export 'src/models/comment.dart';
 export 'src/models/multireddit.dart';
 export 'src/models/redditor.dart';
