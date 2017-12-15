@@ -9,7 +9,7 @@ import '../../api_paths.dart';
 import '../../reddit.dart';
 import '../comment.dart';
 
-/// Interface for RedditBase classes that can be replied to.
+/// A mixin for RedditBase classes that can be replied to.
 abstract class ReplyableMixin {
   Reddit get reddit;
   String get fullname;

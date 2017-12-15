@@ -1,4 +1,4 @@
-// Copyright (c) 2017, the Dart Reddit API Wrapper  project authors.
+// Copyright (c) 2017, the Dart Reddit API Wrapper project authors.
 // Please see the AUTHORS file for details. All rights reserved.
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
@@ -11,11 +11,21 @@ void setData(RedditBase base, Map data) {
   base._data = data;
 }
 
+/// A base class for most DRAW objects which handles lazy-initialization of
+/// objects and Reddit API request state.
 abstract class RedditBase {
+  /// The current [Reddit] instance.
   final Reddit reddit;
+
   final RegExp _snakecaseRegExp = new RegExp("[A-Z]");
-  Map _data;
+
+  /// Returns the raw properties dictionary for this object.
+  ///
+  /// This getter returns null if the object is lazily initialized.
   Map get data => _data;
+  Map _data;
+
+  /// The base request format for the current object.
   String get infoPath => _infoPath;
   String _infoPath;
 
@@ -34,8 +44,13 @@ abstract class RedditBase {
       (Match match) =>
           (match.start != 0 ? separator : '') + match.group(0).toLowerCase());
 
+  /// Requests the data associated with the current object.
   Future fetch() async => reddit.get(_infoPath);
 
+  /// Accesses properties returned from the Reddit API.
+  ///
+  /// If the object has been lazily initialized, [refresh] is called. If [key]
+  /// is not in the property dictionary returned by Reddit, null is returned.
   Future property(String key) async {
     if (_data == null) {
       await refresh();
@@ -48,6 +63,8 @@ abstract class RedditBase {
     return null;
   }
 
+  /// Requests updated information from the Reddit API and updates the current
+  /// object properties.
   Future refresh() async {
     final response = await fetch();
     if (response is Map) {

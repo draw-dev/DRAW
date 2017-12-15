@@ -10,6 +10,7 @@ import '../../reddit.dart';
 import '../listing_generator.dart';
 import 'base.dart';
 
+/// A mixin which provides the ability to get [Redditor] related streams.
 abstract class RedditorListingMixin {
   Reddit get reddit;
   String get path;

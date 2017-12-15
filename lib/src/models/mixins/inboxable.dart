@@ -9,6 +9,7 @@ import '../../api_paths.dart';
 import '../../exceptions.dart';
 import '../../reddit.dart';
 
+/// A mixin containing inbox functionality.
 abstract class InboxableMixin {
   String get fullname;
   Reddit get reddit;
