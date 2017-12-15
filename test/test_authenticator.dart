@@ -11,6 +11,7 @@ import 'package:collection/collection.dart';
 import 'package:reply/reply.dart';
 
 import 'package:draw/src/auth.dart';
+import 'package:draw/src/draw_config_context.dart';
 import 'package:draw/src/exceptions.dart';
 
 /// A drop-in replacement for [Authenticator], used for recording and replaying
@@ -19,7 +20,6 @@ class TestAuthenticator extends Authenticator {
   final String _recordingPath;
   final Authenticator _recordAuth;
   final _recorder = new Recorder<List, dynamic>();
-
   bool get isRecording => (_recordAuth == null);
   Recording _recording;
 
@@ -33,7 +33,7 @@ class TestAuthenticator extends Authenticator {
   TestAuthenticator(String recordingPath, {Authenticator recordAuth})
       : _recordingPath = recordingPath,
         _recordAuth = recordAuth,
-        super(null, null) {
+        super(new DRAWConfigContext(), null) {
     if (isRecording) {
       final rawRecording = new File(recordingPath).readAsStringSync();
       _recording = new Recording.fromJson(JSON.decode(rawRecording),

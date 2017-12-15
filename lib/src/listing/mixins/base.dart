@@ -89,8 +89,7 @@ abstract class BaseListingMixin {
   Stream<UserContent> _buildTimeFilterGenerator(
       Map params, String sort, TimeFilter timeFilter) {
     if (timeFilter == null) {
-      // TODO(bkonyi): Create DRAWArgumentError
-      throw new UnimplementedError();
+      throw new DRAWArgumentError('Argument "timeFilter" cannot be null');
     }
     final _params = params ?? new Map();
     _params['t'] = timeFilterToString(timeFilter);

@@ -13,6 +13,9 @@ import 'exceptions.dart';
 import 'objector.dart';
 import 'user.dart';
 
+import 'models/submission.dart';
+import 'models/subreddit.dart';
+
 /// The [Reddit] class provides access to Reddit's API and stores session state
 /// for the current [Reddit] instance. This class contains objects that can be
 /// used to interact with Reddit posts, comments, subreddits, multireddits, and
@@ -49,6 +52,9 @@ class Reddit {
   /// The configuration for the current [Reddit] instance.
   DRAWConfigContext get config => _config;
 
+  /// A utility class that converts Reddit API responses to DRAW objects.
+  Objector get objector => _objector;
+
   Authenticator _auth;
   DRAWConfigContext _config;
   User _user;
@@ -57,12 +63,11 @@ class Reddit {
   final _initializedCompleter = new Completer();
   Objector _objector;
 
-  // TODO(bkonyi) update clientId entry to show hyperlink.
   /// Creates a new authenticated [Reddit] instance.
   ///
   /// [clientId] is the identifier associated with your authorized application
-  /// on Reddit. To get a client ID, create an authorized application here:
-  /// http://www.reddit.com/prefs/apps.
+  /// on Reddit. To get a client ID, create an authorized application
+  /// [here](http://www.reddit.com/prefs/apps).
   ///
   /// [clientSecret] is the unique secret associated with your client ID. This
   /// is required for script and web applications.
@@ -157,20 +162,17 @@ class Reddit {
         _config.password == null &&
         _config.redirectUrl == null) {
       ReadOnlyAuthenticator
-          .create(grant, _config.userAgent)
+          .create(_config, grant)
           .then(_initializationCallback);
       _readOnly = true;
     } else if (_config.username != null && _config.password != null) {
       // Check if we are creating an authorized client.
-      ScriptAuthenticator
-          .create(grant, _config.userAgent, _config.username, _config.password)
-          .then(_initializationCallback);
+      ScriptAuthenticator.create(_config, grant).then(_initializationCallback);
       _readOnly = false;
     } else if (_config.username == null &&
         _config.password == null &&
         _config.redirectUrl != null) {
-      _initializationCallback(WebAuthenticator.create(
-          grant, _config.userAgent, Uri.parse(_config.redirectUrl)));
+      _initializationCallback(WebAuthenticator.create(_config, grant));
       _readOnly = false;
     } else {
       throw new DRAWUnimplementedError('Unsupported authentication type.');
@@ -181,8 +183,22 @@ class Reddit {
     if (auth == null) {
       throw new DRAWAuthenticationError('auth cannot be null.');
     }
+    _config = new DRAWConfigContext();
     _initializationCallback(auth);
   }
+
+  Submission submission({String id, /* Uri, String */ url}) {
+    if ((id != null) && (url != null)) {
+      throw new DRAWArgumentError('One of either id or url can be provided');
+    } else if ((id == null) && (url == null)) {
+      throw new DRAWArgumentError('id and url cannot both be null');
+    } else if (id != null) {
+      return new Submission.withID(this, id);
+    }
+    return new Submission.withPath(this, (url is Uri) ? url.toString() : url);
+  }
+
+  Subreddit subreddit(String subreddit) => new Subreddit.name(this, subreddit);
 
   Future<dynamic> get(String api, {Map params}) async {
     if (!_initialized) {

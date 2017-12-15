@@ -6,15 +6,20 @@
 import 'base.dart';
 import 'exceptions.dart';
 import 'reddit.dart';
-import 'models/comment.dart';
+import 'models/comment_impl.dart';
+import 'models/comment_forest.dart';
 import 'models/multireddit.dart';
 import 'models/redditor.dart';
-import 'models/submission.dart';
+import 'models/submission_impl.dart';
 import 'models/subreddit.dart';
 
 /// Converts responses from the Reddit API into instances of [RedditBase].
 class Objector extends RedditBase {
   Objector(Reddit reddit) : super(reddit);
+
+  static String _removeIDPrefix(String id) {
+    return id.split('_')[1];
+  }
 
   dynamic _objectifyDictionary(Map data) {
     if (data.containsKey('name')) {
@@ -22,7 +27,23 @@ class Objector extends RedditBase {
       return new Redditor.parse(reddit, data);
     } else if (data.containsKey('kind') &&
         (data['kind'] == Reddit.defaultCommentKind)) {
-      return new Comment.parse(reddit, data['data']);
+      final commentData = data['data'];
+      final comment = new Comment.parse(reddit, commentData);
+      final submission = new Submission.withID(
+          reddit, _removeIDPrefix(commentData['link_id']));
+      if (commentData.containsKey('replies') &&
+          (commentData['replies'] is Map) &&
+          commentData['replies'].containsKey('kind') &&
+          (commentData['replies']['kind'] == 'Listing') &&
+          commentData['replies'].containsKey('data') &&
+          (commentData['replies']['data'] is Map) &&
+          commentData['replies']['data'].containsKey('children')) {
+        final replies =
+            _objectifyList(commentData['replies']['data']['children']);
+        final commentForest = new CommentForest(submission, replies);
+        setRepliesInternal(comment, commentForest);
+      }
+      return comment;
     } else if (data.containsKey('kind') &&
         (data['kind'] == Reddit.defaultSubmissionKind)) {
       return new Submission.parse(reddit, data['data']);
@@ -56,7 +77,7 @@ class Objector extends RedditBase {
       }
       return rules;
     } else {
-      throw new DRAWUnimplementedError('Cannot objectify unsupported'
+      throw new DRAWInternalError('Cannot objectify unsupported'
           ' response:\n$data');
     }
   }
@@ -101,8 +122,6 @@ class Objector extends RedditBase {
       } else if (kind == 'KarmaList') {
         final listing = _objectifyList(data['data']);
         final karmaMap = new Map<Subreddit, Map<String, int>>();
-        // TODO(bkonyi): there's probably a nicer way to merge all of these
-        // maps.
         listing.forEach((map) {
           karmaMap.addAll(map);
         });
@@ -111,11 +130,11 @@ class Objector extends RedditBase {
         // Account information about a redditor who isn't the currently
         // authenticated user.
         return data['data'];
+      } else if (kind == 'more') {
+        return new MoreComments.parse(reddit, data['data']);
       } else {
         return _objectifyDictionary(data);
       }
-      throw new DRAWUnimplementedError('response kind, ${kind}, is not '
-          'currently implemented.');
     } else if (data.containsKey('json') && data['json'].containsKey('data')) {
       // Response from Subreddit.submit.
       if (data['json']['data'].containsKey('url')) {
@@ -123,8 +142,7 @@ class Objector extends RedditBase {
       } else if (data['json']['data'].containsKey('things')) {
         return _objectifyList(data['json']['data']['things']);
       } else {
-        // TODO(bkonyi): better error message here.
-        throw new DRAWUnimplementedError('Invalid json response: $data');
+        throw new DRAWInternalError('Invalid json response: $data');
       }
     }
     return _objectifyDictionary(data);

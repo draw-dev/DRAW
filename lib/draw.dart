@@ -12,6 +12,7 @@ export 'src/exceptions.dart';
 export 'src/objector.dart';
 export 'src/user.dart';
 export 'src/listing/mixins/base.dart';
+export 'src/models/mixins/replyable.dart';
 export 'src/models/comment.dart';
 export 'src/models/multireddit.dart';
 export 'src/models/redditor.dart';
