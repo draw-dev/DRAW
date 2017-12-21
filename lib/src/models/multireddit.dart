@@ -38,16 +38,13 @@ class Multireddit extends RedditBase
 
   String _authorName;
 
-  static final RegExp _invalidRegExp = new RegExp(r'(\s|\W|_)+');
+  final RegExp _invalidRegExp = new RegExp(r'(\s|\W|_)+');
 
-  final RegExp _multiredditRegExp = new RegExp(r'{multi}');
-  final RegExp _subredditRegExp = new RegExp(r'{subreddit}');
-  final RegExp _userRegExp = new RegExp(r'{user}');
+  static final RegExp _multiredditRegExp = new RegExp(r'{multi}');
 
-  ///TODO(k5chopra): Research if this would be better off, pre-computed
   final String _info_path = apiPath['multireddit_api']
       .replaceAll(_multiredditRegExp, _name)
-      .replaceAll(_userRegExp, _authorName);
+      .replaceAll(reddit.user._userRegExp, _authorName);
 
   ///Returns a slug version of the title
   static String sluggify(String title) {
@@ -68,9 +65,9 @@ class Multireddit extends RedditBase
 
   void add(String subreddit) {
     String url = apiPath['multireddit_update']
-        .replaceAll(_userRegExp, _authorName)
+        .replaceAll(reddit.user._userRegExp, _authorName)
         .replaceAll(_multiredditRegExp, _name)
-        .replaceAll(_subredditRegExp, subreddit);
+        .replaceAll(reddit.subreddit._subredditRegExp, subreddit);
     var data = "I DONT KNOW WHAT TO PUT HERE YET";
     reddit.put(url, data);
   }
@@ -90,7 +87,7 @@ class Multireddit extends RedditBase
       kFrom: _path,
       kTo: apiPath['multiredit']
           .replaceAll(_multiredditRegExp, name)
-          .replaceAll(_userRegExp, reddit.user.me()),
+          .replaceAll(reddit.user._userRegExp, reddit.user.me()),
     };
     return reddit.post(url, data);
   }
@@ -103,8 +100,8 @@ class Multireddit extends RedditBase
   void remove(String subreddit) {
     string url = apiPath['multireddit_update']
         .replaceAll(_multiredditRegExp, _name)
-        .replaceAll(_userRegExp, _author)
-        .replaceAll(_subredditRegExp, subreddit);
+        .replaceAll(reddit.user._userRegExp, _author)
+        .replaceAll(reddit.subreddit._subredditRegExp, subreddit);
     data = "Need to do this part";
     reddit.delete(url, data);
   }

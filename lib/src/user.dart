@@ -18,6 +18,9 @@ import 'models/subreddit.dart';
 class User extends RedditBase {
   User(Reddit reddit) : super(reddit);
 
+  /// The default user regular expression.
+  static final RegExp _userRegExp = new RegExp(r'{user}');
+
   /// Returns a [Future<List<Redditor>>] of blocked Redditors.
   Future<List<Redditor>> blocked() async {
     return reddit.get(apiPath['blocked']);
