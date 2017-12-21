@@ -44,6 +44,11 @@ class Multireddit extends RedditBase
   final RegExp _subredditRegExp = new RegExp(r'{subreddit}');
   final RegExp _userRegExp = new RegExp(r'{user}');
 
+  ///TODO(k5chopra): Research if this would be better off, pre-computed
+  final String _info_path = apiPath['multireddit_api']
+      .replaceAll(_multiredditRegExp, _name)
+      .replaceAll(_userRegExp, _authorName);
+
   ///Returns a slug version of the title
   static String sluggify(String title) {
     title = title.replaceAll(_invalidRegExp, '_').trim();
@@ -57,15 +62,9 @@ class Multireddit extends RedditBase
     return title ?? '_';
   }
 
+  ///Construct a instance of a [Multireddit] Object.
   Multireddit.parse(Reddit reddit, Map data)
       : super.loadData(reddit, data['data']);
-
-  ///TODO(k5chopra): Research if this would be better off, pre-computed
-  String _info_path() {
-    return apiPath['multireddit_api']
-        .replaceAll(_multiredditRegExp, _name)
-        .replaceAll(_userRegExp, _authorName);
-  }
 
   void add(String subreddit) {
     String url = apiPath['multireddit_update']
@@ -79,6 +78,7 @@ class Multireddit extends RedditBase
   Multireddit copy([String display_name = null]) {
     String name;
     String url = apiPath['multireddit_copy'];
+
     if (display_name != null) {
       name = sliggify(display_name);
     } else {
@@ -119,4 +119,5 @@ class Multireddit extends RedditBase
   }
 
   //Need to implment Update
+  void update(Map) {}
 }
