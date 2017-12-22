@@ -32,22 +32,21 @@ class Multireddit extends RedditBase
         SubredditListingMixin {
   String _name;
   String _path;
+  String _authorName;
+  final String _infoPath = apiPath['multireddit_api']
+      .replaceAll(_multiredditRegExp, _name)
+      .replaceAll(reddit.user._userRegExp, _authorName);
+
 
   String get displayName => _name;
   String get path => _path;
 
-  String _authorName;
 
   final RegExp _invalidRegExp = new RegExp(r'(\s|\W|_)+');
-
   static final RegExp _multiredditRegExp = new RegExp(r'{multi}');
 
-  final String _info_path = apiPath['multireddit_api']
-      .replaceAll(_multiredditRegExp, _name)
-      .replaceAll(reddit.user._userRegExp, _authorName);
-
-  /// Returns a slug version of the title
-  String sluggify(String title) {
+  /// Returns a slug version of the [title].
+  static String sluggify(String title) {
     if (title == null) {
       return null;
     }
@@ -81,19 +80,19 @@ class Multireddit extends RedditBase
 
   /// Copy this [Multireddit], and return the new [Multireddit].
   ///
-  /// [display_name] is an optional string that will become the display name of the new
-  /// multireddit and be used as the source for the [name]. If [display_name] is not
-  /// provided, the [name] and [display_name] of the muti being copied will be used.
+  /// [displayName] is an optional string that will become the display name of the new
+  /// multireddit and be used as the source for the [name]. If [displayName] is not
+  /// provided, the [name] and [displayName] of the muti being copied will be used.
   ///
   /// Returns  an instance of a [Multireddit].
-  Future<Multireddit> copy([String display_name = null]) async {
+  Future<Multireddit> copy([String displayName = null]) async {
     String url = apiPath['multireddit_copy'];
 
-    name = sluggify(display_name) ?? _name;
-    display_name ??= _display_name;
+    name = sluggify(displayName) ?? _name;
+    displayName ??= _displayName;
 
     data = const {
-      kDisplayName: display_name,
+      kDisplayName: displayName,
       kFrom: _path,
       kTo: apiPath['multiredit']
           .replaceAll(_multiredditRegExp, name)
@@ -104,7 +103,7 @@ class Multireddit extends RedditBase
 
   /// Delete this [multireddit].
   Future delete() async {
-    await reddit.delete(_info_path);
+    await reddit.delete(_infoPath);
   }
 
   /// Remove a [Subreddit] from this [Multireddit].
@@ -121,22 +120,47 @@ class Multireddit extends RedditBase
 
   /// Rename this [Multireddit].
   ///
-  /// [display_name] is the new display for this [multireddit].
-  /// The [name] will be auto generated from the display_name.
-  Future rename(display_name) async {
+  /// [displayName] is the new display for this [multireddit].
+  /// The [name] will be auto generated from the displayName.
+  Future rename(displayName) async {
     String url = apiPath['multireddit_rename'];
     data = {
       kFrom: _path,
-      kDisplayName: _display_name,
+      kDisplayName: _displayName,
     };
     await reddit.post(url, data);
-    _display_name = display_name;
+    _displayName = displayName;
   }
 
   /// Update this [Multireddit].
   ///
-  /// TODO(ckartik): implement!
+  /// [newSettings] is a map potentially containing a list of keyword args
+  /// that should be updated. These include:
+  /// [display_name]: the display_name for the multireddit.
+  /// [subreddits]: A list of subreddits in this multireddit.
+  /// [description_md]: A description of this multireddit, formated in markdown.
+  /// [icon_name]: can be one of: [art and design], [ask], [books], [business], 
+  /// [cars], [comic], [cute animals], [diy], [entertainment], [food and drink],
+  /// [funny], [games], [grooming], [health], [life advice], [military],
+  /// [models pinup], [music], [news], [philosophy], [pictures and gifs], [science],
+  /// [shopping], [sports], [style], [tech], [travel], [unusual stories], [video],
+  /// or [None].
+  /// [key_color]: RGB Hex color code of the form i.e "#FFFFFF".
+  /// [visibility]: Can be one of: [hidden], [private], [public].
+  /// [weighting_scheme]: Can be one of: [classic], [fresh].
   void update(Map newSettings) {
-    
+    if(newSettings.containsKey('subreddits')){
+      List newSubredditsList = [];
+      newSettings['subreddits'].forEach((item) {
+       newSubredditsList.add({'name': item});
+      }
+      //TODO(ckartik): Test if this type change in a map works.
+      newSettings['subreddits'] = newSubredditsList;
+    }
+    var res = await reddit.put(_infoPath, newSettings.toString());
+    Multireddit newMulti = new Multireddit(reddit, response['data']);
+    subreddits = newMulti.subreddits;
+
+
   }
 }
