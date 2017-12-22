@@ -30,18 +30,18 @@ class Multireddit extends RedditBase
         MessageableMixin,
         RisingListingMixin,
         SubredditListingMixin {
+  List<Subreddit> _subreddits;
+  Redditor _author;
+  String _displayName;
   String _name;
   String _path;
-  String _authorName;
   final String _infoPath = apiPath['multireddit_api']
       .replaceAll(_multiredditRegExp, _name)
-      .replaceAll(reddit.user._userRegExp, _authorName);
+      .replaceAll(reddit.user._userRegExp, _author.displayName);
 
-
-  String get displayName => _name;
-  String get path => _path;
-
-
+  String get displayName => _displayName;
+  String get name => _name;
+  String get path => _path ?? '/';
   final RegExp _invalidRegExp = new RegExp(r'(\s|\W|_)+');
   static final RegExp _multiredditRegExp = new RegExp(r'{multi}');
 
@@ -63,19 +63,26 @@ class Multireddit extends RedditBase
 
   /// Construct a instance of a [Multireddit] Object.
   Multireddit.parse(Reddit reddit, Map data)
-      : super.loadData(reddit, data['data']);
+      : super.loadData(reddit, data['data']) {
+    _name = data['data']['name'];
+    _author = Redditor(reddit, _path.split('/')[2]);
+    _path = apiPath['multireddit']
+        .replaceAll(_multiredditRegExp, _name)
+        .replaceAll(reddit.user._userREgExp, _author.displayName);
+  }
 
   /// Add a [subreddit] to this [multireddit].
   ///
   /// [subreddit] is the string name of the subreddit to be added to this multi.
   Future add(String subreddit) async {
     String url = apiPath['multireddit_update']
-        .replaceAll(reddit.user._userRegExp, _authorName)
+        .replaceAll(reddit.user._userRegExp, _author.displayName)
         .replaceAll(_multiredditRegExp, _name)
         .replaceAll(reddit.subreddit._subredditRegExp, subreddit);
     Map data = {'model': "{'name': $subreddit}"};
     await reddit.put(url, data);
-    //TODO(ckartik): call to def reset_attributes in base.py, check if we need in dart.
+    // TODO(ckartik): Find API path to GET subreddits list and construct into list.
+    // May need to add the path: /api/multi/multipath to api_path.dart
   }
 
   /// Copy this [Multireddit], and return the new [Multireddit].
@@ -139,7 +146,7 @@ class Multireddit extends RedditBase
   /// [display_name]: the display_name for the multireddit.
   /// [subreddits]: A list of subreddits in this multireddit.
   /// [description_md]: A description of this multireddit, formated in markdown.
-  /// [icon_name]: can be one of: [art and design], [ask], [books], [business], 
+  /// [icon_name]: can be one of: [art and design], [ask], [books], [business],
   /// [cars], [comic], [cute animals], [diy], [entertainment], [food and drink],
   /// [funny], [games], [grooming], [health], [life advice], [military],
   /// [models pinup], [music], [news], [philosophy], [pictures and gifs], [science],
@@ -148,19 +155,18 @@ class Multireddit extends RedditBase
   /// [key_color]: RGB Hex color code of the form i.e "#FFFFFF".
   /// [visibility]: Can be one of: [hidden], [private], [public].
   /// [weighting_scheme]: Can be one of: [classic], [fresh].
-  void update(Map newSettings) {
-    if(newSettings.containsKey('subreddits')){
+  void update(Map newSettings) async {
+    if (newSettings.containsKey('subreddits')) {
       List newSubredditsList = [];
       newSettings['subreddits'].forEach((item) {
-       newSubredditsList.add({'name': item});
-      }
+        newSubredditsList.add({'name': item});
+      });
       //TODO(ckartik): Test if this type change in a map works.
       newSettings['subreddits'] = newSubredditsList;
     }
     var res = await reddit.put(_infoPath, newSettings.toString());
     Multireddit newMulti = new Multireddit(reddit, response['data']);
-    subreddits = newMulti.subreddits;
-
-
+    _displayName = newMulti.displayName;
+    _name = newMulti.name;
   }
 }
