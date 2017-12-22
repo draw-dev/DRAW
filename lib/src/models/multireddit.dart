@@ -22,7 +22,7 @@ import 'redditor.dart';
 import 'submission.dart';
 import 'user_content.dart';
 
-///A class representing a collection of Reddit communities, also known as a Multireddit.
+/// A class representing a collection of Reddit communities, also known as a Multireddit.
 class Multireddit extends RedditBase
     with
         BaseListingMixinm,
@@ -46,8 +46,11 @@ class Multireddit extends RedditBase
       .replaceAll(_multiredditRegExp, _name)
       .replaceAll(reddit.user._userRegExp, _authorName);
 
-  ///Returns a slug version of the title
-  static String sluggify(String title) {
+  /// Returns a slug version of the title
+  String sluggify(String title) {
+    if (title == null) {
+      return null;
+    }
     title = title.replaceAll(_invalidRegExp, '_').trim();
     if (title.length > 21) {
       title = title.substring(21);
@@ -59,29 +62,36 @@ class Multireddit extends RedditBase
     return title ?? '_';
   }
 
-  ///Construct a instance of a [Multireddit] Object.
+  /// Construct a instance of a [Multireddit] Object.
   Multireddit.parse(Reddit reddit, Map data)
       : super.loadData(reddit, data['data']);
 
-  void add(String subreddit) {
+  /// Add a [subreddit] to this [multireddit].
+  ///
+  /// [subreddit] is the string name of the subreddit to be added to this multi.
+  Future add(String subreddit) async {
     String url = apiPath['multireddit_update']
         .replaceAll(reddit.user._userRegExp, _authorName)
         .replaceAll(_multiredditRegExp, _name)
         .replaceAll(reddit.subreddit._subredditRegExp, subreddit);
-    var data = "I DONT KNOW WHAT TO PUT HERE YET";
-    reddit.put(url, data);
+    Map data = {'model': "{'name': $subreddit}"};
+    await reddit.put(url, data);
+    //TODO(ckartik): call to def reset_attributes in base.py, check if we need in dart.
   }
 
-  Multireddit copy([String display_name = null]) {
-    String name;
+  /// Copy this [Multireddit], and return the new [Multireddit].
+  ///
+  /// [display_name] is an optional string that will become the display name of the new
+  /// multireddit and be used as the source for the [name]. If [display_name] is not
+  /// provided, the [name] and [display_name] of the muti being copied will be used.
+  ///
+  /// Returns  an instance of a [Multireddit].
+  Future<Multireddit> copy([String display_name = null]) async {
     String url = apiPath['multireddit_copy'];
 
-    if (display_name != null) {
-      name = sliggify(display_name);
-    } else {
-      display_name = _name;
-      name = _name;
-    }
+    name = sluggify(display_name) ?? _name;
+    display_name ??= _display_name;
+
     data = const {
       kDisplayName: display_name,
       kFrom: _path,
@@ -89,32 +99,44 @@ class Multireddit extends RedditBase
           .replaceAll(_multiredditRegExp, name)
           .replaceAll(reddit.user._userRegExp, reddit.user.me()),
     };
-    return reddit.post(url, data);
+    return await reddit.post(url, data);
   }
 
-  ///Delete this [multireddit]
-  void delete() {
-    reddit.request(_info_path());
+  /// Delete this [multireddit].
+  Future delete() async {
+    await reddit.delete(_info_path);
   }
 
-  void remove(String subreddit) {
+  /// Remove a [Subreddit] from this [Multireddit].
+  ///
+  /// [subreddit] is a string containing the name of the subreddit to be deleted.
+  Future remove(String subreddit) async {
     string url = apiPath['multireddit_update']
         .replaceAll(_multiredditRegExp, _name)
         .replaceAll(reddit.user._userRegExp, _author)
         .replaceAll(reddit.subreddit._subredditRegExp, subreddit);
-    data = "Need to do this part";
-    reddit.delete(url, data);
+    Map data = {'model': "{'name': $subreddit}"};
+    await reddit.delete(url, data);
   }
 
-  void rename(display_name) {
+  /// Rename this [Multireddit].
+  ///
+  /// [display_name] is the new display for this [multireddit].
+  /// The [name] will be auto generated from the display_name.
+  Future rename(display_name) async {
     String url = apiPath['multireddit_rename'];
     data = {
       kFrom: _path,
-      kDisplayName: display_name,
+      kDisplayName: _display_name,
     };
-    updated = reddit.post(url, data);
+    await reddit.post(url, data);
+    _display_name = display_name;
   }
 
-  //Need to implment Update
-  void update(Map) {}
+  /// Update this [Multireddit].
+  ///
+  /// TODO(ckartik): implement!
+  void update(Map newSettings) {
+    
+  }
 }
