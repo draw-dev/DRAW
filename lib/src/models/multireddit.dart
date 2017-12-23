@@ -4,56 +4,68 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:math';
 
 import '../api_paths.dart';
 import '../base.dart';
-import '../exceptions.dart';
-import '../listing/listing_generator.dart';
 import '../listing/mixins/base.dart';
 import '../listing/mixins/gilded.dart';
 import '../listing/mixins/rising.dart';
 import '../listing/mixins/subreddit.dart';
 import '../reddit.dart';
-import '../util.dart';
-import 'comment.dart';
+import '../user.dart';
 import 'mixins/messageable.dart';
 import 'redditor.dart';
-import 'submission.dart';
-import 'user_content.dart';
+import 'subreddit.dart';
 
 /// A class representing a collection of Reddit communities, also known as a Multireddit.
 class Multireddit extends RedditBase
     with
-        BaseListingMixinm,
+        BaseListingMixin,
         GildedListingMixin,
         MessageableMixin,
         RisingListingMixin,
         SubredditListingMixin {
-  List<Subreddit> _subreddits;
   Redditor _author;
   String _displayName;
+  String _infoPath;
   String _name;
   String _path;
-  final String _infoPath = apiPath['multireddit_api']
-      .replaceAll(_multiredditRegExp, _name)
-      .replaceAll(reddit.user._userRegExp, _author.displayName);
 
-  String get displayName => _displayName;
-  String get name => _name;
-  String get path => _path ?? '/';
+  final String kDisplayName = "display_name";
+  final String kFrom = "from";
+  final String kTo = "to";
+
   final RegExp _invalidRegExp = new RegExp(r'(\s|\W|_)+');
   static final RegExp _multiredditRegExp = new RegExp(r'{multi}');
 
+  static RegExp get multiredditRegExp => _multiredditRegExp;
+  String get displayName => _displayName;
+  String get name => _name;
+  String get path => _path ?? '/';
+
+  /// Construct a instance of a [Multireddit] Object.
+  Multireddit.parse(Reddit reddit, Map data)
+      : super.loadData(reddit, data['data']) {
+    _name = data['data']['name'];
+    _author = new Redditor.name(reddit, _path.split('/')[2]);
+    _path = apiPath['multireddit']
+        .replaceAll(_multiredditRegExp, _name)
+        .replaceAll(User.userRegExp, _author.displayName);
+    _infoPath = apiPath['multireddit_api']
+        .replaceAll(_multiredditRegExp, _name)
+        .replaceAll(User.userRegExp, _author.displayName);
+  }
+
   /// Returns a slug version of the [title].
-  static String sluggify(String title) {
+  String sluggify(String title) {
     if (title == null) {
       return null;
     }
     title = title.replaceAll(_invalidRegExp, '_').trim();
     if (title.length > 21) {
       title = title.substring(21);
-      String last_word = title.lastIndexOf('_');
+      int last_word = title.lastIndexOf('_');
+      //TODO:(ckartik) Test this well. If statements not nice :(
       if (last_word > 0) {
         title = title.substring(last_word);
       }
@@ -61,28 +73,19 @@ class Multireddit extends RedditBase
     return title ?? '_';
   }
 
-  /// Construct a instance of a [Multireddit] Object.
-  Multireddit.parse(Reddit reddit, Map data)
-      : super.loadData(reddit, data['data']) {
-    _name = data['data']['name'];
-    _author = Redditor(reddit, _path.split('/')[2]);
-    _path = apiPath['multireddit']
-        .replaceAll(_multiredditRegExp, _name)
-        .replaceAll(reddit.user._userREgExp, _author.displayName);
-  }
-
   /// Add a [subreddit] to this [multireddit].
   ///
   /// [subreddit] is the string name of the subreddit to be added to this multi.
   Future add(String subreddit) async {
     String url = apiPath['multireddit_update']
-        .replaceAll(reddit.user._userRegExp, _author.displayName)
+        .replaceAll(User.userRegExp, _author.displayName)
         .replaceAll(_multiredditRegExp, _name)
-        .replaceAll(reddit.subreddit._subredditRegExp, subreddit);
+        .replaceAll(Subreddit.subredditRegExp, subreddit);
     Map data = {'model': "{'name': $subreddit}"};
-    await reddit.put(url, data);
-    // TODO(ckartik): Find API path to GET subreddits list and construct into list.
-    // May need to add the path: /api/multi/multipath to api_path.dart
+    // TODO(ckartik) Check if it may be more applicable to use POST here.
+    // Direct Link: (https://www.reddit.com/dev/api/#DELETE_api_multi_{multipath}).
+    await reddit.put(url, body: data);
+    // TODO(ckartik): Research if we should GET subreddits.
   }
 
   /// Copy this [Multireddit], and return the new [Multireddit].
@@ -95,15 +98,15 @@ class Multireddit extends RedditBase
   Future<Multireddit> copy([String displayName = null]) async {
     String url = apiPath['multireddit_copy'];
 
-    name = sluggify(displayName) ?? _name;
+    String name = sluggify(displayName) ?? _name;
     displayName ??= _displayName;
 
-    data = const {
+    Map data = {
       kDisplayName: displayName,
       kFrom: _path,
       kTo: apiPath['multiredit']
           .replaceAll(_multiredditRegExp, name)
-          .replaceAll(reddit.user._userRegExp, reddit.user.me()),
+          .replaceAll(User.userRegExp, reddit.user.me()),
     };
     return await reddit.post(url, data);
   }
@@ -117,12 +120,12 @@ class Multireddit extends RedditBase
   ///
   /// [subreddit] is a string containing the name of the subreddit to be deleted.
   Future remove(String subreddit) async {
-    string url = apiPath['multireddit_update']
+    String url = apiPath['multireddit_update']
         .replaceAll(_multiredditRegExp, _name)
-        .replaceAll(reddit.user._userRegExp, _author)
-        .replaceAll(reddit.subreddit._subredditRegExp, subreddit);
+        .replaceAll(User.userRegExp, _author)
+        .replaceAll(Subreddit.subredditRegExp, subreddit);
     Map data = {'model': "{'name': $subreddit}"};
-    await reddit.delete(url, data);
+    await reddit.delete(url, body: data);
   }
 
   /// Rename this [Multireddit].
@@ -131,7 +134,7 @@ class Multireddit extends RedditBase
   /// The [name] will be auto generated from the displayName.
   Future rename(displayName) async {
     String url = apiPath['multireddit_rename'];
-    data = {
+    Map data = {
       kFrom: _path,
       kDisplayName: _displayName,
     };
@@ -155,7 +158,7 @@ class Multireddit extends RedditBase
   /// [key_color]: RGB Hex color code of the form i.e "#FFFFFF".
   /// [visibility]: Can be one of: [hidden], [private], [public].
   /// [weighting_scheme]: Can be one of: [classic], [fresh].
-  void update(Map newSettings) async {
+  Future update(Map newSettings) async {
     if (newSettings.containsKey('subreddits')) {
       List newSubredditsList = [];
       newSettings['subreddits'].forEach((item) {
@@ -164,8 +167,8 @@ class Multireddit extends RedditBase
       //TODO(ckartik): Test if this type change in a map works.
       newSettings['subreddits'] = newSubredditsList;
     }
-    var res = await reddit.put(_infoPath, newSettings.toString());
-    Multireddit newMulti = new Multireddit(reddit, response['data']);
+    var res = await reddit.put(_infoPath, body: newSettings.toString());
+    Multireddit newMulti = new Multireddit.parse(reddit, res['data']);
     _displayName = newMulti.displayName;
     _name = newMulti.name;
   }
