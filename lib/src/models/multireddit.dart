@@ -50,16 +50,16 @@ class Multireddit extends RedditBase {
     if (title == null) {
       return null;
     }
-    title = title.replaceAll(_invalidRegExp, '_').trim();
-    if (title.length > 21) {
-      title = title.substring(21);
-      final int last_word = title.lastIndexOf('_');
+    String titleScoped = title.replaceAll(_invalidRegExp, '_').trim();
+    if (titleScoped.length > 21) {
+      titleScoped = titleScoped.substring(21);
+      final int lastWord = titleScoped.lastIndexOf('_');
       //TODO:(ckartik) Test this well. If statements not nice :(
-      if (last_word > 0) {
-        title = title.substring(last_word);
+      if (lastWord > 0) {
+        titleScoped = titleScoped.substring(lastWord);
       }
     }
-    return title ?? '_';
+    return titleScoped ?? '_';
   }
 
   /// Add a [subreddit] to this [multireddit].
