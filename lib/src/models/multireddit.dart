@@ -47,8 +47,7 @@ class Multireddit extends RedditBase
   Multireddit.parse(Reddit reddit, Map data)
       : super.loadData(reddit, data['data']) {
     _name = data['data']['name'];
-    print(data.toString());
-    _author = new Redditor.name(reddit, infoPath.split('/')[2]);
+    _author = new Redditor.name(reddit, data['data']['path'].split('/')[2]);
     _path = apiPath['multireddit']
         .replaceAll(_multiredditRegExp, _name)
         .replaceAll(User.userRegExp, _author.displayName);
