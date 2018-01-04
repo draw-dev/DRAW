@@ -53,7 +53,7 @@ class Multireddit extends RedditBase {
     title = title.replaceAll(_invalidRegExp, '_').trim();
     if (title.length > 21) {
       title = title.substring(21);
-      int last_word = title.lastIndexOf('_');
+      final int last_word = title.lastIndexOf('_');
       //TODO:(ckartik) Test this well. If statements not nice :(
       if (last_word > 0) {
         title = title.substring(last_word);
@@ -66,11 +66,11 @@ class Multireddit extends RedditBase {
   ///
   /// [subreddit] is the string name of the subreddit to be added to this multi.
   Future add(String subreddit) async {
-    String url = apiPath['multireddit_update']
+    final String url = apiPath['multireddit_update']
         .replaceAll(User.userRegExp, _author.displayName)
         .replaceAll(_multiredditRegExp, _name)
         .replaceAll(Subreddit.subredditRegExp, subreddit);
-    Map data = {'model': "{'name': $subreddit}"};
+    final Map data = {'model': "{'name': $subreddit}"};
     // TODO(ckartik) Check if it may be more applicable to use POST here.
     // Direct Link: (https://www.reddit.com/dev/api/#DELETE_api_multi_{multipath}).
     await reddit.put(url, body: data);
@@ -84,13 +84,13 @@ class Multireddit extends RedditBase {
   /// provided, the [name] and [displayName] of the muti being copied will be used.
   ///
   /// Returns  an instance of a [Multireddit].
-  Future<Multireddit> copy([String displayName = null]) async {
-    String url = apiPath['multireddit_copy'];
+  Future<Multireddit> copy([String displayName]) async {
+    final String url = apiPath['multireddit_copy'];
+    final String name = sluggify(displayName) ?? _name;
 
-    String name = sluggify(displayName) ?? _name;
     displayName ??= _displayName;
 
-    Map data = {
+    final Map data = {
       kDisplayName: displayName,
       kFrom: _path,
       kTo: apiPath['multiredit']
@@ -109,11 +109,11 @@ class Multireddit extends RedditBase {
   ///
   /// [subreddit] is a string containing the name of the subreddit to be deleted.
   Future remove(String subreddit) async {
-    String url = apiPath['multireddit_update']
+    final String url = apiPath['multireddit_update']
         .replaceAll(_multiredditRegExp, _name)
         .replaceAll(User.userRegExp, _author)
         .replaceAll(Subreddit.subredditRegExp, subreddit);
-    Map data = {'model': "{'name': $subreddit}"};
+    final Map data = {'model': "{'name': $subreddit}"};
     await reddit.delete(url, body: data);
   }
 
@@ -122,8 +122,8 @@ class Multireddit extends RedditBase {
   /// [displayName] is the new display for this [multireddit].
   /// The [name] will be auto generated from the displayName.
   Future rename(displayName) async {
-    String url = apiPath['multireddit_rename'];
-    Map data = {
+    final String url = apiPath['multireddit_rename'];
+    final Map data = {
       kFrom: _path,
       kDisplayName: _displayName,
     };
@@ -149,15 +149,15 @@ class Multireddit extends RedditBase {
   /// [weighting_scheme]: Can be one of: [classic], [fresh].
   Future update(Map newSettings) async {
     if (newSettings.containsKey('subreddits')) {
-      List newSubredditsList = [];
+      final List newSubredditsList = [];
       newSettings['subreddits'].forEach((item) {
         newSubredditsList.add({'name': item});
       });
       //TODO(ckartik): Test if this type change in a map works.
       newSettings['subreddits'] = newSubredditsList;
     }
-    var res = await reddit.put(_infoPath, body: newSettings.toString());
-    Multireddit newMulti = new Multireddit.parse(reddit, res['data']);
+    final var res = await reddit.put(_infoPath, body: newSettings.toString());
+    final Multireddit newMulti = new Multireddit.parse(reddit, res['data']);
     _displayName = newMulti.displayName;
     _name = newMulti.name;
   }
