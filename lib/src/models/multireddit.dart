@@ -7,24 +7,13 @@ import 'dart:async';
 
 import '../api_paths.dart';
 import '../base.dart';
-import '../listing/mixins/base.dart';
-import '../listing/mixins/gilded.dart';
-import '../listing/mixins/rising.dart';
-import '../listing/mixins/subreddit.dart';
 import '../reddit.dart';
 import '../user.dart';
-import 'mixins/messageable.dart';
 import 'redditor.dart';
 import 'subreddit.dart';
 
 /// A class representing a collection of Reddit communities, also known as a Multireddit.
-class Multireddit extends RedditBase
-    with
-        BaseListingMixin,
-        GildedListingMixin,
-        MessageableMixin,
-        RisingListingMixin,
-        SubredditListingMixin {
+class Multireddit extends RedditBase {
   Redditor _author;
   String _displayName;
   String _infoPath;
