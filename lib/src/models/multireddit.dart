@@ -156,7 +156,7 @@ class Multireddit extends RedditBase {
       //TODO(ckartik): Test if this type change in a map works.
       newSettings['subreddits'] = newSubredditsList;
     }
-    final var res = await reddit.put(_infoPath, body: newSettings.toString());
+    final res = await reddit.put(_infoPath, body: newSettings.toString());
     final Multireddit newMulti = new Multireddit.parse(reddit, res['data']);
     _displayName = newMulti.displayName;
     _name = newMulti.name;
