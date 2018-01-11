@@ -20,7 +20,6 @@ class User extends RedditBase {
 
   /// The default user regular expression.
   static final RegExp _userRegExp = new RegExp(r'{user}');
-
   static RegExp get userRegExp => _userRegExp;
 
   /// Returns a [Future<List<Redditor>>] of blocked Redditors.
