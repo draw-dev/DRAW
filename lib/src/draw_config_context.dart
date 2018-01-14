@@ -326,7 +326,13 @@ class DRAWConfigContext {
   }
 
   String _fetchOptional(String key) {
-    return _customConfig.get(_primarySiteName, key);
+    try {
+      final returnValue = _customConfig.get(_primarySiteName, key);
+    } catch (exception) {
+      throw new DRAWArgumentError(
+          'Invalid paramter value, siteName cannot be null');
+    }
+    return returnValue;
   }
 
   /// Checks if [key] is contained in the parsed ini file, if not returns [kNotSet].
