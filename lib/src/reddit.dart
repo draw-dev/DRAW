@@ -90,17 +90,18 @@ class Reddit {
   ///
   /// [siteName] is the name of the configuration to use from draw.ini. Defaults
   /// to 'default'.
-  static Future<Reddit> createInstance(
-      {String clientId,
-      String clientSecret,
-      String userAgent,
-      String username,
-      String password,
-      Uri redirectUri,
-      Uri tokenEndpoint,
-      Uri authEndpoint,
-      Uri configUri,
-      String siteName}) async {
+  static Future<Reddit> createInstance({
+    String clientId,
+    String clientSecret,
+    String userAgent,
+    String username,
+    String password,
+    Uri redirectUri,
+    Uri tokenEndpoint,
+    Uri authEndpoint,
+    Uri configUri,
+    String siteName = 'default',
+  }) async {
     final reddit = new Reddit._(
         clientId,
         clientSecret,
