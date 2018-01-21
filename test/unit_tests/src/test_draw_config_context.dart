@@ -1,8 +1,7 @@
 import 'dart:io';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
-import 'package:path/path.dart' as path;
-import '../../lib/src/draw_config_context.dart';
+import '../../../lib/src/draw_config_context.dart';
 
 //Mocking
 class MockPlatform extends Mock implements Platform {}
