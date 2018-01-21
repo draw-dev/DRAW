@@ -103,7 +103,8 @@ void main() {
       final trueValues = [true, '1', 'true', 'YES', 'on'];
       for (var value in trueValues) {
         final config = new DRAWConfigContext(checkForUpdates: value);
-        assert(config.checkForUpdates == expectedTruthValue, "failed on $value");
+        assert(
+            config.checkForUpdates == expectedTruthValue, "failed on $value");
       }
     });
   });
