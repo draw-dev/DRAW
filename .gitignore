@@ -10,6 +10,7 @@ build/
 
 # Files and directories created by other tools
 .idea
+*.swp
 
 # Files created by dart2js
 # (Most Dart developers will use pub build to compile Dart, use/modify these 
