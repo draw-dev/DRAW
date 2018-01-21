@@ -100,7 +100,9 @@ class DRAWConfigContext {
 
   final Map<String, String> _kind = new Map<String, String>();
 
-  bool checkForUpdates;
+  bool _checkForUpdates;
+
+  bool get checkForUpdates => _checkForUpdates ?? false;
 
   String _accessToken;
   String _authorizeUrl;
@@ -169,20 +171,20 @@ class DRAWConfigContext {
     String authorizeUrl,
     String configUrl,
     String siteName = 'default',
+    var checkForUpdates,
   }) {
     // Give passed in values highest precedence for assignment.
     _primarySiteName = siteName;
-    // TODO(bkonyi): we probably don't need to set the fields as kNotSet since
-    // uninitialized fields are always null in Dart.
-    _clientId = clientId ?? kNotSet;
-    _clientSecret = clientSecret ?? kNotSet;
-    _configUrl = configUrl ?? kNotSet;
-    _username = username ?? kNotSet;
-    _password = password ?? kNotSet;
-    _redirectUrl = redirectUrl ?? kNotSet;
-    _accessToken = accessToken ?? kNotSet;
-    _authorizeUrl = authorizeUrl ?? kNotSet;
-    _userAgent = userAgent ?? kNotSet;
+    _clientId = clientId;
+    _clientSecret = clientSecret;
+    _configUrl = configUrl;
+    _username = username;
+    _password = password;
+    _redirectUrl = redirectUrl;
+    _accessToken = accessToken;
+    _authorizeUrl = authorizeUrl;
+    _userAgent = userAgent;
+    _checkForUpdates = _configBool(checkForUpdates);
 
     // Initialize Paths.
     _localConfigPath = _getLocalConfigPath();
@@ -232,7 +234,7 @@ class DRAWConfigContext {
     if (type == kShortUrl) {
       _shortURL = _fetchDefault('short_url') ?? kDefaultShortUrl;
     } else if (type == kCheckForUpdates) {
-      checkForUpdates = _configBool(_fetchOrNotSet('check_for_updates'));
+      _checkForUpdates = _configBool(_fetchOrNotSet('check_for_updates'));
     } else if (type == kKind) {
       final value = _fetchOrNotSet(param);
       if (value != null) {

@@ -1,15 +1,17 @@
-import 'dart:mirrors';
-
-
+import 'dart:io';
 import 'package:mockito/mockito.dart';
-import '../../src/draw_config_context.dart';
+import 'package:test/test.dart';
+import 'package:path/path.dart' as path;
+import '../../lib/src/draw_config_context.dart';
 
 //Mocking
 class MockPlatform extends Mock implements Platform {}
 
+/*
+//TODO(ckartik): Utilize mirrors lib here to get access to private methods.
 void _testUserConfigPathGetter() {
-  Platform os = new MockPlatform();
-  Map dummy_mac_envs = {
+  //Platform os = new MockPlatform();
+  final dummy_mac_envs = {
     'TERM_SESSION_ID': 'w0t0p0:8DC4D1FE-DF20-48B5-824E-56692EB7F544',
     'SSH_AUTH_SOCK': '/private/tmp/com.apple.launchd.7oRE2BfsAa/Listeners',
     'Apple_PubSub_Socket_Render':
@@ -80,5 +82,30 @@ void _testUserConfigPathGetter() {
     '_': '/usr/local/bin/dart'
   };
   //Mac Stubbing
-  when(os.enviroment).thenReturn(dummy_mac_envs);
+  //when(os.enviroment).thenReturn(dummy_mac_envs);
+}
+*/
+
+void main() {
+  // Given an range of different inputs for [checkForUpdates],
+  // verify the resulting bool for checkForUpdates.
+  group('Check for updates', () {
+    test('Check for updates: false', () {
+      final expectedTruthValue = false;
+      final falseValues = [false, 'False', 'other', 'anything', '0', 0];
+      for (var value in falseValues) {
+        final config = new DRAWConfigContext(checkForUpdates: value);
+        expect(config.checkForUpdates, expectedTruthValue);
+      }
+    });
+
+    test('Check for updates: true', () {
+      final expectedTruthValue = true;
+      final falseValues = [true, '1', 'true', 'YES', 'on'];
+      for (var value in falseValues) {
+        final config = new DRAWConfigContext(checkForUpdates: value);
+        expect(config.checkForUpdates, expectedTruthValue);
+      }
+    });
+  });
 }
