@@ -173,7 +173,8 @@ class DRAWConfigContext {
     _accessToken = accessToken;
     _authorizeUrl = authorizeUrl;
     _userAgent = userAgent;
-    _checkForUpdates = _configBool(checkForUpdates);
+    _checkForUpdates =
+        checkForUpdates == null ? null : _configBool(checkForUpdates);
 
     final configFileReader = new ConfigFileReader(_configUrl);
 
@@ -199,7 +200,7 @@ class DRAWConfigContext {
     if (type == kShortUrl) {
       _shortURL = _fetchDefault('short_url') ?? kDefaultShortUrl;
     } else if (type == kCheckForUpdates) {
-      _checkForUpdates = _configBool(_fetchOrNotSet('check_for_updates'));
+      _checkForUpdates ??= _configBool(_fetchOrNotSet('check_for_updates'));
     } else if (type == kKind) {
       final value = _fetchOrNotSet(param);
       if (value != null) {
@@ -281,9 +282,11 @@ class DRAWConfigContext {
   bool _configBool(final item) {
     if (item is bool) {
       return item;
-    } else {
+    } else if (item is String) {
       final trueValues = ['1', 'yes', 'true', 'on'];
       return trueValues.contains(item?.toLowerCase());
+    } else {
+      return false;
     }
   }
 

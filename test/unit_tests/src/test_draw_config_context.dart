@@ -88,8 +88,8 @@ void _testUserConfigPathGetter() {
 void main() {
   // Given an range of different inputs for [checkForUpdates],
   // verify the resulting bool for checkForUpdates.
-  group('Check for updates', () {
-    test('Check for updates: false', () {
+  group('checkForUpdates: ', () {
+    test('false', () {
       final expectedTruthValue = false;
       final falseValues = [false, 'False', 'other', 'anything', '0', 0];
       for (var value in falseValues) {
@@ -98,12 +98,12 @@ void main() {
       }
     });
 
-    test('Check for updates: true', () {
+    test('true', () {
       final expectedTruthValue = true;
-      final falseValues = [true, '1', 'true', 'YES', 'on'];
-      for (var value in falseValues) {
+      final trueValues = [true, '1', 'true', 'YES', 'on'];
+      for (var value in trueValues) {
         final config = new DRAWConfigContext(checkForUpdates: value);
-        expect(config.checkForUpdates, expectedTruthValue);
+        assert(config.checkForUpdates == expectedTruthValue, "failed on $value");
       }
     });
   });
