@@ -163,6 +163,9 @@ class DRAWConfigContext {
     var checkForUpdates,
   }) {
     // Give passed in values highest precedence for assignment.
+    // TODO(ckartik): Find a more robust way of giving passed in values higher priority.
+    // Look in to the possiblity of storing these values in a map and checking against
+    // it in the fetchOrNotSet function.
     _primarySiteName = siteName;
     _clientId = clientId;
     _clientSecret = clientSecret;
