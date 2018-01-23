@@ -21,7 +21,7 @@ Assuming you already have your [Reddit OAuth credentials](https://github.com/red
 
 ```dart
 import 'dart:async';                                                                                                                                                                                               
-import 'package:DRAW/draw.dart';                                                                                                                                                                                   
+import 'package:draw/draw.dart';                                                                                                                                                                                   
                                                                                                                                                                                                                    
 Future main() async {                                                                                                                                                                                              
   // Create the `Reddit` instance and authenticate                                                                                                                                                                 
