@@ -3,11 +3,9 @@
 /// Use of this source code is governed by a BSD-style license that
 /// can be found in the LICENSE file.
 
-import 'dart:io';
-
 import 'package:ini/ini.dart';
-import 'package:path/path.dart' as path;
 
+import 'config_file_reader.dart';
 import 'exceptions.dart';
 
 const String kAccessToken = 'access_token';
@@ -24,13 +22,9 @@ const String kDefaultRedditUrl = 'https://www.reddit.com';
 const String kDefaultRevokeToken =
     r'https://www.reddit.com/api/v1/revoke_token';
 const String kDefaultShortUrl = 'https://redd.it';
-const String kFileName = 'draw.ini';
 const String kHttpProxy = 'http_proxy';
 const String kHttpsProxy = 'https_proxy';
 const String kKind = 'kind';
-const String kLinuxEnvVar = 'XDG_CONFIG_HOME';
-const String kLinuxHomeEnvVar = 'HOME';
-const String kMacEnvVar = 'HOME';
 const String kMessage = 'message_kind';
 const String kOauthUrl = 'oauth_url';
 const String kOptionalField = 'optional_field';
@@ -47,7 +41,6 @@ const String kSubmission = 'submission_kind';
 const String kSubreddit = 'subreddit_kind';
 const String kUserAgent = 'user_agent';
 const String kUsername = 'username';
-const String kWindowsEnvVar = 'APPDATA';
 
 final kNotSet = null;
 
@@ -92,15 +85,13 @@ class DRAWConfigContext {
     kRequiredField: const [kOauthUrl, kRedditUrl]
   };
 
-  /// Path to Local, User, Global Configuration Files, with matching precedence.
-  Uri _localConfigPath;
-  Uri _userConfigPath;
-
   Config _customConfig;
 
   final Map<String, String> _kind = new Map<String, String>();
 
-  bool checkForUpdates;
+  bool _checkForUpdates;
+
+  bool get checkForUpdates => _checkForUpdates ?? false;
 
   String _accessToken;
   String _authorizeUrl;
@@ -169,26 +160,29 @@ class DRAWConfigContext {
     String authorizeUrl,
     String configUrl,
     String siteName = 'default',
+    var checkForUpdates,
   }) {
     // Give passed in values highest precedence for assignment.
+    // TODO(ckartik): Find a more robust way of giving passed in values higher priority.
+    // Look in to the possiblity of storing these values in a map and checking against
+    // it in the fetchOrNotSet function.
     _primarySiteName = siteName;
-    // TODO(bkonyi): we probably don't need to set the fields as kNotSet since
-    // uninitialized fields are always null in Dart.
-    _clientId = clientId ?? kNotSet;
-    _clientSecret = clientSecret ?? kNotSet;
-    _configUrl = configUrl ?? kNotSet;
-    _username = username ?? kNotSet;
-    _password = password ?? kNotSet;
-    _redirectUrl = redirectUrl ?? kNotSet;
-    _accessToken = accessToken ?? kNotSet;
-    _authorizeUrl = authorizeUrl ?? kNotSet;
-    _userAgent = userAgent ?? kNotSet;
+    _clientId = clientId;
+    _clientSecret = clientSecret;
+    _configUrl = configUrl;
+    _username = username;
+    _password = password;
+    _redirectUrl = redirectUrl;
+    _accessToken = accessToken;
+    _authorizeUrl = authorizeUrl;
+    _userAgent = userAgent;
+    _checkForUpdates =
+        checkForUpdates == null ? null : _configBool(checkForUpdates);
 
-    // Initialize Paths.
-    _localConfigPath = _getLocalConfigPath();
-    _userConfigPath = _getUserConfigPath();
+    final configFileReader = new ConfigFileReader(_configUrl);
+
     // Load the first file found in order of path preference.
-    final primaryFile = _loadCorrectFile();
+    final primaryFile = configFileReader.loadCorrectFile();
     try {
       _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
     } catch (exception) {
@@ -196,29 +190,6 @@ class DRAWConfigContext {
     }
     // Load values found in the ini file, into the object fields.
     fieldMap.forEach((key, value) => _fieldInitializer(key, value));
-  }
-
-  /// Loads file from [_localConfigPath] or [_userConfigPath].
-  File _loadCorrectFile() {
-    if (_configUrl != null) {
-      final primaryFile = new File(_configUrl);
-      if (primaryFile.existsSync()) {
-        return primaryFile;
-      }
-    }
-    // Check if file exists locally.
-    var primaryFile = new File(_localConfigPath.toString());
-    if (primaryFile.existsSync()) {
-      _configUrl = _localConfigPath.toString();
-      return primaryFile;
-    }
-    // Check if file exists in user directory.
-    primaryFile = new File(_userConfigPath.toString());
-    if (primaryFile.existsSync()) {
-      _configUrl = _userConfigPath.toString();
-      return primaryFile;
-    }
-    throw new DRAWClientError('$kFileName, does not exist');
   }
 
   /// Take in the [type] which reflects the key in the [fieldMap]
@@ -232,7 +203,7 @@ class DRAWConfigContext {
     if (type == kShortUrl) {
       _shortURL = _fetchDefault('short_url') ?? kDefaultShortUrl;
     } else if (type == kCheckForUpdates) {
-      checkForUpdates = _configBool(_fetchOrNotSet('check_for_updates'));
+      _checkForUpdates ??= _configBool(_fetchOrNotSet('check_for_updates'));
     } else if (type == kKind) {
       final value = _fetchOrNotSet(param);
       if (value != null) {
@@ -314,9 +285,11 @@ class DRAWConfigContext {
   bool _configBool(final item) {
     if (item is bool) {
       return item;
-    } else {
+    } else if (item is String) {
       final trueValues = ['1', 'yes', 'true', 'on'];
       return trueValues.contains(item?.toLowerCase());
+    } else {
+      return false;
     }
   }
 
@@ -326,7 +299,12 @@ class DRAWConfigContext {
   }
 
   String _fetchOptional(String key) {
-    return _customConfig.get(_primarySiteName, key);
+    try {
+      return _customConfig.get(_primarySiteName, key);
+    } catch (exception) {
+      throw new DRAWArgumentError(
+          'Invalid paramter value, siteName cannot be null');
+    }
   }
 
   /// Checks if [key] is contained in the parsed ini file, if not returns [kNotSet].
@@ -334,36 +312,4 @@ class DRAWConfigContext {
   /// [key] is the key to be searched in the draw.ini file.
   String _fetchOrNotSet(final key) =>
       (_fetchOptional(key) ?? _fetchDefault(key) ?? kNotSet);
-
-  /// Returns path to user level configuration file.
-  /// Special Behaviour: if User Config Enviroment var unset, uses [$HOME] or the corresponding root path for the os.
-  Uri _getUserConfigPath() {
-    final environment = Platform.environment;
-    String osConfigPath;
-    // Load correct path for user level configuration paths based on operating system.
-    if (Platform.isMacOS) {
-      osConfigPath = path.join(environment[kMacEnvVar], '.config');
-    } else if (Platform.isLinux) {
-      osConfigPath = environment[kLinuxEnvVar] ??
-          path.join(environment[kLinuxHomeEnvVar], '.config');
-    } else if (Platform.isWindows) {
-      osConfigPath = environment[kWindowsEnvVar];
-    } else {
-      throw new DRAWInternalError('OS not Recognized by DRAW');
-    }
-    if (osConfigPath == null) {
-      // Sets osConfigPath to the corresponding root path based on the os.
-      final path.Context osDir = new path.Context();
-      final cwd = osDir.current;
-      osConfigPath = osDir.rootPrefix(cwd);
-    }
-    return Uri.parse(path.join(osConfigPath, kFileName));
-  }
-
-  /// Returns path to local configuration file.
-  Uri _getLocalConfigPath() {
-    final path.Context osDir = new path.Context();
-    final cwd = osDir.current;
-    return Uri.parse(path.join(cwd, kFileName));
-  }
 }
