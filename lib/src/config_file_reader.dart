@@ -45,7 +45,7 @@ class ConfigFileReader {
   }
 
   /// Returns path to user level configuration file.
-  /// Special Behaviour: if User Config Enviroment var unset,
+  /// Special Behaviour: if User Config Environment var unset,
   /// uses [$HOME] or the corresponding root path for the os.
   Uri _getUserConfigPath() {
     final environment = Platform.environment;
