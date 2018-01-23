@@ -1,6 +1,11 @@
 Change Log
 =================================
 
+## Version 0.0.3 (2018/01/22)
+Minor changes and bug fixes:
+* Fixed bug that caused authentication to fail when using `draw.ini` with the `ScriptAuthenticator`
+* Refactored DRAWConfigContext
+
 ## Version 0.0.2 (2017/12/15)
 Minor updates:
 * Added `CHANGELOG.md`

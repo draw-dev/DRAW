@@ -260,9 +260,6 @@ abstract class Authenticator {
 /// [documentation](https://github.com/reddit/reddit/wiki/OAuth2-App-Types)
 /// for descriptions of valid app types.
 class ScriptAuthenticator extends Authenticator {
-  String _username;
-  String _password;
-
   ScriptAuthenticator._(
       DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant)
       : super(config, grant);
@@ -281,8 +278,8 @@ class ScriptAuthenticator extends Authenticator {
   @override
   Future _authenticationFlow() async {
     final accountInfo = new Map<String, String>();
-    accountInfo[_kUsernameKey] = _username;
-    accountInfo[_kPasswordKey] = _password;
+    accountInfo[_kUsernameKey] = _config.username;
+    accountInfo[_kPasswordKey] = _config.password;
     accountInfo[_kGrantTypeKey] = 'password';
     accountInfo[_kDurationKey] = 'permanent';
     await _requestToken(accountInfo);
