@@ -4,6 +4,7 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
+import 'package:color/color.dart';
 
 import '../api_paths.dart';
 import '../base.dart';
@@ -11,6 +12,43 @@ import '../reddit.dart';
 import '../user.dart';
 import 'redditor.dart';
 import 'subreddit.dart';
+
+/// [key_color]: RGB Hex color code of the form i.e "#FFFFFF".
+
+enum Visibility { hidden, private, public }
+enum WeightingScheme { classic, fresh }
+enum IconName {
+  artAndDesign,
+  ask,
+  books,
+  business,
+  cars,
+  comic,
+  cuteAnimals,
+  diy,
+  entertainment,
+  foodAndDrink,
+  funny,
+  games,
+  grooming,
+  health,
+  lifeAdvice,
+  military,
+  modelsPinup,
+  music,
+  news,
+  philosophy,
+  picturesAndGifs,
+  science,
+  shopping,
+  sports,
+  style,
+  tech,
+  travel,
+  unusualStories,
+  video,
+  None,
+}
 
 /// A class which repersents a Multireddit, which is a collection of
 /// [Subreddit]s. This is not yet implemented.
@@ -138,31 +176,48 @@ class Multireddit extends RedditBase {
 
   /// Update this [Multireddit].
   ///
-  /// [newSettings] is a map potentially containing a list of keyword args
-  /// that should be updated. These include:
-  /// [display_name]: the display_name for the multireddit.
-  /// [subreddits]: A list of subreddits in this multireddit.
-  /// [description_md]: A description of this multireddit, formated in markdown.
-  /// [icon_name]: can be one of: [art and design], [ask], [books], [business],
-  /// [cars], [comic], [cute animals], [diy], [entertainment], [food and drink],
-  /// [funny], [games], [grooming], [health], [life advice], [military],
-  /// [models pinup], [music], [news], [philosophy], [pictures and gifs], [science],
-  /// [shopping], [sports], [style], [tech], [travel], [unusual stories], [video],
-  /// or [None].
   // TODO(chkartik): Import Color into here.
   /// [key_color]: RGB Hex color code of the form i.e "#FFFFFF".
   /// [visibility]: Can be one of: [hidden], [private], [public].
   /// [weighting_scheme]: Can be one of: [classic], [fresh].
   // TODO(ckartik): Pass in optional params instead of Map, and turn these into enums! Not smart Kartik! :(
-  Future update(Map newSettings) async {
-    if (newSettings.containsKey('subreddits')) {
-      final List newSubredditsList = [];
-      newSettings['subreddits'].forEach((item) {
-        newSubredditsList.add({'name': item});
-      });
-      //TODO(ckartik): Test if this type change in a map works.
-      newSettings['subreddits'] = newSubredditsList;
+  static const String kSubreddits = "subreddits";
+  static const String kDescriptionMd = "description_md";
+  static const String kIconName = 'icon_name';
+  static const String kVisibility = "visibility";
+  static const String kWeightingScheme = "weighting_scheme";
+
+  String parseEnumString(String enumString) => enumString.split('.')[1].replaceAllMapped(new RegExp('[A-Z]'), (m) => ' ${m.group(0)}'.toLowerCase());
+  Future update(
+      {final String displayName,
+      final List<String> subreddits,
+      final String descriptionMd,
+      final IconName iconName,
+      final Color keyColor,
+      final Visibility visibility,
+      final WeightingScheme weightingScheme}) async {
+    final Map newSettings = {};
+    if (displayName != null){
+      newSettings[kDisplayName] = displayName;
     }
+    final newSubredditList =
+        subreddits?.map((item) => {'name': item})?.toList();
+    if (newSubredditList != null) {
+      newSettings[kSubreddits] = newSubredditList;
+    }
+    if (descriptionMd != null) {
+      newSettings[kDescriptionMd] = descriptionMd;
+    }
+    if (iconName != null) {
+      newSettings[kIconName] = parseEnumString(iconName.toString());
+    }
+    if (visibility != null){
+      newSettings[kVisibility] = parseEnumString(visibility.toString());
+    }
+    if (weightingScheme != null){
+      newSettings[kWeightingScheme] = parseEnumString(weightingScheme.toString());
+    }
+    //Link to api docs: https://www.reddit.com/dev/api/#PUT_api_multi_{multipath}
     final res = await reddit.put(_infoPath, body: newSettings.toString());
     final Multireddit newMulti = new Multireddit.parse(reddit, res['data']);
     _displayName = newMulti.displayName;
