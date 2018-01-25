@@ -70,6 +70,7 @@ class Subreddit extends RedditBase
   String get displayName => _name;
   String get path => _path;
   int get hashCode => _name.hashCode;
+  static RegExp get subredditRegExp => _subredditRegExp;
 
   SubredditRelationship get banned {
     if (_banned == null) {
