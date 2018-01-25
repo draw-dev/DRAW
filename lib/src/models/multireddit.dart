@@ -17,6 +17,9 @@ import 'subreddit.dart';
 
 enum Visibility { hidden, private, public }
 enum WeightingScheme { classic, fresh }
+
+//TODO(kchopra): Need to implement string value for '' and 'None' with capital 'N'.
+//For Reference: "https://www.reddit.com/dev/api/#PUT_api_multi_{multipath}".
 enum IconName {
   artAndDesign,
   ask,
@@ -52,6 +55,7 @@ enum IconName {
 
 /// A class which repersents a Multireddit, which is a collection of
 /// [Subreddit]s. This is not yet implemented.
+//TODO(kchopra): Implement subreddit list storage.
 class Multireddit extends RedditBase {
   final String kDisplayName = 'display_name';
   final String kFrom = "from";
@@ -187,7 +191,9 @@ class Multireddit extends RedditBase {
   static const String kVisibility = "visibility";
   static const String kWeightingScheme = "weighting_scheme";
 
+  // https://i.imgur.com/kRO1z6Z.gif
   String parseEnumString(String enumString) => enumString.split('.')[1].replaceAllMapped(new RegExp('[A-Z]'), (m) => ' ${m.group(0)}'.toLowerCase());
+
   Future update(
       {final String displayName,
       final List<String> subreddits,
