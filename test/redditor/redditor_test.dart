@@ -30,6 +30,21 @@ Future main() async {
     expect(noFriends.length, equals(0));
   });
 
+  test('lib/redditor/unblock', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_unblock.json');
+
+    var blockedUsers = await reddit.user.blocked();
+    expect(blockedUsers.length, equals(1));
+
+    // User was blocked before running this test.
+    final blocked = new Redditor.name(reddit, 'XtremeCheese');
+    await blocked.unblock();
+
+    blockedUsers = await reddit.user.blocked();
+    expect(blockedUsers.length, equals(0));
+  });
+
   // Note: tests for controversial, hot, newest, and top all use the same
   // data for the different responses to save some effort.
   test('lib/redditor/controversial', () async {
