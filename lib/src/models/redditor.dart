@@ -15,20 +15,25 @@ import '../listing/mixins/redditor.dart';
 import '../reddit.dart';
 import '../util.dart';
 import 'comment.dart';
+import 'mixins/messageable.dart';
 import 'multireddit.dart';
 import 'submission.dart';
-import 'subreddit.dart';
 
 /// A class representing a particular Reddit user, also known as a Redditor.
 class Redditor extends RedditBase
-    with BaseListingMixin, GildedListingMixin, RedditorListingMixin {
+    with
+        BaseListingMixin,
+        GildedListingMixin,
+        MessageableMixin,
+        RedditorListingMixin {
+  static final _subredditRegExp = new RegExp(r'{subreddit}');
   static final _userRegExp = new RegExp(r'{user}');
 
-  /// The Redditor's display name (i.e., spez or XtremeCheese).
+  /// The Redditor's display name (e.g., spez or XtremeCheese).
   String get displayName => _name;
   String _name;
 
-  // TODO(bkonyi): is this needed anymore?
+  /// The Reddit path suffix for this Redditor (e.g., 'user/spez/')
   String get path => _path;
   String _path;
 
@@ -36,8 +41,8 @@ class Redditor extends RedditBase
     if (!data.containsKey('name') &&
         !(data.containsKey('kind') &&
             data['kind'] == Reddit.defaultRedditorKind)) {
-      // TODO(bkonyi) throw invalid object exception
-      throw new DRAWUnimplementedError();
+      throw new DRAWArgumentError("input argument 'data' is not a valid"
+          " representation of a Redditor");
     }
     _name = data['name'];
     _path = apiPath['user'].replaceAll(_userRegExp, _name);
@@ -66,7 +71,7 @@ class Redditor extends RedditBase
   ///
   /// A fullname is an object's kind mapping (i.e., t3), followed by an
   /// underscore and the object's ID (i.e., t1_c5s96e0).
-  Future<String> get fullname async => property('fullname');
+  Future<String> get fullname async => await property('fullname');
 
   /// Gives Reddit Gold to the [Redditor]. [months] is the number of months of
   /// Reddit Gold to be given to the [Redditor].
@@ -77,15 +82,6 @@ class Redditor extends RedditBase
     await reddit.post(
         apiPath['gild_user'].replaceAll(_userRegExp, _name), body);
   }
-
-  /// Send a message to the [Redditor]. [subject] is the subject of the message,
-  /// [message] is the content of the message, and [fromSubreddit] is a
-  /// [Subreddit] that the message should be sent from. [fromSubreddit] must be
-  /// a subreddit that the current user is a moderator of and has permissions to
-  /// send mail on behalf of the subreddit.
-  Future message(String subject, String message,
-          {Subreddit fromSubreddit}) async =>
-      throw new DRAWUnimplementedError();
 
   /// Returns a [List] of the [Redditor]'s public [Multireddit]'s.
   Future<List<Multireddit>> multireddits() async =>
@@ -98,9 +94,18 @@ class Redditor extends RedditBase
   /// by a [Redditor] indefinitely.
   RedditorStream get stream => new RedditorStream(this);
 
-  // TODO(bkonyi): implement.
   /// Unblock the [Redditor].
-  // Future unblock() async => throw new DRAWUnimplementedError();
+  Future unblock() async {
+    final currentUser = await reddit.user.me();
+    final data = {
+      'container': 't2_' + await currentUser.property('id'),
+      'name': displayName,
+      'type': 'enemy',
+    };
+    await reddit.post(
+        apiPath['unfriend'].replaceAll(_subredditRegExp, 'all'), data,
+        discardResponse: true);
+  }
 
   /// Unfriend the [Redditor].
   Future unfriend() async =>
