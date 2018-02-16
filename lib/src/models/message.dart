@@ -6,9 +6,10 @@
 import 'dart:async';
 
 import 'package:draw/src/base_impl.dart';
+import 'package:draw/src/models/mixins/inboxable.dart';
 import 'package:draw/src/reddit.dart';
 
-class Message extends RedditBase {
+class Message extends RedditBase with InboxableMixin {
   var _replies;
 
   Message(Reddit reddit) : super(reddit);
