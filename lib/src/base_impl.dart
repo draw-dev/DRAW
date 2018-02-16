@@ -31,16 +31,6 @@ abstract class RedditBase {
   String get infoPath => _infoPath;
   String _infoPath;
 
-  /// The fullname of a Reddit object.
-  ///
-  /// Reddit object fullnames take the form of 't3_15bfi0'.
-  Future<String> get fullname async => await property('name');
-
-  /// The id of a Reddit object.
-  ///
-  /// Reddit object ids take the form of '15bfi0'.
-  Future<String> get id async => await property('id');
-
   RedditBase(this.reddit);
 
   RedditBase.withPath(this.reddit, String infoPath) : _infoPath = infoPath;
