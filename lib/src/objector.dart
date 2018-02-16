@@ -8,6 +8,7 @@ import 'exceptions.dart';
 import 'reddit.dart';
 import 'models/comment_impl.dart';
 import 'models/comment_forest.dart';
+import 'models/message.dart';
 import 'models/multireddit.dart';
 import 'models/redditor.dart';
 import 'models/submission_impl.dart';
@@ -29,8 +30,6 @@ class Objector extends RedditBase {
         (data['kind'] == Reddit.defaultCommentKind)) {
       final commentData = data['data'];
       final comment = new Comment.parse(reddit, commentData);
-      final submission = new Submission.withID(
-          reddit, _removeIDPrefix(commentData['link_id']));
       if (commentData.containsKey('replies') &&
           (commentData['replies'] is Map) &&
           commentData['replies'].containsKey('kind') &&
@@ -40,6 +39,8 @@ class Objector extends RedditBase {
           commentData['replies']['data'].containsKey('children')) {
         final replies =
             _objectifyList(commentData['replies']['data']['children']);
+        final submission = new Submission.withID(
+            reddit, _removeIDPrefix(commentData['link_id']));
         final commentForest = new CommentForest(submission, replies);
         setRepliesInternal(comment, commentForest);
       }
@@ -50,6 +51,9 @@ class Objector extends RedditBase {
     } else if (data.containsKey('kind') &&
         (data['kind'] == Reddit.defaultSubredditKind)) {
       return new Subreddit.parse(reddit, data);
+    } else if (data.containsKey('kind') &&
+        data['kind'] == Reddit.defaultMessageKind) {
+      return new Message.parse(reddit, data['data']);
     } else if (data.containsKey('kind') && (data['kind'] == 'LabeledMulti')) {
       assert(
           data.containsKey('data'),

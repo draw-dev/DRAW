@@ -4,6 +4,8 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:convert';
+
 import 'exceptions.dart';
 import 'reddit.dart';
 
@@ -28,6 +30,16 @@ abstract class RedditBase {
   /// The base request format for the current object.
   String get infoPath => _infoPath;
   String _infoPath;
+
+  /// The fullname of a Reddit object.
+  ///
+  /// Reddit object fullnames take the form of 't3_15bfi0'.
+  Future<String> get fullname async => await property('name');
+
+  /// The id of a Reddit object.
+  ///
+  /// Reddit object ids take the form of '15bfi0'.
+  Future<String> get id async => await property('id');
 
   RedditBase(this.reddit);
 
@@ -85,6 +97,10 @@ abstract class RedditBase {
 
   @override
   String toString() {
-    return _data?.toString();
+    if (_data != null) {
+      final encoder = new JsonEncoder.withIndent('  ');
+      return encoder.convert(_data);
+    }
+    return 'null';
   }
 }

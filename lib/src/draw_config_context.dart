@@ -183,10 +183,14 @@ class DRAWConfigContext {
 
     // Load the first file found in order of path preference.
     final primaryFile = configFileReader.loadCorrectFile();
-    try {
-      _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
-    } catch (exception) {
-      throw new DRAWClientError('Could not parse configuration file.');
+    if (primaryFile != null) {
+      try {
+        _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
+      } catch (exception) {
+        throw new DRAWClientError('Could not parse configuration file.');
+      }
+    } else {
+      _customConfig = new Config();
     }
     // Load values found in the ini file, into the object fields.
     fieldMap.forEach((key, value) => _fieldInitializer(key, value));
