@@ -12,6 +12,8 @@ export 'src/exceptions.dart';
 export 'src/objector.dart';
 export 'src/user.dart';
 export 'src/models/comment.dart';
+export 'src/models/inbox.dart';
+export 'src/models/message.dart';
 export 'src/models/multireddit.dart';
 export 'src/models/redditor.dart';
 export 'src/models/submission.dart';

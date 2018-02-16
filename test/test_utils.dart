@@ -11,8 +11,7 @@ import 'test_authenticator.dart';
 Future<Reddit> createRedditTestInstance(String path, {bool live: false}) async {
   var testAuth;
   if (live) {
-    final tempReddit = await Reddit.createInstance(
-        configUri: Uri.parse('~/draw.ini'), siteName: 'DRAWApiOfficial');
+    final tempReddit = await Reddit.createInstance(siteName: 'DRAWApiOfficial');
     testAuth = new TestAuthenticator(path, recordAuth: tempReddit.auth);
   } else {
     testAuth = new TestAuthenticator(path);

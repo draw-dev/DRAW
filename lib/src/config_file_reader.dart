@@ -30,18 +30,19 @@ class ConfigFileReader {
       }
     }
     // Check if file exists locally.
-    var primaryFile = new File(_localConfigPath.toString());
+    var primaryFile = new File(_localConfigPath.toFilePath());
     if (primaryFile.existsSync()) {
       _configUrl = _localConfigPath.toString();
       return primaryFile;
     }
+
     // Check if file exists in user directory.
-    primaryFile = new File(_userConfigPath.toString());
+    primaryFile = new File(_userConfigPath.toFilePath());
     if (primaryFile.existsSync()) {
       _configUrl = _userConfigPath.toString();
       return primaryFile;
     }
-    throw new DRAWClientError('$kFileName, does not exist');
+    return null;
   }
 
   /// Returns path to user level configuration file.
@@ -54,8 +55,7 @@ class ConfigFileReader {
     if (Platform.isMacOS) {
       osConfigPath = path.join(environment[kMacEnvVar], '.config');
     } else if (Platform.isLinux) {
-      osConfigPath = environment[kLinuxEnvVar] ??
-          path.join(environment[kLinuxHomeEnvVar], '.config');
+      osConfigPath = environment[kLinuxEnvVar] ?? environment[kLinuxHomeEnvVar];
     } else if (Platform.isWindows) {
       osConfigPath = environment[kWindowsEnvVar];
     } else {
@@ -68,13 +68,13 @@ class ConfigFileReader {
       final cwd = osDir.current;
       osConfigPath = osDir.rootPrefix(cwd);
     }
-    return Uri.parse(path.join(osConfigPath, kFileName));
+    return path.toUri(path.join(osConfigPath, kFileName));
   }
 
   /// Returns path to local configuration file.
   Uri _getLocalConfigPath() {
     final path.Context osDir = new path.Context();
     final cwd = osDir.current;
-    return Uri.parse(path.join(cwd, kFileName));
+    return path.toUri(path.join(cwd, kFileName));
   }
 }

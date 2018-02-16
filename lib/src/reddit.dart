@@ -13,6 +13,7 @@ import 'exceptions.dart';
 import 'objector.dart';
 import 'user.dart';
 
+import 'models/inbox.dart';
 import 'models/submission.dart';
 import 'models/subreddit.dart';
 
@@ -46,6 +47,8 @@ class Reddit {
   /// The authorized client used to interact with Reddit APIs.
   Authenticator get auth => _auth;
 
+  Inbox get inbox => _inbox;
+
   /// Provides methods for the currently authenticated user.
   User get user => _user;
 
@@ -57,6 +60,7 @@ class Reddit {
 
   Authenticator _auth;
   DRAWConfigContext _config;
+  Inbox _inbox;
   User _user;
   bool _readOnly = true;
   bool _initialized = false;
@@ -248,6 +252,7 @@ class Reddit {
   void _initializationCallback(Authenticator auth) {
     _auth = auth;
     _objector = new Objector(this);
+    _inbox = new Inbox(this);
     _user = new User(this);
     _initialized = true;
     _initializedCompleter.complete(true);
