@@ -3,4 +3,4 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
-export 'base_impl.dart' hide setData;
+export 'base_impl.dart' hide fullnameSync, setData;

@@ -11,12 +11,12 @@ import '../../reddit.dart';
 /// Interface for ReddieBase classes that can be reported.
 abstract class ReportableMixin {
   Reddit get reddit;
-  String get fullname;
+  Future<String> get fullname;
 
   /// Report this object to the moderators of its [Subreddit].
   ///
   /// [reason] is the reason for the report.
-  Future report(String reason) async => reddit.post(
-      apiPath['report'], {'id': fullname, 'reason': reason, 'api_type': 'json'},
+  Future report(String reason) async => reddit.post(apiPath['report'],
+      {'id': await fullname, 'reason': reason, 'api_type': 'json'},
       discardResponse: true);
 }

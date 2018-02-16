@@ -96,7 +96,7 @@ Future main() async {
     Future<List<String>> getUpvoted() async {
       final upvoted = <String>[];
       await for (final submission in redditor.upvoted()) {
-        upvoted.add(submission.fullname);
+        upvoted.add(await submission.fullname);
       }
       return upvoted;
     }
@@ -104,7 +104,7 @@ Future main() async {
     Future<List<String>> getDownvoted() async {
       final upvoted = <String>[];
       await for (final submission in redditor.downvoted()) {
-        upvoted.add(submission.fullname);
+        upvoted.add(await submission.fullname);
       }
       return upvoted;
     }
@@ -113,32 +113,32 @@ Future main() async {
     var upvoted = await getUpvoted();
     var downvoted = await getDownvoted();
     await for (final submission in submissionsHelper(subreddit)) {
-      expect(upvoted.contains(submission.fullname), isFalse);
-      expect(downvoted.contains(submission.fullname), isFalse);
+      expect(upvoted.contains(await submission.fullname), isFalse);
+      expect(downvoted.contains(await submission.fullname), isFalse);
       await submission.upvote();
     }
 
     upvoted = await getUpvoted();
     downvoted = await getDownvoted();
     await for (final submission in submissionsHelper(subreddit)) {
-      expect(upvoted.contains(submission.fullname), isTrue);
-      expect(downvoted.contains(submission.fullname), isFalse);
+      expect(upvoted.contains(await submission.fullname), isTrue);
+      expect(downvoted.contains(await submission.fullname), isFalse);
       await submission.downvote();
     }
 
     upvoted = await getUpvoted();
     downvoted = await getDownvoted();
     await for (final submission in submissionsHelper(subreddit)) {
-      expect(upvoted.contains(submission.fullname), isFalse);
-      expect(downvoted.contains(submission.fullname), isTrue);
+      expect(upvoted.contains(await submission.fullname), isFalse);
+      expect(downvoted.contains(await submission.fullname), isTrue);
       await submission.clearVote();
     }
 
     upvoted = await getUpvoted();
     downvoted = await getDownvoted();
     await for (final submission in submissionsHelper(subreddit)) {
-      expect(upvoted.contains(submission.fullname), isFalse);
-      expect(downvoted.contains(submission.fullname), isFalse);
+      expect(upvoted.contains(await submission.fullname), isFalse);
+      expect(downvoted.contains(await submission.fullname), isFalse);
     }
   });
 }
