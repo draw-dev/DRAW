@@ -7,6 +7,7 @@ import 'dart:async';
 import 'dart:math';
 
 import '../api_paths.dart';
+import '../base_impl.dart';
 import '../exceptions.dart';
 import '../reddit.dart';
 import 'comment_impl.dart';
@@ -31,25 +32,19 @@ class Submission extends UserContent {
   static final RegExp _submissionRegExp = new RegExp(r'{id}');
   CommentForest _comments;
   String _id;
-  String _name;
   final Map _commentsById = new Map();
 
   Submission.parse(Reddit reddit, Map data)
       : _id = data['id'],
-        _name = data['name'],
         super.loadDataWithPath(reddit, data, _infoPath(data['id']));
 
   Submission.withPath(Reddit reddit, String path)
       : _id = idFromUrl(path),
-        super.withPath(reddit, _infoPath(idFromUrl(path))) {
-    _name = reddit.config.submissionKind + '_' + idFromUrl(path);
-  }
+        super.withPath(reddit, _infoPath(idFromUrl(path)));
 
   Submission.withID(Reddit reddit, String id)
       : _id = id,
-        super.withPath(reddit, _infoPath(id)) {
-    _name = reddit.config.submissionKind + '_' + id;
-  }
+        super.withPath(reddit, _infoPath(id));
 
   static String _infoPath(String id) =>
       apiPath['submission'].replaceAll(_submissionRegExp, id);
@@ -66,9 +61,6 @@ class Submission extends UserContent {
 
   // TODO(bkonyi): implement
   // SubmissionFlair get flair;
-
-  /// The Submission ID for this [Submission].
-  String get fullname => _name;
 
   // TODO(bkonyi): implement
   // SubmissionModeration get mod;
@@ -121,7 +113,7 @@ class Submission extends UserContent {
       'title': title ?? await property('title'),
       'sendreplies': sendReplies.toString(),
       'kind': 'crosspost',
-      'crosspost_fullname': fullname,
+      'crosspost_fullname': await fullname,
       'api_type': 'json',
     };
     return reddit.post(apiPath['submit'], data);
@@ -154,10 +146,10 @@ class Submission extends UserContent {
 
   Iterable<String> _chunk(
       List<Submission> otherSubmissions, int chunkSize) sync* {
-    final submissions = <String>[fullname];
+    final submissions = <String>[fullnameSync(this)];
     if (otherSubmissions != null) {
       otherSubmissions.forEach((Submission s) {
-        submissions.add(s.fullname);
+        submissions.add(fullnameSync(s));
       });
     }
     for (var i = 0; i < submissions.length; i += chunkSize) {

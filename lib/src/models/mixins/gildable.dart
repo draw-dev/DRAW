@@ -11,10 +11,11 @@ import '../../reddit.dart';
 /// Interface for classes that can be gilded.
 abstract class GildableMixin {
   Reddit get reddit;
-  String get fullname;
+  Future<String> get fullname;
 
   /// Gild the author of the item.
   Future gild() async => reddit.post(
-      apiPath['gild_thing'].replaceAll(new RegExp(r'{fullname}'), fullname),
+      apiPath['gild_thing']
+          .replaceAll(new RegExp(r'{fullname}'), await fullname),
       null);
 }

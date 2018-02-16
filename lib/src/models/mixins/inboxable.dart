@@ -11,14 +11,15 @@ import '../../reddit.dart';
 
 /// A mixin containing inbox functionality.
 abstract class InboxableMixin {
-  String get fullname;
+  Future<String> get fullname;
   Reddit get reddit;
 
   /// Block the user who sent the item.
   ///
   /// Note: Reddit does not permit blocking users unless you have a [Comment] or
   /// [Message] from them in your inbox.
-  Future block() async => await reddit.post(apiPath['block'], {'id': fullname});
+  Future block() async =>
+      await reddit.post(apiPath['block'], {'id': await fullname});
 
   // TODO(bkonyi): implement.
   /// Mark the item as collapsed.

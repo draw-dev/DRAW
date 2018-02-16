@@ -12,7 +12,7 @@ import '../comment.dart';
 /// A mixin for RedditBase classes that can be replied to.
 abstract class ReplyableMixin {
   Reddit get reddit;
-  String get fullname;
+  Future<String> get fullname;
 
   // TODO(bkonyi): check if we actually need to access an array element.
   /// Reply to the object.
@@ -21,5 +21,5 @@ abstract class ReplyableMixin {
   /// [Comment] for the newly created comment.
   Future<Comment> reply(String body) async => (await reddit.post(
       apiPath['comment'],
-      {'text': body, 'thing_id': fullname, 'api_type': 'json'}))[0];
+      {'text': body, 'thing_id': await fullname, 'api_type': 'json'}))[0];
 }

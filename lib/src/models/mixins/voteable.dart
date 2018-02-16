@@ -11,10 +11,10 @@ import '../../reddit.dart';
 /// A mixin which implements voting functionality.
 abstract class VoteableMixin {
   Reddit get reddit;
-  String get fullname;
+  Future<String> get fullname;
 
   Future _vote(String direction) async =>
-      reddit.post(apiPath['vote'], {'dir': direction, 'id': fullname},
+      reddit.post(apiPath['vote'], {'dir': direction, 'id': await fullname},
           discardResponse: true);
 
   /// Clear the authenticated user's vote on the object.

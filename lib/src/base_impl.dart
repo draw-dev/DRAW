@@ -9,6 +9,13 @@ import 'dart:convert';
 import 'exceptions.dart';
 import 'reddit.dart';
 
+String fullnameSync(RedditBase base) {
+  if (base.data != null) {
+    return base.data['name'];
+  }
+  return null;
+}
+
 void setData(RedditBase base, Map data) {
   base._data = data;
 }
@@ -30,6 +37,16 @@ abstract class RedditBase {
   /// The base request format for the current object.
   String get infoPath => _infoPath;
   String _infoPath;
+
+  /// The fullname of a Reddit object.
+  ///
+  /// Reddit object fullnames take the form of 't3_15bfi0'.
+  Future<String> get fullname async => await property('name');
+
+  /// The id of a Reddit object.
+  ///
+  /// Reddit object ids take the form of '15bfi0'.
+  Future<String> get id async => await property('id');
 
   RedditBase(this.reddit);
 

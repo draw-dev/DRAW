@@ -9,7 +9,7 @@ import 'dart:async';
 import 'package:quiver/core.dart';
 
 import '../api_paths.dart';
-import '../base.dart';
+import '../base_impl.dart';
 import '../exceptions.dart';
 import '../reddit.dart';
 import 'comment_forest.dart';
@@ -50,7 +50,6 @@ class MoreComments extends RedditBase {
 
   List get children => _children;
   int get count => _count;
-  String get fullname => _name;
   int get hashCode => hash2(_count.hashCode, _children.hashCode);
 
   MoreComments.parse(Reddit reddit, Map data)
@@ -97,8 +96,8 @@ class MoreComments extends RedditBase {
   }
 
   Future<Comment> _loadComment(String commentId) async {
-    final path = apiPath['submission']
-            .replaceAll(_submissionRegExp, _submission.fullname.split('_')[1]) +
+    final path = apiPath['submission'].replaceAll(
+            _submissionRegExp, fullnameSync(_submission).split('_')[1]) +
         '_/' +
         commentId;
     final response = await reddit.get(path, params: {
@@ -121,7 +120,7 @@ class MoreComments extends RedditBase {
       assert(_children != null);
       final data = {
         'children': _children.join(','),
-        'link_id': _submission.fullname,
+        'link_id': fullnameSync(_submission),
         'sort': 'best', //(await _submission.property('commentSort')),
         'api_type': 'json',
       };
@@ -140,12 +139,8 @@ class MoreComments extends RedditBase {
 /// A class which represents a single Reddit comment.
 class Comment extends UserContent with InboxableMixin {
   static final RegExp _commentRegExp = new RegExp(r'{id}');
-  String _name;
   Submission _submission;
   CommentForest _replies;
-
-  /// The comment ID associated with the current comment.
-  String get fullname => _name;
 
   /// Returns true if the current [Comment] is a top-level comment. A [Comment]
   /// is a top-level comment if its parent is a [Submission].
@@ -168,12 +163,10 @@ class Comment extends UserContent with InboxableMixin {
   }
 
   Comment.parse(Reddit reddit, Map data)
-      : _name = data['name'],
-        super.loadDataWithPath(reddit, data, _infoPath(data['id']));
+      : super.loadDataWithPath(reddit, data, _infoPath(data['id']));
 
   Comment.withID(Reddit reddit, String id)
-      : _name = reddit.config.commentKind + '_' + id,
-        super.withPath(reddit, _infoPath(id));
+      : super.withPath(reddit, _infoPath(id));
 
   static String _infoPath(String id) =>
       apiPath['comment'].replaceAll(_commentRegExp, id);
@@ -187,7 +180,7 @@ class Comment extends UserContent with InboxableMixin {
   /// The returned parent will be an instance of either [Comment] or
   /// [Submission].
   Future<UserContent> parent() async {
-    if ((await _parentId) == (await submission).fullname) {
+    if ((await _parentId) == (await (await submission).fullname)) {
       return submission;
     }
 
