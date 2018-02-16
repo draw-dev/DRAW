@@ -5,9 +5,8 @@
 
 import 'dart:async';
 
-import '../../api_paths.dart';
-import '../../exceptions.dart';
-import '../../reddit.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/reddit.dart';
 
 /// A mixin containing inbox functionality.
 abstract class InboxableMixin {
@@ -21,27 +20,23 @@ abstract class InboxableMixin {
   Future block() async =>
       await reddit.post(apiPath['block'], {'id': await fullname});
 
-  // TODO(bkonyi): implement.
   /// Mark the item as collapsed.
   ///
   /// This method pertains only to objects which were retrieved via the inbox.
-  /// void collapse() => throw new DRAWUnimplementedError();
+  Future collapse() async => await reddit.inbox.collapse([this]);
 
-  // TODO(bkonyi): implement.
   /// Mark the item as read.
   ///
   /// This method pertains only to objects which were retrieved via the inbox.
-  /// void markRead() => throw new DRAWUnimplementedError();
+  Future markRead() async => await reddit.inbox.markRead([this]);
 
-  // TODO(bkonyi): implement.
   /// Mark the item as unread.
   ///
   /// This method pertains only to objects which were retrieved via the inbox.
-  /// void markUnread() => throw new DRAWUnimplementedError();
+  Future markUnread() async => await reddit.inbox.markUnread([this]);
 
-  // TODO(bkonyi): implement.
   /// Mark the item as collapsed.
   ///
   /// This method pertains only to objects which were retrieved via the inbox.
-  /// void uncollapse() => throw new DRAWUnimplementedError();
+  Future uncollapse() async => await reddit.inbox.uncollapse([this]);
 }
