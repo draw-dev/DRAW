@@ -21,7 +21,7 @@ Future prettyPrint(comments, depth) async {
     if (comment is MoreComments) {
       await prettyPrint(await comment.comments(), depth);
     } else {
-      final body = (await comment.property('body') ?? 'Null');
+      final body = (await comment.body ?? 'Null');
       print(tabs + body);
       await prettyPrint(comment.replies, depth + 1);
     }

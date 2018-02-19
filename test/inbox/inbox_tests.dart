@@ -44,8 +44,8 @@ Future main() async {
     }
     expect(comments.length, equals(1));
     final comment = comments[0];
-    expect(await comment.property('author'), equals('XtremeCheese'));
-    expect(await comment.property('body'), equals('Testing reply inbox'));
+    expect(await comment.author, equals('XtremeCheese'));
+    expect(await comment.body, equals('Testing reply inbox'));
   });
 
   test('lib/inbox/markReadUnread', () async {
@@ -55,7 +55,7 @@ Future main() async {
     // We expect 1 unread comment.
     var message = await reddit.inbox.unread().first as Comment;
     expect(await message.property('new'), isTrue);
-    expect(await message.property('author'), equals('XtremeCheese'));
+    expect(await message.author, equals('XtremeCheese'));
     await reddit.inbox.markRead([message]);
 
     // Check to make sure we have no unread messages in our inbox.
@@ -67,7 +67,7 @@ Future main() async {
     await reddit.inbox.markUnread([message]);
     message = await reddit.inbox.unread().first as Comment;
     expect(await message.property('new'), isTrue);
-    expect(await message.property('author'), equals('XtremeCheese'));
+    expect(await message.author, equals('XtremeCheese'));
   });
 
   test('lib/inbox/mentions', () async {
@@ -80,9 +80,8 @@ Future main() async {
     expect(comments.length, equals(1));
     final comment = comments[0];
     expect(await comment.property('subject'), equals('username mention'));
-    expect(await comment.property('author'), equals('XtremeCheese'));
-    expect(await comment.property('body'),
-        equals('/u/DRAWApiOfficial mention test'));
+    expect(await comment.author, equals('XtremeCheese'));
+    expect(await comment.body, equals('/u/DRAWApiOfficial mention test'));
   });
 
   test('lib/inbox/message', () async {
@@ -125,8 +124,8 @@ Future main() async {
     final reddit = await createRedditTestInstance(
         'test/inbox/lib_inbox_submission_replies.json');
     final message = await reddit.inbox.submissionReplies().first;
-    expect(await message.property('author'), equals('XtremeCheese'));
-    expect(await message.property('body'), equals('Great talk!'));
+    expect(await message.author, equals('XtremeCheese'));
+    expect(await message.body, equals('Great talk!'));
     expect(await message.property('subject'), equals('post reply'));
     expect(await message.property('wasComment'), isTrue);
   });
@@ -138,8 +137,8 @@ Future main() async {
     final reddit =
         await createRedditTestInstance('test/inbox/lib_inbox_unread.json');
     final message = await reddit.inbox.unread().first as Comment;
-    expect(await message.property('author'), equals('XtremeCheese'));
-    expect(await message.property('body'), equals('Great talk!'));
+    expect(await message.author, equals('XtremeCheese'));
+    expect(await message.body, equals('Great talk!'));
     expect(await message.property('subject'), equals('post reply'));
     expect(await message.property('wasComment'), isTrue);
   });

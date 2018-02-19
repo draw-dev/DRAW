@@ -44,7 +44,6 @@ class MoreComments extends RedditBase {
   List<Comment> _comments;
   List<String> _children;
   int _count;
-  String _name;
   String _parentId;
   Submission _submission;
 
@@ -55,7 +54,6 @@ class MoreComments extends RedditBase {
   MoreComments.parse(Reddit reddit, Map data)
       : _children = data['children'],
         _count = data['count'],
-        _name = data['name'],
         _parentId = data['parent_id'],
         super.loadData(reddit, data);
 

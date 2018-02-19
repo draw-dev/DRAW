@@ -5,13 +5,25 @@
 
 import 'dart:async';
 
-import '../../api_paths.dart';
-import '../../reddit.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base.dart';
+import 'package:draw/src/reddit.dart';
 
 /// A mixin which implements voting functionality.
-abstract class VoteableMixin {
+abstract class VoteableMixin implements RedditBase {
   Reddit get reddit;
   Future<String> get fullname;
+
+  /// The author of the item.
+  Future<String> get author async => await property('author');
+
+  /// The body of the item.
+  ///
+  /// Returns null for non-text [Submission]s.
+  Future<String> get body async => await property('body');
+
+  /// The karma score of the voteable item.
+  Future<int> get score async => await property('score');
 
   Future _vote(String direction) async =>
       reddit.post(apiPath['vote'], {'dir': direction, 'id': await fullname},
