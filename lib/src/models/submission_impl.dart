@@ -6,14 +6,14 @@
 import 'dart:async';
 import 'dart:math';
 
-import '../api_paths.dart';
-import '../base_impl.dart';
-import '../exceptions.dart';
-import '../reddit.dart';
-import 'comment_impl.dart';
-import 'comment_forest.dart';
-import 'subreddit.dart';
-import 'user_content.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base_impl.dart';
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/reddit.dart';
+import 'package:draw/src/models/comment_impl.dart';
+import 'package:draw/src/models/comment_forest.dart';
+import 'package:draw/src/models/subreddit.dart';
+import 'package:draw/src/models/user_content.dart';
 
 Comment getCommentByIdInternal(Submission s, String id) {
   if (s._commentsById.containsKey(id)) {
@@ -59,14 +59,31 @@ class Submission extends UserContent {
     return _comments;
   }
 
+  /// Returns the domain of this [Submission].
+  ///
+  /// For self-text [Submission]s, domains take the form of 'self.announcements'.
+  /// For link [Submission]s, domains take the form of 'github.com'.
+  Future<String> get domain async => await property('domain');
+
   // TODO(bkonyi): implement
   // SubmissionFlair get flair;
+
+  /// Whether or not the [Submission] is marked as hidden.
+  Future<bool> get hidden async => await property('hidden');
 
   // TODO(bkonyi): implement
   // SubmissionModeration get mod;
 
+  /// The text body of a self-text post.
+  ///
+  /// Returns null if the [Submission] is not a self-text submission.
+  Future<String> get selftext async => await property('selftext');
+
   /// The shortened link for the [Submission].
   Uri get shortlink => Uri.parse(reddit.config.shortUrl + _id);
+
+  /// The title of the [Submission].
+  Future<String> get title async => await property('title');
 
   // TODO(bkonyi): allow for paths without trailing '/'.
   /// Retrieve a submission ID from a given URL.

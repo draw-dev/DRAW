@@ -3,16 +3,16 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
-import 'base.dart';
-import 'exceptions.dart';
-import 'reddit.dart';
-import 'models/comment_impl.dart';
-import 'models/comment_forest.dart';
-import 'models/message.dart';
-import 'models/multireddit.dart';
-import 'models/redditor.dart';
-import 'models/submission_impl.dart';
-import 'models/subreddit.dart';
+import 'package:draw/src/base.dart';
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/reddit.dart';
+import 'package:draw/src/models/comment_impl.dart';
+import 'package:draw/src/models/comment_forest.dart';
+import 'package:draw/src/models/message.dart';
+import 'package:draw/src/models/multireddit.dart';
+import 'package:draw/src/models/redditor.dart';
+import 'package:draw/src/models/submission_impl.dart';
+import 'package:draw/src/models/subreddit.dart';
 
 /// Converts responses from the Reddit API into instances of [RedditBase].
 class Objector extends RedditBase {

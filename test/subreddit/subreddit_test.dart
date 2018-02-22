@@ -16,14 +16,14 @@ Future main() async {
         'test/subreddit/lib_subreddit_banned.json');
     final subreddit = new Subreddit.name(reddit, 'drawapitesting');
     await for (final user in subreddit.banned()) {
-      expect(true, isFalse);
+      fail('Expected no returned values, got: $user');
     }
     await subreddit.banned.add('spez');
-    expect(await (await subreddit.banned().first).property('name'),
+    expect((await subreddit.banned().first).displayName,
         equals('spez'));
     await subreddit.banned.remove('spez');
     await for (final user in subreddit.banned()) {
-      expect(true, isFalse);
+      fail('Expected no returned values, got: $user');
     }
   });
 
@@ -32,11 +32,11 @@ Future main() async {
         'test/subreddit/lib_subreddit_contributor.json');
     final subreddit = new Subreddit.name(reddit, 'drawapitesting');
     await subreddit.contributor.add('spez');
-    expect(await (await subreddit.contributor().first).property('name'),
+    expect((await subreddit.contributor().first).displayName,
         equals('spez'));
     await subreddit.contributor.remove('spez');
     await for (final user in subreddit.contributor()) {
-      expect(await user.property('name') == 'spez', isFalse);
+      expect(user.displayName == 'spez', isFalse);
     }
   });
 
@@ -47,7 +47,7 @@ Future main() async {
 
     final subreddit = new Subreddit.name(reddit, 'tf2');
     final submission = await subreddit.random();
-    expect(await submission.property('title'), equals(randomTitle));
+    expect(await submission.title, equals(randomTitle));
   });
 
   test('lib/subreddit/rules', () async {
@@ -82,6 +82,7 @@ Future main() async {
     // presidential elections. PRAW returns 753 results for this query, so we
     // expect to return the same.
     int count = 0;
+    // ignore: unused_local_variable
     await for (final post in subreddit.submissions(
         start: new DateTime.utc(2016, 11, 8, 8, 0), // These dates are 12AM PST.
         end: new DateTime.utc(2016, 11, 9, 8, 0))) {
@@ -96,20 +97,20 @@ Future main() async {
 
     final subreddit = new Subreddit.name(reddit, 'drawapitesting');
     final stickied = await subreddit.sticky();
-    expect(await stickied.property('title'), equals('Official DRAW GitHub'));
+    expect(await stickied.title, equals('Official DRAW GitHub'));
   });
 
   test('lib/subreddit/submit', () async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_submit.json');
     final subreddit = new Subreddit.name(reddit, 'drawapitesting');
-    final originalSubmission = await subreddit.newest().first;
-    expect((await originalSubmission.property('title') == 'Testing3939057249'),
+    final originalSubmission = await subreddit.newest().first as Submission;
+    expect((await originalSubmission.title == 'Testing3939057249'),
         isFalse);
     await subreddit.submit('Testing3939057249', selftext: 'Hello Reddit!');
-    final submission = await subreddit.newest().first;
-    expect(await submission.property('title'), equals('Testing3939057249'));
-    expect(await submission.property('selftext'), equals('Hello Reddit!'));
+    final submission = await subreddit.newest().first as Submission;
+    expect(await submission.title, equals('Testing3939057249'));
+    expect(await submission.selftext, equals('Hello Reddit!'));
   });
 
   test('lib/subreddit/subscribe_and_unsubscribe', () async {
@@ -118,8 +119,8 @@ Future main() async {
 
     final subreddit = new Subreddit.name(reddit, 'funny');
     await for (final subscription in reddit.user.subreddits()) {
-      expect(await subscription.property('displayName') == 'funny', isFalse);
-      expect(await subscription.property('displayName') == 'WTF', isFalse);
+      expect(subscription.displayName == 'funny', isFalse);
+      expect(subscription.displayName == 'WTF', isFalse);
     }
 
     await subreddit
@@ -133,9 +134,9 @@ Future main() async {
     bool hasFunny = false;
     bool hasWTF = false;
     await for (final subscription in reddit.user.subreddits()) {
-      if (await subscription.property('displayName') == 'WTF') {
+      if (subscription.displayName == 'WTF') {
         hasWTF = true;
-      } else if (await subscription.property('displayName') == 'funny') {
+      } else if (subscription.displayName == 'funny') {
         hasFunny = true;
       }
     }
@@ -152,8 +153,8 @@ Future main() async {
     // await new Future.delayed(const Duration(seconds: 1));
 
     await for (final subscription in reddit.user.subreddits()) {
-      expect(await subscription.property('displayName') == 'funny', isFalse);
-      expect(await subscription.property('displayName') == 'WTF', isFalse);
+      expect(subscription.displayName == 'funny', isFalse);
+      expect(subscription.displayName == 'WTF', isFalse);
     }
   });
 

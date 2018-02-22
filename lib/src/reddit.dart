@@ -7,15 +7,15 @@ import 'dart:async';
 
 import 'package:oauth2/oauth2.dart' as oauth2;
 
-import 'auth.dart';
-import 'draw_config_context.dart';
-import 'exceptions.dart';
-import 'objector.dart';
-import 'user.dart';
+import 'package:draw/src/auth.dart';
+import 'package:draw/src/draw_config_context.dart';
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/objector.dart';
+import 'package:draw/src/user.dart';
 
-import 'models/inbox.dart';
-import 'models/submission.dart';
-import 'models/subreddit.dart';
+import 'package:draw/src/models/inbox.dart';
+import 'package:draw/src/models/submission.dart';
+import 'package:draw/src/models/subreddit.dart';
 
 /// The [Reddit] class provides access to Reddit's API and stores session state
 /// for the current [Reddit] instance. This class contains objects that can be

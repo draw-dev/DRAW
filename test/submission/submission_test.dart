@@ -55,13 +55,13 @@ Future main() async {
         'test/submission/lib_submission_hide_unhide.json');
     final subreddit = new Subreddit.name(reddit, 'drawapitesting');
     final submission = await submissionsHelper(subreddit).first;
-    expect(await submission.property('hidden'), isFalse);
+    expect(await submission.hidden, isFalse);
     await submission.hide();
     await submission.refresh();
-    expect(await submission.property('hidden'), isTrue);
+    expect(await submission.hidden, isTrue);
     await submission.unhide();
     await submission.refresh();
-    expect(await submission.property('hidden'), isFalse);
+    expect(await submission.hidden, isFalse);
   });
 
   test('lib/submission/hide-unhide-multiple', () async {
@@ -71,20 +71,20 @@ Future main() async {
     final submissions = <Submission>[];
     await for (final submission in submissionsHelper(subreddit)) {
       submissions.add(submission);
-      expect(await submission.property('hidden'), isFalse);
+      expect(await submission.hidden, isFalse);
     }
     expect(submissions.length, equals(2));
     await submissions[0].hide(otherSubmissions: [submissions[1]]);
 
     for (final submission in submissions) {
       await submission.refresh();
-      expect(await submission.property('hidden'), isTrue);
+      expect(await submission.hidden, isTrue);
     }
     await submissions[1].unhide(otherSubmissions: [submissions[0]]);
 
     for (final submission in submissions) {
       await submission.refresh();
-      expect(await submission.property('hidden'), isFalse);
+      expect(await submission.hidden, isFalse);
     }
   });
 

@@ -22,7 +22,7 @@ Future main() async {
     expect(myFriends.length, equals(1));
     final friend = myFriends[0];
 
-    expect(await friend.property('name'), equals('XtremeCheese'));
+    expect(friend.displayName, equals('XtremeCheese'));
     expect(await friend.property('note'), equals('My best friend!'));
 
     await friendToBe.unfriend();
@@ -61,11 +61,11 @@ Future main() async {
     final submission = posts[0];
     final comment = posts[1];
     expect(submission is Submission, isTrue);
-    expect(await submission.property('domain'), equals('self.announcements'));
-    expect(await submission.property('id'), equals('6qptzw'));
+    expect(await submission.domain, equals('self.announcements'));
+    expect(await submission.id, equals('6qptzw'));
     expect(comment is Comment, isTrue);
-    expect(await comment.property('id'), equals('dkz2h82'));
-    expect(await comment.property('parentId'), equals('t1_dkz1y5k'));
+    expect(await comment.id, equals('dkz2h82'));
+    expect(await comment.parentId, equals('t1_dkz1y5k'));
   });
 
   // Note: tests for controversial, hot, newest, and top all use the same
@@ -84,11 +84,11 @@ Future main() async {
     final submission = posts[0];
     final comment = posts[1];
     expect(submission is Submission, isTrue);
-    expect(await submission.property('domain'), equals('self.announcements'));
-    expect(await submission.property('id'), equals('6qptzw'));
+    expect(await submission.domain, equals('self.announcements'));
+    expect(await submission.id, equals('6qptzw'));
     expect(comment is Comment, isTrue);
-    expect(await comment.property('id'), equals('dkz2h82'));
-    expect(await comment.property('parentId'), equals('t1_dkz1y5k'));
+    expect(await comment.id, equals('dkz2h82'));
+    expect(await comment.parentId, equals('t1_dkz1y5k'));
   });
 
   // Note: tests for controversial, hot, newest, and top all use the same
@@ -107,11 +107,11 @@ Future main() async {
     final submission = posts[0];
     final comment = posts[1];
     expect(submission is Submission, isTrue);
-    expect(await submission.property('domain'), equals('self.announcements'));
-    expect(await submission.property('id'), equals('6qptzw'));
+    expect(await submission.domain, equals('self.announcements'));
+    expect(await submission.id, equals('6qptzw'));
     expect(comment is Comment, isTrue);
-    expect(await comment.property('id'), equals('dkz2h82'));
-    expect(await comment.property('parentId'), equals('t1_dkz1y5k'));
+    expect(await comment.id, equals('dkz2h82'));
+    expect(await comment.parentId, equals('t1_dkz1y5k'));
   });
 
   // Note: tests for controversial, hot, newest, and top all use the same
@@ -130,11 +130,11 @@ Future main() async {
     final submission = posts[0];
     final comment = posts[1];
     expect(submission is Submission, isTrue);
-    expect(await submission.property('domain'), equals('self.announcements'));
-    expect(await submission.property('id'), equals('6qptzw'));
+    expect(await submission.domain, equals('self.announcements'));
+    expect(await submission.id, equals('6qptzw'));
     expect(comment is Comment, isTrue);
-    expect(await comment.property('id'), equals('dkz2h82'));
-    expect(await comment.property('parentId'), equals('t1_dkz1y5k'));
+    expect(await comment.id, equals('dkz2h82'));
+    expect(await comment.parentId, equals('t1_dkz1y5k'));
   });
 
   // TODO(bkonyi): Actually get gilded.
@@ -173,13 +173,13 @@ Future main() async {
 
     expect(content.length, equals(1));
     expect(content[0] is Submission, isTrue);
-    expect(await content[0].property('domain'), equals('self.announcements'));
+    expect(await content[0].domain, equals('self.announcements'));
     expect(
-        await content[0].property('title'),
+        await content[0].title,
         equals('With so much going on in'
             ' the world, I thought I’d share some Reddit updates to distract '
             'you all'));
-    expect(await content[0].property('author'), equals('spez'));
+    expect(await content[0].author, equals('spez'));
   });
 
   test('lib/redditor/hidden', () async {
@@ -194,10 +194,10 @@ Future main() async {
 
     expect(content.length, equals(1));
     expect(content[0] is Submission, isTrue);
-    expect(await content[0].property('domain'), equals('self.announcements'));
-    expect(await content[0].property('title'),
+    expect(await content[0].domain, equals('self.announcements'));
+    expect(await content[0].title,
         equals('Reddit\'s new signup experience'));
-    expect(await content[0].property('author'), equals('simbawulf'));
+    expect(await content[0].author, equals('simbawulf'));
   });
 
   test('lib/redditor/upvoted', () async {
@@ -212,15 +212,15 @@ Future main() async {
 
     expect(content.length, equals(2));
     expect(content[0] is Submission, isTrue);
-    expect(await content[0].property('domain'), equals('github.com'));
-    expect(await content[0].property('title'), equals('Official DRAW GitHub'));
-    expect(await content[0].property('author'), equals('DRAWApiOfficial'));
+    expect(await content[0].domain, equals('github.com'));
+    expect(await content[0].title, equals('Official DRAW GitHub'));
+    expect(await content[0].author, equals('DRAWApiOfficial'));
     expect(content[1] is Submission, isTrue);
-    expect(await content[1].property('domain'), equals('self.drawapitesting'));
+    expect(await content[1].domain, equals('self.drawapitesting'));
     expect(
-        await content[1].property('title'),
+        await content[1].title,
         equals('test post please'
             ' ignore.'));
-    expect(await content[1].property('author'), equals('DRAWApiOfficial'));
+    expect(await content[1].author, equals('DRAWApiOfficial'));
   });
 }

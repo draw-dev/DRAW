@@ -6,18 +6,18 @@
 import 'dart:async';
 import 'dart:convert';
 
-import '../api_paths.dart';
-import '../base.dart';
-import '../exceptions.dart';
-import '../listing/mixins/base.dart';
-import '../listing/mixins/gilded.dart';
-import '../listing/mixins/redditor.dart';
-import '../reddit.dart';
-import '../util.dart';
-import 'comment.dart';
-import 'mixins/messageable.dart';
-import 'multireddit.dart';
-import 'submission.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base.dart';
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/listing/mixins/base.dart';
+import 'package:draw/src/listing/mixins/gilded.dart';
+import 'package:draw/src/listing/mixins/redditor.dart';
+import 'package:draw/src/reddit.dart';
+import 'package:draw/src/util.dart';
+import 'package:draw/src/models/comment.dart';
+import 'package:draw/src/models/mixins/messageable.dart';
+import 'package:draw/src/models/multireddit.dart';
+import 'package:draw/src/models/submission.dart';
 
 /// A class representing a particular Reddit user, also known as a Redditor.
 class Redditor extends RedditBase
@@ -29,13 +29,34 @@ class Redditor extends RedditBase
   static final _subredditRegExp = new RegExp(r'{subreddit}');
   static final _userRegExp = new RegExp(r'{user}');
 
+  /// The amount of comment karma earned by the Redditor.
+  Future<int> get commentKarma async => await property('commentKarma');
+
+  /// The time the Redditor's account was created.
+  Future<int> get created async => await property('created');
+
   /// The Redditor's display name (e.g., spez or XtremeCheese).
   String get displayName => _name;
   String _name;
 
+  /// The amount of Reddit Gold a Redditor currently has.
+  Future<int> get goldCreddits async => await property('goldCreddits');
+
+  /// Whether the current Redditor is a Reddit employee.
+  Future<bool> get isEmployee async => await property('isEmployee');
+
+  /// The suspension status of the current Redditor.
+  Future<bool> get isSuspended async => await property('isSuspended');
+
+  /// The amount of link karma earned by the Redditor.
+  Future<int> get linkKarma async => await property('linkKarma');
+
   /// The Reddit path suffix for this Redditor (e.g., 'user/spez/')
   String get path => _path;
   String _path;
+
+  /// Whether the Redditor has chosen to filter profanity.
+  Future<bool> get preferNoProfanity async => await property('prefNoProfanity');
 
   Redditor.parse(Reddit reddit, Map data) : super.loadData(reddit, data) {
     if (!data.containsKey('name') &&

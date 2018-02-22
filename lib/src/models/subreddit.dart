@@ -6,21 +6,21 @@
 import 'dart:async';
 import 'dart:math';
 
-import '../api_paths.dart';
-import '../base.dart';
-import '../exceptions.dart';
-import '../listing/listing_generator.dart';
-import '../listing/mixins/base.dart';
-import '../listing/mixins/gilded.dart';
-import '../listing/mixins/rising.dart';
-import '../listing/mixins/subreddit.dart';
-import '../reddit.dart';
-import '../util.dart';
-import 'comment.dart';
-import 'mixins/messageable.dart';
-import 'redditor.dart';
-import 'submission.dart';
-import 'user_content.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base.dart';
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/listing/listing_generator.dart';
+import 'package:draw/src/listing/mixins/base.dart';
+import 'package:draw/src/listing/mixins/gilded.dart';
+import 'package:draw/src/listing/mixins/rising.dart';
+import 'package:draw/src/listing/mixins/subreddit.dart';
+import 'package:draw/src/reddit.dart';
+import 'package:draw/src/util.dart';
+import 'package:draw/src/models/comment.dart';
+import 'package:draw/src/models/mixins/messageable.dart';
+import 'package:draw/src/models/redditor.dart';
+import 'package:draw/src/models/submission.dart';
+import 'package:draw/src/models/user_content.dart';
 
 enum SearchSyntax {
   cloudSearch,
@@ -52,14 +52,17 @@ class Subreddit extends RedditBase
         SubredditListingMixin {
   SubredditRelationship _banned;
   ContributorRelationship _contributor;
+
   // SubredditFilters _filters; TODO(bkonyi): implement
   // SubredditFlair _flair; TODO(bkonyi): implement
   // SubredditModeration _mod; TODO(bkonyi): implement
   // ModeratorRelationship _moderator; TODO(bkonyi): implement
   // Modmail _modmail; TODO(bkonyi): implement
   SubredditRelationship _muted;
+
   // SubredditQuarantine _quarantine; TODO(bkonyi): implement
   SubredditStream _stream;
+
   // SubredditStyleSheet _stylesheet; TODO(bkonyi): implement
   // SubredditWiki _wiki; TODO(bkonyi): implement
 
@@ -67,8 +70,11 @@ class Subreddit extends RedditBase
   String _path;
   static final _subredditRegExp = new RegExp(r'{subreddit}');
 
+  // TODO(bkonyi): docs for all of these.
   String get displayName => _name;
+
   String get path => _path;
+
   int get hashCode => _name.hashCode;
 
   SubredditRelationship get banned {
@@ -100,7 +106,16 @@ class Subreddit extends RedditBase
     }
     return _flair;
   }
+  */
 
+  /// Whether the currently authenticated Redditor is banned from the [Subreddit].
+  Future<bool> get isBanned async => await property('userIsBanned');
+
+  /// Whether the currently authenticated Redditor is an approved submitter for
+  /// the [Subreddit].
+  Future<bool> get isContributor async => await property('userIsContributor');
+
+/*
   SubredditModeration get mod {
     if (_mod == null) {
       _mod = new SubredditModeration(this);
@@ -163,6 +178,10 @@ class Subreddit extends RedditBase
     return _wiki;
   }
 */
+  /// The title of the [Subreddit].
+  ///
+  /// For example, the title of /r/drawapitesting is 'DRAW API Testing'.
+  Future<String> get title async => await property('title');
 
   Subreddit.name(Reddit reddit, String name)
       : _name = name,
@@ -175,7 +194,7 @@ class Subreddit extends RedditBase
       // TODO(bkonyi) throw invalid object exception.
       throw new DRAWUnimplementedError();
     }
-    _name = data['data']['name'];
+    _name = data['data']['display_name'];
     _path = apiPath['subreddit'].replaceAll(_subredditRegExp, _name);
   }
 
@@ -471,7 +490,7 @@ class SubredditRelationship {
   /// Redditor.
   Future add(/* String, Redditor */ redditor) async {
     final data = {
-      'name': _redditorNameHelper(redditor),
+      'name': await _redditorNameHelper(redditor),
       'type': relationship,
     };
     await _subreddit.reddit.post(
@@ -486,7 +505,7 @@ class SubredditRelationship {
   /// Redditor.
   Future remove(/* String, Redditor */ redditor) async {
     final data = {
-      'name': _redditorNameHelper(redditor),
+      'name': await _redditorNameHelper(redditor),
       'type': relationship,
     };
     await _subreddit.reddit.post(
@@ -496,9 +515,9 @@ class SubredditRelationship {
         discardResponse: true);
   }
 
-  String _redditorNameHelper(/* String, Redditor */ redditor) {
+  Future<String> _redditorNameHelper(/* String, Redditor */ redditor) async {
     if (redditor is Redditor) {
-      return redditor.displayName;
+      return await redditor.displayName;
     } else if (redditor is! String) {
       throw new DRAWArgumentError('Parameter redditor must be either a'
           'String or Redditor');
@@ -552,7 +571,8 @@ class SubredditTraffic {
         uniques = rawTraffic[1];
 
   String toString() {
-    return '${periodStart.toUtc()} => unique visits: $uniques, page views: $pageviews'
+    return '${periodStart
+        .toUtc()} => unique visits: $uniques, page views: $pageviews'
         ' subscriptions: $subscriptions';
   }
 }
@@ -595,10 +615,15 @@ class ContributorRelationship extends SubredditRelationship {
 /// A wrapper class for a [Rule] of a [Subreddit].
 class Rule {
   bool get isLink => _isLink;
+
   String get description => _description;
+
   String get shortName => _shortName;
+
   String get violationReason => _violationReason;
+
   double get createdUtc => _createdUtc;
+
   int get priority => _priority;
 
   bool _isLink;

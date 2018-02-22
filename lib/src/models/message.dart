@@ -16,9 +16,15 @@ class Message extends RedditBase with InboxableMixin {
 
   Message.parse(Reddit reddit, Map data) : super.loadData(reddit, data);
 
+  /// The author of the [Message].
   Future<String> get author async => await property('author');
+
+  /// The body of the [Message].
   Future<String> get body async => await property('body');
 
+  /// The [List] of replies to this [Message].
+  ///
+  /// Returns and empty list if there are no replies.
   Future<List<Message>> get replies async {
     if (_replies == null) {
       _replies = <Message>[];
@@ -33,6 +39,4 @@ class Message extends RedditBase with InboxableMixin {
     }
     return _replies;
   }
-
-  Future<String> get subject async => await property('subject');
 }

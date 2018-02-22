@@ -28,6 +28,8 @@ Future prettyPrint(comments, depth) async {
   }
 }
 
+// Note: this tests are skipped on Windows due to issues with line endings.
+// TODO(bkonyi): fix these tests on Windows at some point?
 Future main() async {
   test('lib/comment/continue_test', () async {
     final reddit =
@@ -46,7 +48,7 @@ Future main() async {
     final actual =
         new File('test/comment/continue_test_expected.out').readAsStringSync();
     expect(output, equals(actual));
-  });
+  }, skip: Platform.isWindows);
 
   test('lib/comment/tons_of_comments_test', () async {
     final reddit = await createRedditTestInstance(
@@ -67,5 +69,5 @@ Future main() async {
     final actual = new File('test/comment/tons_of_comments_expected.out')
         .readAsStringSync();
     expect(output, equals(actual));
-  });
+  }, skip: Platform.isWindows);
 }

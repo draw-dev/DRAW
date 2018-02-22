@@ -14,14 +14,14 @@ Future main() async {
   test('lib/user/me', () async {
     final reddit = await createRedditTestInstance('test/user/lib_user_me.json');
     final Redditor me = await reddit.user.me();
-    expect(await me.property('name'), equals('DRAWApiOfficial'));
-    expect(await me.property('isEmployee'), isFalse);
-    expect(await me.property('prefNoProfanity'), isTrue);
-    expect(await me.property('isSuspended'), isFalse);
-    expect(await me.property('commentKarma'), equals(0));
-    expect(await me.property('linkKarma'), equals(1));
-    expect(await me.property('goldCreddits'), equals(0));
-    expect(await me.property('created'), equals(1501830779.0));
+    expect(me.displayName, equals('DRAWApiOfficial'));
+    expect(await me.isEmployee, isFalse);
+    expect(await me.preferNoProfanity, isTrue);
+    expect(await me.isSuspended, isFalse);
+    expect(await me.commentKarma, equals(0));
+    expect(await me.linkKarma, equals(1));
+    expect(await me.goldCreddits, equals(0));
+    expect(await me.created, equals(1501830779.0));
   });
 
   test('lib/user/blocked', () async {
@@ -44,9 +44,9 @@ Future main() async {
     }
     expect(subreddits.length, equals(1));
     final subreddit = subreddits[0];
-    expect(await subreddit.property('displayName'), equals("drawapitesting"));
-    expect(await subreddit.property('userIsContributor'), isTrue);
-    expect(await subreddit.property('userIsBanned'), isFalse);
+    expect(subreddit.displayName, equals("drawapitesting"));
+    expect(await subreddit.isContributor, isTrue);
+    expect(await subreddit.isBanned, isFalse);
   });
 
   test('lib/user/friends', () async {
@@ -55,8 +55,8 @@ Future main() async {
     final List<Redditor> friends = await reddit.user.friends();
     expect(friends.length, equals(1));
     final friend = friends[0];
-    expect(await await friend.property('name'), equals('XtremeCheese'));
-    expect(await await friend.property('date'), equals(1501884713.0));
+    expect(friend.displayName, equals('XtremeCheese'));
+    expect(await friend.property('date'), equals(1501884713.0));
   });
 
   test('lib/user/karma', () async {
@@ -75,14 +75,15 @@ Future main() async {
     }
     expect(subreddits.length, equals(1));
     final subreddit = subreddits[0];
-    expect(await subreddit.property('displayName'), equals('drawapitesting'));
-    expect(await subreddit.property('userIsContributor'), isTrue);
-    expect(await subreddit.property('userIsBanned'), isFalse);
-    expect(await subreddit.property('title'), equals('DRAW API Testing'));
+    expect(subreddit.displayName, equals('drawapitesting'));
+    expect(await subreddit.isContributor, isTrue);
+    expect(await subreddit.isBanned, isFalse);
+    expect(await subreddit.title, equals('DRAW API Testing'));
     expect(await subreddit.property('public_description'),
         contains('A subreddit used for testing'));
   });
 
+  // TODO(bkonyi): update this test once Multireddit has been implemented.
   test('lib/user/multireddits', () async {
     final reddit =
         await createRedditTestInstance('test/user/lib_user_multireddits.json');
@@ -111,8 +112,8 @@ Future main() async {
     // unsubscribed from and resubscribed to) in order to be returned. In other
     // words, default subreddits that the user is subscribed to will NOT be
     // returned from this method unless resubscribed to.
-    expect(await subs[0].property('displayName'), equals('announcements'));
-    expect(await subs[1].property('displayName'), equals('dartlang'));
-    expect(await subs[2].property('displayName'), equals('drawapitesting'));
+    expect(subs[0].displayName, equals('announcements'));
+    expect(subs[1].displayName, equals('dartlang'));
+    expect(subs[2].displayName, equals('drawapitesting'));
   });
 }

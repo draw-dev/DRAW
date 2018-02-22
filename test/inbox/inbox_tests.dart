@@ -54,7 +54,7 @@ Future main() async {
 
     // We expect 1 unread comment.
     var message = await reddit.inbox.unread().first as Comment;
-    expect(await message.property('new'), isTrue);
+    expect(await message.newItem, isTrue);
     expect(await message.author, equals('XtremeCheese'));
     await reddit.inbox.markRead([message]);
 
@@ -66,7 +66,7 @@ Future main() async {
     // Mark the same messages as unread and check to make sure it was marked unread.
     await reddit.inbox.markUnread([message]);
     message = await reddit.inbox.unread().first as Comment;
-    expect(await message.property('new'), isTrue);
+    expect(await message.newItem, isTrue);
     expect(await message.author, equals('XtremeCheese'));
   });
 
@@ -79,7 +79,7 @@ Future main() async {
     }
     expect(comments.length, equals(1));
     final comment = comments[0];
-    expect(await comment.property('subject'), equals('username mention'));
+    expect(await comment.subject, equals('username mention'));
     expect(await comment.author, equals('XtremeCheese'));
     expect(await comment.body, equals('/u/DRAWApiOfficial mention test'));
   });
@@ -126,8 +126,8 @@ Future main() async {
     final message = await reddit.inbox.submissionReplies().first;
     expect(await message.author, equals('XtremeCheese'));
     expect(await message.body, equals('Great talk!'));
-    expect(await message.property('subject'), equals('post reply'));
-    expect(await message.property('wasComment'), isTrue);
+    expect(await message.subject, equals('post reply'));
+    expect(await message.wasComment, isTrue);
   });
 
   // TODO(bkonyi): implement
@@ -139,7 +139,7 @@ Future main() async {
     final message = await reddit.inbox.unread().first as Comment;
     expect(await message.author, equals('XtremeCheese'));
     expect(await message.body, equals('Great talk!'));
-    expect(await message.property('subject'), equals('post reply'));
-    expect(await message.property('wasComment'), isTrue);
+    expect(await message.subject, equals('post reply'));
+    expect(await message.wasComment, isTrue);
   });
 }

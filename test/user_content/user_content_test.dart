@@ -25,7 +25,7 @@ Future main() async {
     final submission =
         await subreddit.submit('Replyable submission', selftext: 'Testing!');
     final comment = await submission.reply('Test comment!');
-    expect(await comment.property('body'), equals('Test comment!'));
+    expect(await comment.body, equals('Test comment!'));
     await submission.delete();
     await comment.delete();
   });
@@ -39,7 +39,7 @@ Future main() async {
             ' breaking!');
     await submission.report('Breaks rule 42');
     await submission.refresh();
-    expect((await submission.property('modReports'))[0],
+    expect((await submission.modReports)[0],
         equals(['Breaks rule 42', 'DRAWApiOfficial']));
     await submission.delete();
   });
@@ -66,13 +66,13 @@ Future main() async {
     final submission =
         await subreddit.submit('Saveable submission', selftext: 'Testing!');
     await submission.refresh();
-    expect(await submission.property('saved'), isFalse);
+    expect(await submission.saved, isFalse);
     await submission.save();
     await submission.refresh();
-    expect(await submission.property('saved'), isTrue);
+    expect(await submission.saved, isTrue);
     await submission.unsave();
     await submission.refresh();
-    expect(await submission.property('saved'), isFalse);
+    expect(await submission.saved, isFalse);
     await submission.delete();
   });
 
@@ -83,9 +83,9 @@ Future main() async {
     final submission =
         await subreddit.submit('Editable submission', selftext: 'Testing!');
     await submission.refresh();
-    expect(await submission.property('selftext'), equals('Testing!'));
+    expect(await submission.selftext, equals('Testing!'));
     await submission.edit('Edited!');
-    expect(await submission.property('selftext'), equals('Edited!'));
+    expect(await submission.selftext, equals('Edited!'));
     await submission.delete();
   });
 

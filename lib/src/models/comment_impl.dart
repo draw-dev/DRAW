@@ -8,14 +8,14 @@ import 'dart:async';
 // Required for `hash2`
 import 'package:quiver/core.dart';
 
-import '../api_paths.dart';
-import '../base_impl.dart';
-import '../exceptions.dart';
-import '../reddit.dart';
-import 'comment_forest.dart';
-import 'submission_impl.dart';
-import 'user_content.dart';
-import 'mixins/inboxable.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base_impl.dart';
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/reddit.dart';
+import 'package:draw/src/models/comment_forest.dart';
+import 'package:draw/src/models/submission_impl.dart';
+import 'package:draw/src/models/user_content.dart';
+import 'package:draw/src/models/mixins/inboxable.dart';
 
 void setSubmissionInternal(commentLike, Submission s) {
   commentLike._submission = s;
@@ -48,8 +48,13 @@ class MoreComments extends RedditBase {
   Submission _submission;
 
   List get children => _children;
+
   int get count => _count;
+
   int get hashCode => hash2(_count.hashCode, _children.hashCode);
+
+  /// The ID of the parent [Comment] or [Submission].
+  Future<String> get parentId async => new Future.value(_parentId);
 
   MoreComments.parse(Reddit reddit, Map data)
       : _children = data['children'],
@@ -143,7 +148,7 @@ class Comment extends UserContent with InboxableMixin {
   /// Returns true if the current [Comment] is a top-level comment. A [Comment]
   /// is a top-level comment if its parent is a [Submission].
   Future<bool> get isRoot async {
-    final parentIdType = (await _parentId).split('_')[0];
+    final parentIdType = (await parentId).split('_')[0];
     return (parentIdType == reddit.config.submissionKind);
   }
 
@@ -169,21 +174,20 @@ class Comment extends UserContent with InboxableMixin {
   static String _infoPath(String id) =>
       apiPath['comment'].replaceAll(_commentRegExp, id);
 
-  Future<String> get _parentId async {
-    return await property('parentId');
-  }
+  /// The ID of the parent [Comment] or [Submission].
+  Future<String> get parentId async => await property('parentId');
 
   /// Return the parent of the comment.
   ///
   /// The returned parent will be an instance of either [Comment] or
   /// [Submission].
   Future<UserContent> parent() async {
-    if ((await _parentId) == (await (await submission).fullname)) {
+    if ((await this.parentId) == (await (await submission).fullname)) {
       return submission;
     }
 
     // Check if the comment already exists.
-    final parentId = await _parentId;
+    final parentId = await this.parentId;
     var parent = getCommentByIdInternal(_submission, parentId);
     if (parent == null) {
       parent = new Comment.withID(reddit, parentId.split('_')[1]);
