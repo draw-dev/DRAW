@@ -33,7 +33,7 @@ class Redditor extends RedditBase
   Future<int> get commentKarma async => await property('commentKarma');
 
   /// The time the Redditor's account was created.
-  Future<int> get created async => await property('created');
+  Future<double> get created async => await property('created');
 
   /// The Redditor's display name (e.g., spez or XtremeCheese).
   String get displayName => _name;

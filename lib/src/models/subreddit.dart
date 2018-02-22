@@ -517,7 +517,7 @@ class SubredditRelationship {
 
   Future<String> _redditorNameHelper(/* String, Redditor */ redditor) async {
     if (redditor is Redditor) {
-      return await redditor.displayName;
+      return redditor.displayName;
     } else if (redditor is! String) {
       throw new DRAWArgumentError('Parameter redditor must be either a'
           'String or Redditor');

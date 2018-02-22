@@ -195,8 +195,7 @@ Future main() async {
     expect(content.length, equals(1));
     expect(content[0] is Submission, isTrue);
     expect(await content[0].domain, equals('self.announcements'));
-    expect(await content[0].title,
-        equals('Reddit\'s new signup experience'));
+    expect(await content[0].title, equals('Reddit\'s new signup experience'));
     expect(await content[0].author, equals('simbawulf'));
   });
 

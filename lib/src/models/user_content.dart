@@ -26,13 +26,13 @@ abstract class UserContent extends RedditBase
         ReportableMixin,
         SaveableMixin,
         VoteableMixin {
-
   /// A [List] of reports made by moderators.
   ///
   /// Each report consists of a list with two entries. The first entry is the
   /// name of the moderator who submitted the report. The second is the report
   /// reason.
-  Future<List<List<String>>> get modReports async => await property('modReports');
+  Future<List<List<String>>> get modReports async =>
+      await property('modReports');
 
   /// True if the currently authenticated user has marked this content as saved.
   Future<bool> get saved async => await property('saved');

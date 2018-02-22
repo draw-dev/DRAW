@@ -19,8 +19,7 @@ Future main() async {
       fail('Expected no returned values, got: $user');
     }
     await subreddit.banned.add('spez');
-    expect((await subreddit.banned().first).displayName,
-        equals('spez'));
+    expect((await subreddit.banned().first).displayName, equals('spez'));
     await subreddit.banned.remove('spez');
     await for (final user in subreddit.banned()) {
       fail('Expected no returned values, got: $user');
@@ -32,8 +31,7 @@ Future main() async {
         'test/subreddit/lib_subreddit_contributor.json');
     final subreddit = new Subreddit.name(reddit, 'drawapitesting');
     await subreddit.contributor.add('spez');
-    expect((await subreddit.contributor().first).displayName,
-        equals('spez'));
+    expect((await subreddit.contributor().first).displayName, equals('spez'));
     await subreddit.contributor.remove('spez');
     await for (final user in subreddit.contributor()) {
       expect(user.displayName == 'spez', isFalse);
@@ -105,8 +103,7 @@ Future main() async {
         'test/subreddit/lib_subreddit_submit.json');
     final subreddit = new Subreddit.name(reddit, 'drawapitesting');
     final originalSubmission = await subreddit.newest().first as Submission;
-    expect((await originalSubmission.title == 'Testing3939057249'),
-        isFalse);
+    expect((await originalSubmission.title == 'Testing3939057249'), isFalse);
     await subreddit.submit('Testing3939057249', selftext: 'Hello Reddit!');
     final submission = await subreddit.newest().first as Submission;
     expect(await submission.title, equals('Testing3939057249'));
