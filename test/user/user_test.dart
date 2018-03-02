@@ -15,13 +15,13 @@ Future main() async {
     final reddit = await createRedditTestInstance('test/user/lib_user_me.json');
     final Redditor me = await reddit.user.me();
     expect(me.displayName, equals('DRAWApiOfficial'));
-    expect(await me.isEmployee, isFalse);
-    expect(await me.preferNoProfanity, isTrue);
-    expect(await me.isSuspended, isFalse);
-    expect(await me.commentKarma, equals(0));
-    expect(await me.linkKarma, equals(1));
-    expect(await me.goldCreddits, equals(0));
-    expect(await me.created, equals(1501830779.0));
+    expect(me.isEmployee, isFalse);
+    expect(me.preferNoProfanity, isTrue);
+    expect(me.isSuspended, isFalse);
+    expect(me.commentKarma, equals(0));
+    expect(me.linkKarma, equals(1));
+    expect(me.goldCreddits, equals(0));
+    expect(me.created, equals(1501830779.0));
   });
 
   test('lib/user/blocked', () async {

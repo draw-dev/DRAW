@@ -14,6 +14,7 @@ import 'package:draw/src/objector.dart';
 import 'package:draw/src/user.dart';
 
 import 'package:draw/src/models/inbox.dart';
+import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission.dart';
 import 'package:draw/src/models/subreddit.dart';
 
@@ -202,6 +203,8 @@ class Reddit {
     }
     return new Submission.withPath(this, (url is Uri) ? url.toString() : url);
   }
+
+  RedditorRef redditor(String redditor) => new RedditorRef.name(this, redditor);
 
   Subreddit subreddit(String subreddit) => new Subreddit.name(this, subreddit);
 

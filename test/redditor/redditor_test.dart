@@ -15,7 +15,7 @@ Future main() async {
     final reddit = await createRedditTestInstance(
         'test/redditor/lib_redditor_friend.json');
 
-    final friendToBe = new Redditor.name(reddit, 'XtremeCheese');
+    final friendToBe = reddit.redditor('XtremeCheese');
     await friendToBe.friend(note: 'My best friend!');
 
     final myFriends = await reddit.user.friends();
@@ -38,7 +38,7 @@ Future main() async {
     expect(blockedUsers.length, equals(1));
 
     // User was blocked before running this test.
-    final blocked = new Redditor.name(reddit, 'XtremeCheese');
+    final blocked = reddit.redditor('XtremeCheese');
     await blocked.unblock();
 
     blockedUsers = await reddit.user.blocked();
@@ -51,7 +51,7 @@ Future main() async {
     final reddit = await createRedditTestInstance(
         'test/redditor/lib_redditor_controversial.json');
 
-    final other = new Redditor.name(reddit, 'spez');
+    final other = reddit.redditor('spez');
     final posts = [];
     await for (final post in other.controversial(params: {'limit': 2})) {
       expect(post is UserContent, isTrue);
@@ -74,7 +74,7 @@ Future main() async {
     final reddit =
         await createRedditTestInstance('test/redditor/lib_redditor_hot.json');
 
-    final other = new Redditor.name(reddit, 'spez');
+    final other = reddit.redditor('spez');
     final posts = [];
     await for (final post in other.hot(params: {'limit': 2})) {
       expect(post is UserContent, isTrue);
@@ -97,7 +97,7 @@ Future main() async {
     final reddit =
         await createRedditTestInstance('test/redditor/lib_redditor_new.json');
 
-    final other = new Redditor.name(reddit, 'spez');
+    final other = reddit.redditor('spez');
     final posts = [];
     await for (final post in other.newest(params: {'limit': 2})) {
       expect(post is UserContent, isTrue);
@@ -120,7 +120,7 @@ Future main() async {
     final reddit =
         await createRedditTestInstance('test/redditor/lib_redditor_top.json');
 
-    final other = new Redditor.name(reddit, 'spez');
+    final other = reddit.redditor('spez');
     final posts = [];
     await for (final post in other.top(params: {'limit': 2})) {
       expect(post is UserContent, isTrue);
@@ -142,7 +142,7 @@ Future main() async {
     /*final reddit = await createRedditTestInstance(
         'test/redditor/lib_reddit_gilded.json',
         live: true);
-    final other = new Redditor.name(reddit, 'DRAWApiOfficial');
+    final other = reddit.redditor('DRAWApiOfficial');
     await for (final gilded in other.gilded()) {
       print(gilded);
       print('');
@@ -154,7 +154,7 @@ Future main() async {
     /*final reddit = await createRedditTestInstance(
         'test/redditor/lib_reddit_gildings.json',
         live: true);
-    final other = new Redditor.name(reddit, 'DRAWApiOfficial');
+    final other = reddit.redditor('DRAWApiOfficial');
     await for (final gild in other.gildings()) {
       print(gilded);
       print('');
@@ -165,7 +165,7 @@ Future main() async {
     final reddit = await createRedditTestInstance(
         'test/redditor/lib_reddit_downvoted.json');
 
-    final other = new Redditor.name(reddit, 'DRAWApiOfficial');
+    final other = reddit.redditor('DRAWApiOfficial');
     final content = [];
     await for (final downvoted in other.downvoted(params: {'limit': 10})) {
       content.add(downvoted);
@@ -186,7 +186,7 @@ Future main() async {
     final reddit =
         await createRedditTestInstance('test/redditor/lib_reddit_hidden.json');
 
-    final other = new Redditor.name(reddit, 'DRAWApiOfficial');
+    final other = reddit.redditor('DRAWApiOfficial');
     final content = [];
     await for (final hidden in other.hidden(params: {'limit': 10})) {
       content.add(hidden);
@@ -203,7 +203,7 @@ Future main() async {
     final reddit =
         await createRedditTestInstance('test/redditor/lib_reddit_upvoted.json');
 
-    final other = new Redditor.name(reddit, 'DRAWApiOfficial');
+    final other = reddit.redditor('DRAWApiOfficial');
     final content = [];
     await for (final upvoted in other.upvoted(params: {'limit': 10})) {
       content.add(upvoted);

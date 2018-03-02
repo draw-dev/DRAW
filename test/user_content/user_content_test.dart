@@ -92,7 +92,7 @@ Future main() async {
   test('lib/user_content/votes', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content/lib_user_content_votes.json');
-    final redditor = new Redditor.name(reddit, 'DRAWApiOfficial');
+    final redditor = reddit.redditor('DRAWApiOfficial');
     Future<List<String>> getUpvoted() async {
       final upvoted = <String>[];
       await for (final submission in redditor.upvoted()) {
