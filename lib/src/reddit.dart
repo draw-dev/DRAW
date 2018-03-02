@@ -193,15 +193,15 @@ class Reddit {
     _initializationCallback(auth);
   }
 
-  Submission submission({String id, /* Uri, String */ url}) {
+  SubmissionRef submission({String id, /* Uri, String */ url}) {
     if ((id != null) && (url != null)) {
       throw new DRAWArgumentError('One of either id or url can be provided');
     } else if ((id == null) && (url == null)) {
       throw new DRAWArgumentError('id and url cannot both be null');
     } else if (id != null) {
-      return new Submission.withID(this, id);
+      return new SubmissionRef.withID(this, id);
     }
-    return new Submission.withPath(this, (url is Uri) ? url.toString() : url);
+    return new SubmissionRef.withPath(this, (url is Uri) ? url.toString() : url);
   }
 
   RedditorRef redditor(String redditor) => new RedditorRef.name(this, redditor);

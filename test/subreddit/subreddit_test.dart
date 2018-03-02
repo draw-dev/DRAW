@@ -44,7 +44,7 @@ Future main() async {
         'test/subreddit/lib_subreddit_random.json');
 
     final subreddit = new Subreddit.name(reddit, 'tf2');
-    final submission = await subreddit.random();
+    final submission = await (await subreddit.random()).populate();
     expect(await submission.title, equals(randomTitle));
   });
 
@@ -94,8 +94,8 @@ Future main() async {
         'test/subreddit/lib_subreddit_sticky.json');
 
     final subreddit = new Subreddit.name(reddit, 'drawapitesting');
-    final stickied = await subreddit.sticky();
-    expect(await stickied.title, equals('Official DRAW GitHub'));
+    final stickied = await (await subreddit.sticky()).populate();
+    expect(stickied.title, equals('Official DRAW GitHub'));
   });
 
   test('lib/subreddit/submit', () async {

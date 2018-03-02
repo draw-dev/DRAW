@@ -34,7 +34,7 @@ Future main() async {
   test('lib/comment/continue_test', () async {
     final reddit =
         await createRedditTestInstance('test/comment/continue_test.json');
-    final submission = reddit.submission(id: '7czz1q');
+    final submission = await reddit.submission(id: '7czz1q').populate();
     final comments = await submission.comments;
     final printer = () async {
       await prettyPrint(comments, 0);
@@ -53,7 +53,7 @@ Future main() async {
   test('lib/comment/tons_of_comments_test', () async {
     final reddit = await createRedditTestInstance(
         'test/comment/tons_of_comments_test.json');
-    final submission = reddit.submission(id: '7gylz9');
+    final submission = await reddit.submission(id: '7gylz9').populate();
     final comments = await submission.comments;
     final printer = () async {
       await prettyPrint(comments, 0);

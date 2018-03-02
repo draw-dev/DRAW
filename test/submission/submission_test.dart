@@ -46,7 +46,7 @@ Future main() async {
           'praw_https_enabled_praw_testing_needed/'
     ];
     for (final url in urls) {
-      expect(Submission.idFromUrl(url), equals('2gmzqe'));
+      expect(SubmissionRef.idFromUrl(url), equals('2gmzqe'));
     }
   });
 
@@ -93,7 +93,7 @@ Future main() async {
   test('lib/submission/reply', () async {
     final reddit = await createRedditTestInstance(
         'test/submission/lib_submission_reply.json');
-    final submission = new Submission.withPath(reddit,
+    final submission = new SubmissionRef.withPath(reddit,
         r'https://www.reddit.com/r/drawapitesting/comments/7x6ew7/draw_using_dart_to_moderate_reddit_comments/');
     await submission.reply('Woohoo!');
   });

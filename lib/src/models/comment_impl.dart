@@ -17,7 +17,7 @@ import 'package:draw/src/models/submission_impl.dart';
 import 'package:draw/src/models/user_content.dart';
 import 'package:draw/src/models/mixins/inboxable.dart';
 
-void setSubmissionInternal(commentLike, Submission s) {
+void setSubmissionInternal(commentLike, SubmissionRef s) {
   commentLike._submission = s;
 
   // A MoreComment should never be a parent of any other comments, so don't add
@@ -45,7 +45,7 @@ class MoreComments extends RedditBase {
   List<String> _children;
   int _count;
   String _parentId;
-  Submission _submission;
+  SubmissionRef _submission;
 
   List get children => _children;
 
@@ -142,7 +142,7 @@ class MoreComments extends RedditBase {
 /// A class which represents a single Reddit comment.
 class Comment extends UserContent with InboxableMixin {
   static final RegExp _commentRegExp = new RegExp(r'{id}');
-  Submission _submission;
+  SubmissionRef _submission;
   CommentForest _replies;
 
   /// Returns true if the current [Comment] is a top-level comment. A [Comment]
@@ -158,7 +158,7 @@ class Comment extends UserContent with InboxableMixin {
   CommentForest get replies => _replies;
 
   /// The [Submission] which this comment belongs to.
-  Future<Submission> get submission async {
+  Future<SubmissionRef> get submission async {
     if (_submission == null) {
       _submission = reddit.submission(id: await _extractSubmissionId());
     }
