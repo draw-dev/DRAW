@@ -13,7 +13,7 @@ import '../test_utils.dart';
 Future main() async {
   // We use this helper to ensure that our submissions request always uses the
   // exact same DateTime parameters instead of using the current time.
-  Stream<Submission> submissionsHelper(Subreddit subreddit) {
+  Stream<Submission> submissionsHelper(SubredditRef subreddit) {
     return subreddit.submissions(
         start: new DateTime.utc(2017), end: new DateTime.utc(2017, 10));
   }
@@ -53,7 +53,8 @@ Future main() async {
   test('lib/submission/hide-unhide', () async {
     final reddit = await createRedditTestInstance(
         'test/submission/lib_submission_hide_unhide.json');
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit =
+        reddit.subreddit('drawapitesting');
     final submission = await submissionsHelper(subreddit).first;
     expect(await submission.hidden, isFalse);
     await submission.hide();
@@ -67,7 +68,8 @@ Future main() async {
   test('lib/submission/hide-unhide-multiple', () async {
     final reddit = await createRedditTestInstance(
         'test/submission/lib_submission_hide_unhide_multiple.json');
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit =
+        reddit.subreddit('drawapitesting');
     final submissions = <Submission>[];
     await for (final submission in submissionsHelper(subreddit)) {
       submissions.add(submission);

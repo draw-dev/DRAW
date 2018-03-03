@@ -203,7 +203,7 @@ class Reddit {
     return new Submission.withPath(this, (url is Uri) ? url.toString() : url);
   }
 
-  Subreddit subreddit(String subreddit) => new Subreddit.name(this, subreddit);
+  SubredditRef subreddit(String subreddit) => new SubredditRef.name(this, subreddit);
 
   Future<dynamic> get(String api, {Map params}) async {
     if (!_initialized) {

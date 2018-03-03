@@ -41,15 +41,26 @@ String searchSyntaxToString(SearchSyntax s) {
   }
 }
 
-/// A class representing a particular Reddit community, also known as a
-/// Subreddit.
-class Subreddit extends RedditBase
+class SubredditRef extends RedditBase
     with
         BaseListingMixin,
         GildedListingMixin,
         MessageableMixin,
         RisingListingMixin,
         SubredditListingMixin {
+  static final _subredditRegExp = new RegExp(r'{subreddit}');
+
+  static String _generateInfoPath(String name) => apiPath['subreddit_about']
+      .replaceAll(SubredditRef._subredditRegExp, name);
+
+  Future<Subreddit> populate() async =>
+      new Subreddit.parse(reddit, await fetch());
+
+  String get displayName => _name;
+  String _name;
+
+  String get path => _path;
+  String _path;
   SubredditRelationship _banned;
   ContributorRelationship _contributor;
 
@@ -65,15 +76,6 @@ class Subreddit extends RedditBase
 
   // SubredditStyleSheet _stylesheet; TODO(bkonyi): implement
   // SubredditWiki _wiki; TODO(bkonyi): implement
-
-  String _name;
-  String _path;
-  static final _subredditRegExp = new RegExp(r'{subreddit}');
-
-  // TODO(bkonyi): docs for all of these.
-  String get displayName => _name;
-
-  String get path => _path;
 
   int get hashCode => _name.hashCode;
 
@@ -107,14 +109,6 @@ class Subreddit extends RedditBase
     return _flair;
   }
   */
-
-  /// Whether the currently authenticated Redditor is banned from the [Subreddit].
-  Future<bool> get isBanned async => await property('userIsBanned');
-
-  /// Whether the currently authenticated Redditor is an approved submitter for
-  /// the [Subreddit].
-  Future<bool> get isContributor async => await property('userIsContributor');
-
 /*
   SubredditModeration get mod {
     if (_mod == null) {
@@ -178,25 +172,17 @@ class Subreddit extends RedditBase
     return _wiki;
   }
 */
-  /// The title of the [Subreddit].
-  ///
-  /// For example, the title of /r/drawapitesting is 'DRAW API Testing'.
-  Future<String> get title async => await property('title');
 
-  Subreddit.name(Reddit reddit, String name)
+  SubredditRef(Reddit reddit) : super(reddit);
+
+  SubredditRef.name(Reddit reddit, String name)
       : _name = name,
-        _path = apiPath['subreddit'].replaceAll(_subredditRegExp, name),
-        super.withPath(reddit, Subreddit._generateInfoPath(name));
-
-  Subreddit.parse(Reddit reddit, Map data)
-      : super.loadData(reddit, data['data']) {
-    if (!data['data'].containsKey('name')) {
-      // TODO(bkonyi) throw invalid object exception.
-      throw new DRAWUnimplementedError();
-    }
-    _name = data['data']['display_name'];
-    _path = apiPath['subreddit'].replaceAll(_subredditRegExp, _name);
+        super.withPath(reddit, _generateInfoPath(name)) {
+    _path =
+        apiPath['subreddit'].replaceAll(SubredditRef._subredditRegExp, _name);
   }
+
+  SubredditRef.loadData(Reddit reddit, Map data) : super.loadData(reddit, data);
 
   bool operator ==(other) {
     return (_name == other._name);
@@ -205,8 +191,8 @@ class Subreddit extends RedditBase
   /// Returns a random submission from the [Subreddit].
   Future<Submission> random() async {
     try {
-      await reddit
-          .get(apiPath['subreddit_random'].replaceAll(_subredditRegExp, _name));
+      await reddit.get(apiPath['subreddit_random']
+          .replaceAll(SubredditRef._subredditRegExp, _name));
     } on DRAWRedirectResponse catch (e) {
       // We expect this request to redirect to our random submission.
       return new Submission.withPath(reddit, e.path);
@@ -215,8 +201,8 @@ class Subreddit extends RedditBase
   }
 
   /// Return the rules for the subreddit.
-  Future<List<Rule>> rules() async =>
-      reddit.get(apiPath['rules'].replaceAll(_subredditRegExp, _name));
+  Future<List<Rule>> rules() async => reddit
+      .get(apiPath['rules'].replaceAll(SubredditRef._subredditRegExp, _name));
 
   /// Returns a [Stream] of [UserContent] that match [query].
   ///
@@ -237,8 +223,8 @@ class Subreddit extends RedditBase
     data['sort'] = sortToString(sort);
     data['syntax'] = searchSyntaxToString(syntax);
     data['t'] = timeStr;
-    return ListingGenerator.createBasicGenerator(
-        reddit, apiPath['search'].replaceAll(_subredditRegExp, _name),
+    return ListingGenerator.createBasicGenerator(reddit,
+        apiPath['search'].replaceAll(SubredditRef._subredditRegExp, _name),
         params: data);
   }
 
@@ -249,7 +235,8 @@ class Subreddit extends RedditBase
   Future<Submission> sticky({int number = 1}) async {
     try {
       await reddit.get(
-          apiPath['about_sticky'].replaceAll(_subredditRegExp, _name),
+          apiPath['about_sticky']
+              .replaceAll(SubredditRef._subredditRegExp, _name),
           params: {'num': number.toString()});
     } on DRAWRedirectResponse catch (e) {
       return new Submission.withPath(reddit, e.path);
@@ -375,8 +362,8 @@ class Subreddit extends RedditBase
   ///
   /// Raises an error when the traffic statistics aren't available to the
   /// authenticated user (i.e., not a moderator of the subreddit).
-  Future<Map> traffic() async =>
-      reddit.get(apiPath['about_traffic'].replaceAll(_subredditRegExp, _name));
+  Future<Map> traffic() async => reddit.get(apiPath['about_traffic']
+      .replaceAll(SubredditRef._subredditRegExp, _name));
 
   /// Unsubscribes from the subreddit.
   ///
@@ -390,10 +377,8 @@ class Subreddit extends RedditBase
     await reddit.post(apiPath['subscribe'], data, discardResponse: true);
   }
 
-  static String _generateInfoPath(String name) =>
-      apiPath['subreddit_about'].replaceAll(_subredditRegExp, name);
-
-  static String _subredditList(Subreddit subreddit, [List<Subreddit> others]) {
+  static String _subredditList(SubredditRef subreddit,
+      [List<SubredditRef> others]) {
     if (others != null) {
       final srs = <String>[];
       srs.add(subreddit.displayName);
@@ -403,6 +388,35 @@ class Subreddit extends RedditBase
       return srs.join(',');
     }
     return subreddit.displayName;
+  }
+}
+
+/// A class representing a particular Reddit community, also known as a
+/// Subreddit.
+class Subreddit extends SubredditRef {
+  /// Whether the currently authenticated Redditor is banned from the [Subreddit].
+  Future<bool> get isBanned async => await property('userIsBanned');
+
+  /// Whether the currently authenticated Redditor is an approved submitter for
+  /// the [Subreddit].
+  Future<bool> get isContributor async => await property('userIsContributor');
+
+  /// The title of the [Subreddit].
+  ///
+  /// For example, the title of /r/drawapitesting is 'DRAW API Testing'.
+  Future<String> get title async => await property('title');
+
+  Subreddit._(Reddit reddit) : super(reddit);
+
+  Subreddit.parse(Reddit reddit, Map data)
+      : super.loadData(reddit, data['data']) {
+    if (!data['data'].containsKey('name')) {
+      // TODO(bkonyi) throw invalid object exception.
+      throw new DRAWUnimplementedError();
+    }
+    _name = data['data']['display_name'];
+    _path =
+        apiPath['subreddit'].replaceAll(SubredditRef._subredditRegExp, _name);
   }
 }
 
@@ -465,8 +479,7 @@ class Subreddit extends RedditBase
 
 /// Represents a relationship between a [Redditor] and a [Subreddit].
 class SubredditRelationship {
-  static final _subredditRegExp = new RegExp(r'{subreddit}');
-  final Subreddit _subreddit;
+  final SubredditRef _subreddit;
   final String relationship;
 
   SubredditRelationship(this._subreddit, this.relationship);
@@ -479,7 +492,7 @@ class SubredditRelationship {
     return ListingGenerator.createBasicGenerator(
         _subreddit.reddit,
         apiPath['list_${relationship}']
-            .replaceAll(_subredditRegExp, _subreddit.displayName),
+            .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName),
         params: data);
   }
 
@@ -494,7 +507,8 @@ class SubredditRelationship {
       'type': relationship,
     };
     await _subreddit.reddit.post(
-        apiPath['friend'].replaceAll(_subredditRegExp, _subreddit.displayName),
+        apiPath['friend']
+            .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName),
         data,
         discardResponse: true);
   }
@@ -510,7 +524,7 @@ class SubredditRelationship {
     };
     await _subreddit.reddit.post(
         apiPath['unfriend']
-            .replaceAll(_subredditRegExp, _subreddit.displayName),
+            .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName),
         data,
         discardResponse: true);
   }
@@ -581,7 +595,7 @@ class SubredditTraffic {
 ///
 /// Contributors are also known as approved submitters.
 class ContributorRelationship extends SubredditRelationship {
-  ContributorRelationship(Subreddit subreddit, String relationship)
+  ContributorRelationship(SubredditRef subreddit, String relationship)
       : super(subreddit, relationship);
 
   /// Have the current [User] remove themself from the contributors list.

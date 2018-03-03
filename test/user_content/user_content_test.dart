@@ -13,7 +13,7 @@ import '../test_utils.dart';
 Future main() async {
   // We use this helper to ensure that our submissions request always uses the
   // exact same DateTime parameters instead of using the current time.
-  Stream<Submission> submissionsHelper(Subreddit subreddit) {
+  Stream<Submission> submissionsHelper(SubredditRef subreddit) {
     return subreddit.submissions(
         start: new DateTime.utc(2017), end: new DateTime.utc(2017, 10));
   }
@@ -21,7 +21,7 @@ Future main() async {
   test('lib/user_content/replyable', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content/lib_user_content_replyable.json');
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     final submission =
         await subreddit.submit('Replyable submission', selftext: 'Testing!');
     final comment = await submission.reply('Test comment!');
@@ -33,7 +33,7 @@ Future main() async {
   test('lib/user_content/reportable', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content/lib_user_content_reportable.json');
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     final submission = await subreddit.submit('Reportable submission',
         selftext: 'Rule'
             ' breaking!');
@@ -52,7 +52,7 @@ Future main() async {
   test('lib/user_content/inbox_toggleable', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content/lib_user_content_toggleable.json');
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     final submission =
         await subreddit.submit('Editable submission', selftext: 'Testing!');
     await submission.disableInboxReplies();
@@ -62,7 +62,7 @@ Future main() async {
   test('lib/user_content/saveable', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content/lib_user_content_saveable.json');
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     final submission =
         await subreddit.submit('Saveable submission', selftext: 'Testing!');
     await submission.refresh();
@@ -79,7 +79,7 @@ Future main() async {
   test('lib/user_content/submit-editable-delete', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content/lib_user_content_editable.json');
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     final submission =
         await subreddit.submit('Editable submission', selftext: 'Testing!');
     await submission.refresh();
@@ -109,7 +109,7 @@ Future main() async {
       return upvoted;
     }
 
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     var upvoted = await getUpvoted();
     var downvoted = await getDownvoted();
     await for (final submission in submissionsHelper(subreddit)) {
