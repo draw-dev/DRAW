@@ -53,8 +53,7 @@ Future main() async {
   test('lib/submission/hide-unhide', () async {
     final reddit = await createRedditTestInstance(
         'test/submission/lib_submission_hide_unhide.json');
-    final subreddit =
-        reddit.subreddit('drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     final submission = await submissionsHelper(subreddit).first;
     expect(submission.hidden, isFalse);
     await submission.hide();
@@ -68,8 +67,7 @@ Future main() async {
   test('lib/submission/hide-unhide-multiple', () async {
     final reddit = await createRedditTestInstance(
         'test/submission/lib_submission_hide_unhide_multiple.json');
-    final subreddit =
-        reddit.subreddit('drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     final submissions = <Submission>[];
     await for (final submission in submissionsHelper(subreddit)) {
       submissions.add(submission);

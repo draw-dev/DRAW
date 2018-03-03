@@ -120,8 +120,7 @@ Future main() async {
       expect(subscription.displayName == 'WTF', isFalse);
     }
 
-    await subreddit
-        .subscribe(otherSubreddits: [reddit.subreddit('WTF')]);
+    await subreddit.subscribe(otherSubreddits: [reddit.subreddit('WTF')]);
 
     // When running this live, Reddit seems to subscribe to the
     // 'otherSubreddits' slightly after the single subreddit is being subscribed
@@ -140,8 +139,7 @@ Future main() async {
 
     expect(hasFunny && hasWTF, isTrue);
 
-    await subreddit
-        .unsubscribe(otherSubreddits: [reddit.subreddit('WTF')]);
+    await subreddit.unsubscribe(otherSubreddits: [reddit.subreddit('WTF')]);
 
     // When running this live, Reddit seems to unsubscribe to the
     // 'otherSubreddits' slightly after the single subreddit is being

@@ -206,7 +206,8 @@ class Reddit {
   }
 
   RedditorRef redditor(String redditor) => new RedditorRef.name(this, redditor);
-  SubredditRef subreddit(String subreddit) => new SubredditRef.name(this, subreddit);
+  SubredditRef subreddit(String subreddit) =>
+      new SubredditRef.name(this, subreddit);
 
   Future<dynamic> get(String api, {Map params}) async {
     if (!_initialized) {
