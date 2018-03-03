@@ -15,7 +15,7 @@ import 'package:draw/src/models/comment_forest.dart';
 import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/user_content.dart';
 
-Comment getCommentByIdInternal(Submission s, String id) {
+CommentRef getCommentByIdInternal(Submission s, String id) {
   if (s._commentsById.containsKey(id)) {
     return s._commentsById[id];
   }

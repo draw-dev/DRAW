@@ -201,7 +201,8 @@ class Reddit {
     } else if (id != null) {
       return new SubmissionRef.withID(this, id);
     }
-    return new SubmissionRef.withPath(this, (url is Uri) ? url.toString() : url);
+    return new SubmissionRef.withPath(
+        this, (url is Uri) ? url.toString() : url);
   }
 
   RedditorRef redditor(String redditor) => new RedditorRef.name(this, redditor);

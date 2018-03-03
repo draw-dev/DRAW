@@ -45,7 +45,7 @@ Future main() async {
 
     final subreddit = new Subreddit.name(reddit, 'tf2');
     final submission = await (await subreddit.random()).populate();
-    expect(await submission.title, equals(randomTitle));
+    expect(submission.title, equals(randomTitle));
   });
 
   test('lib/subreddit/rules', () async {
@@ -103,11 +103,11 @@ Future main() async {
         'test/subreddit/lib_subreddit_submit.json');
     final subreddit = new Subreddit.name(reddit, 'drawapitesting');
     final originalSubmission = await subreddit.newest().first as Submission;
-    expect((await originalSubmission.title == 'Testing3939057249'), isFalse);
+    expect((originalSubmission.title == 'Testing3939057249'), isFalse);
     await subreddit.submit('Testing3939057249', selftext: 'Hello Reddit!');
     final submission = await subreddit.newest().first as Submission;
-    expect(await submission.title, equals('Testing3939057249'));
-    expect(await submission.selftext, equals('Hello Reddit!'));
+    expect(submission.title, equals('Testing3939057249'));
+    expect(submission.selftext, equals('Hello Reddit!'));
   });
 
   test('lib/subreddit/subscribe_and_unsubscribe', () async {

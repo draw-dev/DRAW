@@ -83,9 +83,9 @@ Future main() async {
     final submission =
         await subreddit.submit('Editable submission', selftext: 'Testing!');
     await submission.refresh();
-    expect(await submission.selftext, equals('Testing!'));
+    expect(submission.selftext, equals('Testing!'));
     await submission.edit('Edited!');
-    expect(await submission.selftext, equals('Edited!'));
+    expect(submission.selftext, equals('Edited!'));
     await submission.delete();
   });
 
