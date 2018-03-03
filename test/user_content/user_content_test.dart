@@ -25,7 +25,7 @@ Future main() async {
     final submission =
         await subreddit.submit('Replyable submission', selftext: 'Testing!');
     final comment = await submission.reply('Test comment!');
-    expect(await comment.body, equals('Test comment!'));
+    expect(comment.body, equals('Test comment!'));
     await submission.delete();
     await comment.delete();
   });
@@ -83,16 +83,16 @@ Future main() async {
     final submission =
         await subreddit.submit('Editable submission', selftext: 'Testing!');
     await submission.refresh();
-    expect(await submission.selftext, equals('Testing!'));
+    expect(submission.selftext, equals('Testing!'));
     await submission.edit('Edited!');
-    expect(await submission.selftext, equals('Edited!'));
+    expect(submission.selftext, equals('Edited!'));
     await submission.delete();
   });
 
   test('lib/user_content/votes', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content/lib_user_content_votes.json');
-    final redditor = new Redditor.name(reddit, 'DRAWApiOfficial');
+    final redditor = reddit.redditor('DRAWApiOfficial');
     Future<List<String>> getUpvoted() async {
       final upvoted = <String>[];
       await for (final submission in redditor.upvoted()) {

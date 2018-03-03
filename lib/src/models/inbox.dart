@@ -75,7 +75,7 @@ class Inbox extends RedditBase {
     final messages = <Message>[];
     final message = listing['listing'][0];
     messages.add(message);
-    messages.addAll(await message.replies);
+    messages.addAll(message.replies);
     for (final m in messages) {
       if (await m.fullname == messageId) {
         return m;

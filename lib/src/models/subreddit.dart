@@ -189,13 +189,13 @@ class SubredditRef extends RedditBase
   }
 
   /// Returns a random submission from the [Subreddit].
-  Future<Submission> random() async {
+  Future<SubmissionRef> random() async {
     try {
       await reddit.get(apiPath['subreddit_random']
           .replaceAll(SubredditRef._subredditRegExp, _name));
     } on DRAWRedirectResponse catch (e) {
       // We expect this request to redirect to our random submission.
-      return new Submission.withPath(reddit, e.path);
+      return new SubmissionRef.withPath(reddit, e.path);
     }
     return null; // Shut the analyzer up.
   }
@@ -228,18 +228,18 @@ class SubredditRef extends RedditBase
         params: data);
   }
 
-  /// Return a [Submission] that has been stickied on the subreddit.
+  /// Return a [SubmissionRef] that has been stickied on the subreddit.
   ///
   /// [number] is used to specify which stickied [Submission] to return, where 1
   /// corresponds to the top sticky, 2 the second, etc.
-  Future<Submission> sticky({int number = 1}) async {
+  Future<SubmissionRef> sticky({int number = 1}) async {
     try {
       await reddit.get(
           apiPath['about_sticky']
               .replaceAll(SubredditRef._subredditRegExp, _name),
           params: {'num': number.toString()});
     } on DRAWRedirectResponse catch (e) {
-      return new Submission.withPath(reddit, e.path);
+      return new SubmissionRef.withPath(reddit, e.path);
     }
     return null; // Shut the analyzer up.
   }

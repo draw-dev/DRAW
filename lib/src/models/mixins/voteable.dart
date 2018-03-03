@@ -15,15 +15,15 @@ abstract class VoteableMixin implements RedditBase {
   Future<String> get fullname;
 
   /// The author of the item.
-  Future<String> get author async => await property('author');
+  String get author => data['author'];
 
   /// The body of the item.
   ///
   /// Returns null for non-text [Submission]s.
-  Future<String> get body async => await property('body');
+  String get body => data['body'];
 
   /// The karma score of the voteable item.
-  Future<int> get score async => await property('score');
+  int get score => data['score'];
 
   Future _vote(String direction) async =>
       reddit.post(apiPath['vote'], {'dir': direction, 'id': await fullname},

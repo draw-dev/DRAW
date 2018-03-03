@@ -17,7 +17,7 @@ import 'package:draw/src/models/submission_impl.dart';
 import 'package:draw/src/models/user_content.dart';
 import 'package:draw/src/models/mixins/inboxable.dart';
 
-void setSubmissionInternal(commentLike, Submission s) {
+void setSubmissionInternal(commentLike, SubmissionRef s) {
   commentLike._submission = s;
 
   // A MoreComment should never be a parent of any other comments, so don't add
@@ -45,7 +45,7 @@ class MoreComments extends RedditBase {
   List<String> _children;
   int _count;
   String _parentId;
-  Submission _submission;
+  SubmissionRef _submission;
 
   List get children => _children;
 
@@ -139,76 +139,81 @@ class MoreComments extends RedditBase {
   }
 }
 
-/// A class which represents a single Reddit comment.
-class Comment extends UserContent with InboxableMixin {
-  static final RegExp _commentRegExp = new RegExp(r'{id}');
-  Submission _submission;
-  CommentForest _replies;
+class Comment extends CommentRef {
+  // CommentModeration get mod; // TODO(bkonyi): implement
 
   /// Returns true if the current [Comment] is a top-level comment. A [Comment]
   /// is a top-level comment if its parent is a [Submission].
-  Future<bool> get isRoot async {
-    final parentIdType = (await parentId).split('_')[0];
+  bool get isRoot {
+    final parentIdType = parentId.split('_')[0];
     return (parentIdType == reddit.config.submissionKind);
   }
 
-  // CommentModeration get mod; // TODO(bkonyi): implement
-
-  /// A forest of replies to the current comment.
-  CommentForest get replies => _replies;
-
-  /// The [Submission] which this comment belongs to.
-  Future<Submission> get submission async {
-    if (_submission == null) {
-      _submission = reddit.submission(id: await _extractSubmissionId());
-    }
-    return _submission;
-  }
-
-  Comment.parse(Reddit reddit, Map data)
-      : super.loadDataWithPath(reddit, data, _infoPath(data['id']));
-
-  Comment.withID(Reddit reddit, String id)
-      : super.withPath(reddit, _infoPath(id));
-
-  static String _infoPath(String id) =>
-      apiPath['comment'].replaceAll(_commentRegExp, id);
-
   /// The ID of the parent [Comment] or [Submission].
-  Future<String> get parentId async => await property('parentId');
+  String get parentId => data['parent_id'];
 
   /// Return the parent of the comment.
   ///
   /// The returned parent will be an instance of either [Comment] or
   /// [Submission].
   Future<UserContent> parent() async {
-    if ((await this.parentId) == (await (await submission).fullname)) {
+    if (this.parentId == await (await submission.populate()).fullname) {
       return submission;
     }
 
     // Check if the comment already exists.
-    final parentId = await this.parentId;
+    final parentId = this.parentId;
     var parent = getCommentByIdInternal(_submission, parentId);
     if (parent == null) {
-      parent = new Comment.withID(reddit, parentId.split('_')[1]);
+      parent = new CommentRef.withID(reddit, parentId.split('_')[1]);
       parent._submission = _submission;
     }
     return parent;
   }
 
-  Future<String> _extractSubmissionId() async {
-    var id = await property('context');
+  String _extractSubmissionId() {
+    var id = data['context'];
     if (id != null) {
       final split = id.split('/');
       print(split);
       throw new DRAWUnimplementedError();
       return split[split.length - 4];
     }
-    id = await property('linkId');
+    id = data['link_id'];
     if (id != null) {
       return id.split('_')[1];
     }
     throw new DRAWInternalError('Cannot extract submission ID from a'
         ' lazy-comment');
   }
+
+  Comment.parse(Reddit reddit, Map data) : super.loadData(reddit, data);
+
+  /// The [Submission] which this comment belongs to.
+  SubmissionRef get submission {
+    if (_submission == null) {
+      _submission = reddit.submission(id: _extractSubmissionId());
+    }
+    return _submission;
+  }
+}
+
+/// A class which represents a single Reddit comment.
+class CommentRef extends UserContent with InboxableMixin {
+  SubmissionRef _submission;
+  CommentForest _replies;
+
+  static final RegExp _commentRegExp = new RegExp(r'{id}');
+
+  CommentRef.loadData(Reddit reddit, Map data)
+      : super.loadDataWithPath(reddit, data, _infoPath(data['id']));
+
+  CommentRef.withID(Reddit reddit, String id)
+      : super.withPath(reddit, _infoPath(id));
+
+  static String _infoPath(String id) =>
+      apiPath['comment'].replaceAll(_commentRegExp, id);
+
+  /// A forest of replies to the current comment.
+  CommentForest get replies => _replies;
 }

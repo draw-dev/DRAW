@@ -39,7 +39,7 @@ class Objector extends RedditBase {
           commentData['replies']['data'].containsKey('children')) {
         final replies =
             _objectifyList(commentData['replies']['data']['children']);
-        final submission = new Submission.withID(
+        final submission = new SubmissionRef.withID(
             reddit, _removeIDPrefix(commentData['link_id']));
         final commentForest = new CommentForest(submission, replies);
         setRepliesInternal(comment, commentForest);
