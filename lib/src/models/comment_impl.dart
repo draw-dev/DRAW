@@ -157,12 +157,11 @@ class Comment extends CommentRef {
   /// The returned parent will be an instance of either [Comment] or
   /// [Submission].
   Future<UserContent> parent() async {
-    if (this.parentId == await (await submission.populate()).fullname) {
+    if (parentId == await (await submission.populate()).fullname) {
       return submission;
     }
 
     // Check if the comment already exists.
-    final parentId = this.parentId;
     var parent = getCommentByIdInternal(_submission, parentId);
     if (parent == null) {
       parent = new CommentRef.withID(reddit, parentId.split('_')[1]);
