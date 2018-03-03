@@ -12,7 +12,6 @@ import 'package:draw/src/reddit.dart';
 /// Interface for classes that can optionally receive inbox replies.
 abstract class InboxToggleableMixin implements RedditBase {
   Reddit get reddit;
-
   Future<String> get fullname;
 
   /// Disable inbox replies for the item.

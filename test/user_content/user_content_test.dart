@@ -25,7 +25,7 @@ Future main() async {
     final submission =
         await subreddit.submit('Replyable submission', selftext: 'Testing!');
     final comment = await submission.reply('Test comment!');
-    expect(await comment.body, equals('Test comment!'));
+    expect(comment.body, equals('Test comment!'));
     await submission.delete();
     await comment.delete();
   });
