@@ -1,7 +1,7 @@
 DRAW: The Dart Reddit API Wrapper
 =================================
 
-[![Build Status](https://travis-ci.org/draw-dev/DRAW.svg?branch=master)](https://travis-ci.org/draw-dev/DRAW/) [![Pub Version](https://img.shields.io/pub/v/draw.svg)](https://pub.dartlang.org/packages/draw)
+[![Build Status](https://travis-ci.org/draw-dev/DRAW.svg?branch=master)](https://travis-ci.org/draw-dev/DRAW/) [![Pub Version](https://img.shields.io/pub/v/draw.svg)](https://pub.dartlang.org/packages/draw) [![Join Gitter Chat Channel -](https://badges.gitter.im/DRAW-reddit/DRAW-reddit.svg)](https://gitter.im/DRAW-reddit/DRAW?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 DRAW, also known as the Dart Reddit API Wrapper, is a Dart package that
 provides simple access to the Reddit API. DRAW is inspired by
