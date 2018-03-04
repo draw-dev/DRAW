@@ -54,7 +54,7 @@ class MoreComments extends RedditBase {
   int get hashCode => hash2(_count.hashCode, _children.hashCode);
 
   /// The ID of the parent [Comment] or [Submission].
-  Future<String> get parentId async => new Future.value(_parentId);
+  String get parentId => _parentId;
 
   MoreComments.parse(Reddit reddit, Map data)
       : _children = data['children'],
