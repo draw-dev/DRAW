@@ -58,9 +58,9 @@ class ConfigFileReader {
       osConfigPath = environment[kLinuxEnvVar] ?? environment[kLinuxHomeEnvVar];
     } else if (Platform.isWindows) {
       osConfigPath = environment[kWindowsEnvVar];
-    } else if (Platform.isIOS){
+    } else if (Platform.isIOS) {
       // TODO(ckartik): Look into supporting plists. May need to reorg workflow.
-    } else if (Platform.isAndroid){
+    } else if (Platform.isAndroid) {
       // TODO(ckartik): Look into supporting android configuration files.
     } else {
       throw new DRAWInternalError('OS not Recognized by DRAW');
