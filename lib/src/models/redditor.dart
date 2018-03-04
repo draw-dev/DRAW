@@ -6,21 +6,61 @@
 import 'dart:async';
 import 'dart:convert';
 
-import '../api_paths.dart';
-import '../base.dart';
-import '../exceptions.dart';
-import '../listing/mixins/base.dart';
-import '../listing/mixins/gilded.dart';
-import '../listing/mixins/redditor.dart';
-import '../reddit.dart';
-import '../util.dart';
-import 'comment.dart';
-import 'mixins/messageable.dart';
-import 'multireddit.dart';
-import 'submission.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base.dart';
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/listing/mixins/base.dart';
+import 'package:draw/src/listing/mixins/gilded.dart';
+import 'package:draw/src/listing/mixins/redditor.dart';
+import 'package:draw/src/reddit.dart';
+import 'package:draw/src/util.dart';
+import 'package:draw/src/models/comment.dart';
+import 'package:draw/src/models/mixins/messageable.dart';
+import 'package:draw/src/models/multireddit.dart';
+import 'package:draw/src/models/submission.dart';
+
+class Redditor extends RedditorRef {
+  /// The amount of comment karma earned by the Redditor.
+  int get commentKarma => data['comment_karma'];
+
+  /// The time the Redditor's account was created.
+  double get created => data['created'];
+
+  /// Returns the object's fullname.
+  ///
+  /// A fullname is an object's kind mapping (i.e., t3), followed by an
+  /// underscore and the object's ID (i.e., t1_c5s96e0).
+  Future<String> get fullname async => data['fullname'];
+
+  /// The amount of Reddit Gold a Redditor currently has.
+  int get goldCreddits => data['gold_creddits'];
+
+  /// Whether the current Redditor is a Reddit employee.
+  bool get isEmployee => data['is_employee'];
+
+  /// The suspension status of the current Redditor.
+  bool get isSuspended => data['is_suspended'];
+
+  /// The amount of link karma earned by the Redditor.
+  int get linkKarma => data['link_karma'];
+
+  /// Whether the Redditor has chosen to filter profanity.
+  bool get preferNoProfanity => data['pref_no_profanity'];
+
+  Redditor.parse(Reddit reddit, Map data) : super.loadData(reddit, data) {
+    if (!data.containsKey('name') &&
+        !(data.containsKey('kind') &&
+            data['kind'] == Reddit.defaultRedditorKind)) {
+      throw new DRAWArgumentError("input argument 'data' is not a valid"
+          " representation of a Redditor");
+    }
+    _name = data['name'];
+    _path = apiPath['user'].replaceAll(RedditorRef._userRegExp, _name);
+  }
+}
 
 /// A class representing a particular Reddit user, also known as a Redditor.
-class Redditor extends RedditBase
+class RedditorRef extends RedditBase
     with
         BaseListingMixin,
         GildedListingMixin,
@@ -37,21 +77,12 @@ class Redditor extends RedditBase
   String get path => _path;
   String _path;
 
-  Redditor.parse(Reddit reddit, Map data) : super.loadData(reddit, data) {
-    if (!data.containsKey('name') &&
-        !(data.containsKey('kind') &&
-            data['kind'] == Reddit.defaultRedditorKind)) {
-      throw new DRAWArgumentError("input argument 'data' is not a valid"
-          " representation of a Redditor");
-    }
-    _name = data['name'];
-    _path = apiPath['user'].replaceAll(_userRegExp, _name);
-  }
+  RedditorRef.loadData(Reddit reddit, Map data) : super.loadData(reddit, data);
 
-  Redditor.name(Reddit reddit, String name)
+  RedditorRef.name(Reddit reddit, String name)
       : _name = name,
         _path = apiPath['user'].replaceAll(_userRegExp, name),
-        super.withPath(reddit, Redditor._generateInfoPath(name));
+        super.withPath(reddit, RedditorRef._generateInfoPath(name));
 
   static String _generateInfoPath(String name) =>
       apiPath['user_about'].replaceAll(_userRegExp, name);
@@ -67,12 +98,6 @@ class Redditor extends RedditBase
   Future<Redditor> friendInfo() async =>
       reddit.get(apiPath['friend_v1'].replaceAll(_userRegExp, _name));
 
-  /// Returns the object's fullname.
-  ///
-  /// A fullname is an object's kind mapping (i.e., t3), followed by an
-  /// underscore and the object's ID (i.e., t1_c5s96e0).
-  Future<String> get fullname async => await property('fullname');
-
   /// Gives Reddit Gold to the [Redditor]. [months] is the number of months of
   /// Reddit Gold to be given to the [Redditor].
   Future gild({int months = 1}) async {
@@ -87,6 +112,9 @@ class Redditor extends RedditBase
   Future<List<Multireddit>> multireddits() async =>
       reddit.get(apiPath['multi_user'].replaceAll(_userRegExp, _name));
 
+  Future<Redditor> populate() async =>
+      new Redditor.parse(reddit, await fetch());
+
   // TODO(bkonyi): Add code samples.
   /// Provides a [RedditorStream] for the current [Redditor].
   ///
@@ -98,12 +126,13 @@ class Redditor extends RedditBase
   Future unblock() async {
     final currentUser = await reddit.user.me();
     final data = {
-      'container': 't2_' + await currentUser.property('id'),
+      'container': 't2_' + currentUser.data['id'],
       'name': displayName,
       'type': 'enemy',
     };
     await reddit.post(
-        apiPath['unfriend'].replaceAll(_subredditRegExp, 'all'), data,
+        apiPath['unfriend'].replaceAll(RedditorRef._subredditRegExp, 'all'),
+        data,
         discardResponse: true);
   }
 
@@ -114,7 +143,7 @@ class Redditor extends RedditBase
 
 /// Provides [Comment] and [Submission] streams for a particular [Redditor].
 class RedditorStream extends RedditBase {
-  final Redditor redditor;
+  final RedditorRef redditor;
 
   RedditorStream(this.redditor) : super(redditor.reddit);
 

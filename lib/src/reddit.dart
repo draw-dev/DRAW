@@ -7,15 +7,16 @@ import 'dart:async';
 
 import 'package:oauth2/oauth2.dart' as oauth2;
 
-import 'auth.dart';
-import 'draw_config_context.dart';
-import 'exceptions.dart';
-import 'objector.dart';
-import 'user.dart';
+import 'package:draw/src/auth.dart';
+import 'package:draw/src/draw_config_context.dart';
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/objector.dart';
+import 'package:draw/src/user.dart';
 
-import 'models/inbox.dart';
-import 'models/submission.dart';
-import 'models/subreddit.dart';
+import 'package:draw/src/models/inbox.dart';
+import 'package:draw/src/models/redditor.dart';
+import 'package:draw/src/models/submission.dart';
+import 'package:draw/src/models/subreddit.dart';
 
 /// The [Reddit] class provides access to Reddit's API and stores session state
 /// for the current [Reddit] instance. This class contains objects that can be
@@ -192,18 +193,21 @@ class Reddit {
     _initializationCallback(auth);
   }
 
-  Submission submission({String id, /* Uri, String */ url}) {
+  SubmissionRef submission({String id, /* Uri, String */ url}) {
     if ((id != null) && (url != null)) {
       throw new DRAWArgumentError('One of either id or url can be provided');
     } else if ((id == null) && (url == null)) {
       throw new DRAWArgumentError('id and url cannot both be null');
     } else if (id != null) {
-      return new Submission.withID(this, id);
+      return new SubmissionRef.withID(this, id);
     }
-    return new Submission.withPath(this, (url is Uri) ? url.toString() : url);
+    return new SubmissionRef.withPath(
+        this, (url is Uri) ? url.toString() : url);
   }
 
-  Subreddit subreddit(String subreddit) => new Subreddit.name(this, subreddit);
+  RedditorRef redditor(String redditor) => new RedditorRef.name(this, redditor);
+  SubredditRef subreddit(String subreddit) =>
+      new SubredditRef.name(this, subreddit);
 
   Future<dynamic> get(String api, {Map params}) async {
     if (!_initialized) {

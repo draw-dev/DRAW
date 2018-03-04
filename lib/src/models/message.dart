@@ -3,8 +3,6 @@
 /// Use of this source code is governed by a BSD-style license that
 /// can be found in the LICENSE file.
 
-import 'dart:async';
-
 import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/models/mixins/inboxable.dart';
 import 'package:draw/src/reddit.dart';
@@ -12,17 +10,21 @@ import 'package:draw/src/reddit.dart';
 class Message extends RedditBase with InboxableMixin {
   var _replies;
 
-  Message(Reddit reddit) : super(reddit);
-
   Message.parse(Reddit reddit, Map data) : super.loadData(reddit, data);
 
-  Future<String> get author async => await property('author');
-  Future<String> get body async => await property('body');
+  /// The author of the [Message].
+  String get author => data['author'];
 
-  Future<List<Message>> get replies async {
+  /// The body of the [Message].
+  String get body => data['body'];
+
+  /// The [List] of replies to this [Message].
+  ///
+  /// Returns and empty list if there are no replies.
+  List<Message> get replies {
     if (_replies == null) {
       _replies = <Message>[];
-      final repliesListing = await property('replies');
+      final repliesListing = data['replies'];
       if (repliesListing == null) {
         return <Message>[];
       }
@@ -33,6 +35,4 @@ class Message extends RedditBase with InboxableMixin {
     }
     return _replies;
   }
-
-  Future<String> get subject async => await property('subject');
 }

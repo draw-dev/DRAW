@@ -5,13 +5,13 @@
 
 import 'dart:async';
 
-import 'api_paths.dart';
-import 'base.dart';
-import 'reddit.dart';
-import 'listing/listing_generator.dart';
-import 'models/multireddit.dart';
-import 'models/redditor.dart';
-import 'models/subreddit.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base.dart';
+import 'package:draw/src/reddit.dart';
+import 'package:draw/src/listing/listing_generator.dart';
+import 'package:draw/src/models/multireddit.dart';
+import 'package:draw/src/models/redditor.dart';
+import 'package:draw/src/models/subreddit.dart';
 
 /// The [User] class provides methods to access information about the currently
 /// authenticated user.

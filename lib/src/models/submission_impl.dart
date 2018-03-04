@@ -6,61 +6,101 @@
 import 'dart:async';
 import 'dart:math';
 
-import '../api_paths.dart';
-import '../base_impl.dart';
-import '../exceptions.dart';
-import '../reddit.dart';
-import 'comment_impl.dart';
-import 'comment_forest.dart';
-import 'subreddit.dart';
-import 'user_content.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base_impl.dart';
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/reddit.dart';
+import 'package:draw/src/models/comment_impl.dart';
+import 'package:draw/src/models/comment_forest.dart';
+import 'package:draw/src/models/subreddit.dart';
+import 'package:draw/src/models/user_content.dart';
 
-Comment getCommentByIdInternal(Submission s, String id) {
+CommentRef getCommentByIdInternal(Submission s, String id) {
   if (s._commentsById.containsKey(id)) {
     return s._commentsById[id];
   }
   return null;
 }
 
-void insertCommentById(Submission s, /*Comment, MoreComments*/ c) {
+void insertCommentById(SubmissionRef s, /*Comment, MoreComments*/ c) {
   assert(!s._commentsById.containsKey(c.fullname));
   s._commentsById[c.fullname] = c;
 }
 
+class Submission extends SubmissionRef {
+  /// Returns the [CommentForest] representing the comments for this
+  /// [Submission].
+  CommentForest get comments => _comments;
+
+  /// Returns the domain of this [Submission].
+  ///
+  /// For self-text [Submission]s, domains take the form of 'self.announcements'.
+  /// For link [Submission]s, domains take the form of 'github.com'.
+  String get domain => data['domain'];
+
+  // TODO(bkonyi): implement
+  // SubmissionFlair get flair;
+
+  /// Whether or not the [Submission] is marked as hidden.
+  bool get hidden => data['hidden'];
+
+  /// The text body of a self-text post.
+  ///
+  /// Returns null if the [Submission] is not a self-text submission.
+  String get selftext => data['selftext'];
+
+  /// The title of the [Submission].
+  String get title => data['title'];
+
+  Submission.parse(Reddit reddit, Map data) : super.loadData(reddit, data);
+
+  /// Crosspost the submission to another [Subreddit].
+  ///
+  /// [subreddit] is the subreddit to crosspost the submission to, [title] is
+  /// the title to be given to the new post (default is the original title), and
+  /// if [sendReplies] is true (default), replies will be sent to the currently
+  /// authenticated user's messages.
+  ///
+  /// Note: crosspost is fairly new on Reddit and is only available to
+  /// certain users on select subreddits who opted in to the beta. This method
+  /// does work, but is difficult to test correctly while the feature is in
+  /// beta. As a result, it's probably best not to use this method until
+  /// crossposting is out of beta on Reddit (still in beta as of 2017/10/27).
+  Future<Submission> crosspost(Subreddit subreddit,
+      {String title, bool sendReplies: true}) async {
+    final data = {
+      'sr': subreddit.displayName,
+      'title': title ?? this.data['title'],
+      'sendreplies': sendReplies.toString(),
+      'kind': 'crosspost',
+      'crosspost_fullname': await fullname,
+      'api_type': 'json',
+    };
+    return reddit.post(apiPath['submit'], data);
+  }
+}
+
 /// A representation of a standard Reddit submission.
-class Submission extends UserContent {
+class SubmissionRef extends UserContent {
   static final RegExp _submissionRegExp = new RegExp(r'{id}');
   CommentForest _comments;
   String _id;
   final Map _commentsById = new Map();
 
-  Submission.parse(Reddit reddit, Map data)
+  SubmissionRef.loadData(Reddit reddit, Map data)
       : _id = data['id'],
         super.loadDataWithPath(reddit, data, _infoPath(data['id']));
 
-  Submission.withPath(Reddit reddit, String path)
+  SubmissionRef.withPath(Reddit reddit, String path)
       : _id = idFromUrl(path),
         super.withPath(reddit, _infoPath(idFromUrl(path)));
 
-  Submission.withID(Reddit reddit, String id)
+  SubmissionRef.withID(Reddit reddit, String id)
       : _id = id,
         super.withPath(reddit, _infoPath(id));
 
   static String _infoPath(String id) =>
       apiPath['submission'].replaceAll(_submissionRegExp, id);
-
-  /// Returns the [CommentForest] representing the comments for this
-  /// [Submission].
-  Future<CommentForest> get comments async {
-    if (_comments == null) {
-      final response = await refresh();
-      _comments = new CommentForest(this, response[1]);
-    }
-    return _comments;
-  }
-
-  // TODO(bkonyi): implement
-  // SubmissionFlair get flair;
 
   // TODO(bkonyi): implement
   // SubmissionModeration get mod;
@@ -94,31 +134,6 @@ class Submission extends UserContent {
     return submissionId;
   }
 
-  /// Crosspost the submission to another [Subreddit].
-  ///
-  /// [subreddit] is the subreddit to crosspost the submission to, [title] is
-  /// the title to be given to the new post (default is the original title), and
-  /// if [sendReplies] is true (default), replies will be sent to the currently
-  /// authenticated user's messages.
-  ///
-  /// Note: crosspost is fairly new on Reddit and is only available to
-  /// certain users on select subreddits who opted in to the beta. This method
-  /// does work, but is difficult to test correctly while the feature is in
-  /// beta. As a result, it's probably best not to use this method until
-  /// crossposting is out of beta on Reddit (still in beta as of 2017/10/27).
-  Future<Submission> crosspost(Subreddit subreddit,
-      {String title, bool sendReplies: true}) async {
-    final data = {
-      'sr': subreddit.displayName,
-      'title': title ?? await property('title'),
-      'sendreplies': sendReplies.toString(),
-      'kind': 'crosspost',
-      'crosspost_fullname': await fullname,
-      'api_type': 'json',
-    };
-    return reddit.post(apiPath['submit'], data);
-  }
-
   // TODO(bkonyi): implement
   // Stream duplicates() => throw new DRAWUnimplementedError();
 
@@ -131,6 +146,14 @@ class Submission extends UserContent {
       await reddit.post(apiPath['hide'], {'id': submissions},
           discardResponse: true);
     }
+  }
+
+  Future<Submission> populate() async {
+    final response = await fetch();
+    final submission = response[0]['listing'][0];
+    submission._comments =
+        new CommentForest(submission, response[1]['listing']);
+    return submission;
   }
 
   /// Unhide the submission.

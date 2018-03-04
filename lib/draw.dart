@@ -5,17 +5,17 @@
 
 library draw;
 
-export 'src/reddit.dart';
-export 'src/auth.dart';
-export 'src/base.dart';
-export 'src/exceptions.dart';
-export 'src/objector.dart';
-export 'src/user.dart';
-export 'src/models/comment.dart';
-export 'src/models/inbox.dart';
-export 'src/models/message.dart';
-export 'src/models/multireddit.dart';
-export 'src/models/redditor.dart';
-export 'src/models/submission.dart';
-export 'src/models/subreddit.dart';
-export 'src/models/user_content.dart';
+export 'package:draw/src/reddit.dart';
+export 'package:draw/src/auth.dart';
+export 'package:draw/src/base.dart';
+export 'package:draw/src/exceptions.dart';
+export 'package:draw/src/objector.dart';
+export 'package:draw/src/user.dart';
+export 'package:draw/src/models/comment.dart';
+export 'package:draw/src/models/inbox.dart';
+export 'package:draw/src/models/message.dart';
+export 'package:draw/src/models/multireddit.dart';
+export 'package:draw/src/models/redditor.dart';
+export 'package:draw/src/models/submission.dart';
+export 'package:draw/src/models/subreddit.dart';
+export 'package:draw/src/models/user_content.dart';
