@@ -26,8 +26,6 @@ abstract class RedditBase {
   /// The current [Reddit] instance.
   final Reddit reddit;
 
-  final RegExp _snakecaseRegExp = new RegExp("[A-Z]");
-
   /// Returns the raw properties dictionary for this object.
   ///
   /// This getter returns null if the object is lazily initialized.
@@ -58,30 +56,8 @@ abstract class RedditBase {
       : _data = data,
         _infoPath = infoPath;
 
-  String _snakeCase(String name, [separator = '_']) => name.replaceAllMapped(
-      _snakecaseRegExp,
-      (Match match) =>
-          (match.start != 0 ? separator : '') + match.group(0).toLowerCase());
-
   /// Requests the data associated with the current object.
   Future fetch() async => reddit.get(_infoPath);
-
-  /// Accesses properties returned from the Reddit API.
-  ///
-  /// If the object has been lazily initialized, [refresh] is called. If [key]
-  /// is not in the property dictionary returned by Reddit, null is returned.
-  @deprecated
-  Future property(String key) async {
-    if (_data == null) {
-      await refresh();
-      // TODO(bkonyi): should we throw an exception here instead?
-      assert(_data != null);
-    }
-    if (_data.containsKey(_snakeCase(key))) {
-      return _data[_snakeCase(key)];
-    }
-    return null;
-  }
 
   /// Requests updated information from the Reddit API and updates the current
   /// object properties.
