@@ -78,9 +78,9 @@ abstract class BaseListingMixin {
 
   Stream<UserContent> _buildGenerator(Map params, String sort) {
     Map _params = params;
-    if ((this is Redditor) || (this is SubListing)) {
+    if ((this is RedditorRef) || (this is SubListing)) {
       var arg = '';
-      if (this is Redditor) {
+      if (this is RedditorRef) {
         arg = 'overview';
       }
       _params ??= new Map();

@@ -14,7 +14,7 @@ import 'submission_impl.dart';
 /// A user-friendly representation of a forest of [Comment] objects.
 class CommentForest {
   final List _comments;
-  final Submission _submission;
+  final SubmissionRef _submission;
 
   /// The number of top-level comments associated with the current
   /// [CommentForest].
@@ -23,7 +23,7 @@ class CommentForest {
   /// A list of top-level comments associated with the current [CommentForest].
   List get comments => _comments;
 
-  CommentForest(Submission submission, [List<Comment> comments])
+  CommentForest(SubmissionRef submission, [List<Comment> comments])
       : _comments = new List(),
         _submission = submission {
     _update(comments);

@@ -6,12 +6,24 @@
 import 'dart:async';
 
 import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/reddit.dart';
 
 /// A mixin containing inbox functionality.
-abstract class InboxableMixin {
+abstract class InboxableMixin implements RedditBase {
   Future<String> get fullname;
   Reddit get reddit;
+
+  /// Returns true if the [Inbox] item is new.
+  bool get newItem => data['new'];
+
+  /// The subject of the [Inbox] item.
+  ///
+  /// If this item was not retrieved via the [Inbox], this may be null.
+  String get subject => data['subject'];
+
+  /// Returns true if the current [Inbox] reply was from a [Comment].
+  bool get wasComment => data['wasComment'];
 
   /// Block the user who sent the item.
   ///

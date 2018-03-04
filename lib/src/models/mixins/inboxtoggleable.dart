@@ -5,11 +5,12 @@
 
 import 'dart:async';
 
-import '../../api_paths.dart';
-import '../../reddit.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base_impl.dart';
+import 'package:draw/src/reddit.dart';
 
 /// Interface for classes that can optionally receive inbox replies.
-abstract class InboxToggleableMixin {
+abstract class InboxToggleableMixin implements RedditBase {
   Reddit get reddit;
   Future<String> get fullname;
 

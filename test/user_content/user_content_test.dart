@@ -13,7 +13,7 @@ import '../test_utils.dart';
 Future main() async {
   // We use this helper to ensure that our submissions request always uses the
   // exact same DateTime parameters instead of using the current time.
-  Stream<Submission> submissionsHelper(Subreddit subreddit) {
+  Stream<Submission> submissionsHelper(SubredditRef subreddit) {
     return subreddit.submissions(
         start: new DateTime.utc(2017), end: new DateTime.utc(2017, 10));
   }
@@ -21,11 +21,11 @@ Future main() async {
   test('lib/user_content/replyable', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content/lib_user_content_replyable.json');
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     final submission =
         await subreddit.submit('Replyable submission', selftext: 'Testing!');
     final comment = await submission.reply('Test comment!');
-    expect(await comment.property('body'), equals('Test comment!'));
+    expect(comment.body, equals('Test comment!'));
     await submission.delete();
     await comment.delete();
   });
@@ -33,13 +33,13 @@ Future main() async {
   test('lib/user_content/reportable', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content/lib_user_content_reportable.json');
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     final submission = await subreddit.submit('Reportable submission',
         selftext: 'Rule'
             ' breaking!');
     await submission.report('Breaks rule 42');
     await submission.refresh();
-    expect((await submission.property('modReports'))[0],
+    expect((await submission.modReports)[0],
         equals(['Breaks rule 42', 'DRAWApiOfficial']));
     await submission.delete();
   });
@@ -52,7 +52,7 @@ Future main() async {
   test('lib/user_content/inbox_toggleable', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content/lib_user_content_toggleable.json');
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     final submission =
         await subreddit.submit('Editable submission', selftext: 'Testing!');
     await submission.disableInboxReplies();
@@ -62,37 +62,37 @@ Future main() async {
   test('lib/user_content/saveable', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content/lib_user_content_saveable.json');
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     final submission =
         await subreddit.submit('Saveable submission', selftext: 'Testing!');
     await submission.refresh();
-    expect(await submission.property('saved'), isFalse);
+    expect(await submission.saved, isFalse);
     await submission.save();
     await submission.refresh();
-    expect(await submission.property('saved'), isTrue);
+    expect(await submission.saved, isTrue);
     await submission.unsave();
     await submission.refresh();
-    expect(await submission.property('saved'), isFalse);
+    expect(await submission.saved, isFalse);
     await submission.delete();
   });
 
   test('lib/user_content/submit-editable-delete', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content/lib_user_content_editable.json');
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     final submission =
         await subreddit.submit('Editable submission', selftext: 'Testing!');
     await submission.refresh();
-    expect(await submission.property('selftext'), equals('Testing!'));
+    expect(submission.selftext, equals('Testing!'));
     await submission.edit('Edited!');
-    expect(await submission.property('selftext'), equals('Edited!'));
+    expect(submission.selftext, equals('Edited!'));
     await submission.delete();
   });
 
   test('lib/user_content/votes', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content/lib_user_content_votes.json');
-    final redditor = new Redditor.name(reddit, 'DRAWApiOfficial');
+    final redditor = reddit.redditor('DRAWApiOfficial');
     Future<List<String>> getUpvoted() async {
       final upvoted = <String>[];
       await for (final submission in redditor.upvoted()) {
@@ -109,7 +109,7 @@ Future main() async {
       return upvoted;
     }
 
-    final subreddit = new Subreddit.name(reddit, 'drawapitesting');
+    final subreddit = reddit.subreddit('drawapitesting');
     var upvoted = await getUpvoted();
     var downvoted = await getDownvoted();
     await for (final submission in submissionsHelper(subreddit)) {
