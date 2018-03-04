@@ -14,6 +14,7 @@ import 'package:draw/src/models/comment_impl.dart';
 import 'package:draw/src/models/comment_forest.dart';
 import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/user_content.dart';
+import 'package:draw/src/models/mixins/user_content_mixin.dart';
 
 CommentRef getCommentByIdInternal(Submission s, String id) {
   if (s._commentsById.containsKey(id)) {
@@ -27,7 +28,7 @@ void insertCommentById(SubmissionRef s, /*Comment, MoreComments*/ c) {
   s._commentsById[c.fullname] = c;
 }
 
-class Submission extends SubmissionRef {
+class Submission extends SubmissionRef with UserContentMixin {
   /// Returns the [CommentForest] representing the comments for this
   /// [Submission].
   CommentForest get comments => _comments;
@@ -73,7 +74,7 @@ class Submission extends SubmissionRef {
       'title': title ?? this.data['title'],
       'sendreplies': sendReplies.toString(),
       'kind': 'crosspost',
-      'crosspost_fullname': await fullname,
+      'crosspost_fullname': fullname,
       'api_type': 'json',
     };
     return reddit.post(apiPath['submit'], data);

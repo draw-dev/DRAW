@@ -41,12 +41,12 @@ abstract class RedditBase {
   /// The fullname of a Reddit object.
   ///
   /// Reddit object fullnames take the form of 't3_15bfi0'.
-  Future<String> get fullname async => await property('name');
+  String get fullname => (data == null) ? null : data['name'];
 
   /// The id of a Reddit object.
   ///
   /// Reddit object ids take the form of '15bfi0'.
-  Future<String> get id async => await property('id');
+  String get id => (data == null) ? null : data['id'];
 
   RedditBase(this.reddit);
 
@@ -70,6 +70,7 @@ abstract class RedditBase {
   ///
   /// If the object has been lazily initialized, [refresh] is called. If [key]
   /// is not in the property dictionary returned by Reddit, null is returned.
+  @deprecated
   Future property(String key) async {
     if (_data == null) {
       await refresh();

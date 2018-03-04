@@ -16,6 +16,7 @@ import 'package:draw/src/models/comment_forest.dart';
 import 'package:draw/src/models/submission_impl.dart';
 import 'package:draw/src/models/user_content.dart';
 import 'package:draw/src/models/mixins/inboxable.dart';
+import 'package:draw/src/models/mixins/user_content_mixin.dart';
 
 void setSubmissionInternal(commentLike, SubmissionRef s) {
   commentLike._submission = s;
@@ -99,13 +100,16 @@ class MoreComments extends RedditBase {
   }
 
   Future<Comment> _loadComment(String commentId) async {
+    if (_submission is! Submission) {
+      _submission = await _submission.populate();
+    }
     final path = apiPath['submission'].replaceAll(
             _submissionRegExp, fullnameSync(_submission).split('_')[1]) +
         '_/' +
         commentId;
     final response = await reddit.get(path, params: {
-      'limit': (await _submission.property('commentLimit')),
-      'sort': (await _submission.property('commentSort'))
+      'limit': _submission.data['commentLimit'],
+      'sort': _submission.data['commentSort'],
     });
 
     final comments = response[1]['listing'];
@@ -139,7 +143,7 @@ class MoreComments extends RedditBase {
   }
 }
 
-class Comment extends CommentRef {
+class Comment extends CommentRef with UserContentMixin {
   // CommentModeration get mod; // TODO(bkonyi): implement
 
   /// Returns true if the current [Comment] is a top-level comment. A [Comment]
@@ -157,7 +161,10 @@ class Comment extends CommentRef {
   /// The returned parent will be an instance of either [Comment] or
   /// [Submission].
   Future<UserContent> parent() async {
-    if (parentId == await (await submission.populate()).fullname) {
+    if (_submission is! Submission) {
+      _submission = await _submission.populate();
+    }
+    if (parentId == _submission.fullname) {
       return submission;
     }
 

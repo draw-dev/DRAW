@@ -13,10 +13,10 @@ import '../user_content.dart';
 /// Interface for classes that can be edited and deleted.
 abstract class EditableMixin implements RedditBase {
   Reddit get reddit;
-  Future<String> get fullname;
+  String get fullname;
 
   /// Delete the object.
-  Future delete() async => reddit.post(apiPath['del'], {'id': await fullname},
+  Future delete() async => reddit.post(apiPath['del'], {'id': fullname},
       discardResponse: true);
 
   /// Replace the body of the object with [body].
@@ -24,7 +24,7 @@ abstract class EditableMixin implements RedditBase {
   /// [body] is the markdown formatted content for the updated object. Returns
   /// the current instance of the object after updating its fields.
   Future<UserContent> edit(String body) async {
-    final data = {'text': body, 'thing_id': await fullname, 'api_type': 'json'};
+    final data = {'text': body, 'thing_id': fullname, 'api_type': 'json'};
     // TODO(bkonyi): figure out what needs to be done here.
     final updated = await reddit.post(apiPath['edit'], data);
     setData(this, updated[0].data);

@@ -11,7 +11,7 @@ import 'package:draw/src/reddit.dart';
 
 /// A mixin containing inbox functionality.
 abstract class InboxableMixin implements RedditBase {
-  Future<String> get fullname;
+  String get fullname;
   Reddit get reddit;
 
   /// Returns true if the [Inbox] item is new.
@@ -30,7 +30,7 @@ abstract class InboxableMixin implements RedditBase {
   /// Note: Reddit does not permit blocking users unless you have a [Comment] or
   /// [Message] from them in your inbox.
   Future block() async =>
-      await reddit.post(apiPath['block'], {'id': await fullname});
+      await reddit.post(apiPath['block'], {'id': fullname});
 
   /// Mark the item as collapsed.
   ///

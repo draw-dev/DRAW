@@ -88,7 +88,7 @@ Future main() async {
     final reddit =
         await createRedditTestInstance('test/inbox/lib_inbox_message.json');
     final message = await reddit.inbox.message('t4_awl3r7');
-    expect(await message.id, equals('awl3r7'));
+    expect(message.id, equals('awl3r7'));
     expect(message.body, equals('Hi!'));
     expect(message.replies.length, equals(2));
     print(message);

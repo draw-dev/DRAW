@@ -280,14 +280,15 @@ class SubredditRef extends RedditBase
           params: params,
           sort: Sort.newest,
           syntax: SearchSyntax.cloudSearch)) {
-        final id = await submission.property('id');
+        assert(submission is Submission);
+        final id = submission.id;
         currentIds.add(id);
-        endSec = min(endSec, (await submission.property('created')).round());
+        endSec = min(endSec, submission.data['created'].round());
         if (!lastIds.contains(id)) {
           foundNewSubmission = true;
         }
         yield submission;
-        params['after'] = await submission.property('name');
+        params['after'] = submission.fullname;
       }
       lastIds = currentIds;
     }
@@ -395,16 +396,16 @@ class SubredditRef extends RedditBase
 /// Subreddit.
 class Subreddit extends SubredditRef {
   /// Whether the currently authenticated Redditor is banned from the [Subreddit].
-  Future<bool> get isBanned async => await property('userIsBanned');
+  bool get isBanned => data['user_is_banned'];
 
   /// Whether the currently authenticated Redditor is an approved submitter for
   /// the [Subreddit].
-  Future<bool> get isContributor async => await property('userIsContributor');
+  bool get isContributor => data['user_is_contributor'];
 
   /// The title of the [Subreddit].
   ///
   /// For example, the title of /r/drawapitesting is 'DRAW API Testing'.
-  Future<String> get title async => await property('title');
+  String get title => data['title'];
 
   Subreddit._(Reddit reddit) : super(reddit);
 
@@ -601,7 +602,7 @@ class ContributorRelationship extends SubredditRelationship {
   /// Have the current [User] remove themself from the contributors list.
   Future leave() async {
     final data = {
-      'id': await _subreddit.property('fullname'),
+      'id': _subreddit.fullname,
     };
     await _subreddit.reddit
         .post(apiPath['leavecontributor'], data, discardResponse: true);

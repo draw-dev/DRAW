@@ -45,8 +45,8 @@ Future main() async {
     expect(subreddits.length, equals(1));
     final subreddit = subreddits[0];
     expect(subreddit.displayName, equals("drawapitesting"));
-    expect(await subreddit.isContributor, isTrue);
-    expect(await subreddit.isBanned, isFalse);
+    expect(subreddit.isContributor, isTrue);
+    expect(subreddit.isBanned, isFalse);
   });
 
   test('lib/user/friends', () async {
@@ -56,7 +56,7 @@ Future main() async {
     expect(friends.length, equals(1));
     final friend = friends[0];
     expect(friend.displayName, equals('XtremeCheese'));
-    expect(await friend.property('date'), equals(1501884713.0));
+    expect(friend.data['date'], equals(1501884713.0));
   });
 
   test('lib/user/karma', () async {
@@ -76,9 +76,9 @@ Future main() async {
     expect(subreddits.length, equals(1));
     final subreddit = subreddits[0];
     expect(subreddit.displayName, equals('drawapitesting'));
-    expect(await subreddit.isContributor, isTrue);
-    expect(await subreddit.isBanned, isFalse);
-    expect(await subreddit.title, equals('DRAW API Testing'));
+    expect(subreddit.isContributor, isTrue);
+    expect(subreddit.isBanned, isFalse);
+    expect(subreddit.title, equals('DRAW API Testing'));
     expect(await subreddit.property('public_description'),
         contains('A subreddit used for testing'));
   });

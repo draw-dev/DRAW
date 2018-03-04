@@ -30,7 +30,7 @@ class Redditor extends RedditorRef {
   ///
   /// A fullname is an object's kind mapping (i.e., t3), followed by an
   /// underscore and the object's ID (i.e., t1_c5s96e0).
-  Future<String> get fullname async => data['fullname'];
+  //Future<String> get fullname async => data['fullname'];
 
   /// The amount of Reddit Gold a Redditor currently has.
   int get goldCreddits => data['gold_creddits'];
