@@ -53,7 +53,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   List<String> _children;
   int _count;
   String _parentId;
-  Submission _submission;
+  SubmissionRef _submission;
 
   List get children => _children;
 
@@ -112,13 +112,14 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
     if (_submission is! Submission) {
       _submission = await _submission.populate();
     }
+    final submissionCast = _submission as Submission;
     final path = apiPath['submission'].replaceAll(
-            _submissionRegExp, fullnameSync(_submission).split('_')[1]) +
+            _submissionRegExp, submissionCast.fullname.split('_')[1]) +
         '_/' +
         commentId;
     final response = await reddit.get(path, params: {
-      'limit': _submission.data['commentLimit'],
-      'sort': _submission.data['commentSort'],
+      'limit': submissionCast.data['commentLimit'],
+      'sort': submissionCast.data['commentSort'],
     });
 
     final comments = response[1]['listing'];
@@ -139,7 +140,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
       assert(_children != null);
       final data = {
         'children': _children.join(','),
-        'link_id': _submission.fullname,
+        'link_id': (_submission as Submission).fullname,
         'sort': 'best', //(await _submission.property('commentSort')),
         'api_type': 'json',
       };
