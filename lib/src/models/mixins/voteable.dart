@@ -10,7 +10,7 @@ import 'package:draw/src/base.dart';
 import 'package:draw/src/reddit.dart';
 
 /// A mixin which implements voting functionality.
-abstract class VoteableMixin implements RedditBase {
+abstract class VoteableMixin implements RedditBaseInitializedMixin {
   Reddit get reddit;
   String get fullname;
 

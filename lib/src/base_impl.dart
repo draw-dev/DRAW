@@ -9,32 +9,26 @@ import 'dart:convert';
 import 'exceptions.dart';
 import 'reddit.dart';
 
-String fullnameSync(RedditBase base) {
+String fullnameSync(RedditBaseInitializedMixin base) {
   if (base.data != null) {
     return base.data['name'];
   }
   return null;
 }
 
-void setData(RedditBase base, Map data) {
+void setData(RedditBaseInitializedMixin base, Map data) {
   base._data = data;
 }
 
-/// A base class for most DRAW objects which handles lazy-initialization of
-/// objects and Reddit API request state.
-abstract class RedditBase {
-  /// The current [Reddit] instance.
-  final Reddit reddit;
+abstract class RedditBaseInitializedMixin {
+  Reddit get reddit;
+  String get infoPath;
 
   /// Returns the raw properties dictionary for this object.
   ///
   /// This getter returns null if the object is lazily initialized.
   Map get data => _data;
-  Map _data;
-
-  /// The base request format for the current object.
-  String get infoPath => _infoPath;
-  String _infoPath;
+  Map _data = new Map();
 
   /// The fullname of a Reddit object.
   ///
@@ -46,23 +40,10 @@ abstract class RedditBase {
   /// Reddit object ids take the form of '15bfi0'.
   String get id => (data == null) ? null : data['id'];
 
-  RedditBase(this.reddit);
-
-  RedditBase.withPath(this.reddit, String infoPath) : _infoPath = infoPath;
-
-  RedditBase.loadData(this.reddit, Map data) : _data = data;
-
-  RedditBase.loadDataWithPath(this.reddit, Map data, String infoPath)
-      : _data = data,
-        _infoPath = infoPath;
-
-  /// Requests the data associated with the current object.
-  Future fetch() async => reddit.get(_infoPath);
-
   /// Requests updated information from the Reddit API and updates the current
   /// object properties.
   Future refresh() async {
-    final response = await fetch();
+    final response = await reddit.get(infoPath);
     if (response is Map) {
       _data = response;
     } else if (response is List) {
@@ -87,4 +68,22 @@ abstract class RedditBase {
     }
     return 'null';
   }
+}
+
+/// A base class for most DRAW objects which handles lazy-initialization of
+/// objects and Reddit API request state.
+abstract class RedditBase {
+  /// The current [Reddit] instance.
+  final Reddit reddit;
+
+  /// The base request format for the current object.
+  String get infoPath => _infoPath;
+  String _infoPath;
+
+  RedditBase(this.reddit);
+
+  RedditBase.withPath(this.reddit, String infoPath) : _infoPath = infoPath;
+
+  /// Requests the data associated with the current object.
+  Future fetch() async => reddit.get(_infoPath);
 }

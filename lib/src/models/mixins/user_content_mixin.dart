@@ -5,7 +5,7 @@
 
 import 'package:draw/src/base_impl.dart';
 
-abstract class UserContentMixin implements RedditBase {
+abstract class UserContentMixin implements RedditBaseInitializedMixin {
   /// A [List] of reports made by moderators.
   ///
   /// Each report consists of a list with two entries. The first entry is the

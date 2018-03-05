@@ -16,7 +16,7 @@ abstract class ReportableMixin {
   /// Report this object to the moderators of its [Subreddit].
   ///
   /// [reason] is the reason for the report.
-  Future report(String reason) async => reddit.post(apiPath['report'],
-      {'id': fullname, 'reason': reason, 'api_type': 'json'},
+  Future report(String reason) async => reddit.post(
+      apiPath['report'], {'id': fullname, 'reason': reason, 'api_type': 'json'},
       discardResponse: true);
 }

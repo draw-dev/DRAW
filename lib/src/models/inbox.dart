@@ -14,6 +14,7 @@ import 'package:draw/src/listing/listing_generator.dart';
 import 'package:draw/src/models/comment.dart';
 import 'package:draw/src/models/message.dart';
 
+/// A utility class used to interact with the Reddit inbox.
 class Inbox extends RedditBase {
   static final _messagesRegExp = new RegExp(r'{id}');
 

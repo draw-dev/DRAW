@@ -7,7 +7,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:draw/src/api_paths.dart';
-import 'package:draw/src/base.dart';
+import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
 import 'package:draw/src/listing/mixins/base.dart';
 import 'package:draw/src/listing/mixins/gilded.dart';
@@ -19,7 +19,7 @@ import 'package:draw/src/models/mixins/messageable.dart';
 import 'package:draw/src/models/multireddit.dart';
 import 'package:draw/src/models/submission.dart';
 
-class Redditor extends RedditorRef {
+class Redditor extends RedditorRef with RedditBaseInitializedMixin {
   /// The amount of comment karma earned by the Redditor.
   int get commentKarma => data['comment_karma'];
 
@@ -47,13 +47,14 @@ class Redditor extends RedditorRef {
   /// Whether the Redditor has chosen to filter profanity.
   bool get preferNoProfanity => data['pref_no_profanity'];
 
-  Redditor.parse(Reddit reddit, Map data) : super.loadData(reddit, data) {
+  Redditor.parse(Reddit reddit, Map data) : super(reddit) {
     if (!data.containsKey('name') &&
         !(data.containsKey('kind') &&
             data['kind'] == Reddit.defaultRedditorKind)) {
       throw new DRAWArgumentError("input argument 'data' is not a valid"
           " representation of a Redditor");
     }
+    setData(this, data);
     _name = data['name'];
     _path = apiPath['user'].replaceAll(RedditorRef._userRegExp, _name);
   }
@@ -77,7 +78,7 @@ class RedditorRef extends RedditBase
   String get path => _path;
   String _path;
 
-  RedditorRef.loadData(Reddit reddit, Map data) : super.loadData(reddit, data);
+  RedditorRef(Reddit reddit) : super(reddit);
 
   RedditorRef.name(Reddit reddit, String name)
       : _name = name,
@@ -112,6 +113,7 @@ class RedditorRef extends RedditBase
   Future<List<Multireddit>> multireddits() async =>
       reddit.get(apiPath['multi_user'].replaceAll(_userRegExp, _name));
 
+  /// Promotes this [RedditorRef] into a populated [Redditor].
   Future<Redditor> populate() async =>
       new Redditor.parse(reddit, await fetch());
 

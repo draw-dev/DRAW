@@ -7,7 +7,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:draw/src/api_paths.dart';
-import 'package:draw/src/base.dart';
+import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
 import 'package:draw/src/listing/listing_generator.dart';
 import 'package:draw/src/listing/mixins/base.dart';
@@ -22,25 +22,27 @@ import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission.dart';
 import 'package:draw/src/models/user_content.dart';
 
-enum SearchSyntax {
+enum _SearchSyntax {
   cloudSearch,
   lucene,
   plain,
 }
 
-String searchSyntaxToString(SearchSyntax s) {
+String _searchSyntaxToString(_SearchSyntax s) {
   switch (s) {
-    case SearchSyntax.cloudSearch:
+    case _SearchSyntax.cloudSearch:
       return 'cloudsearch';
-    case SearchSyntax.lucene:
+    case _SearchSyntax.lucene:
       return 'lucene';
-    case SearchSyntax.plain:
+    case _SearchSyntax.plain:
       return 'plain';
     default:
       throw new DRAWInternalError('SearchSyntax $s is not supported');
   }
 }
 
+/// A lazily initialized class representing a particular Reddit community, also
+/// known as a Subreddit. Can be promoted to a [Subreddit] object.
 class SubredditRef extends RedditBase
     with
         BaseListingMixin,
@@ -53,6 +55,7 @@ class SubredditRef extends RedditBase
   static String _generateInfoPath(String name) => apiPath['subreddit_about']
       .replaceAll(SubredditRef._subredditRegExp, name);
 
+  /// Promotes this [SubredditRef] into a populated [Subreddit].
   Future<Subreddit> populate() async =>
       new Subreddit.parse(reddit, await fetch());
 
@@ -182,8 +185,6 @@ class SubredditRef extends RedditBase
         apiPath['subreddit'].replaceAll(SubredditRef._subredditRegExp, _name);
   }
 
-  SubredditRef.loadData(Reddit reddit, Map data) : super.loadData(reddit, data);
-
   bool operator ==(other) {
     return (_name == other._name);
   }
@@ -212,7 +213,7 @@ class SubredditRef extends RedditBase
   /// week, year.
   Stream<UserContent> search(String query,
       {Sort sort: Sort.relevance,
-      SearchSyntax syntax: SearchSyntax.lucene,
+      _SearchSyntax syntax: _SearchSyntax.lucene,
       TimeFilter timeFilter: TimeFilter.all,
       Map params}) {
     final timeStr = timeFilterToString(timeFilter);
@@ -221,7 +222,7 @@ class SubredditRef extends RedditBase
     data['q'] = query;
     data['restrict_sr'] = isNotAll.toString();
     data['sort'] = sortToString(sort);
-    data['syntax'] = searchSyntaxToString(syntax);
+    data['syntax'] = _searchSyntaxToString(syntax);
     data['t'] = timeStr;
     return ListingGenerator.createBasicGenerator(reddit,
         apiPath['search'].replaceAll(SubredditRef._subredditRegExp, _name),
@@ -276,19 +277,20 @@ class SubredditRef extends RedditBase
       }
       final currentIds = new Set();
       foundNewSubmission = false;
-      await for (final submission in search(query,
+      await for (var submission in search(query,
           params: params,
           sort: Sort.newest,
-          syntax: SearchSyntax.cloudSearch)) {
+          syntax: _SearchSyntax.cloudSearch)) {
         assert(submission is Submission);
-        final id = submission.id;
+        final submissionCast = submission as Submission;
+        final id = submissionCast.id;
         currentIds.add(id);
-        endSec = min(endSec, submission.data['created'].round());
+        endSec = min(endSec, submissionCast.data['created'].round());
         if (!lastIds.contains(id)) {
           foundNewSubmission = true;
         }
         yield submission;
-        params['after'] = submission.fullname;
+        params['after'] = submissionCast.fullname;
       }
       lastIds = currentIds;
     }
@@ -394,7 +396,7 @@ class SubredditRef extends RedditBase
 
 /// A class representing a particular Reddit community, also known as a
 /// Subreddit.
-class Subreddit extends SubredditRef {
+class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
   /// Whether the currently authenticated Redditor is banned from the [Subreddit].
   bool get isBanned => data['user_is_banned'];
 
@@ -409,12 +411,12 @@ class Subreddit extends SubredditRef {
 
   Subreddit._(Reddit reddit) : super(reddit);
 
-  Subreddit.parse(Reddit reddit, Map data)
-      : super.loadData(reddit, data['data']) {
+  Subreddit.parse(Reddit reddit, Map data) : super(reddit) {
     if (!data['data'].containsKey('name')) {
       // TODO(bkonyi) throw invalid object exception.
       throw new DRAWUnimplementedError();
     }
+    setData(this, data['data']);
     _name = data['data']['display_name'];
     _path =
         apiPath['subreddit'].replaceAll(SubredditRef._subredditRegExp, _name);
@@ -422,7 +424,7 @@ class Subreddit extends SubredditRef {
 }
 
 // TODO(bkonyi): implement.
-/// Provides functions to interact with the special [Subreddit]'s filters.
+// Provides functions to interact with the special [Subreddit]'s filters.
 /*class SubredditFilters {
   final Subreddit _subreddit;
   SubredditFilters(this._subreddit) {
@@ -431,7 +433,7 @@ class Subreddit extends SubredditRef {
 }*/
 
 // TODO(bkonyi): implement.
-/// Provides a set of functions to interact with a [Subreddit]'s flair.
+// Provides a set of functions to interact with a [Subreddit]'s flair.
 /*class SubredditFlair {
   final Subreddit _subreddit;
   SubredditFlair(this._subreddit) {
@@ -440,7 +442,7 @@ class Subreddit extends SubredditRef {
 }*/
 
 // TODO(bkonyi): implement.
-/// Provides functions to interact with a [Subreddit]'s flair templates.
+// Provides functions to interact with a [Subreddit]'s flair templates.
 /*class SubredditFlairTemplates {
   final Subreddit _subreddit;
   SubredditFlairTemplates(this._subreddit) {
@@ -449,19 +451,19 @@ class Subreddit extends SubredditRef {
 }*/
 
 // TODO(bkonyi): implement.
-/// Provides functions to interact with [Redditor] flair templates.
+// Provides functions to interact with [Redditor] flair templates.
 /*class SubredditRedditorFlairTemplates extends SubredditFlairTemplates {
   SubredditRedditorFlairTemplates(Subreddit subreddit) : super(subreddit);
 }*/
 
 // TODO(bkonyi): implement.
-/// Provides functions to interact with link flair templates.
+// Provides functions to interact with link flair templates.
 /*class SubredditLinkFlairTemplates extends SubredditFlairTemplates {
   SubredditLinkFlairTemplates(Subreddit subreddit) : super(subreddit);
 }*/
 
 // TODO(bkonyi): implement.
-/// Provides a set of moderation functions to a [Subreddit].
+// Provides a set of moderation functions to a [Subreddit].
 /*class SubredditModeration {
   final Subreddit _subreddit;
   SubredditModeration(this._subreddit) {
@@ -470,7 +472,7 @@ class Subreddit extends SubredditRef {
 }*/
 
 // TODO(bkonyi): implement.
-/// Provides subreddit quarantine related methods.
+// Provides subreddit quarantine related methods.
 /*class SubredditQuarantine {
   final Subreddit _subreddit;
   SubredditQuarantine(this._subreddit) {
@@ -480,7 +482,7 @@ class Subreddit extends SubredditRef {
 
 /// Represents a relationship between a [Redditor] and a [Subreddit].
 class SubredditRelationship {
-  final SubredditRef _subreddit;
+  SubredditRef _subreddit;
   final String relationship;
 
   SubredditRelationship(this._subreddit, this.relationship);
@@ -601,8 +603,11 @@ class ContributorRelationship extends SubredditRelationship {
 
   /// Have the current [User] remove themself from the contributors list.
   Future leave() async {
+    if (_subreddit is! Subreddit) {
+      _subreddit = await _subreddit.populate();
+    }
     final data = {
-      'id': _subreddit.fullname,
+      'id': (_subreddit as Subreddit).fullname,
     };
     await _subreddit.reddit
         .post(apiPath['leavecontributor'], data, discardResponse: true);
@@ -610,7 +615,7 @@ class ContributorRelationship extends SubredditRelationship {
 }
 
 // TODO(bkonyi): implement.
-/// Provides methods to interact with a [Subreddit]'s moderators.
+// Provides methods to interact with a [Subreddit]'s moderators.
 /*class ModeratorRelationship extends SubredditRelationship {
   ModeratorRelationship(Subreddit subreddit, String relationship)
       : super(subreddit, relationship) {
@@ -619,7 +624,7 @@ class ContributorRelationship extends SubredditRelationship {
 }*/
 
 // TODO(bkonyi): implement.
-/// Provides modmail functions for a [Subreddit].
+// Provides modmail functions for a [Subreddit].
 /*class Modmail {
   Subreddit _subreddit;
   Modmail(this._subreddit) {
@@ -684,7 +689,7 @@ class SubredditStream {
 }
 
 // TODO(bkonyi): implement
-/// Provides a set of stylesheet functions to a [Subreddit].
+// Provides a set of stylesheet functions to a [Subreddit].
 /*class SubredditStyleSheet {
   final Subreddit _subreddit;
   SubredditStyleSheet(this._subreddit) {
@@ -693,7 +698,7 @@ class SubredditStream {
 }*/
 
 // TODO(bkonyi): implement
-/// Provides a set of wiki functions to a [Subreddit].
+// Provides a set of wiki functions to a [Subreddit].
 /*class SubredditWiki {
   final Subreddit _subreddit;
   SubredditWiki(this._subreddit) {

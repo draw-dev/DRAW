@@ -7,10 +7,14 @@ import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/models/mixins/inboxable.dart';
 import 'package:draw/src/reddit.dart';
 
-class Message extends RedditBase with InboxableMixin {
+///
+class Message extends RedditBase
+    with InboxableMixin, RedditBaseInitializedMixin {
   var _replies;
 
-  Message.parse(Reddit reddit, Map data) : super.loadData(reddit, data);
+  Message.parse(Reddit reddit, Map data) : super(reddit) {
+    setData(this, data);
+  }
 
   /// The author of the [Message].
   String get author => data['author'];

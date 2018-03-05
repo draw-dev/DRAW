@@ -11,13 +11,13 @@ import '../../reddit.dart';
 import '../user_content.dart';
 
 /// Interface for classes that can be edited and deleted.
-abstract class EditableMixin implements RedditBase {
+abstract class EditableMixin implements RedditBaseInitializedMixin {
   Reddit get reddit;
   String get fullname;
 
   /// Delete the object.
-  Future delete() async => reddit.post(apiPath['del'], {'id': fullname},
-      discardResponse: true);
+  Future delete() async =>
+      reddit.post(apiPath['del'], {'id': fullname}, discardResponse: true);
 
   /// Replace the body of the object with [body].
   ///

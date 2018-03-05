@@ -6,7 +6,7 @@
 import 'dart:async';
 
 // Required for `hash2`
-import 'package:quiver/core.dart';
+import 'package:quiver/core.dart' show hash2;
 
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
@@ -17,6 +17,13 @@ import 'package:draw/src/models/submission_impl.dart';
 import 'package:draw/src/models/user_content.dart';
 import 'package:draw/src/models/mixins/inboxable.dart';
 import 'package:draw/src/models/mixins/user_content_mixin.dart';
+import 'package:draw/src/models/mixins/editable.dart';
+import 'package:draw/src/models/mixins/gildable.dart';
+import 'package:draw/src/models/mixins/inboxtoggleable.dart';
+import 'package:draw/src/models/mixins/replyable.dart';
+import 'package:draw/src/models/mixins/reportable.dart';
+import 'package:draw/src/models/mixins/saveable.dart';
+import 'package:draw/src/models/mixins/voteable.dart';
 
 void setSubmissionInternal(commentLike, SubmissionRef s) {
   commentLike._submission = s;
@@ -40,13 +47,13 @@ void setRepliesInternal(commentLike, CommentForest comments) {
 
 /// Represents comments which have been collapsed under a 'load more comments'
 /// or 'continue this thread' section.
-class MoreComments extends RedditBase {
+class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   static final RegExp _submissionRegExp = new RegExp(r'{id}');
   List<Comment> _comments;
   List<String> _children;
   int _count;
   String _parentId;
-  SubmissionRef _submission;
+  Submission _submission;
 
   List get children => _children;
 
@@ -61,7 +68,9 @@ class MoreComments extends RedditBase {
       : _children = data['children'],
         _count = data['count'],
         _parentId = data['parent_id'],
-        super.loadData(reddit, data);
+        super(reddit) {
+    setData(this, data);
+  }
 
   bool operator ==(other) {
     return ((other is MoreComments) &&
@@ -143,7 +152,19 @@ class MoreComments extends RedditBase {
   }
 }
 
-class Comment extends CommentRef with UserContentMixin {
+/// A fully initialized class which represents a single Reddit comment.
+class Comment extends CommentRef
+    with
+        EditableMixin,
+        GildableMixin,
+        InboxToggleableMixin,
+        InboxableMixin,
+        RedditBaseInitializedMixin,
+        ReplyableMixin,
+        ReportableMixin,
+        SaveableMixin,
+        UserContentMixin,
+        VoteableMixin {
   // CommentModeration get mod; // TODO(bkonyi): implement
 
   /// Returns true if the current [Comment] is a top-level comment. A [Comment]
@@ -164,7 +185,7 @@ class Comment extends CommentRef with UserContentMixin {
     if (_submission is! Submission) {
       _submission = await _submission.populate();
     }
-    if (parentId == _submission.fullname) {
+    if (parentId == (_submission as Submission).fullname) {
       return submission;
     }
 
@@ -193,7 +214,9 @@ class Comment extends CommentRef with UserContentMixin {
         ' lazy-comment');
   }
 
-  Comment.parse(Reddit reddit, Map data) : super.loadData(reddit, data);
+  Comment.parse(Reddit reddit, Map data) : super.withID(reddit, data['id']) {
+    setData(this, data);
+  }
 
   /// The [Submission] which this comment belongs to.
   SubmissionRef get submission {
@@ -204,15 +227,13 @@ class Comment extends CommentRef with UserContentMixin {
   }
 }
 
-/// A class which represents a single Reddit comment.
-class CommentRef extends UserContent with InboxableMixin {
+/// A lazily initialized class which represents a single Reddit comment. Can be
+/// promoted to a [Comment].
+class CommentRef extends UserContent {
   SubmissionRef _submission;
   CommentForest _replies;
 
   static final RegExp _commentRegExp = new RegExp(r'{id}');
-
-  CommentRef.loadData(Reddit reddit, Map data)
-      : super.loadDataWithPath(reddit, data, _infoPath(data['id']));
 
   CommentRef.withID(Reddit reddit, String id)
       : super.withPath(reddit, _infoPath(id));

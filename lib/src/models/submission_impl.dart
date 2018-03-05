@@ -9,12 +9,20 @@ import 'dart:math';
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
-import 'package:draw/src/reddit.dart';
-import 'package:draw/src/models/comment_impl.dart';
 import 'package:draw/src/models/comment_forest.dart';
+import 'package:draw/src/models/comment_impl.dart';
+import 'package:draw/src/models/mixins/editable.dart';
+import 'package:draw/src/models/mixins/gildable.dart';
+import 'package:draw/src/models/mixins/inboxable.dart';
+import 'package:draw/src/models/mixins/inboxtoggleable.dart';
+import 'package:draw/src/models/mixins/replyable.dart';
+import 'package:draw/src/models/mixins/reportable.dart';
+import 'package:draw/src/models/mixins/saveable.dart';
+import 'package:draw/src/models/mixins/user_content_mixin.dart';
+import 'package:draw/src/models/mixins/voteable.dart';
 import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/user_content.dart';
-import 'package:draw/src/models/mixins/user_content_mixin.dart';
+import 'package:draw/src/reddit.dart';
 
 CommentRef getCommentByIdInternal(Submission s, String id) {
   if (s._commentsById.containsKey(id)) {
@@ -28,7 +36,19 @@ void insertCommentById(SubmissionRef s, /*Comment, MoreComments*/ c) {
   s._commentsById[c.fullname] = c;
 }
 
-class Submission extends SubmissionRef with UserContentMixin {
+class Submission extends SubmissionRef
+    with
+        UserContentMixin,
+        RedditBaseInitializedMixin,
+        UserContentMixin,
+        EditableMixin,
+        GildableMixin,
+        InboxableMixin,
+        InboxToggleableMixin,
+        ReplyableMixin,
+        ReportableMixin,
+        SaveableMixin,
+        VoteableMixin {
   /// Returns the [CommentForest] representing the comments for this
   /// [Submission].
   CommentForest get comments => _comments;
@@ -53,7 +73,10 @@ class Submission extends SubmissionRef with UserContentMixin {
   /// The title of the [Submission].
   String get title => data['title'];
 
-  Submission.parse(Reddit reddit, Map data) : super.loadData(reddit, data);
+  Submission.parse(Reddit reddit, Map data)
+      : super.withPath(reddit, SubmissionRef._infoPath(data['id'])) {
+    setData(this, data);
+  }
 
   /// Crosspost the submission to another [Subreddit].
   ///
@@ -79,18 +102,52 @@ class Submission extends SubmissionRef with UserContentMixin {
     };
     return reddit.post(apiPath['submit'], data);
   }
+
+  /// Unhide the submission.
+  ///
+  /// If provided, [otherSubmissions] is a list of other submissions to be
+  /// unhidden.
+  Future unhide({List<Submission> otherSubmissions}) async {
+    for (final submissions in _chunk(otherSubmissions, 50)) {
+      await reddit.post(apiPath['unhide'], {'id': submissions},
+          discardResponse: true);
+    }
+  }
+
+  /// Hide the submission.
+  ///
+  /// If provided, [otherSubmissions] is a list of other submissions to be
+  /// hidden.
+  Future hide({List<Submission> otherSubmissions}) async {
+    for (final submissions in _chunk(otherSubmissions, 50)) {
+      await reddit.post(apiPath['hide'], {'id': submissions},
+          discardResponse: true);
+    }
+  }
+
+  Iterable<String> _chunk(
+      List<Submission> otherSubmissions, int chunkSize) sync* {
+    final submissions = <String>[fullnameSync(this)];
+    if (otherSubmissions != null) {
+      otherSubmissions.forEach((Submission s) {
+        submissions.add(fullnameSync(s));
+      });
+    }
+    for (var i = 0; i < submissions.length; i += chunkSize) {
+      yield submissions
+          .getRange(i, min(i + chunkSize, submissions.length))
+          .join(',');
+    }
+  }
 }
 
-/// A representation of a standard Reddit submission.
+/// A lazily initialized representation of a standard Reddit submission. Can be
+/// promoted to a [Submission].
 class SubmissionRef extends UserContent {
   static final RegExp _submissionRegExp = new RegExp(r'{id}');
   CommentForest _comments;
   String _id;
   final Map _commentsById = new Map();
-
-  SubmissionRef.loadData(Reddit reddit, Map data)
-      : _id = data['id'],
-        super.loadDataWithPath(reddit, data, _infoPath(data['id']));
 
   SubmissionRef.withPath(Reddit reddit, String path)
       : _id = idFromUrl(path),
@@ -138,48 +195,12 @@ class SubmissionRef extends UserContent {
   // TODO(bkonyi): implement
   // Stream duplicates() => throw new DRAWUnimplementedError();
 
-  /// Hide the submission.
-  ///
-  /// If provided, [otherSubmissions] is a list of other submissions to be
-  /// hidden.
-  Future hide({List<Submission> otherSubmissions}) async {
-    for (final submissions in _chunk(otherSubmissions, 50)) {
-      await reddit.post(apiPath['hide'], {'id': submissions},
-          discardResponse: true);
-    }
-  }
-
+  /// Promotes this [SubmissionRef] into a populated [Submission].
   Future<Submission> populate() async {
     final response = await fetch();
     final submission = response[0]['listing'][0];
     submission._comments =
         new CommentForest(submission, response[1]['listing']);
     return submission;
-  }
-
-  /// Unhide the submission.
-  ///
-  /// If provided, [otherSubmissions] is a list of other submissions to be
-  /// unhidden.
-  Future unhide({List<Submission> otherSubmissions}) async {
-    for (final submissions in _chunk(otherSubmissions, 50)) {
-      await reddit.post(apiPath['unhide'], {'id': submissions},
-          discardResponse: true);
-    }
-  }
-
-  Iterable<String> _chunk(
-      List<Submission> otherSubmissions, int chunkSize) sync* {
-    final submissions = <String>[fullnameSync(this)];
-    if (otherSubmissions != null) {
-      otherSubmissions.forEach((Submission s) {
-        submissions.add(fullnameSync(s));
-      });
-    }
-    for (var i = 0; i < submissions.length; i += chunkSize) {
-      yield submissions
-          .getRange(i, min(i + chunkSize, submissions.length))
-          .join(',');
-    }
   }
 }
