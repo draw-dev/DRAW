@@ -129,6 +129,9 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   /// Expand [MoreComments] into the list of actual [Comments] it represents.
   Future<List<Comment>> comments({bool update: true}) async {
     if (_comments == null) {
+      if (_submission is! Submission) {
+        _submission = await _submission.populate();
+      }
       if (_count == 0) {
         return await _continueComments(update);
       }
@@ -136,7 +139,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
       assert(_children != null);
       final data = {
         'children': _children.join(','),
-        'link_id': fullnameSync(_submission),
+        'link_id': _submission.fullname,
         'sort': 'best', //(await _submission.property('commentSort')),
         'api_type': 'json',
       };
