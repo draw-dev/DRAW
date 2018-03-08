@@ -179,15 +179,18 @@ class Comment extends CommentRef
   /// When this [Comment] was approved.
   ///
   /// Returns `null` if this [Comment] has not been approved.
-  DateTime get approvedAtUtc => (data['approved_at_utc'] == null) ?
-    null :
-      new DateTime.fromMillisecondsSinceEpoch(data['approved_at_utc'].round() * 1000, isUtc: true);
+  DateTime get approvedAtUtc => (data['approved_at_utc'] == null)
+      ? null
+      : new DateTime.fromMillisecondsSinceEpoch(
+          data['approved_at_utc'].round() * 1000,
+          isUtc: true);
 
   /// Which Redditor approved this [Comment].
   ///
   /// Returns `null` if this [Comment] has not been approved.
-  RedditorRef get approvedBy => (data['approved_by'] == null) ?
-    null : reddit.redditor(data['approved_by']);
+  RedditorRef get approvedBy => (data['approved_by'] == null)
+      ? null
+      : reddit.redditor(data['approved_by']);
 
   /// Is this [Comment] archived.
   bool get archived => data['archived'];
@@ -203,15 +206,17 @@ class Comment extends CommentRef
   /// When this [Comment] was removed.
   ///
   /// Returns `null` if the [Comment] has not been removed.
-  DateTime get bannedAtUtc => (data['banned_at_utc'] == null) ?
-    null :
-      new DateTime.fromMillisecondsSinceEpoch(data['banned_at_utc'].round() * 1000, isUtc: true);
+  DateTime get bannedAtUtc => (data['banned_at_utc'] == null)
+      ? null
+      : new DateTime.fromMillisecondsSinceEpoch(
+          data['banned_at_utc'].round() * 1000,
+          isUtc: true);
 
   /// Which Redditor removed this [Comment].
   ///
   /// Returns `null` if the [Comment] has not been removed.
-  RedditorRef get bannedBy => (data['banned_by'] == null) ?
-    null : reddit.redditor(data['banned_by']);
+  RedditorRef get bannedBy =>
+      (data['banned_by'] == null) ? null : reddit.redditor(data['banned_by']);
 
   /// Is this [Comment] eligible for Reddit Gold.
   bool get canGild => data['can_gild'];
@@ -227,7 +232,9 @@ class Comment extends CommentRef
   String get collapsedReason => data['collapsed_reason'];
 
   /// The time this [Comment] was created.
-  DateTime get createdUtc => new DateTime.fromMillisecondsSinceEpoch(data['created_utc'] * 1000, isUtc: true);
+  DateTime get createdUtc =>
+      new DateTime.fromMillisecondsSinceEpoch(data['created_utc'] * 1000,
+          isUtc: true);
 
   /// The depth of this [Comment] in the tree of comments.
   int get depth => data['depth'];

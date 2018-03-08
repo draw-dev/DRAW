@@ -23,7 +23,9 @@ class Message extends RedditBase
   String get body => data['body'];
 
   /// When was this [Message] created.
-  DateTime get createdUtc => new DateTime.fromMillisecondsSinceEpoch(data['created_utc'].round() * 1000, isUtc: true);
+  DateTime get createdUtc => new DateTime.fromMillisecondsSinceEpoch(
+      data['created_utc'].round() * 1000,
+      isUtc: true);
 
   /// Who is this [Message] for.
   ///
