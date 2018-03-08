@@ -20,6 +20,7 @@ import 'package:draw/src/models/mixins/reportable.dart';
 import 'package:draw/src/models/mixins/saveable.dart';
 import 'package:draw/src/models/mixins/user_content_mixin.dart';
 import 'package:draw/src/models/mixins/voteable.dart';
+import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/user_content.dart';
 import 'package:draw/src/reddit.dart';
@@ -36,6 +37,7 @@ void insertCommentById(SubmissionRef s, /*Comment, MoreComments*/ c) {
   s._commentsById[c.fullname] = c;
 }
 
+/// A fully initialized representation of a standard Reddit submission.
 class Submission extends SubmissionRef
     with
         UserContentMixin,
@@ -49,9 +51,76 @@ class Submission extends SubmissionRef
         ReportableMixin,
         SaveableMixin,
         VoteableMixin {
+  /// The date and time that this [Submission] was approved.
+  ///
+  /// Returns `null` if the [Submission] has not been approved.
+  DateTime get approvedAt => (data['approved_at_utc'] == null)
+      ? null
+      : new DateTime.fromMillisecondsSinceEpoch(
+          data['approved_at_utc'].round() * 1000);
+
+  /// Has this [Submission] been approved.
+  bool get approved => data['approved'];
+
+  /// A [RedditorRef] of the [Redditor] who approved this [Submission]
+  ///
+  /// Returns `null` if the [Submission] has not been approved.
+  RedditorRef get approvedBy => (data['approved_by'] == null)
+      ? null
+      : reddit.redditor(data['approved_by']);
+
+  /// Is this [Submission] archived.
+  bool get archived => data['archived'];
+
+  /// The author's flair text, if set.
+  ///
+  /// If the author does not have flair text set, this property is `null`.
+  String get authorFlairText => data['author_flair_text'];
+
+  /// The date and time that this [Submission] was banned.
+  ///
+  /// Returns `null` if the [Submission] has not been approved.
+  DateTime get bannedAt => (data['banned_at_utc'] == null)
+      ? null
+      : new DateTime.fromMillisecondsSinceEpoch(
+          data['banned_at_utc'].round() * 1000);
+
+  /// A [RedditorRef] of the [Redditor] who banned this [Submission].
+  ///
+  /// Returns `null` if the [Submission] has not been banned.
+  RedditorRef get bannedBy =>
+      (data['banned_by'] == null) ? null : reddit.redditor(data['banned_by']);
+
+  /// Is this [Submission] considered 'brand-safe' by Reddit.
+  bool get brandSafe => data['brand_safe'];
+
+  /// Can this [Submission] be awarded Reddit Gold.
+  bool get canGild => data['can_gild'];
+
+  /// Can this [Submission] be moderated by the currently authenticated [Redditor].
+  bool get canModeratePost => data['can_mod_post'];
+
+  /// Has this [Submission] been clicked.
+  bool get clicked => data['clicked'];
+
   /// Returns the [CommentForest] representing the comments for this
   /// [Submission].
   CommentForest get comments => _comments;
+
+  /// Is this [Submission] in contest mode.
+  bool get contestMode => data['contest_mode'];
+
+  /// The time this [Submission] was created.
+  DateTime get createdUtc => new DateTime.fromMillisecondsSinceEpoch(
+      data['created_utc'].round() * 1000,
+      isUtc: true);
+
+  /// Is this [Submission] distinguished.
+  ///
+  /// For example, if a moderator creates a post and chooses to show that it was
+  /// created by a moderator, this property will be set to 'moderator'. If this
+  /// [Submission] is not distinguished, this property is `null`.
+  String get distinguished => data['distinguished'];
 
   /// Returns the domain of this [Submission].
   ///
@@ -59,19 +128,116 @@ class Submission extends SubmissionRef
   /// For link [Submission]s, domains take the form of 'github.com'.
   String get domain => data['domain'];
 
+  /// The number of downvotes for this [Submission].
+  int get downvotes => data['downs'];
+
+  /// Has this [Submission] been edited.
+  bool get edited => data['edited'];
+
   // TODO(bkonyi): implement
   // SubmissionFlair get flair;
 
-  /// Whether or not the [Submission] is marked as hidden.
+  /// The number of times this [Submission] was awarded Reddit Gold.
+  int get gilded => data['gilded'];
+
+  /// Is this [Submission] marked as hidden.
   bool get hidden => data['hidden'];
+
+  /// Is the score of this [Submission] hidden.
+  bool get hideScore => data['hide_score'];
+
+  /// Ignore reports for this [Submission].
+  bool get ignoreReports => data['ignore_reports'];
+
+  /// Can this [Submission] be cross-posted.
+  bool get isCrosspostable => data['is_crosspostable'];
+
+  /// Is this [Submission] hosted on a Reddit media domain.
+  bool get isRedditMediaDomain => data['is_reddit_media_domain'];
+
+  /// Is this [Submission] a self-post.
+  ///
+  /// Self-posts are [Submission]s that consist solely of text.
+  bool get isSelf => data['is_self'];
+
+  /// Is this [Submission] a video.
+  bool get isVideo => data['is_video'];
+
+  /// Has this [Submission] been locked.
+  bool get locked => data['locked'];
+
+  /// The number of [Comment]s made on this [Submission].
+  int get numComments => data['num_comments'];
+
+  /// The number of times this [Submission] has been cross-posted.
+  int get numCrossposts => data['num_crossposts'];
+
+  /// Is this [Submission] restricted to [Redditor]s 18+.
+  bool get over18 => data['over_18'];
+
+  /// Is this [Submission] pinned.
+  bool get pinned => data['pinned'];
+
+  /// Is this [Submission] in quarantine.
+  bool get quarantine => data['quarantine'];
+
+  /// The reason why this [Submission] was removed.
+  ///
+  /// Returns `null` if the [Submission] has not been removed.
+  String get removalReason => data['removal_reason'];
+
+  /// Has this [Submission] been removed.
+  bool get removed => data['removed'];
+
+  /// Is this [Submission] saved.
+  bool get saved => data['saved'];
+
+  /// The current score (net upvotes) for this [Submission].
+  int get score => data['score'];
 
   /// The text body of a self-text post.
   ///
   /// Returns null if the [Submission] is not a self-text submission.
   String get selftext => data['selftext'];
 
+  /// Is this [Submission] marked as spam.
+  bool get spam => data['spam'];
+
+  /// Does this [Submission] contain a spoiler.
+  bool get spoiler => data['spoiler'];
+
+  /// A [SubredditRef] of the [Subreddit] this [Submission] was made in.
+  SubredditRef get subreddit => reddit.subreddit(data['subreddit']);
+
+  /// The type of the [Subreddit] this [Submission] was made in.
+  ///
+  /// For example, if a [Subreddit] is restricted to approved submitters, this
+  /// property will be 'restricted'.
+  String get subredditType => data['subreddit_type'];
+
+  /// Has this [Submission] been stickied.
+  bool get stickied => data['stickied'];
+
   /// The title of the [Submission].
   String get title => data['title'];
+
+  /// The Uri of the [Submission]'s thumbnail image.
+  Uri get thumbnail => Uri.parse(data['thumbnail']);
+
+  /// The ratio of upvotes to downvotes for this [Submission].
+  double get upvoteRatio => data['upvote_ratio'];
+
+  /// The number of upvotes this [Submission] has received.
+  int get upvotes => data['ups'];
+
+  /// The URL of the [Submission]'s link.
+  Uri get url => (data['url'] == null) ? null : Uri.parse(data['url']);
+
+  /// The number of views this [Submission] has.
+  int get viewCount => data['view_count'];
+
+  /// Has this [Submission] been visited by the current [User].
+  bool get visited => data['visited'];
 
   Submission.parse(Reddit reddit, Map data)
       : super.withPath(reddit, SubmissionRef._infoPath(data['id'])) {

@@ -26,19 +26,42 @@ class Redditor extends RedditorRef with RedditBaseInitializedMixin {
   int get commentKarma => data['comment_karma'];
 
   /// The time the Redditor's account was created.
-  double get created => data['created'];
-
-  /// Returns the object's fullname.
-  ///
-  /// A fullname is an object's kind mapping (i.e., t3), followed by an
-  /// underscore and the object's ID (i.e., t1_c5s96e0).
-  //Future<String> get fullname async => data['fullname'];
+  DateTime get createdUtc => (data['created_utc'] == null)
+      ? null
+      : new DateTime.fromMillisecondsSinceEpoch(data['created'].round() * 1000,
+          isUtc: true);
 
   /// The amount of Reddit Gold a Redditor currently has.
   int get goldCreddits => data['gold_creddits'];
 
-  /// Whether the current Redditor is a Reddit employee.
+  /// The UTC date and time that the Redditor's Reddit Gold subscription ends.
+  ///
+  /// Returns `null` if the Redditor does not have Reddit Gold.
+  DateTime get goldExpiration => (data['gold_expiration'] == null)
+      ? null
+      : new DateTime.fromMillisecondsSinceEpoch(data['gold_expiration'].round(),
+          isUtc: true);
+
+  /// Redditor has Reddit Gold.
+  bool get hasGold => data['is_gold'];
+
+  /// Redditor has Mod Mail.
+  bool get hasModMail => data['has_mod_mail'];
+
+  /// Redditor has a verified email address.
+  bool get hasVerifiedEmail => data['has_verified_email'];
+
+  /// Redditor has opted into the Reddit beta.
+  bool get inBeta => data['in_beta'];
+
+  /// Number of [Message]s in the Redditor's [Inbox].
+  int get inboxCount => data['inbox_count'];
+
+  /// Redditor is a Reddit employee.
   bool get isEmployee => data['is_employee'];
+
+  /// Redditor is a Moderator.
+  bool get isModerator => data['is_mod'];
 
   /// The suspension status of the current Redditor.
   bool get isSuspended => data['is_suspended'];
@@ -46,8 +69,27 @@ class Redditor extends RedditorRef with RedditBaseInitializedMixin {
   /// The amount of link karma earned by the Redditor.
   int get linkKarma => data['link_karma'];
 
+  /// Redditor has new Mod Mail.
+  bool get newModMailExists => data['new_modmail_exists'];
+
+  /// The note associated with a friend.
+  ///
+  /// Only populated for responses from friend related called.
+  String get note => data['note'];
+
+  /// Redditor can see 18+ content.
+  bool get over18 => data['over_18'];
+
   /// Whether the Redditor has chosen to filter profanity.
   bool get preferNoProfanity => data['pref_no_profanity'];
+
+  /// The date and time when the Redditor's suspension ends.
+  DateTime get suspensionExpirationUtc =>
+      (data['suspension_expiration_utc'] == null)
+          ? null
+          : new DateTime.fromMillisecondsSinceEpoch(
+              data['suspension_expiration_utc'].round(),
+              isUtc: true);
 
   Redditor.parse(Reddit reddit, Map data) : super(reddit) {
     if (!data.containsKey('name') &&

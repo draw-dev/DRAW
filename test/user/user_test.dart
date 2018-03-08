@@ -21,7 +21,7 @@ Future main() async {
     expect(me.commentKarma, equals(0));
     expect(me.linkKarma, equals(1));
     expect(me.goldCreddits, equals(0));
-    expect(me.created, equals(1501830779.0));
+    expect(me.createdUtc.millisecondsSinceEpoch / 1000, equals(1501830779));
   });
 
   test('lib/user/blocked', () async {
