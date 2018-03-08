@@ -19,6 +19,8 @@ import 'package:draw/src/models/mixins/messageable.dart';
 import 'package:draw/src/models/multireddit.dart';
 import 'package:draw/src/models/submission.dart';
 
+/// A fully initialized class representing a particular Reddit user, also
+/// known as a Redditor.
 class Redditor extends RedditorRef with RedditBaseInitializedMixin {
   /// The amount of comment karma earned by the Redditor.
   int get commentKarma => data['comment_karma'];
@@ -60,7 +62,8 @@ class Redditor extends RedditorRef with RedditBaseInitializedMixin {
   }
 }
 
-/// A class representing a particular Reddit user, also known as a Redditor.
+/// A lazily initialized class representing a particular Reddit user, also
+/// known as a Redditor. Can be promoted to a [Redditor].
 class RedditorRef extends RedditBase
     with
         BaseListingMixin,

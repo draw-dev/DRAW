@@ -13,7 +13,9 @@ import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/models/comment_forest.dart';
+import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission_impl.dart';
+import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/user_content.dart';
 import 'package:draw/src/models/mixins/inboxable.dart';
 import 'package:draw/src/models/mixins/user_content_mixin.dart';
@@ -171,15 +173,140 @@ class Comment extends CommentRef
         VoteableMixin {
   // CommentModeration get mod; // TODO(bkonyi): implement
 
+  /// Has this [Comment] been approved.
+  bool get approved => data['approved'];
+
+  /// When this [Comment] was approved.
+  ///
+  /// Returns `null` if this [Comment] has not been approved.
+  DateTime get approvedAtUtc => (data['approved_at_utc'] == null) ?
+    null :
+      new DateTime.fromMillisecondsSinceEpoch(data['approved_at_utc'].round() * 1000, isUtc: true);
+
+  /// Which Redditor approved this [Comment].
+  ///
+  /// Returns `null` if this [Comment] has not been approved.
+  RedditorRef get approvedBy => (data['approved_by'] == null) ?
+    null : reddit.redditor(data['approved_by']);
+
+  /// Is this [Comment] archived.
+  bool get archived => data['archived'];
+
+  // TODO(bkonyi): update this definition.
+  // RedditorRef get author => reddit.redditor(data['author']);
+
+  /// The author's flair text, if set.
+  ///
+  /// Returns `null` if the author does not have any flair text set.
+  String get authorFlairText => data['author_flair_text'];
+
+  /// When this [Comment] was removed.
+  ///
+  /// Returns `null` if the [Comment] has not been removed.
+  DateTime get bannedAtUtc => (data['banned_at_utc'] == null) ?
+    null :
+      new DateTime.fromMillisecondsSinceEpoch(data['banned_at_utc'].round() * 1000, isUtc: true);
+
+  /// Which Redditor removed this [Comment].
+  ///
+  /// Returns `null` if the [Comment] has not been removed.
+  RedditorRef get bannedBy => (data['banned_by'] == null) ?
+    null : reddit.redditor(data['banned_by']);
+
+  /// Is this [Comment] eligible for Reddit Gold.
+  bool get canGild => data['can_gild'];
+
+  bool get canModPost => data['can_mod_post'];
+
+  /// Is this [Comment] and its children collapsed.
+  bool get collapsed => data['collapsed'];
+
+  /// The reason for this [Comment] being collapsed.
+  ///
+  /// Returns `null` if the [Comment] isn't collapsed or there is no reason set.
+  String get collapsedReason => data['collapsed_reason'];
+
+  /// The time this [Comment] was created.
+  DateTime get createdUtc => new DateTime.fromMillisecondsSinceEpoch(data['created_utc'] * 1000, isUtc: true);
+
+  /// The depth of this [Comment] in the tree of comments.
+  int get depth => data['depth'];
+
+  /// The number of downvotes this [Comment] has received.
+  int get downvotes => data['downs'];
+
+  /// Has this [Comment] been edited.
+  bool get edited => data['edited'];
+
+  /// Has this [Comment] be given Reddit Gold.
+  int get gilded => data['gilded'];
+
+  /// Ignore reports for this [Comment].
+  ///
+  /// This is only visible to moderators on the [Subreddit] this [Comment] was
+  /// posted on.
+  bool get ignoreReports => data['ignore_reports'];
+
+  /// Did the currently authenticated [User] post this [Comment].
+  bool get isSubmitter => data['is_submitter'];
+
+  /// Does the currently authenticated [User] like this [Comment].
+  bool get likes => data['likes'];
+
+  /// The id of the [Submission] link.
+  ///
+  /// Takes the form of `t3_7czz1q`.
+  String get linkId => data['link_id'];
+
+  /// The number of reports made regarding this [Comment].
+  ///
+  /// This is only visible to moderators on the [Subreddit] this [Comment] was
+  /// posted on.
+  int get numReports => data['num_reports'];
+
+  /// The ID of the parent [Comment] or [Submission].
+  String get parentId => data['parent_id'];
+
+  String get permalink => data['permalink'];
+
+  String get removalReason => data['removal_reason'];
+
+  /// Has this [Comment] been removed.
+  bool get removed => data['removed'];
+
+  /// Has this [Comment] been saved.
+  bool get saved => data['saved'];
+
+  /// The score associated with this [Comment] (aka net-upvotes).
+  int get score => data['score'];
+
+  /// Is this score of this [Comment] hidden.
+  bool get scoreHidden => data['score_hidden'];
+
+  /// Is this [Comment] marked as spam.
+  bool get spam => data['spam'];
+
+  /// Has this [Comment] been stickied.
+  bool get stickied => data['stickied'];
+
+  /// The [Subreddit] this [Comment] was posted in.
+  SubredditRef get subreddit => reddit.subreddit(data['subreddit']);
+
+  /// The id of the [Subreddit] this [Comment] was posted in.
+  String get subredditId => data['subreddit_id'];
+
+  /// The type of the [Subreddit] this [Comment] was posted in.
+  String get subredditType => data['subreddit_type'];
+
+  /// The number of upvotes this [Comment] has received.
+  int get upvotes => data['ups'];
+
   /// Returns true if the current [Comment] is a top-level comment. A [Comment]
   /// is a top-level comment if its parent is a [Submission].
   bool get isRoot {
     final parentIdType = parentId.split('_')[0];
     return (parentIdType == reddit.config.submissionKind);
   }
-
-  /// The ID of the parent [Comment] or [Submission].
-  String get parentId => data['parent_id'];
 
   /// Return the parent of the comment.
   ///
