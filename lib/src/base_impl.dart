@@ -9,13 +9,6 @@ import 'dart:convert';
 import 'exceptions.dart';
 import 'reddit.dart';
 
-String fullnameSync(RedditBaseInitializedMixin base) {
-  if (base.data != null) {
-    return base.data['name'];
-  }
-  return null;
-}
-
 void setData(RedditBaseInitializedMixin base, Map data) {
   base._data = data;
 }
@@ -28,7 +21,7 @@ abstract class RedditBaseInitializedMixin {
   ///
   /// This getter returns null if the object is lazily initialized.
   Map get data => _data;
-  Map _data = new Map();
+  Map _data;
 
   /// The fullname of a Reddit object.
   ///

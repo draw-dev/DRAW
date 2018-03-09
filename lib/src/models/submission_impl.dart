@@ -293,10 +293,10 @@ class Submission extends SubmissionRef
 
   Iterable<String> _chunk(
       List<Submission> otherSubmissions, int chunkSize) sync* {
-    final submissions = <String>[fullnameSync(this)];
+    final submissions = <String>[fullname];
     if (otherSubmissions != null) {
       otherSubmissions.forEach((Submission s) {
-        submissions.add(fullnameSync(s));
+        submissions.add(fullname);
       });
     }
     for (var i = 0; i < submissions.length; i += chunkSize) {

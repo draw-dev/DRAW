@@ -5,8 +5,8 @@
 
 import 'dart:async';
 
-import '../../api_paths.dart';
-import '../../reddit.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/reddit.dart';
 
 /// Mixin for ReddieBase classes that can be saved.
 abstract class SaveableMixin {
