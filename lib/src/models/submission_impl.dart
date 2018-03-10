@@ -296,7 +296,7 @@ class Submission extends SubmissionRef
     final submissions = <String>[fullname];
     if (otherSubmissions != null) {
       otherSubmissions.forEach((Submission s) {
-        submissions.add(fullname);
+        submissions.add(s.fullname);
       });
     }
     for (var i = 0; i < submissions.length; i += chunkSize) {

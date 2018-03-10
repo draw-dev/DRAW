@@ -139,7 +139,6 @@ class RedditorRef extends RedditBase
       reddit.put(apiPath['friend_v1'].replaceAll(_userRegExp, _name),
           body: JSON.encode({'note': note}));
 
-
   /// Returns a [Redditor] object with friend information populated.
   ///
   /// Friend fields include those such as [note]. Other fields may not be
