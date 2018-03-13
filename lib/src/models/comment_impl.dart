@@ -11,6 +11,7 @@ import 'package:quiver/core.dart' show hash2;
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/getter_utils.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/models/comment_forest.dart';
 import 'package:draw/src/models/redditor.dart';
@@ -114,14 +115,14 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
     if (_submission is! Submission) {
       _submission = await _submission.populate();
     }
-    final submissionCast = _submission as Submission;
+    final Submission initializedSubmission = _submission;
     final path = apiPath['submission'].replaceAll(
-            _submissionRegExp, submissionCast.fullname.split('_')[1]) +
+            _submissionRegExp, initializedSubmission.fullname.split('_')[1]) +
         '_/' +
         commentId;
     final response = await reddit.get(path, params: {
-      'limit': submissionCast.data['commentLimit'],
-      'sort': submissionCast.data['commentSort'],
+      'limit': initializedSubmission.data['commentLimit'],
+      'sort': initializedSubmission.data['commentSort'],
     });
 
     final comments = response[1]['listing'];
@@ -135,6 +136,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
       if (_submission is! Submission) {
         _submission = await _submission.populate();
       }
+      final Submission initializedSubmission = _submission;
       if (_count == 0) {
         return await _continueComments(update);
       }
@@ -142,7 +144,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
       assert(_children != null);
       final data = {
         'children': _children.join(','),
-        'link_id': (_submission as Submission).fullname,
+        'link_id': initializedSubmission.fullname,
         'sort': 'best', //(await _submission.property('commentSort')),
         'api_type': 'json',
       };
@@ -179,18 +181,14 @@ class Comment extends CommentRef
   /// When this [Comment] was approved.
   ///
   /// Returns `null` if this [Comment] has not been approved.
-  DateTime get approvedAtUtc => (data['approved_at_utc'] == null)
-      ? null
-      : new DateTime.fromMillisecondsSinceEpoch(
-          data['approved_at_utc'].round() * 1000,
-          isUtc: true);
+  DateTime get approvedAtUtc =>
+      GetterUtils.dateTimeOrNull(data['approved_at_utc']);
 
   /// Which Redditor approved this [Comment].
   ///
   /// Returns `null` if this [Comment] has not been approved.
-  RedditorRef get approvedBy => (data['approved_by'] == null)
-      ? null
-      : reddit.redditor(data['approved_by']);
+  RedditorRef get approvedBy =>
+      GetterUtils.redditorRefOrNull(reddit, data['approved_by']);
 
   /// Is this [Comment] archived.
   bool get archived => data['archived'];
@@ -206,17 +204,13 @@ class Comment extends CommentRef
   /// When this [Comment] was removed.
   ///
   /// Returns `null` if the [Comment] has not been removed.
-  DateTime get bannedAtUtc => (data['banned_at_utc'] == null)
-      ? null
-      : new DateTime.fromMillisecondsSinceEpoch(
-          data['banned_at_utc'].round() * 1000,
-          isUtc: true);
+  DateTime get bannedAtUtc => GetterUtils.dateTimeOrNull(data['banned_at_utc']);
 
   /// Which Redditor removed this [Comment].
   ///
   /// Returns `null` if the [Comment] has not been removed.
   RedditorRef get bannedBy =>
-      (data['banned_by'] == null) ? null : reddit.redditor(data['banned_by']);
+      GetterUtils.redditorRefOrNull(reddit, data['banned_by']);
 
   /// Is this [Comment] eligible for Reddit Gold.
   bool get canGild => data['can_gild'];
@@ -232,9 +226,7 @@ class Comment extends CommentRef
   String get collapsedReason => data['collapsed_reason'];
 
   /// The time this [Comment] was created.
-  DateTime get createdUtc =>
-      new DateTime.fromMillisecondsSinceEpoch(data['created_utc'] * 1000,
-          isUtc: true);
+  DateTime get createdUtc => GetterUtils.dateTimeOrNull(data['created_utc']);
 
   /// The depth of this [Comment] in the tree of comments.
   int get depth => data['depth'];
@@ -323,7 +315,8 @@ class Comment extends CommentRef
     if (_submission is! Submission) {
       _submission = await _submission.populate();
     }
-    if (parentId == (_submission as Submission).fullname) {
+    final Submission initializedSubmission = _submission;
+    if (parentId == initializedSubmission.fullname) {
       return submission;
     }
 
