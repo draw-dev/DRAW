@@ -42,5 +42,51 @@ Future main() async {
 
 This simple example is a great way to confirm that DRAW is working and that your credentials have been configured correctly.
 
+# Web Authentication
+To authenticate via the Reddit authentication page, the web authentication flow needs to be used. This requires that a web application is registered with a valid Reddit account, which provides a `client-id` and a `client-secret`. As part of this process, a `redirect URL` is associated with the registered web application. These three values are all that is needed to complete the web authentication flow.
+
+Here is a simple example of how to use web authentication with DRAW:
+
+```dart
+import 'package:draw/draw.dart';
+
+main() async {
+  // Create a `Reddit` instance using a configuration file in the current directory.
+  final reddit = await Reddit.createInstance(userAgent: 'foobar', configUri: Uri.parse('draw.ini'));
+
+  // Build the URL used for authentication. See `WebAuthenticator` documentation for parameters.
+  final auth_url = reddit.auth.url(['*'], 'foobar'));
+  
+  // ...
+  // Complete authentication at `auth_url` in the browser and retrieve the `code` query
+  // parameter from the redirect URL.
+  // ...
+
+  // Assuming the `code` query parameter is stored in a variable `auth_code`, we pass it to the
+  // `authorize` method in the `WebAuthenticator`.
+  await reddit.auth.authorize(auth_code);
+
+  // If everything worked correctly, we should be able to retrieve information about the authenticated
+  // account.
+  print(await reddit.user.me());
+}
+```
+
+And here's an example `draw.ini` suitable for web based authentication:
+
+```ini
+default=default
+reddit_url='https://www.reddit.com'
+oauth_url=https://oauth.reddit.com
+redirect_uri=https://www.google.com
+client_id=YOUR_CLIENT_ID_HERE
+client_secret=YOUR_SECRET_HERE
+userAgent=draw_testing_agent
+```
+
+Here the redirect URI is set to https://www.google.com, but you'll need to replace that with whatever redirect you have registered.
+
+The format of `draw.ini` configuration files is very similar to that of [praw.ini files used by PRAW](http://praw.readthedocs.io/en/latest/getting_started/configuration/prawini.html), although there may be some minor differences due to the .ini parser used by DRAW.
+
 # License
 DRAW is provided under a [BSD 3-clause license](https://github.com/draw-dev/DRAW/blob/master/LICENSE). Copyright (c), 2017, the DRAW Project Authors and Google LLC.
