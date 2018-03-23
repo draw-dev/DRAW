@@ -1,5 +1,9 @@
 Change Log
 =================================
+## Version 0.1.3 (2018/03/22)
+* Added additional convenience accessors to various classes, including `Comment`, `Redditor`, `Submission`, 
+and `Subreddit`.
+* Added classes `SubredditFilters` and `SubredditQuarantine`.
 
 ## Version 0.1.2 (2018/03/04)
 Breaking changes:
