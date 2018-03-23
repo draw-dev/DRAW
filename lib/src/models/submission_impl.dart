@@ -9,6 +9,7 @@ import 'dart:math';
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/getter_utils.dart';
 import 'package:draw/src/models/comment_forest.dart';
 import 'package:draw/src/models/comment_impl.dart';
 import 'package:draw/src/models/mixins/editable.dart';
@@ -65,9 +66,8 @@ class Submission extends SubmissionRef
   /// A [RedditorRef] of the [Redditor] who approved this [Submission]
   ///
   /// Returns `null` if the [Submission] has not been approved.
-  RedditorRef get approvedBy => (data['approved_by'] == null)
-      ? null
-      : reddit.redditor(data['approved_by']);
+  RedditorRef get approvedBy =>
+      GetterUtils.redditorRefOrNull(reddit, data['approved_by']);
 
   /// Is this [Submission] archived.
   bool get archived => data['archived'];
@@ -80,16 +80,13 @@ class Submission extends SubmissionRef
   /// The date and time that this [Submission] was banned.
   ///
   /// Returns `null` if the [Submission] has not been approved.
-  DateTime get bannedAt => (data['banned_at_utc'] == null)
-      ? null
-      : new DateTime.fromMillisecondsSinceEpoch(
-          data['banned_at_utc'].round() * 1000);
+  DateTime get bannedAt => GetterUtils.dateTimeOrNull(data['banned_at_utc']);
 
   /// A [RedditorRef] of the [Redditor] who banned this [Submission].
   ///
   /// Returns `null` if the [Submission] has not been banned.
   RedditorRef get bannedBy =>
-      (data['banned_by'] == null) ? null : reddit.redditor(data['banned_by']);
+      GetterUtils.redditorRefOrNull(reddit, data['banned_by']);
 
   /// Is this [Submission] considered 'brand-safe' by Reddit.
   bool get brandSafe => data['brand_safe'];
@@ -111,9 +108,7 @@ class Submission extends SubmissionRef
   bool get contestMode => data['contest_mode'];
 
   /// The time this [Submission] was created.
-  DateTime get createdUtc => new DateTime.fromMillisecondsSinceEpoch(
-      data['created_utc'].round() * 1000,
-      isUtc: true);
+  DateTime get createdUtc => GetterUtils.dateTimeOrNull(data['created_utc']);
 
   /// Is this [Submission] distinguished.
   ///
