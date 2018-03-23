@@ -21,9 +21,10 @@ Future main() async {
     final myFriends = await reddit.user.friends();
     expect(myFriends.length, equals(1));
     final friend = myFriends[0];
+    expect(friend is Redditor, isTrue);
 
     expect(friend.displayName, equals('XtremeCheese'));
-    expect(await friend.property('note'), equals('My best friend!'));
+    expect(friend.data['note'], equals('My best friend!'));
 
     await friendToBe.unfriend();
     final noFriends = await reddit.user.friends();

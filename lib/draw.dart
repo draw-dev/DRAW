@@ -5,7 +5,7 @@
 
 library draw;
 
-export 'package:draw/src/reddit.dart';
+export 'package:draw/src/reddit.dart' hide RedditBaseInitializedMixin;
 export 'package:draw/src/auth.dart';
 export 'package:draw/src/base.dart';
 export 'package:draw/src/exceptions.dart';

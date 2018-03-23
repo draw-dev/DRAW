@@ -39,7 +39,7 @@ Future main() async {
             ' breaking!');
     await submission.report('Breaks rule 42');
     await submission.refresh();
-    expect((await submission.modReports)[0],
+    expect(submission.modReports[0],
         equals(['Breaks rule 42', 'DRAWApiOfficial']));
     await submission.delete();
   });
@@ -66,13 +66,13 @@ Future main() async {
     final submission =
         await subreddit.submit('Saveable submission', selftext: 'Testing!');
     await submission.refresh();
-    expect(await submission.saved, isFalse);
+    expect(submission.saved, isFalse);
     await submission.save();
     await submission.refresh();
-    expect(await submission.saved, isTrue);
+    expect(submission.saved, isTrue);
     await submission.unsave();
     await submission.refresh();
-    expect(await submission.saved, isFalse);
+    expect(submission.saved, isFalse);
     await submission.delete();
   });
 
@@ -96,7 +96,8 @@ Future main() async {
     Future<List<String>> getUpvoted() async {
       final upvoted = <String>[];
       await for (final submission in redditor.upvoted()) {
-        upvoted.add(await submission.fullname);
+        expect(submission is Submission, isTrue);
+        upvoted.add((submission as Submission).fullname);
       }
       return upvoted;
     }
@@ -104,7 +105,8 @@ Future main() async {
     Future<List<String>> getDownvoted() async {
       final upvoted = <String>[];
       await for (final submission in redditor.downvoted()) {
-        upvoted.add(await submission.fullname);
+        expect(submission is Submission, isTrue);
+        upvoted.add((submission as Submission).fullname);
       }
       return upvoted;
     }
@@ -113,32 +115,32 @@ Future main() async {
     var upvoted = await getUpvoted();
     var downvoted = await getDownvoted();
     await for (final submission in submissionsHelper(subreddit)) {
-      expect(upvoted.contains(await submission.fullname), isFalse);
-      expect(downvoted.contains(await submission.fullname), isFalse);
+      expect(upvoted.contains(submission.fullname), isFalse);
+      expect(downvoted.contains(submission.fullname), isFalse);
       await submission.upvote();
     }
 
     upvoted = await getUpvoted();
     downvoted = await getDownvoted();
     await for (final submission in submissionsHelper(subreddit)) {
-      expect(upvoted.contains(await submission.fullname), isTrue);
-      expect(downvoted.contains(await submission.fullname), isFalse);
+      expect(upvoted.contains(submission.fullname), isTrue);
+      expect(downvoted.contains(submission.fullname), isFalse);
       await submission.downvote();
     }
 
     upvoted = await getUpvoted();
     downvoted = await getDownvoted();
     await for (final submission in submissionsHelper(subreddit)) {
-      expect(upvoted.contains(await submission.fullname), isFalse);
-      expect(downvoted.contains(await submission.fullname), isTrue);
+      expect(upvoted.contains(submission.fullname), isFalse);
+      expect(downvoted.contains(submission.fullname), isTrue);
       await submission.clearVote();
     }
 
     upvoted = await getUpvoted();
     downvoted = await getDownvoted();
     await for (final submission in submissionsHelper(subreddit)) {
-      expect(upvoted.contains(await submission.fullname), isFalse);
-      expect(downvoted.contains(await submission.fullname), isFalse);
+      expect(upvoted.contains(submission.fullname), isFalse);
+      expect(downvoted.contains(submission.fullname), isFalse);
     }
   });
 }

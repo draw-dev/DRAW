@@ -1,9 +1,20 @@
 Change Log
 =================================
 
+## Version 0.1.2 (2018/03/04)
+Breaking changes:
+* Removed `property` method. Properties of initialized objects that do not yet have convenience
+accessors can be accessed through the `data` property
+* Removed `fullname`, `id`, and `data` fields from lazily initialized objects
+* Removed `refresh()` from lazily initialized objects
+
+Miscellaneous:
+* Improved documentation
+* Various internal refactoring
+
 ## Version 0.1.1 (2018/03/03)
 Minor bug fix:
-* Fixed issue where DRAWConfigContext would throw an exception on Android and iOS.
+* Fixed issue where `DRAWConfigContext` would throw an exception on Android and iOS.
 
 ## Version 0.1.0 (2018/03/03)
 Breaking changes:
@@ -34,4 +45,4 @@ Minor updates:
 ## Version 0.0.1 (2017/12/08)
 Initial release with basic functionality, including:
 * OAuth2 support for login
-* Comment, Redditor, and Subreddit interfaces
+* `Comment`, `Redditor`, and `Subreddit` interfaces

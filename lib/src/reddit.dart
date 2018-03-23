@@ -65,7 +65,7 @@ class Reddit {
   User _user;
   bool _readOnly = true;
   bool _initialized = false;
-  final _initializedCompleter = new Completer();
+  final _initializedCompleter = new Completer<bool>();
   Objector _objector;
 
   /// Creates a new authenticated [Reddit] instance.

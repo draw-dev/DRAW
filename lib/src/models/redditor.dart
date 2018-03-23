@@ -7,8 +7,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:draw/src/api_paths.dart';
-import 'package:draw/src/base.dart';
+import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/getter_utils.dart';
 import 'package:draw/src/listing/mixins/base.dart';
 import 'package:draw/src/listing/mixins/gilded.dart';
 import 'package:draw/src/listing/mixins/redditor.dart';
@@ -19,24 +20,44 @@ import 'package:draw/src/models/mixins/messageable.dart';
 import 'package:draw/src/models/multireddit.dart';
 import 'package:draw/src/models/submission.dart';
 
-class Redditor extends RedditorRef {
+/// A fully initialized class representing a particular Reddit user, also
+/// known as a Redditor.
+class Redditor extends RedditorRef with RedditBaseInitializedMixin {
   /// The amount of comment karma earned by the Redditor.
   int get commentKarma => data['comment_karma'];
 
   /// The time the Redditor's account was created.
-  double get created => data['created'];
-
-  /// Returns the object's fullname.
-  ///
-  /// A fullname is an object's kind mapping (i.e., t3), followed by an
-  /// underscore and the object's ID (i.e., t1_c5s96e0).
-  Future<String> get fullname async => data['fullname'];
+  DateTime get createdUtc => GetterUtils.dateTimeOrNull(data['created_utc']);
 
   /// The amount of Reddit Gold a Redditor currently has.
   int get goldCreddits => data['gold_creddits'];
 
-  /// Whether the current Redditor is a Reddit employee.
+  /// The UTC date and time that the Redditor's Reddit Gold subscription ends.
+  ///
+  /// Returns `null` if the Redditor does not have Reddit Gold.
+  DateTime get goldExpiration =>
+      GetterUtils.dateTimeOrNull(data['gold_expiration']);
+
+  /// Redditor has Reddit Gold.
+  bool get hasGold => data['is_gold'];
+
+  /// Redditor has Mod Mail.
+  bool get hasModMail => data['has_mod_mail'];
+
+  /// Redditor has a verified email address.
+  bool get hasVerifiedEmail => data['has_verified_email'];
+
+  /// Redditor has opted into the Reddit beta.
+  bool get inBeta => data['in_beta'];
+
+  /// Number of [Message]s in the Redditor's [Inbox].
+  int get inboxCount => data['inbox_count'];
+
+  /// Redditor is a Reddit employee.
   bool get isEmployee => data['is_employee'];
+
+  /// Redditor is a Moderator.
+  bool get isModerator => data['is_mod'];
 
   /// The suspension status of the current Redditor.
   bool get isSuspended => data['is_suspended'];
@@ -44,22 +65,39 @@ class Redditor extends RedditorRef {
   /// The amount of link karma earned by the Redditor.
   int get linkKarma => data['link_karma'];
 
+  /// Redditor has new Mod Mail.
+  bool get newModMailExists => data['new_modmail_exists'];
+
+  /// The note associated with a friend.
+  ///
+  /// Only populated for responses from friend related called.
+  String get note => data['note'];
+
+  /// Redditor can see 18+ content.
+  bool get over18 => data['over_18'];
+
   /// Whether the Redditor has chosen to filter profanity.
   bool get preferNoProfanity => data['pref_no_profanity'];
 
-  Redditor.parse(Reddit reddit, Map data) : super.loadData(reddit, data) {
+  /// The date and time when the Redditor's suspension ends.
+  DateTime get suspensionExpirationUtc =>
+      GetterUtils.dateTimeOrNull(data['suspension_expiration_utc']);
+
+  Redditor.parse(Reddit reddit, Map data) : super(reddit) {
     if (!data.containsKey('name') &&
         !(data.containsKey('kind') &&
             data['kind'] == Reddit.defaultRedditorKind)) {
       throw new DRAWArgumentError("input argument 'data' is not a valid"
           " representation of a Redditor");
     }
+    setData(this, data);
     _name = data['name'];
     _path = apiPath['user'].replaceAll(RedditorRef._userRegExp, _name);
   }
 }
 
-/// A class representing a particular Reddit user, also known as a Redditor.
+/// A lazily initialized class representing a particular Reddit user, also
+/// known as a Redditor. Can be promoted to a [Redditor].
 class RedditorRef extends RedditBase
     with
         BaseListingMixin,
@@ -77,7 +115,7 @@ class RedditorRef extends RedditBase
   String get path => _path;
   String _path;
 
-  RedditorRef.loadData(Reddit reddit, Map data) : super.loadData(reddit, data);
+  RedditorRef(Reddit reddit) : super(reddit);
 
   RedditorRef.name(Reddit reddit, String name)
       : _name = name,
@@ -93,8 +131,10 @@ class RedditorRef extends RedditBase
       reddit.put(apiPath['friend_v1'].replaceAll(_userRegExp, _name),
           body: JSON.encode({'note': note}));
 
-  // TODO(bkonyi): Do we want to return a new Redditor object or just populate
-  // the fields in this object?
+  /// Returns a [Redditor] object with friend information populated.
+  ///
+  /// Friend fields include those such as [note]. Other fields may not be
+  /// completely initialized.
   Future<Redditor> friendInfo() async =>
       reddit.get(apiPath['friend_v1'].replaceAll(_userRegExp, _name));
 
@@ -112,6 +152,7 @@ class RedditorRef extends RedditBase
   Future<List<Multireddit>> multireddits() async =>
       reddit.get(apiPath['multi_user'].replaceAll(_userRegExp, _name));
 
+  /// Promotes this [RedditorRef] into a populated [Redditor].
   Future<Redditor> populate() async =>
       new Redditor.parse(reddit, await fetch());
 

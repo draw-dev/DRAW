@@ -21,7 +21,7 @@ Future main() async {
     expect(me.commentKarma, equals(0));
     expect(me.linkKarma, equals(1));
     expect(me.goldCreddits, equals(0));
-    expect(me.created, equals(1501830779.0));
+    expect(me.createdUtc.millisecondsSinceEpoch / 1000, equals(1501801979));
   });
 
   test('lib/user/blocked', () async {
@@ -45,8 +45,8 @@ Future main() async {
     expect(subreddits.length, equals(1));
     final subreddit = subreddits[0];
     expect(subreddit.displayName, equals("drawapitesting"));
-    expect(await subreddit.isContributor, isTrue);
-    expect(await subreddit.isBanned, isFalse);
+    expect(subreddit.isContributor, isTrue);
+    expect(subreddit.isBanned, isFalse);
   });
 
   test('lib/user/friends', () async {
@@ -56,7 +56,7 @@ Future main() async {
     expect(friends.length, equals(1));
     final friend = friends[0];
     expect(friend.displayName, equals('XtremeCheese'));
-    expect(await friend.property('date'), equals(1501884713.0));
+    expect(friend.data['date'], equals(1501884713.0));
   });
 
   test('lib/user/karma', () async {
@@ -76,10 +76,10 @@ Future main() async {
     expect(subreddits.length, equals(1));
     final subreddit = subreddits[0];
     expect(subreddit.displayName, equals('drawapitesting'));
-    expect(await subreddit.isContributor, isTrue);
-    expect(await subreddit.isBanned, isFalse);
-    expect(await subreddit.title, equals('DRAW API Testing'));
-    expect(await subreddit.property('public_description'),
+    expect(subreddit.isContributor, isTrue);
+    expect(subreddit.isBanned, isFalse);
+    expect(subreddit.title, equals('DRAW API Testing'));
+    expect(subreddit.data['public_description'],
         contains('A subreddit used for testing'));
   });
 
@@ -90,13 +90,13 @@ Future main() async {
     final multis = await reddit.user.multireddits();
     expect(multis.length, equals(1));
     final multi = multis[0];
-    expect(await multi.property('name'), equals('drawtestingmulti'));
-    expect(await multi.property('displayName'), equals('drawtestingmulti'));
-    expect(await multi.property('canEdit'), isTrue);
-    expect((await multi.property('subreddits')).length, equals(81));
+    expect(multi.data['name'], equals('drawtestingmulti'));
+    expect(multi.data['display_name'], equals('drawtestingmulti'));
+    expect(multi.data['can_edit'], isTrue);
+    expect(multi.data['subreddits'].length, equals(81));
     // TODO(bkonyi): once Multireddit is fully implemented, we probably want to
     // return a map of [Subreddit]s.
-    expect((await multi.property('subreddits'))[0]['name'], equals('lisp'));
+    expect(multi.data['subreddits'][0]['name'], equals('lisp'));
   });
 
   test('lib/user/subreddits', () async {

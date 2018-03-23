@@ -12,15 +12,15 @@ import 'package:draw/src/reddit.dart';
 /// Interface for classes that can optionally receive inbox replies.
 abstract class InboxToggleableMixin implements RedditBase {
   Reddit get reddit;
-  Future<String> get fullname;
+  String get fullname;
 
   /// Disable inbox replies for the item.
-  Future disableInboxReplies() async => reddit.post(
-      apiPath['sendreplies'], {'id': await fullname, 'state': 'false'},
-      discardResponse: true);
+  Future disableInboxReplies() async =>
+      reddit.post(apiPath['sendreplies'], {'id': fullname, 'state': 'false'},
+          discardResponse: true);
 
   /// Enable inbox replies for the item.
-  Future enableInboxReplies() async => reddit.post(
-      apiPath['sendreplies'], {'id': await fullname, 'state': 'true'},
-      discardResponse: true);
+  Future enableInboxReplies() async =>
+      reddit.post(apiPath['sendreplies'], {'id': fullname, 'state': 'true'},
+          discardResponse: true);
 }
