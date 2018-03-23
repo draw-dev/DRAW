@@ -277,7 +277,7 @@ class SubredditRef extends RedditBase
       }
       final currentIds = new Set();
       foundNewSubmission = false;
-      await for (var submission in search(query,
+      await for (final submission in search(query,
           params: params,
           sort: Sort.newest,
           syntax: _SearchSyntax.cloudSearch)) {

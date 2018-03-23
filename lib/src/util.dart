@@ -54,7 +54,9 @@ class ExponentialCounter {
     return value.round();
   }
 
-  void reset() => _base = 1.0;
+  void reset() {
+    _base = 1.0;
+  }
 }
 
 Stream<UserContent> streamGenerator(function, {int pauseAfter}) async* {

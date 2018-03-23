@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/getter_utils.dart';
 import 'package:draw/src/listing/mixins/base.dart';
 import 'package:draw/src/listing/mixins/gilded.dart';
 import 'package:draw/src/listing/mixins/redditor.dart';
@@ -26,10 +27,7 @@ class Redditor extends RedditorRef with RedditBaseInitializedMixin {
   int get commentKarma => data['comment_karma'];
 
   /// The time the Redditor's account was created.
-  DateTime get createdUtc => (data['created_utc'] == null)
-      ? null
-      : new DateTime.fromMillisecondsSinceEpoch(data['created'].round() * 1000,
-          isUtc: true);
+  DateTime get createdUtc => GetterUtils.dateTimeOrNull(data['created_utc']);
 
   /// The amount of Reddit Gold a Redditor currently has.
   int get goldCreddits => data['gold_creddits'];
@@ -37,10 +35,8 @@ class Redditor extends RedditorRef with RedditBaseInitializedMixin {
   /// The UTC date and time that the Redditor's Reddit Gold subscription ends.
   ///
   /// Returns `null` if the Redditor does not have Reddit Gold.
-  DateTime get goldExpiration => (data['gold_expiration'] == null)
-      ? null
-      : new DateTime.fromMillisecondsSinceEpoch(data['gold_expiration'].round(),
-          isUtc: true);
+  DateTime get goldExpiration =>
+      GetterUtils.dateTimeOrNull(data['gold_expiration']);
 
   /// Redditor has Reddit Gold.
   bool get hasGold => data['is_gold'];
@@ -85,11 +81,7 @@ class Redditor extends RedditorRef with RedditBaseInitializedMixin {
 
   /// The date and time when the Redditor's suspension ends.
   DateTime get suspensionExpirationUtc =>
-      (data['suspension_expiration_utc'] == null)
-          ? null
-          : new DateTime.fromMillisecondsSinceEpoch(
-              data['suspension_expiration_utc'].round(),
-              isUtc: true);
+      GetterUtils.dateTimeOrNull(data['suspension_expiration_utc']);
 
   Redditor.parse(Reddit reddit, Map data) : super(reddit) {
     if (!data.containsKey('name') &&
