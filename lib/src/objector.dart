@@ -18,6 +18,9 @@ import 'package:draw/src/models/subreddit.dart';
 class Objector extends RedditBase {
   Objector(Reddit reddit) : super(reddit);
 
+  // Used in test cases to trigger a DRAWAuthenticationError
+  static const _testThrowKind = 'DRAW_TEST_THROW_AUTH_ERROR';
+
   static String _removeIDPrefix(String id) {
     return id.split('_')[1];
   }
@@ -80,6 +83,10 @@ class Objector extends RedditBase {
         rules.add(new Rule.parse(rawRule));
       }
       return rules;
+    } else if (data.containsKey('kind') && (data['kind'] == _testThrowKind)) {
+      throw new DRAWAuthenticationError('This is an error that should only be '
+          'seen in tests. Please file an issue if you see this while not running'
+          ' tests.');
     } else {
       throw new DRAWInternalError('Cannot objectify unsupported'
           ' response:\n$data');

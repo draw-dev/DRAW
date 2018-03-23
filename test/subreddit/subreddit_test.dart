@@ -10,6 +10,8 @@ import 'package:test/test.dart';
 
 import '../test_utils.dart';
 
+// ignore_for_file: unused_local_variable
+
 Future main() async {
   test('lib/subreddit/banned', () async {
     final reddit = await createRedditTestInstance(
@@ -35,6 +37,54 @@ Future main() async {
     await subreddit.contributor.remove('spez');
     await for (final user in subreddit.contributor()) {
       expect(user.displayName == 'spez', isFalse);
+    }
+  });
+
+  test('lib/subreddit/filter', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_filter.json');
+    final all = reddit.subreddit('all');
+    await all.filters.add('the_donald');
+
+    await for (final sub in all.filters()) {
+      expect(sub is SubredditRef, isTrue);
+      expect(sub.displayName.toLowerCase(), 'the_donald');
+    }
+
+    await all.filters.remove('the_donald');
+    await for (final sub in all.filters()) {
+      fail('There should be no subreddits being filtered, but $sub still is');
+    }
+  });
+
+  // Note: this test data is sanitized since it's garbage and I don't want that
+  // in my repo.
+  test('lib/subreddit/quarantine', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_quarantine.json');
+    final garbage = reddit.subreddit('whiteswinfights');
+
+    // Risky subreddit that's quarantined. In we go...
+    await garbage.quarantine.optIn();
+    try {
+      await for (final Submission submission in garbage.top()) {
+        break;
+      }
+    } catch (e) {
+      fail('Got exception when we expected a submission. Exception: $e');
+    }
+
+    // Let's opt back out of seeing this subreddit...
+    await garbage.quarantine.optOut();
+    try {
+      await for (final Submission submission in garbage.top()) {
+        fail('Expected DRAWAuthenticationError but got a submission');
+      }
+    } on DRAWAuthenticationError catch (e) {
+      // Phew, no more trash!
+      e.hashCode; // To get the analyzer to be quiet; does nothing.
+    } catch (e) {
+      fail('Expected DRAWAuthenticationError, got $e');
     }
   });
 

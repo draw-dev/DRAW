@@ -18,6 +18,7 @@ import 'package:draw/src/reddit.dart';
 import 'package:draw/src/util.dart';
 import 'package:draw/src/models/comment.dart';
 import 'package:draw/src/models/mixins/messageable.dart';
+import 'package:draw/src/models/multireddit.dart';
 import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission.dart';
 import 'package:draw/src/models/user_content.dart';
@@ -67,14 +68,14 @@ class SubredditRef extends RedditBase
   SubredditRelationship _banned;
   ContributorRelationship _contributor;
 
-  // SubredditFilters _filters; TODO(bkonyi): implement
+  SubredditFilters _filters;
   // SubredditFlair _flair; TODO(bkonyi): implement
   // SubredditModeration _mod; TODO(bkonyi): implement
   // ModeratorRelationship _moderator; TODO(bkonyi): implement
   // Modmail _modmail; TODO(bkonyi): implement
   SubredditRelationship _muted;
 
-  // SubredditQuarantine _quarantine; TODO(bkonyi): implement
+  SubredditQuarantine _quarantine;
   SubredditStream _stream;
 
   // SubredditStyleSheet _stylesheet; TODO(bkonyi): implement
@@ -96,15 +97,13 @@ class SubredditRef extends RedditBase
     return _contributor;
   }
 
-// TODO(bkonyi): implement
-/*
   SubredditFilters get filters {
     if (_filters == null) {
-      _filters = new SubredditFilters(this);
+      _filters = new SubredditFilters._(this);
     }
     return _filters;
   }
-
+/*
   SubredditFlair get flair {
     if (_flair == null) {
       _flair = new SubredditFlair(this);
@@ -142,16 +141,14 @@ class SubredditRef extends RedditBase
     return _muted;
   }
 
-// TODO(bkonyi): implement
-/*
   SubredditQuarantine get quarantine {
     if (_quarantine == null) {
-      _quarantine = new SubredditQuarantine(this);
+      _quarantine = new SubredditQuarantine._(this);
     }
     return _quarantine;
   }
-*/
 
+  /*
   SubredditStream get stream {
     if (_stream == null) {
       _stream = new SubredditStream(this);
@@ -160,7 +157,7 @@ class SubredditRef extends RedditBase
   }
 
 // TODO(bkonyi): implement
-/*
+
   SubredditStyleSheet get stylesheet {
     if (_stylesheet == null) {
       _stylesheet = new SubredditStyleSheet(this);
@@ -277,7 +274,7 @@ class SubredditRef extends RedditBase
       }
       final currentIds = new Set();
       foundNewSubmission = false;
-      await for (final submission in search(query,
+      await for (var submission in search(query,
           params: params,
           sort: Sort.newest,
           syntax: _SearchSyntax.cloudSearch)) {
@@ -423,14 +420,81 @@ class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
   }
 }
 
-// TODO(bkonyi): implement.
-// Provides functions to interact with the special [Subreddit]'s filters.
-/*class SubredditFilters {
-  final Subreddit _subreddit;
-  SubredditFilters(this._subreddit) {
-    throw new DRAWUnimplementedError();
+/// Provides functions to interact with the special [Subreddit]'s filters.
+class SubredditFilters {
+  static final RegExp _userRegExp = new RegExp(r'{user}');
+  static final RegExp _specialRegExp = new RegExp(r'{special}');
+  final SubredditRef _subreddit;
+
+  SubredditFilters._(this._subreddit) {
+    if ((_subreddit.displayName != 'all') &&
+        (_subreddit.displayName != 'mod')) {
+      throw new DRAWArgumentError(
+          'Only special Subreddits can be filtered (r/all or r/mod)');
+    }
   }
-}*/
+
+  /// Returns a stream of all filtered subreddits.
+  Stream<SubredditRef> call() async* {
+    final user = await _subreddit.reddit.user.me();
+    final path = apiPath['subreddit_filter_list']
+        .replaceAll(_specialRegExp, _subreddit.displayName)
+        .replaceAll(_userRegExp, user.displayName);
+    final Multireddit response = await _subreddit.reddit.get(path);
+    final filteredSubs = response.data['subreddits'];
+    for (final sub in filteredSubs) {
+      yield _subreddit.reddit.subreddit(sub['name']);
+    }
+  }
+
+  /// Adds `subreddit` to the list of filtered subreddits.
+  ///
+  /// Filtered subreddits will no longer be included when requesting listings
+  /// from `/r/all`. `subreddit` can be either an instance of [String] or
+  /// [SubredditRef].
+  Future add(/* String, Subreddit */ subreddit) async {
+    var filteredSubreddit = '';
+    if (subreddit is String) {
+      filteredSubreddit = subreddit;
+    } else if (subreddit is SubredditRef) {
+      filteredSubreddit = subreddit.displayName;
+    } else {
+      throw new DRAWArgumentError(
+          "Field 'subreddit' must be either a 'String' or 'SubredditRef'");
+    }
+
+    final user = await _subreddit.reddit.user.me();
+    final path = apiPath['subreddit_filter']
+        .replaceAll(SubredditRef._subredditRegExp, filteredSubreddit)
+        .replaceAll(_userRegExp, user.displayName)
+        .replaceAll(_specialRegExp, _subreddit.displayName);
+    await _subreddit.reddit
+        .put(path, body: {'model': '{"name" : "$filteredSubreddit"}'});
+  }
+
+  /// Removes `subreddit` to the list of filtered subreddits.
+  ///
+  /// Filtered subreddits will no longer be included when requesting listings
+  /// from `/r/all`. `subreddit` can be either an instance of [String] or
+  /// [SubredditRef].
+  Future remove(/* String, Subreddit */ subreddit) async {
+    var filteredSubreddit = '';
+    if (subreddit is String)
+      filteredSubreddit = subreddit;
+    else if (subreddit is SubredditRef)
+      filteredSubreddit = subreddit.displayName;
+    else
+      throw new DRAWArgumentError(
+          "Field 'subreddit' must be either a 'String' or 'SubredditRef'");
+
+    final user = await _subreddit.reddit.user.me();
+    final path = apiPath['subreddit_filter']
+        .replaceAll(SubredditRef._subredditRegExp, filteredSubreddit)
+        .replaceAll(_userRegExp, user.displayName)
+        .replaceAll(_specialRegExp, _subreddit.displayName);
+    await _subreddit.reddit.delete(path);
+  }
+}
 
 // TODO(bkonyi): implement.
 // Provides a set of functions to interact with a [Subreddit]'s flair.
@@ -471,14 +535,33 @@ class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
   }
 }*/
 
-// TODO(bkonyi): implement.
-// Provides subreddit quarantine related methods.
-/*class SubredditQuarantine {
-  final Subreddit _subreddit;
-  SubredditQuarantine(this._subreddit) {
-    throw new DRAWUnimplementedError();
+/// Provides subreddit quarantine related methods.
+///
+/// When trying to request content from a quarantined subreddit, a
+/// `DRAWAuthenticationError` is thrown if the current [User] has not opted in
+/// to see content from that subreddit.
+class SubredditQuarantine {
+  final SubredditRef _subreddit;
+  SubredditQuarantine._(this._subreddit);
+
+  /// Opt-in the current [User] to seeing the quarantined [Subreddit].
+  Future optIn() async {
+    final data = {'sr_name': _subreddit.displayName};
+    await _subreddit.reddit
+        .post(apiPath['quarantine_opt_in'], data, discardResponse: true);
   }
-}*/
+
+  /// Opt-out the current [User] to seeing the quarantined [Subreddit].
+  ///
+  /// When trying to request content from a quarantined subreddit, a
+  /// `DRAWAuthenticationError` is thrown if the current [User] has not opted in
+  /// to see content from that subreddit.
+  Future optOut() async {
+    final data = {'sr_name': _subreddit.displayName};
+    await _subreddit.reddit
+        .post(apiPath['quarantine_opt_out'], data, discardResponse: true);
+  }
+}
 
 /// Represents a relationship between a [Redditor] and a [Subreddit].
 class SubredditRelationship {

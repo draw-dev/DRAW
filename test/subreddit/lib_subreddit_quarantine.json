@@ -1,0 +1,123 @@
+[
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/api/quarantine_optin",
+      "{sr_name: whiteswinfights}"
+    ],
+    "response": {}
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/whiteswinfights/top",
+      "{t: all, limit: 1024}"
+    ],
+    "response": {
+      "kind": "Listing",
+      "data": {
+        "after": null,
+        "dist": 27,
+        "modhash": null,
+        "whitelist_status": null,
+        "children": [
+          {
+            "kind": "t3",
+            "data": {
+              "subreddit_id": "t5_38958",
+              "approved_at_utc": null,
+              "send_replies": true,
+              "mod_reason_by": null,
+              "banned_by": null,
+              "num_reports": null,
+              "removal_reason": null,
+              "subreddit": "WhitesWinFights",
+              "selftext_html": null,
+              "selftext": "",
+              "likes": null,
+              "suggested_sort": null,
+              "user_reports": [],
+              "secure_media": null,
+              "is_reddit_media_domain": false,
+              "saved": false,
+              "id": "39kkfr",
+              "banned_at_utc": null,
+              "mod_reason_title": null,
+              "view_count": null,
+              "archived": true,
+              "clicked": false,
+              "no_follow": false,
+              "title": "",
+              "num_crossposts": 0,
+              "link_flair_text": null,
+              "mod_reports": [],
+              "can_mod_post": false,
+              "is_crosspostable": false,
+              "pinned": false,
+              "score": 100,
+              "approved_by": null,
+              "over_18": true,
+              "report_reasons": null,
+              "domain": "hw-mobile.worldstarhiphop.com",
+              "hidden": false,
+              "thumbnail": "",
+              "edited": false,
+              "link_flair_css_class": null,
+              "author_flair_css_class": null,
+              "contest_mode": false,
+              "gilded": 0,
+              "downs": 0,
+              "brand_safe": false,
+              "secure_media_embed": {},
+              "media_embed": {},
+              "author_flair_text": null,
+              "stickied": false,
+              "can_gild": false,
+              "is_self": false,
+              "parent_whitelist_status": null,
+              "name": "t3_39kkfr",
+              "spoiler": false,
+              "permalink": "/r/WhitesWinFights/comments/39kkfr/",
+              "subreddit_type": "public",
+              "locked": false,
+              "hide_score": false,
+              "created": 1434136296.0,
+              "url": "",
+              "whitelist_status": null,
+              "quarantine": true,
+              "author": "Squad",
+              "created_utc": 1434107496.0,
+              "subreddit_name_prefixed": "r/WhitesWinFights",
+              "ups": 100,
+              "media": null,
+              "num_comments": 12,
+              "visited": false,
+              "mod_note": null,
+              "is_video": false,
+              "distinguished": null
+            }
+          }
+        ],
+        "before": null
+      }
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/api/quarantine_optout",
+      "{sr_name: whiteswinfights}"
+    ],
+    "response": {}
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/whiteswinfights/top",
+      "{t: all, limit: 1024}"
+    ],
+    "response": {
+      "kind": "DRAW_TEST_THROW_AUTH_ERROR"
+    }
+  }
+]
