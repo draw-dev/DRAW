@@ -454,13 +454,14 @@ class SubredditFilters {
   /// [SubredditRef].
   Future add(/* String, Subreddit */ subreddit) async {
     var filteredSubreddit = '';
-    if (subreddit is String)
+    if (subreddit is String) {
       filteredSubreddit = subreddit;
-    else if (subreddit is SubredditRef)
+    } else if (subreddit is SubredditRef) {
       filteredSubreddit = subreddit.displayName;
-    else
+    } else {
       throw new DRAWArgumentError(
           "Field 'subreddit' must be either a 'String' or 'SubredditRef'");
+    }
 
     final user = await _subreddit.reddit.user.me();
     final path = apiPath['subreddit_filter']
