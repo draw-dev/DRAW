@@ -17,6 +17,7 @@ import 'package:draw/src/listing/mixins/subreddit.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/util.dart';
 import 'package:draw/src/models/comment.dart';
+import 'package:draw/src/models/message.dart';
 import 'package:draw/src/models/mixins/messageable.dart';
 import 'package:draw/src/models/multireddit.dart';
 import 'package:draw/src/models/redditor.dart';
@@ -70,7 +71,7 @@ class SubredditRef extends RedditBase
 
   SubredditFilters _filters;
   // SubredditFlair _flair; TODO(bkonyi): implement
-  // SubredditModeration _mod; TODO(bkonyi): implement
+  SubredditModeration _mod;
   // ModeratorRelationship _moderator; TODO(bkonyi): implement
   // Modmail _modmail; TODO(bkonyi): implement
   SubredditRelationship _muted;
@@ -103,6 +104,7 @@ class SubredditRef extends RedditBase
     }
     return _filters;
   }
+
 /*
   SubredditFlair get flair {
     if (_flair == null) {
@@ -111,14 +113,13 @@ class SubredditRef extends RedditBase
     return _flair;
   }
   */
-/*
   SubredditModeration get mod {
     if (_mod == null) {
-      _mod = new SubredditModeration(this);
+      _mod = new SubredditModeration._(this);
     }
     return _mod;
   }
-
+/*
   ModeratorRelationship get moderator {
     if (_moderator == null) {
       _moderator = new ModeratorRelationship(this, 'moderator');
@@ -526,14 +527,279 @@ class SubredditFilters {
   SubredditLinkFlairTemplates(Subreddit subreddit) : super(subreddit);
 }*/
 
-// TODO(bkonyi): implement.
-// Provides a set of moderation functions to a [Subreddit].
-/*class SubredditModeration {
-  final Subreddit _subreddit;
-  SubredditModeration(this._subreddit) {
-    throw new DRAWUnimplementedError();
+enum SubredditType {
+  publicSubreddit,
+  privateSubreddit,
+}
+
+class SubredditSettings {
+  final Map _data;
+  final SubredditRef subreddit;
+
+  SubredditSettings.copy(SubredditSettings original)
+      : _data = new Map.from(original._data),
+        subreddit = original.subreddit;
+
+  SubredditSettings._(this.subreddit, this._data);
+
+  bool get defaultSet => _data['default_set'];
+  void set defaultSet(bool x) => _data['default_set'] = x;
+
+  bool get allowImages => _data['allow_images'];
+  void set allowImages(bool x) => _data['allow_images'] = x;
+
+  bool get allowFreeformReports => _data['free_form_reports'];
+  void set allowFreeformReports(bool x) => _data['free_form_reports'] = x;
+
+  bool get showMedia => _data['show_media'];
+  void set showMedia(bool x) => _data['show_media'] = x;
+
+  int get wikiEditAge => _data['wiki_edit_age'];
+  void set wikiEditAge(int x) => _data['wiki_edit_age'] = x;
+
+  String get submitText => _data['submit_text'];
+  void set submitText(String x) => _data['submit_text'] = x;
+
+  // TODO(bkonyi): figure out what this is.
+  // get spamLinks => _data['spam_links'];
+
+  String get title => _data['title'];
+  void set title(String x) => _data['title'] = x;
+
+  bool get collapseDeletedComments => _data['collapse_deleted_comments'];
+  void set collapseDeletedComments(bool x) =>
+      _data['collapse_deleted_comments'] = x;
+
+  // TODO(bkonyi): figure out what this is.
+  // get wikimode => _data['wikimode'];
+
+  bool get publicTraffic => _data['public_traffic'];
+  void set publicTraffic(bool x) => _data['public_traffic'] = x;
+
+  bool get over18 => _data['over_18'];
+  void set over18(bool x) => _data['over_18'] = x;
+
+  bool get allowVideos => _data['allow_videos'];
+  void set allowVideos(bool x) => _data['allow_videos'] = x;
+
+  bool get spoilersEnabled => _data['spoilers_enabled'];
+  void set spoilersEnabled(bool x) => _data['spoilers_enabled'] = x;
+
+  // TODO(bkonyi): figure out what this is.
+  // get suggestedCommentSort => _data['suggested_comment_sort'];
+
+  String get description => _data['description'];
+  void set description(String x) => _data['description'] = x;
+
+  String get submitLinkLabel => _data['submit_link_label'];
+  void set submitLinkLabel(String x) => _data['submit_link_label'] = x;
+
+  bool get allowPostCrossposts => _data['allow_post_crossposts'];
+  void set allowPostCrossposts(bool x) => _data['allow_post_crossposts'] = x;
+
+  // TODO(bkonyi): figure out what this is.
+  // get spamComments => _data['spam_comments'];
+
+  // TODO(bkonyi): figure out what this is.
+  // get spamSelfposts => _data['spam_selfposts'];
+
+  String get submitTextLabel => _data['submit_text_label'];
+  void set submitTextLabel(String x) => _data['submit_text_label'] = x;
+
+  // TODO(bkonyi): we might want to use a color class for this.
+  // get keyColor => _data['key_color];
+
+  String get language => _data['language'];
+  void set language(String x) => _data['language'] = x;
+
+  int get wikiEditKarma => _data['wiki_edit_karma'];
+  void set wikiEditKarma(int x) => _data['wiki_edit_karma'] = x;
+
+  bool get hideAds => _data['hide_ads'];
+  void set hideAds(bool x) => _data['hide_ads'] = x;
+
+  String get headerHoverText => _data['header_hover_text'];
+  void set headerHoverText(String x) => _data['header_hover_text'] = x;
+
+  bool get allowDiscovery => _data['allow_discovery'];
+  void set allowDiscovery(bool x) => _data['allow_discovery'] = x;
+
+  String get publicDescription => _data['public_description'];
+  void set publicDescription(String x) => _data['public_description'];
+
+  bool get showMediaPreview => _data['show_media_preview'];
+  void set showMediaPreview(bool x) => _data['show_media_preview'] = x;
+
+  int get commentScoreHideMins => _data['comment_score_hide_mins'];
+  void set commentScoreHideMins(int x) => _data['comment_score_hide_mins'] = x;
+
+  // TODO(bkonyi): check that there's only two types.
+  SubredditType get subredditType {
+    if (_data['subreddit_type'] == 'public') {
+      return SubredditType.publicSubreddit;
+    } else {
+      return SubredditType.privateSubreddit;
+    }
   }
-}*/
+
+  void set subredditType(SubredditType type) {
+    if (type == SubredditType.publicSubreddit) {
+      _data['subreddit_type'] = 'public';
+    } else {
+      _data['subreddit_type'] = 'private';
+    }
+  }
+
+  bool get excludeBannedModQueue => _data['exclude_banned_modqueue'];
+  void set excludeBannedModQueue(bool x) =>
+      _data['exclude_banned_modqueue'] = x;
+
+  // TODO(bkonyi): figure out what this is for.
+  // get contentOptions => _data['content_options'];
+
+  String toString() => _data.toString();
+}
+
+enum SubredditModerationContentTypeFilter {
+  commentsOnly,
+  submissionsOnly,
+}
+
+// TODO(bkonyi): add accessor methods.
+/// Represents an action taken by a moderator.
+class ModeratorAction {
+  final Map data;
+  ModeratorAction(this.data);
+
+  String toString() => data.toString();
+}
+
+// TODO(bkonyi): implement.
+/// Provides a set of moderation functions to a [Subreddit].
+class SubredditModeration {
+  static final _subredditRegExp = new RegExp(r'{subreddit}');
+  final SubredditRef _subreddit;
+  SubredditModeration._(this._subreddit);
+
+  Map _buildOnlyMap(SubredditModerationContentTypeFilter only) {
+    final params = {};
+    if (only != null) {
+      var _only;
+      if (only == SubredditModerationContentTypeFilter.submissionsOnly) {
+        _only = 'links';
+      } else {
+        _only = 'comments';
+      }
+      params['only'] = _only;
+    }
+    return params;
+  }
+
+  Stream _subredditModerationListingGeneratorHelper(
+          String api, SubredditModerationContentTypeFilter only, {int limit}) =>
+      ListingGenerator.generator(_subreddit.reddit, _formatApiPath(api),
+          params: _buildOnlyMap(only), limit: limit);
+
+  String _formatApiPath(String api) =>
+      apiPath[api].replaceAll(_subredditRegExp, _subreddit.displayName);
+
+  Future<void> acceptInvite() async {
+    final url = apiPath['accept_mod_invite']
+        .replaceAll(_subredditRegExp, _subreddit.displayName);
+    return _subreddit.reddit.post(url, {});
+  }
+
+  Stream<UserContent> edited(
+          {SubredditModerationContentTypeFilter only, int limit}) =>
+      _subredditModerationListingGeneratorHelper('about_edited', only,
+          limit: limit);
+
+  Stream<Message> inbox({int limit}) =>
+      _subredditModerationListingGeneratorHelper('moderator_messages', null,
+          limit: limit);
+
+  // TODO(bkonyi): add action type filters.
+  Stream<ModeratorAction> log(
+      {/* RedditorRef, List<RedditorRef>, String */ mod, int limit}) {
+    final params = {};
+    if (mod != null) {
+      const kMods = 'mod';
+      if (mod is RedditorRef) {
+        params[kMods] = mod.displayName;
+      } else if (mod is List<RedditorRef>) {
+        params[kMods] = mod.map((r) => r.displayName).join(',');
+      } else if (mod is String) {
+        params[kMods] = mod;
+      } else {
+        throw DRAWArgumentError("Argument type 'mod' must be of 'RedditorRef',"
+            " `List<RedditorRef>`, or `String`; got ${mod.runtimeType}.");
+      }
+    }
+    return ListingGenerator.generator(
+        _subreddit.reddit, _formatApiPath('about_log'),
+        limit: limit, params: params);
+  }
+
+  Stream<UserContent> modQueue(
+          {SubredditModerationContentTypeFilter only, int limit}) =>
+      _subredditModerationListingGeneratorHelper('about_modqueue', only,
+          limit: limit);
+
+  Stream<UserContent> reports(
+          {SubredditModerationContentTypeFilter only, int limit}) =>
+      _subredditModerationListingGeneratorHelper('about_reports', only,
+          limit: limit);
+
+  Future<SubredditSettings> settings() async {
+    final data = (await _subreddit.reddit
+        .get(_formatApiPath('subreddit_settings'), objectify: false))['data'];
+    return new SubredditSettings._(_subreddit, data);
+  }
+
+  Stream<UserContent> spam(
+          {SubredditModerationContentTypeFilter only, int limit}) =>
+      _subredditModerationListingGeneratorHelper('about_spam', only,
+          limit: limit);
+
+  Stream<UserContent> unmoderated({int limit}) =>
+      _subredditModerationListingGeneratorHelper('about_unmoderated', null,
+          limit: limit);
+
+  Stream<Message> unread({int limit}) =>
+      _subredditModerationListingGeneratorHelper('moderator_unread', null,
+          limit: limit);
+
+  Future update(SubredditSettings updated) async {
+    if (updated == null) {
+      throw new DRAWArgumentError("Field 'updated' cannot be null.");
+    }
+    final data = new Map.from(updated._data);
+    final remap = {
+      'allow_top': 'default_set',
+      'lang': 'language',
+      'link_type': 'content_options'
+    };
+
+    // Remap keys to what Reddit expects (this is dumb on their part).
+    remap.forEach((k, v) {
+      print('$k:$v');
+      if (data[v] != null) {
+        data[k] = data[v];
+        data.remove(v);
+      }
+    });
+
+    data.forEach((k, v) {
+      if (v == null) {
+        data[k] = 'null';
+      } else {
+        data[k] = v.toString();
+      }
+    });
+
+    return _subreddit.reddit.post(apiPath['site_admin'], data);
+  }
+}
 
 /// Provides subreddit quarantine related methods.
 ///

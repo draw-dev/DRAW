@@ -63,7 +63,11 @@ class Objector extends RedditBase {
           'field "data" is expected in a response'
           'of type "LabeledMulti"');
       return new Multireddit.parse(reddit, data);
-    } else if (data.containsKey('sr') &&
+    } else if (data.containsKey('kind') &&
+        (data['kind'] == 'modaction')) {
+          return new ModeratorAction(data['data']);
+        } else if (data
+            .containsKey('sr') &&
         data.containsKey('comment_karma') &&
         data.containsKey('link_karma')) {
       final subreddit = new Subreddit.parse(reddit, data['sr']);

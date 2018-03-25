@@ -127,7 +127,7 @@ class Submission extends SubmissionRef
   int get downvotes => data['downs'];
 
   /// Has this [Submission] been edited.
-  bool get edited => data['edited'];
+  bool get edited => (data['edited'] is double);
 
   // TODO(bkonyi): implement
   // SubmissionFlair get flair;

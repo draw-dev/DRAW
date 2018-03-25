@@ -209,14 +209,14 @@ class Reddit {
   SubredditRef subreddit(String subreddit) =>
       new SubredditRef.name(this, subreddit);
 
-  Future<dynamic> get(String api, {Map params}) async {
+  Future<dynamic> get(String api, {Map params, bool objectify: true}) async {
     if (!_initialized) {
       throw new DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
     final path = new Uri.https(defaultOAuthApiEndpoint, api);
     final response = await auth.get(path, params: params);
-    return _objector.objectify(response);
+    return objectify ? _objector.objectify(response) : response;
   }
 
   Future<dynamic> post(String api, Map<String, String> body,

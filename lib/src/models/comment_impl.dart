@@ -235,7 +235,7 @@ class Comment extends CommentRef
   int get downvotes => data['downs'];
 
   /// Has this [Comment] been edited.
-  bool get edited => data['edited'];
+  bool get edited => (data['edited'] is double);
 
   /// Has this [Comment] be given Reddit Gold.
   int get gilded => data['gilded'];
