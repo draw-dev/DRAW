@@ -4,6 +4,7 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:draw/src/api_paths.dart';
@@ -527,9 +528,35 @@ class SubredditFilters {
   SubredditLinkFlairTemplates(Subreddit subreddit) : super(subreddit);
 }*/
 
+String _subredditTypeToString(SubredditType type) {
+  switch(type) {
+    case SubredditType.archivedSubreddit:
+      return 'archived';
+    case SubredditType.employeesOnlySubreddit:
+      return 'employees_only';
+    case SubredditType.goldOnlySubreddit:
+      return 'gold_only';
+    case SubredditType.goldRestrictedSubreddit:
+      return 'gold_restricted';
+    case SubredditType.privateSubreddit:
+      return 'private';
+    case SubredditType.publicSubreddit:
+      return 'public';
+    case SubredditType.restrictedSubreddit:
+      return 'restricted';
+    default:
+      throw new DRAWInternalError('Unexpected SubredditType: $type');
+  }
+}
+
 enum SubredditType {
-  publicSubreddit,
+  archivedSubreddit,
+  employeesOnlySubreddit,
+  goldOnlySubreddit,
+  goldRestrictedSubreddit,
   privateSubreddit,
+  publicSubreddit,
+  restrictedSubreddit,
 }
 
 class SubredditSettings {
@@ -657,7 +684,14 @@ class SubredditSettings {
   // TODO(bkonyi): figure out what this is for.
   // get contentOptions => _data['content_options'];
 
-  String toString() => _data.toString();
+  @override
+  String toString() {
+    if (_data != null) {
+      final encoder = new JsonEncoder.withIndent('  ');
+      return encoder.convert(_data);
+    }
+    return 'null';
+  }
 }
 
 enum SubredditModerationContentTypeFilter {
@@ -671,7 +705,14 @@ class ModeratorAction {
   final Map data;
   ModeratorAction(this.data);
 
-  String toString() => data.toString();
+  @override
+  String toString() {
+    if (data != null) {
+      final encoder = new JsonEncoder.withIndent('  ');
+      return encoder.convert(data);
+    }
+    return 'null';
+  }
 }
 
 // TODO(bkonyi): implement.
@@ -703,7 +744,7 @@ class SubredditModeration {
   String _formatApiPath(String api) =>
       apiPath[api].replaceAll(_subredditRegExp, _subreddit.displayName);
 
-  Future<void> acceptInvite() async {
+  Future acceptInvite() async {
     final url = apiPath['accept_mod_invite']
         .replaceAll(_subredditRegExp, _subreddit.displayName);
     return _subreddit.reddit.post(url, {});
@@ -731,8 +772,9 @@ class SubredditModeration {
       } else if (mod is String) {
         params[kMods] = mod;
       } else {
-        throw DRAWArgumentError("Argument type 'mod' must be of 'RedditorRef',"
-            " `List<RedditorRef>`, or `String`; got ${mod.runtimeType}.");
+        throw new DRAWArgumentError("Argument type 'mod' must be of "
+        "'RedditorRef' `List<RedditorRef>`, or `String`; got "
+        "${mod.runtimeType}.");
       }
     }
     return ListingGenerator.generator(
@@ -777,17 +819,23 @@ class SubredditModeration {
     final remap = {
       'allow_top': 'default_set',
       'lang': 'language',
-      'link_type': 'content_options'
+      'link_type': 'content_options',
+      'type' : 'subreddit_type',
+      'sr' : 'subreddit_id',
     };
 
     // Remap keys to what Reddit expects (this is dumb on their part).
     remap.forEach((k, v) {
-      print('$k:$v');
       if (data[v] != null) {
         data[k] = data[v];
         data.remove(v);
       }
     });
+
+    // Not a valid key for the response.
+    if (data.containsKey('domain')) {
+      data.remove('domain');
+    }
 
     data.forEach((k, v) {
       if (v == null) {
@@ -797,6 +845,7 @@ class SubredditModeration {
       }
     });
 
+    data['api_type'] = 'json';
     return _subreddit.reddit.post(apiPath['site_admin'], data);
   }
 }

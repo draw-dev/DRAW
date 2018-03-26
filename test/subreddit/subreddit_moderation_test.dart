@@ -219,20 +219,20 @@ Future main() async {
   test('lib/subreddit/subreddit_update_settings', () async {
     final drawApiTestingMod = await subredditModerationHelper(
         'test/subreddit/subreddit_update_settings.json',
-        sub: 'drawapitesting',
-        live: true);
-    final settings = await drawApiTestingMod.settings();
-    print(settings.title);
+        sub: 'drawapitesting');
+    var settings = await drawApiTestingMod.settings();
+    expect(settings.title, 'DRAW API Testing');
     final originalTitle = settings.title;
-    settings.title = 'Test name change!';
+    settings.title = 'test title';
 
     await drawApiTestingMod.update(settings);
     final newSettings = await drawApiTestingMod.settings();
-    print(newSettings.title);
+    expect(newSettings.title, settings.title);
 
     newSettings.title = originalTitle;
     await drawApiTestingMod.update(newSettings);
 
-    print((await drawApiTestingMod.settings()).title);
+    settings = await drawApiTestingMod.settings();
+    expect(settings.title, 'DRAW API Testing');
   });
 }

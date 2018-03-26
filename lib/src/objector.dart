@@ -63,11 +63,9 @@ class Objector extends RedditBase {
           'field "data" is expected in a response'
           'of type "LabeledMulti"');
       return new Multireddit.parse(reddit, data);
-    } else if (data.containsKey('kind') &&
-        (data['kind'] == 'modaction')) {
-          return new ModeratorAction(data['data']);
-        } else if (data
-            .containsKey('sr') &&
+    } else if (data.containsKey('kind') && (data['kind'] == 'modaction')) {
+      return new ModeratorAction(data['data']);
+    } else if (data.containsKey('sr') &&
         data.containsKey('comment_karma') &&
         data.containsKey('link_karma')) {
       final subreddit = new Subreddit.parse(reddit, data['sr']);
@@ -152,12 +150,23 @@ class Objector extends RedditBase {
       } else {
         return _objectifyDictionary(data);
       }
-    } else if (data.containsKey('json') && data['json'].containsKey('data')) {
-      // Response from Subreddit.submit.
-      if (data['json']['data'].containsKey('url')) {
-        return new Submission.parse(reddit, data['json']['data']);
-      } else if (data['json']['data'].containsKey('things')) {
-        return _objectifyList(data['json']['data']['things']);
+    } else if (data.containsKey('json')) {
+      if (data['json'].containsKey('data')) {
+        // Response from Subreddit.submit.
+        if (data['json']['data'].containsKey('url')) {
+          return new Submission.parse(reddit, data['json']['data']);
+        } else if (data['json']['data'].containsKey('things')) {
+          return _objectifyList(data['json']['data']['things']);
+        } else {
+          throw new DRAWInternalError('Invalid json response: $data');
+        }
+      } else if (data['json'].containsKey('errors')) {
+        final errors = data['json']['errors'];
+        if (errors is List && errors.isNotEmpty) {
+          // TODO(bkonyi): make an actual exception for this.
+          throw new DRAWUnimplementedError('Error response: $errors');
+        }
+        return null;
       } else {
         throw new DRAWInternalError('Invalid json response: $data');
       }
