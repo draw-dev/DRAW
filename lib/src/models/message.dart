@@ -34,7 +34,7 @@ class Message extends RedditBase
   String get destination => data['dest'];
 
   /// The type of distinguishment that is assigned to this message.
-  /// 
+  ///
   /// Can be `null` if the [Message] isn't distinguished. An example value for
   /// this field is 'moderator'
   String get distinguished => data['distinguished'];
@@ -57,9 +57,9 @@ class Message extends RedditBase
     return _replies;
   }
 
-  /// A [SubredditRef] representing the subreddit this message was sent to, 
+  /// A [SubredditRef] representing the subreddit this message was sent to,
   /// for ModMail [Message]s.
-  /// 
+  ///
   /// Returns `null` if this is not a ModMail [Message].
   SubredditRef get subreddit {
     if (data['subreddit'] != null) {

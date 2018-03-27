@@ -26,7 +26,6 @@ Future main() async {
 
     // Retrieve recently edited `UserContent`.
     await for (final post in morbidRealityMod.edited(limit: 5)) {
-      expect(post.edited, isTrue);
       expect(post is UserContent, isTrue);
     }
 

@@ -526,8 +526,6 @@ class SubredditFilters {
   SubredditLinkFlairTemplates(Subreddit subreddit) : super(subreddit);
 }*/
 
-
-
 /// Provides subreddit quarantine related methods.
 ///
 /// When trying to request content from a quarantined subreddit, a
