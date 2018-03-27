@@ -13,6 +13,7 @@ import 'package:draw/src/models/multireddit.dart';
 import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission_impl.dart';
 import 'package:draw/src/models/subreddit.dart';
+import 'package:draw/src/models/subreddit_moderation.dart';
 
 /// Converts responses from the Reddit API into instances of [RedditBase].
 class Objector extends RedditBase {
@@ -64,7 +65,7 @@ class Objector extends RedditBase {
           'of type "LabeledMulti"');
       return new Multireddit.parse(reddit, data);
     } else if (data.containsKey('kind') && (data['kind'] == 'modaction')) {
-      return new ModeratorAction(data['data']);
+      return buildModeratorAction(reddit, data['data']);
     } else if (data.containsKey('sr') &&
         data.containsKey('comment_karma') &&
         data.containsKey('link_karma')) {
