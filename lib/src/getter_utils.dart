@@ -17,8 +17,8 @@ abstract class GetterUtils {
   }
 
   static RedditorRef redditorRefOrNull(Reddit reddit, String redditor) =>
-      (redditor != null) ? reddit.redditor(redditor) : null;
+      (redditor == null) ? null : reddit.redditor(redditor);
 
   static SubredditRef subredditRefOrNull(Reddit reddit, String subreddit) =>
-      (subreddit != null) ? reddit.subreddit(subreddit) : null;
+      (subreddit == null) ? null : reddit.subreddit(subreddit);
 }
