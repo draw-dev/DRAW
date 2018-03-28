@@ -4,6 +4,7 @@
 /// can be found in the LICENSE file.
 
 import 'package:draw/src/base_impl.dart';
+import 'package:draw/src/getter_utils.dart';
 import 'package:draw/src/models/mixins/inboxable.dart';
 import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/reddit.dart';
@@ -61,10 +62,6 @@ class Message extends RedditBase
   /// for ModMail [Message]s.
   ///
   /// Returns `null` if this is not a ModMail [Message].
-  SubredditRef get subreddit {
-    if (data['subreddit'] != null) {
-      return reddit.subreddit(data['subreddit']);
-    }
-    return null;
-  }
+  SubredditRef get subreddit =>
+      GetterUtils.subredditRefOrNull(reddit, data['subreddit']);
 }

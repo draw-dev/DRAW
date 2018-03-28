@@ -32,7 +32,7 @@ String _subredditTypeToString(SubredditType type) {
     case SubredditType.restrictedSubreddit:
       return 'restricted';
     default:
-      throw new DRAWInternalError('Unexpected SubredditType: $type');
+      throw new DRAWInternalError('Invalid subreddit type: $type.');
   }
 }
 
@@ -53,7 +53,7 @@ SubredditType _stringToSubredditType(String s) {
     case 'restricted':
       return SubredditType.restrictedSubreddit;
     default:
-      throw new DRAWArgumentError("Invalid subreddit type: $s.");
+      throw new DRAWInternalError("Invalid subreddit type: $s.");
   }
 }
 
@@ -211,7 +211,7 @@ String _moderatorActionTypesToString(ModeratorActionType a) {
     case ModeratorActionType.wikiUnbanned:
       return 'wikiunbanned';
     default:
-      throw new DRAWInternalError('Invalid ModeratorActionType: $a.');
+      throw new DRAWInternalError('Invalid moderator action type: $a.');
   }
 }
 
@@ -310,7 +310,7 @@ ModeratorActionType _stringToModeratorActionType(String s) {
     case 'wikiunbanned':
       return ModeratorActionType.wikiUnbanned;
     default:
-      throw new DRAWInternalError("'$s' is not a valid moderator action type.");
+      throw new DRAWInternalError("Invalid moderator action type: $s.");
   }
 }
 

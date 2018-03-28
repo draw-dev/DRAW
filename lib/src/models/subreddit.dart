@@ -85,23 +85,17 @@ class SubredditRef extends RedditBase
   int get hashCode => _name.hashCode;
 
   SubredditRelationship get banned {
-    if (_banned == null) {
-      _banned = new SubredditRelationship(this, 'banned');
-    }
+    _banned ??= new SubredditRelationship(this, 'banned');
     return _banned;
   }
 
   ContributorRelationship get contributor {
-    if (_contributor == null) {
-      _contributor = new ContributorRelationship(this, 'contributor');
-    }
+    _contributor ??= new ContributorRelationship(this, 'contributor');
     return _contributor;
   }
 
   SubredditFilters get filters {
-    if (_filters == null) {
-      _filters = new SubredditFilters._(this);
-    }
+    _filters ??= new SubredditFilters._(this);
     return _filters;
   }
 
@@ -112,13 +106,13 @@ class SubredditRef extends RedditBase
     }
     return _flair;
   }
-  */
+*/
+
   SubredditModeration get mod {
-    if (_mod == null) {
-      _mod = new SubredditModeration(this);
-    }
+    _mod ??= new SubredditModeration(this);
     return _mod;
   }
+
 /*
   ModeratorRelationship get moderator {
     if (_moderator == null) {
@@ -136,23 +130,17 @@ class SubredditRef extends RedditBase
 */
 
   SubredditRelationship get muted {
-    if (_muted == null) {
-      _muted = new SubredditRelationship(this, 'muted');
-    }
+    _muted ??= new SubredditRelationship(this, 'muted');
     return _muted;
   }
 
   SubredditQuarantine get quarantine {
-    if (_quarantine == null) {
-      _quarantine = new SubredditQuarantine._(this);
-    }
+    _quarantine ??= new SubredditQuarantine._(this);
     return _quarantine;
   }
 
   SubredditStream get stream {
-    if (_stream == null) {
-      _stream = new SubredditStream(this);
-    }
+    _stream ??= new SubredditStream(this);
     return _stream;
   }
 
