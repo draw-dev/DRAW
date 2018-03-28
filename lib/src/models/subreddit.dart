@@ -21,6 +21,7 @@ import 'package:draw/src/models/mixins/messageable.dart';
 import 'package:draw/src/models/multireddit.dart';
 import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission.dart';
+import 'package:draw/src/models/subreddit_moderation.dart';
 import 'package:draw/src/models/user_content.dart';
 
 enum _SearchSyntax {
@@ -70,7 +71,7 @@ class SubredditRef extends RedditBase
 
   SubredditFilters _filters;
   // SubredditFlair _flair; TODO(bkonyi): implement
-  // SubredditModeration _mod; TODO(bkonyi): implement
+  SubredditModeration _mod;
   // ModeratorRelationship _moderator; TODO(bkonyi): implement
   // Modmail _modmail; TODO(bkonyi): implement
   SubredditRelationship _muted;
@@ -84,25 +85,20 @@ class SubredditRef extends RedditBase
   int get hashCode => _name.hashCode;
 
   SubredditRelationship get banned {
-    if (_banned == null) {
-      _banned = new SubredditRelationship(this, 'banned');
-    }
+    _banned ??= new SubredditRelationship(this, 'banned');
     return _banned;
   }
 
   ContributorRelationship get contributor {
-    if (_contributor == null) {
-      _contributor = new ContributorRelationship(this, 'contributor');
-    }
+    _contributor ??= new ContributorRelationship(this, 'contributor');
     return _contributor;
   }
 
   SubredditFilters get filters {
-    if (_filters == null) {
-      _filters = new SubredditFilters._(this);
-    }
+    _filters ??= new SubredditFilters._(this);
     return _filters;
   }
+
 /*
   SubredditFlair get flair {
     if (_flair == null) {
@@ -110,15 +106,14 @@ class SubredditRef extends RedditBase
     }
     return _flair;
   }
-  */
-/*
+*/
+
   SubredditModeration get mod {
-    if (_mod == null) {
-      _mod = new SubredditModeration(this);
-    }
+    _mod ??= new SubredditModeration(this);
     return _mod;
   }
 
+/*
   ModeratorRelationship get moderator {
     if (_moderator == null) {
       _moderator = new ModeratorRelationship(this, 'moderator');
@@ -135,29 +130,22 @@ class SubredditRef extends RedditBase
 */
 
   SubredditRelationship get muted {
-    if (_muted == null) {
-      _muted = new SubredditRelationship(this, 'muted');
-    }
+    _muted ??= new SubredditRelationship(this, 'muted');
     return _muted;
   }
 
   SubredditQuarantine get quarantine {
-    if (_quarantine == null) {
-      _quarantine = new SubredditQuarantine._(this);
-    }
+    _quarantine ??= new SubredditQuarantine._(this);
     return _quarantine;
   }
 
-  /*
   SubredditStream get stream {
-    if (_stream == null) {
-      _stream = new SubredditStream(this);
-    }
+    _stream ??= new SubredditStream(this);
     return _stream;
   }
 
 // TODO(bkonyi): implement
-
+/*
   SubredditStyleSheet get stylesheet {
     if (_stylesheet == null) {
       _stylesheet = new SubredditStyleSheet(this);
@@ -524,15 +512,6 @@ class SubredditFilters {
 // Provides functions to interact with link flair templates.
 /*class SubredditLinkFlairTemplates extends SubredditFlairTemplates {
   SubredditLinkFlairTemplates(Subreddit subreddit) : super(subreddit);
-}*/
-
-// TODO(bkonyi): implement.
-// Provides a set of moderation functions to a [Subreddit].
-/*class SubredditModeration {
-  final Subreddit _subreddit;
-  SubredditModeration(this._subreddit) {
-    throw new DRAWUnimplementedError();
-  }
 }*/
 
 /// Provides subreddit quarantine related methods.

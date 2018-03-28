@@ -4,6 +4,7 @@
 // can be found in the LICENSE file.
 
 import 'package:draw/src/models/redditor.dart';
+import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/reddit.dart';
 
 abstract class GetterUtils {
@@ -15,10 +16,9 @@ abstract class GetterUtils {
         isUtc: true);
   }
 
-  static RedditorRef redditorRefOrNull(Reddit reddit, String redditor) {
-    if (redditor == null) {
-      return null;
-    }
-    return reddit.redditor(redditor);
-  }
+  static RedditorRef redditorRefOrNull(Reddit reddit, String redditor) =>
+      (redditor == null) ? null : reddit.redditor(redditor);
+
+  static SubredditRef subredditRefOrNull(Reddit reddit, String subreddit) =>
+      (subreddit == null) ? null : reddit.subreddit(subreddit);
 }

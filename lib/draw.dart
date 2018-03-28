@@ -5,7 +5,7 @@
 
 library draw;
 
-export 'package:draw/src/reddit.dart' hide RedditBaseInitializedMixin;
+export 'package:draw/src/reddit.dart';
 export 'package:draw/src/auth.dart';
 export 'package:draw/src/base.dart';
 export 'package:draw/src/exceptions.dart';
@@ -18,4 +18,5 @@ export 'package:draw/src/models/multireddit.dart';
 export 'package:draw/src/models/redditor.dart';
 export 'package:draw/src/models/submission.dart';
 export 'package:draw/src/models/subreddit.dart';
+export 'package:draw/src/models/subreddit_moderation.dart';
 export 'package:draw/src/models/user_content.dart';

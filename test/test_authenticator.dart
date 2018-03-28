@@ -59,6 +59,12 @@ class TestAuthenticator extends Authenticator {
     return _recordAuth.revoke();
   }
 
+  dynamic _copyResponse(response) {
+    // This is a way to do a recursive deep-copy of the response so we don't
+    // accidentally overwrite data in the tests.
+    return JSON.decode(JSON.encode(response));
+  }
+
   @override
   Future get(Uri path, {Map params}) async {
     const redirectResponseStr = 'DRAWRedirectResponse';
@@ -78,7 +84,7 @@ class TestAuthenticator extends Authenticator {
       }
       _recorder
           .given([path.toString(), params.toString()])
-          .reply(result)
+          .reply(_copyResponse(result))
           .once();
     }
     return result;
@@ -91,7 +97,10 @@ class TestAuthenticator extends Authenticator {
       result = _recording.reply([path.toString(), body.toString()]);
     } else {
       result = await _recordAuth.post(path, body);
-      _recorder.given([path.toString(), body.toString()]).reply(result).once();
+      _recorder
+          .given([path.toString(), body.toString()])
+          .reply(_copyResponse(result))
+          .once();
     }
     return (result == '') ? null : result;
   }
@@ -103,7 +112,10 @@ class TestAuthenticator extends Authenticator {
       result = _recording.reply([path.toString(), body.toString()]);
     } else {
       result = await _recordAuth.put(path, body: body);
-      _recorder.given([path.toString(), body.toString()]).reply(result).once();
+      _recorder
+          .given([path.toString(), body.toString()])
+          .reply(_copyResponse(result))
+          .once();
     }
     return result;
   }
@@ -117,7 +129,7 @@ class TestAuthenticator extends Authenticator {
       result = await _recordAuth.delete(path, body: body);
       _recorder
           .given([path.toString(), body.toString()])
-          .reply(result ?? '')
+          .reply(_copyResponse(result) ?? '')
           .once();
     }
     return (result == '') ? null : result;

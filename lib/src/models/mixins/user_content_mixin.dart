@@ -13,6 +13,13 @@ abstract class UserContentMixin implements RedditBaseInitializedMixin {
   /// reason.
   List<List<String>> get modReports => data['mod_reports'];
 
+  /// A [List] of reports made by users.
+  ///
+  /// Each report consists of a list with two entries. The first entry is the
+  /// report reason. The second is the number of times this reason has been
+  /// reported.
+  List<List<String>> get userReports => data['user_reports'];
+
   /// True if the currently authenticated user has marked this content as saved.
   bool get saved => data['saved'];
 }
