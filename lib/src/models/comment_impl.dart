@@ -27,6 +27,7 @@ import 'package:draw/src/models/mixins/inboxtoggleable.dart';
 import 'package:draw/src/models/mixins/replyable.dart';
 import 'package:draw/src/models/mixins/reportable.dart';
 import 'package:draw/src/models/mixins/saveable.dart';
+import 'package:draw/src/models/mixins/user_content_moderation.dart';
 import 'package:draw/src/models/mixins/voteable.dart';
 
 void setSubmissionInternal(commentLike, SubmissionRef s) {
@@ -453,4 +454,11 @@ class CommentRef extends UserContent {
 
   /// A forest of replies to the current comment.
   CommentForest get replies => _replies;
+}
+
+class CommentModeration extends Object with UserContentModerationMixin {
+  Comment get content => _content;
+  final Comment _content;
+
+  CommentModeration._(this._content);
 }
