@@ -374,8 +374,7 @@ class WebAuthenticator extends Authenticator {
     redditAuthUri = redditAuthUri.replace(queryParameters: queryParameters);
     if (compactLogin) {
       String path = redditAuthUri.path;
-      assert(path.endsWith('?'), 'The path should end with "authorize?"');
-      path = path.substring(0, path.length - 1) + r'.compact?';
+      path = path.substring(0, path.length) + r'.compact';
       redditAuthUri = redditAuthUri.replace(path: path);
     }
     return redditAuthUri;
