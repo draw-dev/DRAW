@@ -19,5 +19,6 @@ export 'package:draw/src/models/multireddit.dart';
 export 'package:draw/src/models/redditor.dart';
 export 'package:draw/src/models/submission.dart';
 export 'package:draw/src/models/subreddit.dart';
-export 'package:draw/src/models/subreddit_moderation.dart' hide buildModeratorAction;
+export 'package:draw/src/models/subreddit_moderation.dart'
+    hide buildModeratorAction;
 export 'package:draw/src/models/user_content.dart';

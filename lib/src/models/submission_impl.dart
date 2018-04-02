@@ -105,14 +105,13 @@ class Submission extends SubmissionRef
   CommentForest get comments => _comments;
 
   /// Repopulates the [CommentForest] with the most up-to-date comments.
-  /// 
+  ///
   /// Note: some methods of generating [Submission] objects do not populate the
   /// `comments` property, resulting in it being set to `null`. This method can
   /// also be used to populate `comments`.
   Future<CommentForest> refreshComments() async {
     final response = await fetch();
-    _comments =
-        new CommentForest(this, response[1]['listing']);
+    _comments = new CommentForest(this, response[1]['listing']);
     return _comments;
   }
 
