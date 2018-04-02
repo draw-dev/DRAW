@@ -248,7 +248,6 @@ class Submission extends SubmissionRef
 
   Submission.parse(Reddit reddit, Map data)
       : super.withPath(reddit, SubmissionRef._infoPath(data['id'])) {
-    //_comments = new CommentForest(submission)
     setData(this, data);
   }
 
