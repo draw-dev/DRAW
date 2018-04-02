@@ -267,7 +267,7 @@ class SubredditRef extends RedditBase
           sort: Sort.newest,
           syntax: _SearchSyntax.cloudSearch)) {
         assert(submission is Submission);
-        final submissionCast = await (submission as Submission).populate();
+        final Submission submissionCast = submission;
         final id = submissionCast.id;
         currentIds.add(id);
         endSec = min(endSec, submissionCast.data['created'].round());
