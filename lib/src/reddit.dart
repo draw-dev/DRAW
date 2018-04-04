@@ -164,8 +164,7 @@ class Reddit {
   ///
   /// [siteName] is the name of the configuration to use from draw.ini. Defaults
   /// to 'default'.
-  static Future<Reddit> restoreAuthenticatedInstance(
-      String credentialsJson,
+  static Future<Reddit> restoreAuthenticatedInstance(String credentialsJson,
       {String clientId,
       String clientSecret,
       String userAgent,
