@@ -42,6 +42,14 @@ abstract class Authenticator {
         _grant = grant,
         _client = null;
 
+  Authenticator.restore(
+      DRAWConfigContext config, oauth2.Credentials credentials)
+      : _config = config,
+        _client = new oauth2.Client(credentials,
+            identifier: config.clientId,
+            secret: config.clientSecret,
+            httpClient: new http.Client());
+
   /// Request a new access token from the Reddit API. Throws a
   /// [DRAWAuthenticationError] if the [Authenticator] is not yet initialized.
   Future refresh() async {
@@ -335,12 +343,17 @@ class WebAuthenticator extends Authenticator {
     assert(_redirect != null);
   }
 
+  WebAuthenticator._restore(DRAWConfigContext config, String credentialsJson)
+      : _redirect = Uri.parse(config.redirectUrl),
+        super.restore(config, new oauth2.Credentials.fromJson(credentialsJson));
+
   static WebAuthenticator create(
-      DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant) {
-    final WebAuthenticator authenticator =
-        new WebAuthenticator._(config, grant);
-    return authenticator;
-  }
+          DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant) =>
+      new WebAuthenticator._(config, grant);
+
+  static WebAuthenticator restore(
+          DRAWConfigContext config, String credentialsJson) =>
+      new WebAuthenticator._restore(config, credentialsJson);
 
   /// Generates the authentication URL used for Reddit user verification in a
   /// browser.

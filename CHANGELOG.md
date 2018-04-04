@@ -1,12 +1,18 @@
 Change Log
 =================================
+## Version 0.1.5 (2018/04/03)
+* Added `Reddit.restoreAuthenticatedInstance`, which can be used to create a
+  Reddit instance from previously cached credentials.
+* Documentation improvements.
+* Various bug fixes.
+
 ## Version 0.1.4 (2018/03/31)
 * Added `SubredditModeration`, a class which implements moderator functionality for `Subreddit`s.
 * Fixed issue #46 which was causing `WebAuthenticator.url` to hit an assertion when `compactLogin` was set
 to `true`.
 
 ## Version 0.1.3 (2018/03/22)
-* Added additional convenience accessors to various classes, including `Comment`, `Redditor`, `Submission`, 
+* Added additional convenience accessors to various classes, including `Comment`, `Redditor`, `Submission`,
 and `Subreddit`.
 * Added classes `SubredditFilters` and `SubredditQuarantine`.
 

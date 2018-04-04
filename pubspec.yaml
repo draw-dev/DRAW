@@ -1,5 +1,5 @@
 name: draw
-version: 0.1.4
+version: 0.1.5
 description: 'A Reddit API wrapper for Dart, inspired by PRAW.'
 homepage: 'https://github.com/draw-dev/DRAW'
 authors:
