@@ -131,7 +131,7 @@ class Reddit {
   /// Creates a new authenticated [Reddit] instance from cached credentials.
   ///
   /// [credentialsJson] is a JSON string containing the cached credentials. This
-  /// parameter is required.
+  /// parameter is required and cannot be 'null'.
   ///
   /// This string can be retrieved from an authenticated [Reddit] instance in
   /// the following manner:
@@ -165,10 +165,10 @@ class Reddit {
   /// [siteName] is the name of the configuration to use from draw.ini. Defaults
   /// to 'default'.
   static Future<Reddit> restoreAuthenticatedInstance(
+      String credentialsJson,
       {String clientId,
       String clientSecret,
       String userAgent,
-      String credentialsJson,
       Uri redirectUri,
       Uri tokenEndpoint,
       Uri authEndpoint,
