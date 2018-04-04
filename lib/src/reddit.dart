@@ -93,6 +93,9 @@ class Reddit {
   /// [authEndpoint] is a [Uri] to an alternative authentication endpoint. If not
   /// provided, [defaultAuthTokenEndpoint] is used.
   ///
+  /// [configUri] is a [Uri] pointing to a 'draw.ini' file, which can be used to
+  /// populate the previously described parameters.
+  ///
   /// [siteName] is the name of the configuration to use from draw.ini. Defaults
   /// to 'default'.
   static Future<Reddit> createInstance({
@@ -125,6 +128,75 @@ class Reddit {
     throw new DRAWAuthenticationError('Unable to authenticate with Reddit');
   }
 
+  /// Creates a new authenticated [Reddit] instance from cached credentials.
+  ///
+  /// [credentialsJson] is a JSON string containing the cached credentials. This
+  /// parameter is required.
+  ///
+  /// This string can be retrieved from an authenticated [Reddit] instance in
+  /// the following manner:
+  ///
+  /// ```dart
+  /// final credentialsJson = reddit.auth.credentials.toJson();
+  /// ```
+  ///
+  /// [clientId] is the identifier associated with your authorized application
+  /// on Reddit. To get a client ID, create an authorized application
+  /// [here](http://www.reddit.com/prefs/apps).
+  ///
+  /// [clientSecret] is the unique secret associated with your client ID. This
+  /// is required for script and web applications.
+  ///
+  /// [userAgent] is an arbitrary identifier used by the Reddit API to
+  /// differentiate between client instances. This should be relatively unique.
+  ///
+  /// [redirectUri] is the redirect URI associated with your Reddit application.
+  /// This field is unused for script and read-only instances.
+  ///
+  /// [tokenEndpoint] is a [Uri] to an alternative token endpoint. If not
+  /// provided, [defaultTokenEndpoint] is used.
+  ///
+  /// [authEndpoint] is a [Uri] to an alternative authentication endpoint. If not
+  /// provided, [defaultAuthTokenEndpoint] is used.
+  ///
+  /// [configUri] is a [Uri] pointing to a 'draw.ini' file, which can be used to
+  /// populate the previously described parameters.
+  ///
+  /// [siteName] is the name of the configuration to use from draw.ini. Defaults
+  /// to 'default'.
+  static Future<Reddit> restoreAuthenticatedInstance(
+      {String clientId,
+      String clientSecret,
+      String userAgent,
+      String credentialsJson,
+      Uri redirectUri,
+      Uri tokenEndpoint,
+      Uri authEndpoint,
+      Uri configUri,
+      String siteName = 'default'}) async {
+    if (credentialsJson == null) {
+      throw new DRAWArgumentError('credentialsJson cannot be null.');
+    }
+    final reddit = new Reddit._(
+      clientId,
+      clientSecret,
+      userAgent,
+      null,
+      null,
+      redirectUri,
+      tokenEndpoint,
+      authEndpoint,
+      configUri,
+      siteName,
+      credentialsJson,
+    );
+    final initialized = await reddit._initializedCompleter.future;
+    if (initialized) {
+      return reddit;
+    }
+    throw new DRAWAuthenticationError('Unable to authenticate with Reddit');
+  }
+
   // TODO(bkonyi): inherit from some common base class.
   Reddit._(
       String clientId,
@@ -136,7 +208,8 @@ class Reddit {
       Uri tokenEndpoint,
       Uri authEndpoint,
       Uri configUri,
-      String siteName) {
+      String siteName,
+      [String credentialsJson]) {
     // Loading passed in values into config file.
     _config = new DRAWConfigContext(
         clientId: clientId,
@@ -160,28 +233,38 @@ class Reddit {
       throw new DRAWAuthenticationError('userAgent cannot be null.');
     }
 
-    final grant = new oauth2.AuthorizationCodeGrant(_config.clientId,
-        Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
-        secret: _config.clientSecret);
+    if (credentialsJson == null) {
+      final grant = new oauth2.AuthorizationCodeGrant(_config.clientId,
+          Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
+          secret: _config.clientSecret);
 
-    if (_config.username == null &&
-        _config.password == null &&
-        _config.redirectUrl == null) {
-      ReadOnlyAuthenticator
-          .create(_config, grant)
-          .then(_initializationCallback);
-      _readOnly = true;
-    } else if (_config.username != null && _config.password != null) {
-      // Check if we are creating an authorized client.
-      ScriptAuthenticator.create(_config, grant).then(_initializationCallback);
-      _readOnly = false;
-    } else if (_config.username == null &&
-        _config.password == null &&
-        _config.redirectUrl != null) {
-      _initializationCallback(WebAuthenticator.create(_config, grant));
-      _readOnly = false;
+      if (_config.username == null &&
+          _config.password == null &&
+          _config.redirectUrl == null) {
+        ReadOnlyAuthenticator
+            .create(_config, grant)
+            .then(_initializationCallback);
+        _readOnly = true;
+      } else if (_config.username != null && _config.password != null) {
+        // Check if we are creating an authorized client.
+        ScriptAuthenticator
+            .create(_config, grant)
+            .then(_initializationCallback);
+        _readOnly = false;
+      } else if (_config.username == null &&
+          _config.password == null &&
+          _config.redirectUrl != null) {
+        _initializationCallback(WebAuthenticator.create(_config, grant));
+        _readOnly = false;
+      } else {
+        throw new DRAWUnimplementedError('Unsupported authentication type.');
+      }
     } else {
-      throw new DRAWUnimplementedError('Unsupported authentication type.');
+      // TODO(bkonyi): we might want to add restore methods for the other
+      // authenticator types.
+      _initializationCallback(
+          WebAuthenticator.restore(_config, credentialsJson));
+      _readOnly = false;
     }
   }
 
@@ -206,6 +289,7 @@ class Reddit {
   }
 
   RedditorRef redditor(String redditor) => new RedditorRef.name(this, redditor);
+
   SubredditRef subreddit(String subreddit) =>
       new SubredditRef.name(this, subreddit);
 

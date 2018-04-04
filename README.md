@@ -20,24 +20,24 @@ Installing DRAW is simple using Dart's package management system, [pub](https://
 Assuming you already have your [Reddit OAuth credentials](https://github.com/reddit/reddit/wiki/OAuth2), getting started with DRAW is simple:
 
 ```dart
-import 'dart:async';                                                                                                                                                                                               
-import 'package:draw/draw.dart';                                                                                                                                                                                   
-                                                                                                                                                                                                                   
-Future main() async {                                                                                                                                                                                              
-  // Create the `Reddit` instance and authenticate                                                                                                                                                                 
-  Reddit reddit = await Reddit.createInstance(                                                                                                                                                                     
-    clientId: CLIENT_ID,                                                                                                                                                                                           
-    clientSecret: SECRET,                                                                                                                                                                                          
-    userAgent: AGENT_NAME,                                                                                                                                                                                         
-    username: "DRAWApiOfficial",                                                                                                                                                                                   
-    password: "hunter12", // Fake                                                                                                                                                                                  
-  );                                                                                                                                                                                                               
-                                                                                                                                                                                                                   
-  // Retrieve information for the currently authenticated user                                                                                                                                                     
-  Redditor currentUser = await reddit.user.me();                                                                                                                                                                                                                                                                                                                                                                                      
-  // Outputs: My name is DRAWApiOfficial                                                                                                                                                                           
-  print("My name is ${currentUser.displayName}");                                                                                                                                                                  
-} 
+import 'dart:async';
+import 'package:draw/draw.dart';
+
+Future main() async {
+  // Create the `Reddit` instance and authenticated
+  Reddit reddit = await Reddit.createInstance(
+    clientId: CLIENT_ID,
+    clientSecret: SECRET,
+    userAgent: AGENT_NAME,
+    username: "DRAWApiOfficial",
+    password: "hunter12", // Fake
+  );
+
+  // Retrieve information for the currently authenticated user
+  Redditor currentUser = await reddit.user.me();
+  // Outputs: My name is DRAWApiOfficial
+  print("My name is ${currentUser.displayName}");
+}
 ```
 
 This simple example is a great way to confirm that DRAW is working and that your credentials have been configured correctly.
@@ -51,28 +51,87 @@ Here is a simple example of how to use web authentication with DRAW:
 import 'package:draw/draw.dart';
 
 main() async {
-  // Create a `Reddit` instance using a configuration file in the current directory.
-  final reddit = await Reddit.createInstance(userAgent: 'foobar', configUri: Uri.parse('draw.ini'));
+  final userAgent = 'foobar';
+  final configUri = Uri.parse('draw.ini');
 
-  // Build the URL used for authentication. See `WebAuthenticator` documentation for parameters.
+  // Create a `Reddit` instance using a configuration file in the
+  // current directory.
+  final reddit = await Reddit.createInstance(userAgent: userAgent,
+                                             configUri: configUri);
+
+  // Build the URL used for authentication. See `WebAuthenticator`
+  // documentation for parameters.
   final auth_url = reddit.auth.url(['*'], 'foobar'));
   
   // ...
-  // Complete authentication at `auth_url` in the browser and retrieve the `code` query
-  // parameter from the redirect URL.
+  // Complete authentication at `auth_url` in the browser and retrieve
+  // the `code` query parameter from the redirect URL.
   // ...
 
-  // Assuming the `code` query parameter is stored in a variable `auth_code`, we pass it to the
-  // `authorize` method in the `WebAuthenticator`.
+  // Assuming the `code` query parameter is stored in a variable
+  // `auth_code`, we pass it to the `authorize` method in the
+  // `WebAuthenticator`.
   await reddit.auth.authorize(auth_code);
 
-  // If everything worked correctly, we should be able to retrieve information about the authenticated
-  // account.
+  // If everything worked correctly, we should be able to retrieve
+  // information about the authenticated account.
   print(await reddit.user.me());
 }
 ```
 
-And here's an example `draw.ini` suitable for web based authentication:
+It is also possible to restore cached credentials in order to avoid the need to complete the web authentication flow on each run:
+
+```dart
+import 'package:draw/draw.dart';
+
+// Provides methods to load and save credentials.
+import 'credential_loader.dart';
+
+main() async {
+  final userAgent = 'foobar';
+  final configUri = Uri.parse('draw.ini');
+
+  // Load cached credentials from disk, if available.
+  final credentialsJson = await loadCredentials();
+
+  var reddit;
+
+  if (credentialsJson == null) {
+    reddit =
+        await Reddit.createInstance(userAgent: userAgent,
+                                    configUri: configUri);
+
+    // Build the URL used for authentication. See `WebAuthenticator`
+    // documentation for parameters.
+    final auth_url = reddit.auth.url(['*'], 'foobar');
+
+    // ...
+    // Complete authentication at `auth_url` in the browser and retrieve
+    // the `code` query parameter from the redirect URL.
+    // ...
+
+    // Assuming the `code` query parameter is stored in a variable
+    // `auth_code`, we pass it to the `authorize` method in the
+    // `WebAuthenticator`.
+    await reddit.auth.authorize(auth_code);
+
+    // Write credentials to disk.
+    await writeCredentials(reddit.auth.credentials.toJson());
+  } else {
+    // Create a new Reddit instance using previously cached credentials.
+    reddit = await Reddit.restoreAuthenticatedInstance(
+        userAgent: userAgent,
+        configUri: configUri,
+        credentialsJson: credentialsJson);
+  }
+
+  // If everything worked correctly, we should be able to retrieve
+  // information about the authenticated account.
+  print(await reddit.user.me());
+}
+```
+
+Here's an example `draw.ini` suitable for web based authentication:
 
 ```ini
 default=default
