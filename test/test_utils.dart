@@ -12,7 +12,7 @@ Future<Reddit> createRedditTestInstance(String path, {bool live: false}) async {
   var testAuth;
   if (live) {
     final tempReddit = await Reddit.createInstance(
-       siteName: 'DRAWApiOfficial', configUri: Uri.parse(r'../draw.ini'));
+        userAgent: 'foobar', siteName: 'DRAWApiOfficial');
     testAuth = new TestAuthenticator(path, recordAuth: tempReddit.auth);
   } else {
     testAuth = new TestAuthenticator(path);
