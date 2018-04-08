@@ -9,6 +9,7 @@ export 'package:draw/src/reddit.dart';
 export 'package:draw/src/auth.dart';
 export 'package:draw/src/base.dart';
 export 'package:draw/src/exceptions.dart';
+export 'package:draw/src/frontpage.dart';
 export 'package:draw/src/objector.dart';
 export 'package:draw/src/user.dart';
 export 'package:draw/src/models/comment.dart';

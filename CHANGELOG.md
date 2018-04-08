@@ -1,5 +1,9 @@
 Change Log
 =================================
+## Version 0.1.6 (2018/04/08)
+* Added the property `Reddit.front`, which exposes methods to retrieve content
+  from the Reddit front page.
+
 ## Version 0.1.5 (2018/04/03)
 * Added `Reddit.restoreAuthenticatedInstance`, which can be used to create a
   Reddit instance from previously cached credentials.

@@ -10,6 +10,7 @@ import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:draw/src/auth.dart';
 import 'package:draw/src/draw_config_context.dart';
 import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/frontpage.dart';
 import 'package:draw/src/objector.dart';
 import 'package:draw/src/user.dart';
 
@@ -48,6 +49,9 @@ class Reddit {
   /// The authorized client used to interact with Reddit APIs.
   Authenticator get auth => _auth;
 
+  /// Provides methods to retrieve content from the Reddit front page.
+  FrontPage get front => _front;
+
   Inbox get inbox => _inbox;
 
   /// Provides methods for the currently authenticated user.
@@ -61,6 +65,7 @@ class Reddit {
 
   Authenticator _auth;
   DRAWConfigContext _config;
+  FrontPage _front;
   Inbox _inbox;
   User _user;
   bool _readOnly = true;
@@ -338,8 +343,9 @@ class Reddit {
 
   void _initializationCallback(Authenticator auth) {
     _auth = auth;
-    _objector = new Objector(this);
+    _front = new FrontPage(this);
     _inbox = new Inbox(this);
+    _objector = new Objector(this);
     _user = new User(this);
     _initialized = true;
     _initializedCompleter.complete(true);
