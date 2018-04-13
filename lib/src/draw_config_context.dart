@@ -182,7 +182,7 @@ class DRAWConfigContext {
         checkForUpdates == null ? null : _configBool(checkForUpdates);
 
     // TODO(bkonyi): Issue #55 - support draw.ini configs on Fuchsia.
-    if (Platform.isFuchsia) {
+    if (!Platform.isFuchsia) {
       final configFileReader = new ConfigFileReader(_configUrl);
 
       // Load the first file found in order of path preference.
