@@ -15,7 +15,7 @@ dependencies:
   ini: '^1.1.0'
   oauth2: '^1.1.0'
   path: '^1.4.2'
-  quiver: '>=0.26.2 <0.29.0'
+  quiver: '>=0.26.2 <1.0.0'
 
 dev_dependencies:
   mockito: '^2.2.1'
