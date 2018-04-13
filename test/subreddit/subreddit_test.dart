@@ -121,24 +121,6 @@ Future main() async {
     expect(ruleOne.priority, equals(0));
   });
 
-  test('lib/subreddit/submission', () async {
-    final reddit = await createRedditTestInstance(
-        'test/subreddit/lib_subreddit_submission.json');
-
-    final subreddit = reddit.subreddit('politics');
-    // Perform a search for content on /r/politics the day of the 2016
-    // presidential elections. PRAW returns 753 results for this query, so we
-    // expect to return the same.
-    int count = 0;
-    // ignore: unused_local_variable
-    await for (final post in subreddit.submissions(
-        start: new DateTime.utc(2016, 11, 8, 8, 0), // These dates are 12AM PST.
-        end: new DateTime.utc(2016, 11, 9, 8, 0))) {
-      ++count;
-    }
-    expect(count, equals(753));
-  });
-
   test('lib/subreddit/sticky', () async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_sticky.json');

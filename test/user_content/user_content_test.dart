@@ -11,11 +11,8 @@ import 'package:test/test.dart';
 import '../test_utils.dart';
 
 Future main() async {
-  // We use this helper to ensure that our submissions request always uses the
-  // exact same DateTime parameters instead of using the current time.
   Stream<Submission> submissionsHelper(SubredditRef subreddit) {
-    return subreddit.submissions(
-        start: new DateTime.utc(2017), end: new DateTime.utc(2017, 10));
+    return subreddit.newest();
   }
 
   test('lib/user_content/replyable', () async {
