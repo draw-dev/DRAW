@@ -3,6 +3,8 @@
 /// Use of this source code is governed by a BSD-style license that
 /// can be found in the LICENSE file.
 
+import 'dart:io';
+
 import 'package:ini/ini.dart';
 
 import 'config_file_reader.dart';
@@ -179,19 +181,24 @@ class DRAWConfigContext {
     _checkForUpdates =
         checkForUpdates == null ? null : _configBool(checkForUpdates);
 
-    final configFileReader = new ConfigFileReader(_configUrl);
+    // TODO(bkonyi): Issue #55 - support draw.ini configs on Fuchsia.
+    if (Platform.isFuchsia) {
+      final configFileReader = new ConfigFileReader(_configUrl);
 
-    // Load the first file found in order of path preference.
-    final primaryFile = configFileReader.loadCorrectFile();
-    if (primaryFile != null) {
-      try {
-        _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
-      } catch (exception) {
-        throw new DRAWClientError('Could not parse configuration file.');
+      // Load the first file found in order of path preference.
+      final primaryFile = configFileReader.loadCorrectFile();
+      if (primaryFile != null) {
+        try {
+          _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
+        } catch (exception) {
+          throw new DRAWClientError('Could not parse configuration file.');
+        }
       }
-    } else {
-      _customConfig = new Config();
     }
+
+    // Create an empty config if we can't find the config or we're on Fuchsia.
+    _customConfig ??= new Config();
+
     // Load values found in the ini file, into the object fields.
     fieldMap.forEach((key, value) => _fieldInitializer(key, value));
   }
