@@ -199,8 +199,8 @@ class Multireddit extends RedditBase {
   static const String _kWeightingScheme = "weighting_scheme";
   static const int _redditorNameInPathIndex = 2;
   static final _subredditRegExp = new RegExp(r'{subreddit}');
-
-  static final RegExp multiredditRegExp = new RegExp(r'{multi}');
+  static final RegExp _userRegExp = new RegExp(r'{user}');
+  static final RegExp _multiredditRegExp = new RegExp(r'{multi}');
 
   /// The [Redditor] associated with this Multireddit.
   RedditorRef get author => new RedditorRef.name(reddit, _author);
@@ -245,8 +245,8 @@ class Multireddit extends RedditBase {
     _author = data['data']['path']?.split('/')[_redditorNameInPathIndex];
     _path = _generateInfoPath(_name, _author);
     _infoPath = apiPath[_kMultiApi]
-        .replaceAll(Multireddit.multiredditRegExp, _name)
-        .replaceAll(User.userRegExp, _author);
+        .replaceAll(_multiredditRegExp, _name)
+        .replaceAll(_userRegExp, _author);
     _data = data;
     // Loading local lazy instance of Subreddits list in form of a String list.
     data['data']['subreddits']?.forEach((pair) => _subreddits.add(pair["name"]));
@@ -255,8 +255,8 @@ class Multireddit extends RedditBase {
   // Returns valid info_path for multireddit with name `name`.
   static String _generateInfoPath(String name, String user) =>
       apiPath['multireddit']
-          .replaceAll(Multireddit.multiredditRegExp, name)
-          .replaceAll(User.userRegExp, user);
+          .replaceAll(_multiredditRegExp, name)
+          .replaceAll(_userRegExp, user);
 
   /// Returns a slug version of the [title].
   static String sluggify(String title) {
@@ -283,8 +283,8 @@ class Multireddit extends RedditBase {
     subreddit = _subredditNameHelper(subreddit);
     if (subreddit == null) return;
     final url = apiPath[_kMultiredditUpdate]
-        .replaceAll(User.userRegExp, _author)
-        .replaceAll(Multireddit.multiredditRegExp, _name)
+        .replaceAll(_userRegExp, _author)
+        .replaceAll(_multiredditRegExp, _name)
         .replaceAll(_subredditRegExp, subreddit);
     final data = {'model': "{'name': $subreddit}"};
     // TODO(ckartik): Check if it may be more applicable to use POST here.
@@ -322,8 +322,8 @@ class Multireddit extends RedditBase {
       _kDisplayName: multiName,
       _kFrom: _path,
       _kTo: apiPath['multireddit']
-          .replaceAll(Multireddit.multiredditRegExp, name)
-          .replaceAll(User.userRegExp, userName),
+          .replaceAll(_multiredditRegExp, name)
+          .replaceAll(_userRegExp, userName),
     };
     return await reddit.post(url, data);
   }
@@ -340,7 +340,7 @@ class Multireddit extends RedditBase {
     subreddit = subredditInstance?.displayName;
     if (subreddit == null) return;
     final url = apiPath[_kMultiredditUpdate]
-        .replaceAll(Multireddit.multiredditRegExp, _name)
+        .replaceAll(_multiredditRegExp, _name)
         .replaceAll(User.userRegExp, _author)
         .replaceAll(_subredditRegExp, subreddit);
     final data = {'model': "{'name': $subreddit}"};
