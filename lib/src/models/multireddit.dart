@@ -185,7 +185,7 @@ String iconNameToString(IconName iconName) {
 /// A class which represents a Multireddit, which is a collection of
 /// [Subreddit]s.
 //TODO(kchopra): Implement subreddit list storage.
-class Multireddit extends RedditBase {
+class Multireddit extends RedditBase with RedditBaseInitializedMixin{
 
   // A number of private variables used as constants in the REST Calls.
   static const String _kDisplayName = 'display_name';
@@ -206,50 +206,33 @@ class Multireddit extends RedditBase {
   RedditorRef get author => new RedditorRef.name(reddit, _author);
   String _author;
 
-  List<String> get subreddits => _subreddits;
+  List<String> get subreddits => _data['subreddits'];
+  /*
+  List<String> _subreddits = [];
   Future<List<String>> get loadSubreddits async => fetch()
       .then((data) => data['data']['subreddits']
       .forEach((pair) => _subreddits.add(pair["name"])));
+  */
 
-  List<String> _subreddits = [];
-
-  String get displayName => _name;
+  String get displayName => data['display_name'];
   String _name;
 
-  String get path => _path ?? '/';
-  String _path;
-
-  String get infoPath => _infoPath;
+  String get infoPath => _infoPath ?? '/';
   String _infoPath;
 
   Map get data => _data;
   Map _data;
 
-  /// The name constructor for multireddit
-  ///
-  /// Returns an instance of Multireddit with the corresponding name.
-  Multireddit.name(Reddit reddit, String multiName, String userName)
-      : _name = multiName,
-        _author = userName,
-        super.withPath(
-            reddit, Multireddit._generateInfoPath(multiName, userName)){
-    _infoPath = Multireddit._generateInfoPath(multiName, userName);
-    _path = _generateInfoPath(multiName, userName);
-  }
-
-  // TODO(@ckartik): Check with @bkonyi if some of the assignments here are safe.
   Multireddit.parse(Reddit reddit, Map data)
   : super(reddit){
-    _name = data['data']['name'];
-    // TODO(@ckartik): Make this less obfuscated.
-    _author = data['data']['path']?.split('/')[_redditorNameInPathIndex];
-    _path = _generateInfoPath(_name, _author);
-    _infoPath = apiPath[_kMultiApi]
-        .replaceAll(_multiredditRegExp, _name)
-        .replaceAll(_userRegExp, _author);
-    _data = data;
-    // Loading local lazy instance of Subreddits list in form of a String list.
-    data['data']['subreddits']?.forEach((pair) => _subreddits.add(pair["name"]));
+    _data = data['data'];
+    _name = _data['name'];
+    // Based on the Reddit API, this seems to be the only way to
+    // extract the name of the author.
+    // TODO(@ckartik): Test if this works in the case of multireddit being,
+    // the authenticated users, as the path may differ.
+    _author = _data['path']?.split('/')[_redditorNameInPathIndex];
+    _infoPath = _generateInfoPath(_name, _author);
   }
 
   // Returns valid info_path for multireddit with name `name`.
@@ -313,20 +296,21 @@ class Multireddit extends RedditBase {
   /// provided, the [name] of this [Multireddit] will be used.
   Future<Multireddit> copy([String multiName]) async {
     final url = apiPath['multireddit_copy'];
-    final name = sluggify(multiName) ?? _name;
+    final name = sluggify(multiName) ?? _data['display_name'];
     final userName = await reddit.user.me().then((me) => me.displayName);
 
-    multiName ??= _name;
+    multiName ??= _data['display_name'];
 
     final data = {
       _kDisplayName: multiName,
-      _kFrom: _path,
+      _kFrom: _infoPath,
       _kTo: apiPath['multireddit']
           .replaceAll(_multiredditRegExp, name)
           .replaceAll(_userRegExp, userName),
     };
     return await reddit.post(url, data);
   }
+
 /*
   /// Delete this [Multireddit].
   Future delete() async {
