@@ -3,7 +3,7 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
-
+import 'dart:io';
 import 'package:draw/draw.dart';
 import 'package:test/test.dart';
 import 'package:color/color.dart';
@@ -104,10 +104,24 @@ Future main() async {
       'test/multireddit/lib_multireddit_delete.json',
     );
     final multis = await reddit.user.multireddits();
-    expect(multis.length, equals(9));
+    expect(multis.length, equals(5));
     await multis[1].delete();
     final newMultis = await reddit.user.multireddits();
-    expect(newMultis.length, equals(8));
+    expect(newMultis.length, equals(4));
 //    await reddit.auth.writeRecording();
+  });
+
+  test('lib/multireddit/AddSubreddit', () async {
+    final reddit = await createRedditTestInstance(
+      'test/multireddit/lib_multireddit_add_subreddit.json',
+      live: true
+    );
+    final multis = await reddit.user.multireddits();
+    final multi = multis[1];
+    await multi.add('camping');
+//    sleep(new Duration(seconds: 10)); Not working for some reason.???
+//    expect(multi.data['subreddits'].length, equals(3));
+//    expect(multi.subreddits.length, equals(3));
+    await reddit.auth.writeRecording();
   });
 }
