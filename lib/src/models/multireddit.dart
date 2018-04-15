@@ -15,7 +15,6 @@ import '../exceptions.dart';
 import 'redditor.dart';
 import 'subreddit.dart';
 
-
 enum Visibility { hidden, private, public }
 String visibilityToString(Visibility visibility) {
   switch (visibility) {
@@ -43,7 +42,8 @@ String weightingSchemeToString(WeightingScheme weightingScheme) {
       return "fresh";
       break;
     default:
-      throw new DRAWInternalError('WeightingScheme: $weightingScheme is not supported');
+      throw new DRAWInternalError(
+          'WeightingScheme: $weightingScheme is not supported');
   }
 }
 
@@ -184,9 +184,9 @@ String iconNameToString(IconName iconName) {
 
 /// A class which represents a Multireddit, which is a collection of
 /// [Subreddit]s.
-//TODO(kchopra): Implement subreddit list storage.
-class Multireddit extends RedditBase with RedditBaseInitializedMixin{
-
+//TODO(@ckartik): Implement subreddit list storage.
+class Multireddit extends RedditBase with RedditBaseInitializedMixin {
+  // TODO(@ckartik): Add CommentHelper.
   // A number of private variables used as constants in the REST Calls.
   static const String _kDisplayName = 'display_name';
   static const String _kFrom = "from";
@@ -206,33 +206,51 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin{
   RedditorRef get author => new RedditorRef.name(reddit, _author);
   String _author;
 
-  List<String> get subreddits => _data['subreddits'];
-  /*
-  List<String> _subreddits = [];
-  Future<List<String>> get loadSubreddits async => fetch()
-      .then((data) => data['data']['subreddits']
-      .forEach((pair) => _subreddits.add(pair["name"])));
-  */
+  bool get canEdit => _data['can_edit'];
 
-  String get displayName => data['display_name'];
-  String _name;
+  /// When was this [Multireddit] created.
+  DateTime get createdUtc => new DateTime.fromMillisecondsSinceEpoch(
+      data['created_utc'].round() * 1000,
+      isUtc: true);
+  Map get data => _data;
+  Map _data;
+
+  List<SubredditRef> get subreddits {
+    final subredditList = [];
+    subredditList.addAll(_data['subreddits']
+        .map((subreddit) => new SubredditRef.name(reddit, subreddit['name'])));
+    return subredditList;
+  }
+
+  String get displayName => _data['display_name'];
+  Visibility get visibility => Visibility.values.firstWhere(
+      (e) => e.toString() == ('Visibility.' + _data['visibility']),
+      orElse: () => null);
+
+  WeightingScheme get weightingScheme => WeightingScheme.values.firstWhere(
+      (e) => e.toString() == ('WeightingScheme.' + _data['weighting_scheme']),
+      orElse: () => null);
+
+  IconName get iconName => IconName.values.firstWhere(
+      (e) => e.toString() == ('IconName.' + _data['icon_name']),
+      orElse: () => null);
+
+  // TODO(@ckartik): Try to make the _data['key_color'] value null.
+  Color get keyColor => new HexColor(_data['key_color']);
+  bool get over18 => _data['over_18'];
 
   String get infoPath => _infoPath ?? '/';
   String _infoPath;
 
-  Map get data => _data;
-  Map _data;
-
-  Multireddit.parse(Reddit reddit, Map data)
-  : super(reddit){
+  Multireddit.parse(Reddit reddit, Map data) : super(reddit) {
     _data = data['data'];
-    _name = _data['name'];
     // Based on the Reddit API, this seems to be the only way to
     // extract the name of the author.
+
     // TODO(@ckartik): Test if this works in the case of multireddit being,
     // the authenticated users, as the path may differ.
     _author = _data['path']?.split('/')[_redditorNameInPathIndex];
-    _infoPath = _generateInfoPath(_name, _author);
+    _infoPath = _generateInfoPath(_data['name'], _author);
   }
 
   // Returns valid info_path for multireddit with name `name`.
@@ -258,6 +276,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin{
     }
     return titleScoped ?? '_';
   }
+
 /*
   /// Add a [Subreddit] to this [Multireddit].
   ///
@@ -311,12 +330,12 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin{
     return await reddit.post(url, data);
   }
 
-/*
   /// Delete this [Multireddit].
   Future delete() async {
-    await reddit.delete(_infoPath);
+    await reddit.delete(apiPath['multireddit_base'] + _infoPath);
   }
 
+/*
   /// Remove a [Subreddit] from this [Multireddit].
   ///
   /// [subreddit] contains the name of the subreddit to be deleted.
