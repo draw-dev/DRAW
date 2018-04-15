@@ -5,6 +5,7 @@
 
 import 'dart:async';
 import 'package:color/color.dart';
+import 'dart:io';
 
 import '../api_paths.dart';
 import '../base.dart';
@@ -218,6 +219,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   IconName get iconName => IconName.values.firstWhere(
       (e) => e.toString() == ('IconName.' + _data['icon_name']),
       orElse: () => null);
+
   List<SubredditRef> get subreddits {
     final subredditList = [];
     subredditList.addAll(_data['subreddits']
@@ -293,7 +295,6 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     return titleScoped ?? '_';
   }
 
-/*
   /// Add a [Subreddit] to this [Multireddit].
   ///
   /// [subreddit] is the name of the [Subreddit] to be added to this [Multireddit].
@@ -302,13 +303,10 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     if (subreddit == null) return;
     final url = apiPath[_kMultiredditUpdate]
         .replaceAll(_userRegExp, _author)
-        .replaceAll(_multiredditRegExp, _name)
+        .replaceAll(_multiredditRegExp, displayName)
         .replaceAll(_subredditRegExp, subreddit);
-    final data = {'model': "{'name': $subreddit}"};
-    // TODO(ckartik): Check if it may be more applicable to use POST here.
-    // Direct Link: (https://www.reddit.com/dev/api/#DELETE_api_multi_{multipath}).
-    await reddit.put(url, body: data);
-    // TODO(ckartik): Research if we should GET subreddits.
+    await reddit.put(url, body: {'model': '{"name" : "$subreddit"}'});
+    await refresh();
   }
 
   // TODO(@ckartik): Ask @bkonyi if this function should me moved in as a static function
@@ -323,7 +321,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     }
     return subreddit;
   }
-*/
+
   /// Copy this [Multireddit], and return the new [Multireddit] of type [Future].
   ///
   /// [multiName] is an optional string that will become the display name of the new
@@ -347,6 +345,8 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   }
 
   /// Delete this [Multireddit].
+  ///
+  /// Does not refresh current instance of Multireddit, as it has been deleted.
   Future delete() async {
     await reddit.delete(apiPath['multireddit_base'] + _infoPath);
   }
