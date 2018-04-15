@@ -47,7 +47,6 @@ String weightingSchemeToString(WeightingScheme weightingScheme) {
   }
 }
 
-//For Reference: "https://www.reddit.com/dev/api/#PUT_api_multi_{multipath}".
 enum IconName {
   artAndDesign,
   ask,
@@ -184,10 +183,8 @@ String iconNameToString(IconName iconName) {
 
 /// A class which represents a Multireddit, which is a collection of
 /// [Subreddit]s.
-//TODO(@ckartik): Implement subreddit list storage.
+// TODO(@ckartik): Add CommentHelper.
 class Multireddit extends RedditBase with RedditBaseInitializedMixin {
-  // TODO(@ckartik): Add CommentHelper.
-  // A number of private variables used as constants in the REST Calls.
   static const String _kDisplayName = 'display_name';
   static const String _kFrom = "from";
   static const String _kMultiApi = 'multireddit_api';
@@ -202,19 +199,25 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   static final RegExp _userRegExp = new RegExp(r'{user}');
   static final RegExp _multiredditRegExp = new RegExp(r'{multi}');
 
-  /// The [Redditor] associated with this Multireddit.
-  RedditorRef get author => new RedditorRef.name(reddit, _author);
-  String _author;
-
-  bool get canEdit => _data['can_edit'];
+  // TODO(@ckartik): Try to make the _data['key_color'] value null.
+  Color get keyColor => new HexColor(_data['key_color']);
 
   /// When was this [Multireddit] created.
   DateTime get createdUtc => new DateTime.fromMillisecondsSinceEpoch(
       data['created_utc'].round() * 1000,
       isUtc: true);
-  Map get data => _data;
-  Map _data;
 
+  /// The [IconName] associated with this multireddit.
+  ///
+  /// Can be one of { artAndDesign, ask, books, business, cars, comic,
+  /// cuteAnimals, diy, entertainment, foodAndDrink, funny, games, grooming,
+  /// health, lifeAdvice, military, modelsPinup, music, news, philosophy,
+  /// picturesAndGifs, science, shopping, sports, style, tech, travel,
+  /// unusualStories, video, emptyString, none }.
+  /// If this information is not provided, will return null.
+  IconName get iconName => IconName.values.firstWhere(
+      (e) => e.toString() == ('IconName.' + _data['icon_name']),
+      orElse: () => null);
   List<SubredditRef> get subreddits {
     final subredditList = [];
     subredditList.addAll(_data['subreddits']
@@ -222,33 +225,46 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     return subredditList;
   }
 
+  /// The [Map] of data associated with this multireddit.
+  Map get data => _data;
+  Map _data;
+
+  /// The [Redditor] associated with this multireddit.
+  RedditorRef get author => new RedditorRef.name(reddit, _author);
+  String _author;
+
+  /// The displayName given to the [Multireddit].
   String get displayName => _data['display_name'];
+
+  /// The infoPath will be used to uniquely identify this multireddit.
+  String get infoPath => _infoPath ?? '/';
+  String _infoPath;
+
+  /// The visibility of this multireddit.
+  ///
+  /// Can be one of { hidden, private, public }.
+  /// If this information is not provided, will return null.
   Visibility get visibility => Visibility.values.firstWhere(
       (e) => e.toString() == ('Visibility.' + _data['visibility']),
       orElse: () => null);
 
+  /// The visibility of this multireddit.
+  ///
+  /// Can be one of { hidden, private, public }.
+  /// If this information is not provided, will return null.
   WeightingScheme get weightingScheme => WeightingScheme.values.firstWhere(
       (e) => e.toString() == ('WeightingScheme.' + _data['weighting_scheme']),
       orElse: () => null);
 
-  IconName get iconName => IconName.values.firstWhere(
-      (e) => e.toString() == ('IconName.' + _data['icon_name']),
-      orElse: () => null);
+  /// Does the currently authenticated [User] have the privilege to edit this
+  /// multireddit.
+  bool get canEdit => _data['can_edit'];
 
-  // TODO(@ckartik): Try to make the _data['key_color'] value null.
-  Color get keyColor => new HexColor(_data['key_color']);
+  /// Does this multireddit require visitors to be over the age of 18.
   bool get over18 => _data['over_18'];
-
-  String get infoPath => _infoPath ?? '/';
-  String _infoPath;
 
   Multireddit.parse(Reddit reddit, Map data) : super(reddit) {
     _data = data['data'];
-    // Based on the Reddit API, this seems to be the only way to
-    // extract the name of the author.
-
-    // TODO(@ckartik): Test if this works in the case of multireddit being,
-    // the authenticated users, as the path may differ.
     _author = _data['path']?.split('/')[_redditorNameInPathIndex];
     _infoPath = _generateInfoPath(_data['name'], _author);
   }
