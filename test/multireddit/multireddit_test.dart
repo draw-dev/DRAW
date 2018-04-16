@@ -1,9 +1,9 @@
+// Copyright (c) 2018, the Dart Reddit API Wrapper project authors.
 // Please see the AUTHORS file for details. All rights reserved.
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:io';
 import 'package:draw/draw.dart';
 import 'package:test/test.dart';
 import 'package:color/color.dart';
@@ -75,28 +75,27 @@ Future main() async {
     final reddit = await createRedditTestInstance(
         'test/multireddit/lib_user_multireddits.json');
     final multis = await reddit.user.multireddits();
-    expect(multis.length, equals(9));
+    expect(multis.length, 9);
     final multi = multis[1];
 
     // Testing using data variable.
-    expect(multi.data['name'], equals('drawtestingmulti'));
-    expect(multi.data['display_name'], equals('drawtestingmulti'));
+    expect(multi.data['name'], 'drawtestingmulti');
+    expect(multi.data['display_name'], 'drawtestingmulti');
     expect(multi.data['can_edit'], isTrue);
-    expect(multi.data['subreddits'].length, equals(81));
+    expect(multi.data['subreddits'].length, 81);
 
     // Testing using getters.
     expect(multi.author.displayName,
-        await reddit.user.me().then((redditor) => redditor.displayName));
+        (await reddit.user.me()).displayName);
     expect(multi.over18, false);
     expect(multi.keyColor, new HexColor('#cee3f8'));
     expect(multi.visibility, Visibility.public);
     expect(multi.weightingScheme, WeightingScheme.classic);
     expect(multi.iconName, null);
-    expect(multi.displayName, equals('drawtestingmulti'));
-    expect(multi.fullname, equals('drawtestingmulti'));
+    expect(multi.displayName, 'drawtestingmulti');
+    expect(multi.fullname, 'drawtestingmulti');
     expect(multi.canEdit, isTrue);
-    expect(multi.subreddits.length, equals(81));
-//    expect(multi.data['subreddits'][0]['name'], equals('lisp'));
+    expect(multi.subreddits.length, 81);
   });
 
   test('lib/multireddit/deleteMulti', () async {
@@ -104,24 +103,18 @@ Future main() async {
       'test/multireddit/lib_multireddit_delete.json',
     );
     final multis = await reddit.user.multireddits();
-    expect(multis.length, equals(5));
+    expect(multis.length, 5);
     await multis[1].delete();
     final newMultis = await reddit.user.multireddits();
-    expect(newMultis.length, equals(4));
-//    await reddit.auth.writeRecording();
+    expect(newMultis.length, 4);
   });
 
   test('lib/multireddit/AddSubreddit', () async {
     final reddit = await createRedditTestInstance(
       'test/multireddit/lib_multireddit_add_subreddit.json',
-      live: true
     );
     final multis = await reddit.user.multireddits();
     final multi = multis[1];
     await multi.add('camping');
-//    sleep(new Duration(seconds: 10)); Not working for some reason.???
-//    expect(multi.data['subreddits'].length, equals(3));
-//    expect(multi.subreddits.length, equals(3));
-    await reddit.auth.writeRecording();
   });
 }

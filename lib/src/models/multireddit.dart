@@ -4,44 +4,39 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
-import 'package:color/color.dart';
-import 'dart:io';
 
-import '../api_paths.dart';
-import '../base.dart';
-import '../base_impl.dart';
-import '../reddit.dart';
-import '../user.dart';
-import '../exceptions.dart';
-import 'redditor.dart';
-import 'subreddit.dart';
+import 'package:color/color.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base.dart';
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/models/redditor.dart';
+import 'package:draw/src/models/subreddit.dart';
+import 'package:draw/src/reddit.dart';
+import 'package:draw/src/user.dart';
 
 enum Visibility { hidden, private, public }
-String visibilityToString(Visibility visibility) {
+
+String _visibilityToString(Visibility visibility) {
   switch (visibility) {
     case Visibility.hidden:
       return "hidden";
-      break;
     case Visibility.private:
       return "private";
-      break;
     case Visibility.public:
       return "public";
-      break;
     default:
       throw new DRAWInternalError('Visiblitity: $visibility is not supported');
   }
 }
 
 enum WeightingScheme { classic, fresh }
-String weightingSchemeToString(WeightingScheme weightingScheme) {
+
+String _weightingSchemeToString(WeightingScheme weightingScheme) {
   switch (weightingScheme) {
     case WeightingScheme.classic:
       return "classic";
-      break;
     case WeightingScheme.fresh:
       return "fresh";
-      break;
     default:
       throw new DRAWInternalError(
           'WeightingScheme: $weightingScheme is not supported');
@@ -82,101 +77,70 @@ enum IconName {
   none,
 }
 
-String iconNameToString(IconName iconName) {
+String _iconNameToString(IconName iconName) {
   switch (iconName) {
     case IconName.artAndDesign:
       return "art and design";
-      break;
     case IconName.ask:
       return "ask";
-      break;
     case IconName.books:
       return "books";
-      break;
     case IconName.business:
       return "business";
-      break;
     case IconName.cars:
       return "cars";
-      break;
     case IconName.comic:
       return "comics";
-      break;
     case IconName.cuteAnimals:
       return "cute animals";
-      break;
     case IconName.diy:
       return "diy";
-      break;
     case IconName.entertainment:
       return "entertainment";
-      break;
     case IconName.foodAndDrink:
       return "food and drink";
-      break;
     case IconName.funny:
       return "funny";
-      break;
     case IconName.games:
       return "games";
-      break;
     case IconName.grooming:
       return "grooming";
-      break;
     case IconName.health:
       return "health";
-      break;
     case IconName.lifeAdvice:
       return "life advice";
-      break;
     case IconName.military:
       return "military";
-      break;
     case IconName.modelsPinup:
       return "models pinup";
-      break;
     case IconName.music:
       return "music";
-      break;
     case IconName.news:
       return "news";
-      break;
     case IconName.philosophy:
       return "philosophy";
-      break;
     case IconName.picturesAndGifs:
       return "pictures and gifs";
-      break;
     case IconName.science:
       return "science";
-      break;
     case IconName.shopping:
       return "shopping";
-      break;
     case IconName.sports:
       return "sports";
-      break;
     case IconName.style:
       return "style";
-      break;
     case IconName.tech:
       return "tech";
-      break;
     case IconName.travel:
       return "travel";
-      break;
     case IconName.unusualStories:
       return "unusual stories";
-      break;
     case IconName.video:
       return "video";
-      break;
     case IconName.emptyString:
       return "";
-      break;
     case IconName.none:
       return "None";
-      break;
     default:
       throw new DRAWInternalError('IconName: $iconName is not supported');
   }
@@ -332,10 +296,10 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     final name = sluggify(multiName) ?? _data['display_name'];
     final userName = await reddit.user.me().then((me) => me.displayName);
 
-    multiName ??= _data['display_name'];
+    final scopedMultiName = multiName ?? _data['display_name'];
 
     final data = {
-      _kDisplayName: multiName,
+      _kDisplayName: scopedMultiName,
       _kFrom: _infoPath,
       _kTo: apiPath['multireddit']
           .replaceAll(_multiredditRegExp, name)
@@ -394,11 +358,6 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     if (displayName != null) {
       newSettings[_kDisplayName] = displayName;
     }
-    /*
-      The Reddit api requires we use the following JSON for a subreddit:
-      {'name': theNameOfTheSubreddit}, for each subreddit in the list.
-      For this reason we do a map here to convert back to api format.
-     */
     final newSubredditList =
         subreddits?.map((item) => {'name': item})?.toList();
     if (newSubredditList != null) {
