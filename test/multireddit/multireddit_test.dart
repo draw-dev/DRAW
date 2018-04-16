@@ -85,8 +85,7 @@ Future main() async {
     expect(multi.data['subreddits'].length, 81);
 
     // Testing using getters.
-    expect(multi.author.displayName,
-        (await reddit.user.me()).displayName);
+    expect(multi.author.displayName, (await reddit.user.me()).displayName);
     expect(multi.over18, false);
     expect(multi.keyColor, new HexColor('#cee3f8'));
     expect(multi.visibility, Visibility.public);
