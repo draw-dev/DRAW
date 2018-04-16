@@ -263,13 +263,13 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   ///
   /// [subreddit] is the name of the [Subreddit] to be added to this [Multireddit].
   Future add(/* String, Subreddit */ subreddit) async {
-    subreddit = _subredditNameHelper(subreddit);
+    final subredditName = _subredditNameHelper(subreddit);
     if (subreddit == null) return;
     final url = apiPath[_kMultiredditUpdate]
         .replaceAll(_userRegExp, _author)
         .replaceAll(_multiredditRegExp, displayName)
         .replaceAll(_subredditRegExp, subreddit);
-    await reddit.put(url, body: {'model': '{"name" : "$subreddit"}'});
+    await reddit.put(url, body: {'model': '{"name" : "$subredditName"}'});
     await refresh();
   }
 
