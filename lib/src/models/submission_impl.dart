@@ -20,6 +20,7 @@ import 'package:draw/src/models/mixins/replyable.dart';
 import 'package:draw/src/models/mixins/reportable.dart';
 import 'package:draw/src/models/mixins/saveable.dart';
 import 'package:draw/src/models/mixins/user_content_mixin.dart';
+import 'package:draw/src/models/mixins/user_content_moderation.dart';
 import 'package:draw/src/models/mixins/voteable.dart';
 import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/subreddit.dart';
@@ -381,4 +382,120 @@ class SubmissionRef extends UserContent {
         new CommentForest(submission, response[1]['listing']);
     return submission;
   }
+}
+
+class SubmissionModeration extends Object with UserContentModerationMixin {
+  static final RegExp _subModRegExp = new RegExp(r'{subreddit}');
+
+  Submission get content => _content;
+  final Submission _content;
+
+  SubmissionModeration._(this._content);
+
+  /// Enables contest mode for the [Comment]s in this [Submission].
+  ///
+  /// If `state` is true (default), contest mode is enabled for this
+  /// [Submission].
+  ///
+  /// Contest mode have the following effects:
+  ///     * The comment thread will default to being sorted randomly.
+  ///     * Replies to top-level comments will be hidden behind
+  ///       "[show replies]" buttons.
+  ///     * Scores will be hidden from non-moderators.
+  ///     * Scores accessed through the API (mobile apps, bots) will be
+  ///       obscured to "1" for non-moderators.
+  Future contestMode({bool state = true}) async => await _content.reddit.post(
+      apiPath['contest_mode'],
+      {
+        'id': _content.fullname,
+        'state': state.toString(),
+      },
+      discardResponse: true);
+
+  /// Sets the flair for the [Submission].
+  ///
+  /// `text` is the flair text to be associated with the [Submission].
+  /// `cssClass` is the CSS class to associate with the flair HTML.
+  ///
+  /// This method can only be used by an authenticated user who has moderation
+  /// rights for this [Submission].
+  Future flair({String text = '', String cssClass = ''}) async {
+    final data = {
+      'css_class': cssClass,
+      'link': _content.fullname,
+      'text': text,
+    };
+    var subreddit = _content.subreddit;
+    if (subreddit is! Subreddit) {
+      subreddit = await subreddit.populate();
+    }
+    final url = apiPath['flair']
+        .replaceAll(_subModRegExp, (subreddit as Subreddit).fullname);
+    await _content.reddit.post(url, data, discardResponse: true);
+  }
+
+  /// Locks the [Submission] to new [Comment]s.
+  Future lock() async => await _content.reddit.post(
+      apiPath['lock'],
+      {
+        'id': _content.fullname,
+      },
+      discardResponse: true);
+
+  /// Marks the [Submission] as not safe for work.
+  ///
+  /// Both the [Submission] author and users with moderation rights for this
+  /// submission can set this flag.
+  Future nsfw() async => await _content.reddit.post(
+      apiPath['marknsfw'],
+      {
+        'id': _content.fullname,
+      },
+      discardResponse: true);
+
+  /// Marks the [Submission] as safe for work.
+  ///
+  /// Both the [Submission] author and users with moderation rights for this
+  /// submission can set this flag.
+  Future sfw() async => await _content.reddit.post(
+      apiPath['unmarknsfw'],
+      {
+        'id': _content.fullname,
+      },
+      discardResponse: true);
+
+  Future spoiler() async => await _content.reddit.post(
+      apiPath['spoiler'],
+      {
+        'id': _content.fullname,
+      },
+      discardResponse: true);
+
+  Future sticky({bool state = true, bool bottom = true}) async {
+    final Map<String, dynamic> data = {
+      'id': _content.fullname,
+      'state': state.toString(),
+    };
+    if (!bottom) {
+      data['num'] = 1;
+    }
+    return await _content.reddit.post(apiPath['sticky_submission'], data);
+  }
+
+  // TODO(bkonyi): make sort enum
+  Future suggestedSort() async {}
+
+  Future unlock() async => await _content.reddit.post(
+      apiPath['unlock'],
+      {
+        'id': _content.fullname,
+      },
+      discardResponse: true);
+
+  Future unspoiler() async => await _content.reddit.post(
+      apiPath['unspoiler'],
+      {
+        'id': _content.fullname,
+      },
+      discardResponse: true);
 }
