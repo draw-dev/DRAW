@@ -71,7 +71,7 @@ Future main() async {
     expect(newMulti.subreddits, multireddit.subreddits);
   });
 
-  test('lib/multireddit/copy', () async {
+  test('lib/multireddit/copy_without_parsing', () async {
     final newMultiName = 'CopyOfMultireddit';
     final newMultiNameSlug = 'copyofmultireddit';
     final reddit = await createRedditTestInstance(
