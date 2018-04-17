@@ -71,6 +71,17 @@ Future main() async {
     expect(newMulti.subreddits, multireddit.subreddits);
   });
 
+  test('lib/multireddit/copy', () async {
+    final newMultiName = 'CopyOfMultireddit';
+    final newMultiNameSlug = 'copyofmultireddit';
+    final reddit = await createRedditTestInstance(
+        'test/multireddit/lib_multireddit_copy_2.json');
+    final oldMulti = (await reddit.user.multireddits())[1];
+    final newMulti = await oldMulti.copy(newMultiName);
+    expect(newMulti.displayName, newMultiNameSlug);
+    expect(newMulti.subreddits, oldMulti.subreddits);
+  });
+
   test('lib/multireddit/userMultis', () async {
     final reddit = await createRedditTestInstance(
         'test/multireddit/lib_user_multireddits.json');
