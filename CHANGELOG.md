@@ -1,5 +1,17 @@
 Change Log
 =================================
+## Version 0.2.0 (2018/04/13)
+Breaking changes:
+* `Subreddit.submissions` has been removed as the Reddit API endpoint no longer
+  exists. See [this
+  post](https://www.reddit.com/r/changelog/comments/7tus5f/update_to_search_api/)
+  for context.
+
+Miscellaneous:
+* Added initial support for Fuchsia. draw.ini configurations are not yet
+  supported on this platform.
+* Loosened some version restrictions for pub packages.
+
 ## Version 0.1.6 (2018/04/08)
 * Added the property `Reddit.front`, which exposes methods to retrieve content
   from the Reddit front page.

@@ -230,57 +230,6 @@ class SubredditRef extends RedditBase
     return null; // Shut the analyzer up.
   }
 
-  /// Yield [Submission]s created between [start] and [end].
-  ///
-  /// [start] and [end] indicate the earliest and latest creation times
-  /// of submissions to be yielded. [extraQuery] is used to further filter
-  /// results.
-  Stream<Submission> submissions(
-      {DateTime start, DateTime end, String extraQuery}) async* {
-    // Calculate the correct time range with respect to PST time.
-    const utcOffset = 60 * 60 * 8; // Offset for PST from UTC.
-    final currentTime =
-        (new DateTime.now().millisecondsSinceEpoch / 1000).round() + utcOffset;
-    final startSec = max(
-        (start != null)
-            ? ((start.millisecondsSinceEpoch / 1000).round() + utcOffset)
-            : 0,
-        0);
-    var endSec = min(
-        ((end != null)
-            ? (end.millisecondsSinceEpoch / 1000).round() + utcOffset
-            : currentTime),
-        currentTime);
-
-    var foundNewSubmission = true;
-    var lastIds = new Set();
-    final params = {};
-    while (foundNewSubmission) {
-      var query = 'timestamp:$startSec..$endSec';
-      if (extraQuery != null) {
-        query = '(and $query $extraQuery)';
-      }
-      final currentIds = new Set();
-      foundNewSubmission = false;
-      await for (var submission in search(query,
-          params: params,
-          sort: Sort.newest,
-          syntax: _SearchSyntax.cloudSearch)) {
-        assert(submission is Submission);
-        final Submission submissionCast = submission;
-        final id = submissionCast.id;
-        currentIds.add(id);
-        endSec = min(endSec, submissionCast.data['created'].round());
-        if (!lastIds.contains(id)) {
-          foundNewSubmission = true;
-        }
-        yield submissionCast;
-        params['after'] = submissionCast.fullname;
-      }
-      lastIds = currentIds;
-    }
-  }
-
   /// Creates a [Submission] on the [Subreddit].
   ///
   /// [title] is the title of the submission. [selftext] is markdown formatted
@@ -747,7 +696,7 @@ class SubredditStream {
   /// will initially be returned. If [pauseAfter] is provided, the stream will
   /// return null after [pauseAfter] iterations.
   Stream<Submission> submissions({int pauseAfter}) =>
-      streamGenerator(_subreddit.submissions, pauseAfter: pauseAfter);
+      streamGenerator(_subreddit.newest, pauseAfter: pauseAfter);
 }
 
 // TODO(bkonyi): implement

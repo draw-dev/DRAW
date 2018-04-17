@@ -11,11 +11,8 @@ import 'package:test/test.dart';
 import '../test_utils.dart';
 
 Future main() async {
-  // We use this helper to ensure that our submissions request always uses the
-  // exact same DateTime parameters instead of using the current time.
   Stream<Submission> submissionsHelper(SubredditRef subreddit) {
-    return subreddit.submissions(
-        start: new DateTime.utc(2017), end: new DateTime.utc(2017, 10));
+    return subreddit.newest();
   }
 
   // TODO(bkonyi): crosspost is fairly new on Reddit and is only available to
@@ -73,14 +70,14 @@ Future main() async {
       submissions.add(submission);
       expect(submission.hidden, isFalse);
     }
-    expect(submissions.length, equals(2));
-    await submissions[0].hide(otherSubmissions: [submissions[1]]);
+    expect(submissions.length, equals(3));
+    await submissions[0].hide(otherSubmissions: submissions.sublist(1));
 
     for (final submission in submissions) {
       await submission.refresh();
       expect(submission.hidden, isTrue);
     }
-    await submissions[1].unhide(otherSubmissions: [submissions[0]]);
+    await submissions[0].unhide(otherSubmissions: submissions.sublist(1));
 
     for (final submission in submissions) {
       await submission.refresh();
