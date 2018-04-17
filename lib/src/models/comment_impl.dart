@@ -371,8 +371,42 @@ class CommentRef extends UserContent {
   CommentRef.withID(Reddit reddit, String id)
       : super.withPath(reddit, _infoPath(id));
 
+  CommentRef.withPath(Reddit reddit, url)
+      : super.withPath(reddit, _infoPath(idFromUrl(url)));
+
   static String _infoPath(String id) =>
       apiPath['comment'].replaceAll(_commentRegExp, id);
+
+  // TODO(bkonyi): allow for paths without trailing '/'.
+  /// Retrieve a comment ID from a given URL.
+  ///
+  /// Note: when [url] is a [String], it must end with a trailing '/'. This is a
+  /// bug and will be fixed eventually.
+  static String idFromUrl(/*String, Uri*/ url) {
+    Uri uri;
+    if (url is String) {
+      uri = Uri.parse(url);
+    } else if (url is Uri) {
+      uri = url;
+    } else {
+      throw new DRAWArgumentError('idFromUrl expects either a String or Uri as'
+          ' input');
+    }
+    final parts = uri.path.split('/');
+    final commentsIndex = parts.indexOf('comments');
+    // Check formatting of the URL.
+    if (commentsIndex != parts.length - 5) {
+      throw new DRAWArgumentError("'$url' is not a valid comment url.");
+    }
+    print(parts);
+    print(parts[parts.length - 2]);
+    return parts[parts.length - 2];
+  }
+
+  Future<Comment> populate() async {
+      final response = await fetch();
+      print(response);
+  }
 
   /// A forest of replies to the current comment.
   CommentForest get replies => _replies;

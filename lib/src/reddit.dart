@@ -14,6 +14,7 @@ import 'package:draw/src/frontpage.dart';
 import 'package:draw/src/objector.dart';
 import 'package:draw/src/user.dart';
 
+import 'package:draw/src/models/comment.dart';
 import 'package:draw/src/models/inbox.dart';
 import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission.dart';
@@ -278,6 +279,18 @@ class Reddit {
     }
     _config = new DRAWConfigContext();
     _initializationCallback(auth);
+  }
+
+  CommentRef comment({String id, /* Uri, String */ url}) {
+     if ((id != null) && (url != null)) {
+      throw new DRAWArgumentError('One of either id or url can be provided');
+    } else if ((id == null) && (url == null)) {
+      throw new DRAWArgumentError('id and url cannot both be null');
+    } else if (id != null) {
+      return new CommentRef.withID(this, id);
+    }
+    return new CommentRef.withPath(
+        this, (url is Uri) ? url.toString() : url);
   }
 
   SubmissionRef submission({String id, /* Uri, String */ url}) {
