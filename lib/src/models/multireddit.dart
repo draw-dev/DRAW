@@ -272,8 +272,9 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
         .replaceAll(_userRegExp, _author)
         .replaceAll(_multiredditRegExp, displayName)
         .replaceAll(_subredditRegExp, subreddit);
-    await reddit.put(url, body: {'model': encoder.convert(newSubredditObject).toString()});
-    if(!(_data['subreddits'] as List).contains(newSubredditObject)){
+    await reddit.put(url,
+        body: {'model': encoder.convert(newSubredditObject).toString()});
+    if (!(_data['subreddits'] as List).contains(newSubredditObject)) {
       (_data['subreddits'] as List).add(newSubredditObject);
     }
   }
