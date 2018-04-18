@@ -4,6 +4,7 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:collection';
 
 // Required for `hash2`
 import 'package:quiver/core.dart' show hash2;
@@ -351,6 +352,32 @@ class Comment extends CommentRef
     setData(this, data);
   }
 
+  @override
+  Future refresh() async {
+    final path = submission.infoPath + '_/' + _id;
+    final params = {
+      'context': '100',
+    };
+    final commentList = (await reddit.get(path, params: params))[1]['listing'];
+    final queue = new Queue.from(commentList);
+    var comment;
+    while (queue.isNotEmpty && ((comment == null) || (comment._id != _id))) {
+      comment = queue.removeFirst();
+      if (comment is CommentRef) {
+        queue.addAll(comment.replies.toList());
+      }
+    }
+    if ((comment == null) || comment._id != _id) {
+      throw new DRAWClientError('Could not find comment with id $_id');
+    }
+
+    // Update the backing state of this comment object.
+    setData(this, comment.data);
+
+    // Ensure all the sub-comments are pointing to the same submission as this.
+    setSubmissionInternal(this, submission);
+  }
+
   /// The [Submission] which this comment belongs to.
   SubmissionRef get submission {
     if (_submission == null) {
@@ -365,14 +392,16 @@ class Comment extends CommentRef
 class CommentRef extends UserContent {
   SubmissionRef _submission;
   CommentForest _replies;
+  final String _id;
 
   static final RegExp _commentRegExp = new RegExp(r'{id}');
 
-  CommentRef.withID(Reddit reddit, String id)
-      : super.withPath(reddit, _infoPath(id));
+  CommentRef.withID(Reddit reddit, this._id)
+      : super.withPath(reddit, _infoPath(_id));
 
   CommentRef.withPath(Reddit reddit, url)
-      : super.withPath(reddit, _infoPath(idFromUrl(url)));
+      : _id = idFromUrl(url),
+        super.withPath(reddit, _infoPath(idFromUrl(url)));
 
   static String _infoPath(String id) =>
       apiPath['comment'].replaceAll(_commentRegExp, id);
@@ -398,14 +427,21 @@ class CommentRef extends UserContent {
     if (commentsIndex != parts.length - 5) {
       throw new DRAWArgumentError("'$url' is not a valid comment url.");
     }
-    print(parts);
-    print(parts[parts.length - 2]);
     return parts[parts.length - 2];
   }
 
   Future<Comment> populate() async {
-      final response = await fetch();
-      print(response);
+    final params = {
+      'id': reddit.config.commentKind + '_' + _id,
+    };
+    // Gets some general info about the comment.
+    final result = await reddit.get(apiPath['info'], params: params);
+    final comment = result['listing'][0];
+
+    // The returned comment isn't fully populated, so refresh it here to
+    // grab replies, etc.
+    await comment.refresh();
+    return comment;
   }
 
   /// A forest of replies to the current comment.
