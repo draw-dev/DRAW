@@ -60,8 +60,7 @@ class CommentForest {
     if ((comment is MoreComments) || (await comment.isRoot)) {
       _comments.add(comment);
     } else {
-      final parent = getCommentByIdInternal(
-          _submission, (await comment.property('parentId')));
+      final parent = getCommentByIdInternal(_submission, comment.parentId);
       parent.replies._comments.add(comment);
     }
   }
@@ -95,7 +94,7 @@ class CommentForest {
         continue;
       }
 
-      final newComments = commentItem.comments(update: false);
+      final newComments = await commentItem.comments(update: false);
       if (remaining != null) {
         --remaining;
       }
@@ -136,8 +135,8 @@ class CommentForest {
         } else {
           moreComments.add([comment, parentTree ?? tree]);
         }
-      } else {
-        for (final item in comment.replies) {
+      } else if (comment.replies != null) {
+        for (final item in comment.replies.toList()) {
           queue.add([comment, item]);
         }
       }

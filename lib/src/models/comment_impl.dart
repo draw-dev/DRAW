@@ -252,7 +252,10 @@ class Comment extends CommentRef
   /// Did the currently authenticated [User] post this [Comment].
   bool get isSubmitter => data['is_submitter'];
 
-  /// Does the currently authenticated [User] like this [Comment].
+  /// Has the currently authenticated [User] voted on this [Comment].
+  ///
+  /// Returns `true` if the comment is upvoted, `false` if it is downvoted,
+  /// and `null` otherwise.
   bool get likes => data['likes'];
 
   /// The id of the [Submission] link.
@@ -358,6 +361,7 @@ class Comment extends CommentRef
     final params = {
       'context': '100',
     };
+    // TODO(bkonyi): clean-up this so it's objectified in a nicer way?
     final commentList = (await reddit.get(path, params: params))[1]['listing'];
     final queue = new Queue.from(commentList);
     var comment;
@@ -373,6 +377,8 @@ class Comment extends CommentRef
 
     // Update the backing state of this comment object.
     setData(this, comment.data);
+
+    _replies = comment.replies;
 
     // Ensure all the sub-comments are pointing to the same submission as this.
     setSubmissionInternal(this, submission);
@@ -430,6 +436,7 @@ class CommentRef extends UserContent {
     return parts[parts.length - 2];
   }
 
+  /// Promotes this [CommentRef] into a populated [Comment].
   Future<Comment> populate() async {
     final params = {
       'id': reddit.config.commentKind + '_' + _id,

@@ -26,7 +26,7 @@ import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/user_content.dart';
 import 'package:draw/src/reddit.dart';
 
-CommentRef getCommentByIdInternal(Submission s, String id) {
+CommentRef getCommentByIdInternal(SubmissionRef s, String id) {
   if (s._commentsById.containsKey(id)) {
     return s._commentsById[id];
   }
@@ -168,6 +168,12 @@ class Submission extends SubmissionRef
 
   /// Is this [Submission] a video.
   bool get isVideo => data['is_video'];
+
+  /// Has the currently authenticated [User] voted on this [Submission].
+  ///
+  /// Returns `true` if the submission is upvoted, `false` if it is downvoted,
+  /// and `null` otherwise.
+  bool get likes => data['likes'];
 
   /// Has this [Submission] been locked.
   bool get locked => data['locked'];
