@@ -1,5 +1,12 @@
 Change Log
 =================================
+## Version 0.2.1 (2018/04/17)
+* Added `Reddit.comment`, which allows for the creation of `CommentRef` objects
+  from a comment ID or url.
+* Added `CommentRef.populate` and `Comment.refresh`.
+* Added `likes` getter to `Submission`.
+* Miscellaneous fixes for minor bugs related to `CommentForest`.
+
 ## Version 0.2.0 (2018/04/13)
 Breaking changes:
 * `Subreddit.submissions` has been removed as the Reddit API endpoint no longer
