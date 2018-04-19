@@ -182,7 +182,9 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   /// unusualStories, video, emptyString, none }.
   /// If this information is not provided, will return null.
   IconName get iconName => IconName.values.firstWhere(
-      (e) => e.toString() == ('IconName.' + _data['icon_name']),
+      (e) =>
+          e.toString() ==
+          ('IconName.' + _convertToCamelCase(_data['icon_name'])),
       orElse: () => null);
 
   List<SubredditRef> get subreddits {
@@ -242,8 +244,23 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
           .replaceAll(_multiredditRegExp, name)
           .replaceAll(_userRegExp, user);
 
+  // Converts input text into camelCase.
+  static String _convertToCamelCase(String str) {
+    if (str == null) {
+      return null;
+    }
+    final RegExp _invalidRegExp = new RegExp(r'(\s|\W|_)+');
+    final splitStrList = str.split(_invalidRegExp);
+    // https://giphy.com/gifs/doctor-who-david-tennant-XTJACShBsxPws
+    splitStrList[0] += splitStrList.sublist(1)?.fold(
+        '',
+        (prevValue, next) =>
+            prevValue + next.substring(0, 1).toUpperCase() + next.substring(1));
+    return splitStrList[0];
+  }
+
   /// Returns a slug version of the [title].
-  static String sluggify(String title) {
+  static String _sluggify(String title) {
     if (title == null) {
       return null;
     }
@@ -299,7 +316,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   /// provided, the [name] of this [Multireddit] will be used.
   Future<Multireddit> copy([String multiName]) async {
     final url = apiPath['multireddit_copy'];
-    final name = sluggify(multiName) ?? _data['display_name'];
+    final name = _sluggify(multiName) ?? _data['display_name'];
     final userName = await reddit.user.me().then((me) => me.displayName);
 
     final scopedMultiName = multiName ?? _data['display_name'];
