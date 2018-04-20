@@ -4,7 +4,6 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:color/color.dart';
 import 'package:draw/src/api_paths.dart';
@@ -249,14 +248,14 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     if (str == null) {
       return null;
     }
-    final RegExp _invalidRegExp = new RegExp(r'(\s|\W|_)+');
-    final splitStrList = str.split(_invalidRegExp);
-    // https://giphy.com/gifs/doctor-who-david-tennant-XTJACShBsxPws
-    splitStrList[0] += splitStrList.sublist(1)?.fold(
-        '',
-        (prevValue, next) =>
-            prevValue + next.substring(0, 1).toUpperCase() + next.substring(1));
-    return splitStrList[0];
+    final splitStrList = str.split(new RegExp(r'(\s|_)+'));
+    final strItr = splitStrList.iterator;
+    final strBuffer = new StringBuffer(strItr.toString());
+    while (strItr.moveNext()) {
+      strBuffer.write(strItr.toString().substring(0, 1).toUpperCase());
+      strBuffer.write(strItr.toString().substring(1));
+    }
+    return strBuffer.toString();
   }
 
   /// Returns a slug version of the [title].
@@ -283,14 +282,12 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   Future add(/* String, Subreddit */ subreddit) async {
     final subredditName = _subredditNameHelper(subreddit);
     final newSubredditObject = {'name': "$subredditName"};
-    final encoder = new JsonEncoder.withIndent('  ');
     if (subreddit == null) return;
     final url = apiPath[_kMultiredditUpdate]
         .replaceAll(_userRegExp, _author)
         .replaceAll(_multiredditRegExp, displayName)
         .replaceAll(_subredditRegExp, subreddit);
-    await reddit.put(url,
-        body: {'model': encoder.convert(newSubredditObject).toString()});
+    await reddit.put(url, body: {'model': '{"name": "$subredditName"}'});
     if (!(_data['subreddits'] as List).contains(newSubredditObject)) {
       (_data['subreddits'] as List).add(newSubredditObject);
     }
@@ -318,7 +315,6 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     final url = apiPath['multireddit_copy'];
     final name = _sluggify(multiName) ?? _data['display_name'];
     final userName = await reddit.user.me().then((me) => me.displayName);
-
     final scopedMultiName = multiName ?? _data['display_name'];
 
     final data = {
