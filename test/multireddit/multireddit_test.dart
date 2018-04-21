@@ -4,10 +4,9 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
+import 'package:color/color.dart';
 import 'package:draw/draw.dart';
 import 'package:test/test.dart';
-import 'package:color/color.dart';
-
 import '../test_utils.dart';
 
 Future main() async {
@@ -52,17 +51,17 @@ Future main() async {
     {"name": "AppalachianTrail"}
   ];
 
-  test('lib/multireddit/copy', () async {
+  test('lib/multireddit/copy_parse_constructor_basic', () async {
     final reddit = await createRedditTestInstance(
         'test/multireddit/lib_multireddit_copy.json');
     final data = {
-      "kind": "LabeledMulti",
-      "data": {
-        "can_edit": false,
-        "display_name": "adventure",
-        "name": "adventure",
-        "subreddits": expectedSubredditList,
-        "path": "/user/MyFifthOne/m/adventure/",
+      'kind': 'LabeledMulti',
+      'data': {
+        'can_edit': false,
+        'display_name': 'adventure',
+        'name': 'adventure',
+        'subreddits': expectedSubredditList,
+        'path': '/user/MyFifthOne/m/adventure/',
       }
     };
     final multireddit = new Multireddit.parse(reddit, data);
@@ -71,7 +70,7 @@ Future main() async {
     expect(newMulti.subreddits, multireddit.subreddits);
   });
 
-  test('lib/multireddit/copy_without_parsing', () async {
+  test('lib/multireddit/copy_without_parsing_basic', () async {
     final newMultiName = 'CopyOfMultireddit';
     final newMultiNameSlug = 'copyofmultireddit';
     final reddit = await createRedditTestInstance(
@@ -82,7 +81,7 @@ Future main() async {
     expect(newMulti.subreddits, oldMulti.subreddits);
   });
 
-  test('lib/multireddit/userMultis', () async {
+  test('lib/multireddit/multis_from_user_non_trival', () async {
     final reddit = await createRedditTestInstance(
         'test/multireddit/lib_user_multireddits.json');
     final multis = await reddit.user.multireddits();
@@ -108,7 +107,7 @@ Future main() async {
     expect(multi.subreddits.length, 81);
   });
 
-  test('lib/multireddit/deleteMulti', () async {
+  test('lib/multireddit/delete_multi_basic', () async {
     final reddit = await createRedditTestInstance(
       'test/multireddit/lib_multireddit_delete.json',
     );
@@ -119,7 +118,7 @@ Future main() async {
     expect(newMultis.length, 4);
   });
 
-  test('lib/multireddit/AddSubreddit', () async {
+  test('lib/multireddit/add_subreddit_basic', () async {
     final reddit = await createRedditTestInstance(
       'test/multireddit/lib_multireddit_add_subreddit.json',
     );
