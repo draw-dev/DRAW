@@ -174,11 +174,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
 
   /// The [IconName] associated with this multireddit.
   ///
-  /// Can be one of { artAndDesign, ask, books, business, cars, comic,
-  /// cuteAnimals, diy, entertainment, foodAndDrink, funny, games, grooming,
-  /// health, lifeAdvice, military, modelsPinup, music, news, philosophy,
-  /// picturesAndGifs, science, shopping, sports, style, tech, travel,
-  /// unusualStories, video, emptyString, none }.
+  /// Refer to [IconName]'s Enum definition for more information.
   /// If this information is not provided, will return null.
   IconName get iconName => IconName.values.firstWhere(
       (e) =>
@@ -210,15 +206,15 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
 
   /// The visibility of this multireddit.
   ///
-  /// Can be one of { hidden, private, public }.
+  /// Refer to [Visibility]'s Enum definition for more information.
   /// If this information is not provided, will return null.
   Visibility get visibility => Visibility.values.firstWhere(
       (e) => e.toString() == ('Visibility.' + _data['visibility']),
       orElse: () => null);
 
-  /// The visibility of this multireddit.
+  /// The weightingScheme of this multireddit.
   ///
-  /// Can be one of { hidden, private, public }.
+  /// Refer to [WeightingScheme]'s Enum definition for more information.
   /// If this information is not provided, will return null.
   WeightingScheme get weightingScheme => WeightingScheme.values.firstWhere(
       (e) => e.toString() == ('WeightingScheme.' + _data['weighting_scheme']),
