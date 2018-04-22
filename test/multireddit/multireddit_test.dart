@@ -96,11 +96,11 @@ Future main() async {
 
     // Testing using getters.
     expect(multi.author.displayName, (await reddit.user.me()).displayName);
-    expect(multi.over18, false);
+    expect(multi.over18, isFalse);
     expect(multi.keyColor, new HexColor('#cee3f8'));
     expect(multi.visibility, Visibility.public);
     expect(multi.weightingScheme, WeightingScheme.classic);
-    expect(multi.iconName, null);
+    expect(multi.iconName, isNull);
     expect(multi.displayName, 'drawtestingmulti');
     expect(multi.fullname, 'drawtestingmulti');
     expect(multi.canEdit, isTrue);
