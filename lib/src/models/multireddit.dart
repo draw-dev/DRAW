@@ -6,6 +6,7 @@
 import 'dart:async';
 
 import 'package:color/color.dart';
+import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base.dart';
 import 'package:draw/src/exceptions.dart';
@@ -164,8 +165,8 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   static final RegExp _userRegExp = new RegExp(r'{user}');
   static final RegExp _multiredditRegExp = new RegExp(r'{multi}');
 
-  // TODO(@ckartik): Try to make the _data['key_color'] value null.
-  Color get keyColor => new HexColor(_data['key_color']);
+  // TODO(@ckartik): Try to make the data['key_color'] value null.
+  Color get keyColor => new HexColor(data['key_color']);
 
   /// When was this [Multireddit] created.
   DateTime get createdUtc => new DateTime.fromMillisecondsSinceEpoch(
@@ -179,26 +180,26 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   IconName get iconName => IconName.values.firstWhere(
       (e) =>
           e.toString() ==
-          ('IconName.' + _convertToCamelCase(_data['icon_name'])),
+          ('IconName.' + _convertToCamelCase(data['icon_name'])),
       orElse: () => null);
 
   List<SubredditRef> get subreddits {
     final subredditList = [];
-    subredditList.addAll(_data['subreddits']
+    subredditList.addAll(data['subreddits']
         .map((subreddit) => new SubredditRef.name(reddit, subreddit['name'])));
     return subredditList;
   }
 
-  /// The [Map] of data associated with this multireddit.
-  Map get data => _data;
-  Map _data;
+//  /// The [Map] of data associated with this multireddit.
+//  Map get data => data;
+//  Map data;
 
   /// The [Redditor] associated with this multireddit.
   RedditorRef get author => _author;
   RedditorRef _author;
 
   /// The displayName given to the [Multireddit].
-  String get displayName => _data['display_name'];
+  String get displayName => data['display_name'];
 
   /// The infoPath will be used to uniquely identify this multireddit.
   String get infoPath => _infoPath ?? '/';
@@ -209,7 +210,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   /// Refer to [Visibility]'s Enum definition for more information.
   /// If this information is not provided, will return null.
   Visibility get visibility => Visibility.values.firstWhere(
-      (e) => e.toString() == ('Visibility.' + _data['visibility']),
+      (e) => e.toString() == ('Visibility.' + data['visibility']),
       orElse: () => null);
 
   /// The weightingScheme of this multireddit.
@@ -217,20 +218,24 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   /// Refer to [WeightingScheme]'s Enum definition for more information.
   /// If this information is not provided, will return null.
   WeightingScheme get weightingScheme => WeightingScheme.values.firstWhere(
-      (e) => e.toString() == ('WeightingScheme.' + _data['weighting_scheme']),
+      (e) => e.toString() == ('WeightingScheme.' + data['weighting_scheme']),
       orElse: () => null);
 
   /// Does the currently authenticated [User] have the privilege to edit this
   /// multireddit.
-  bool get canEdit => _data['can_edit'];
+  bool get canEdit => data['can_edit'];
 
   /// Does this multireddit require visitors to be over the age of 18.
-  bool get over18 => _data['over_18'];
+  bool get over18 => data['over_18'];
 
   Multireddit.parse(Reddit reddit, Map data) : super(reddit) {
-    _data = data['data'];
-    _author = new RedditorRef.name(reddit, _data['path']?.split('/')[_redditorNameInPathIndex]);
-    _infoPath = _generateInfoPath(_data['name'], _author.displayName);
+    if (!data['data'].containsKey('name')) {
+      throw new DRAWUnimplementedError();
+    }
+    setData(this, data['data']);
+    _author = new RedditorRef.name(
+        reddit, data['data']['path']?.split('/')[_redditorNameInPathIndex]);
+    _infoPath = _generateInfoPath(data['data']['name'], _author.displayName);
   }
 
   // Returns valid info_path for multireddit with name `name`.
@@ -284,8 +289,8 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
         .replaceAll(_multiredditRegExp, displayName)
         .replaceAll(_subredditRegExp, subreddit);
     await reddit.put(url, body: {'model': '{"name": "$subredditName"}'});
-    if (!(_data['subreddits'] as List).contains(newSubredditObject)) {
-      (_data['subreddits'] as List).add(newSubredditObject);
+    if (!(data['subreddits'] as List).contains(newSubredditObject)) {
+      (data['subreddits'] as List).add(newSubredditObject);
     }
   }
 
@@ -307,22 +312,23 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   /// provided, the [name] of this [Multireddit] will be used.
   Future<Multireddit> copy([String multiName]) async {
     final url = apiPath['multireddit_copy'];
-    final name = _sluggify(multiName) ?? _data['display_name'];
+    final name = _sluggify(multiName) ?? data['display_name'];
     final userName = await reddit.user.me().then((me) => me.displayName);
-    final scopedMultiName = multiName ?? _data['display_name'];
+    final scopedMultiName = multiName ?? data['display_name'];
 
-    final data = {
+    final jsonData = {
       _kDisplayName: scopedMultiName,
       _kFrom: _infoPath,
       _kTo: apiPath['multireddit']
           .replaceAll(_multiredditRegExp, name)
           .replaceAll(_userRegExp, userName),
     };
-    return await reddit.post(url, data);
+    return await reddit.post(url, jsonData);
   }
 
   /// Delete this [Multireddit].
-  Future delete() async => await reddit.delete(apiPath['multireddit_base'] + _infoPath);
+  Future delete() async =>
+      await reddit.delete(apiPath['multireddit_base'] + _infoPath);
 
 /*
   /// Remove a [Subreddit] from this [Multireddit].
