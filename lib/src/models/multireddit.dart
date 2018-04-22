@@ -194,8 +194,8 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   Map _data;
 
   /// The [Redditor] associated with this multireddit.
-  RedditorRef get author => new RedditorRef.name(reddit, _author);
-  String _author;
+  RedditorRef get author => _author;
+  RedditorRef _author;
 
   /// The displayName given to the [Multireddit].
   String get displayName => _data['display_name'];
@@ -229,8 +229,8 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
 
   Multireddit.parse(Reddit reddit, Map data) : super(reddit) {
     _data = data['data'];
-    _author = _data['path']?.split('/')[_redditorNameInPathIndex];
-    _infoPath = _generateInfoPath(_data['name'], _author);
+    _author = new RedditorRef.name(reddit, _data['path']?.split('/')[_redditorNameInPathIndex]);
+    _infoPath = _generateInfoPath(_data['name'], _author.displayName);
   }
 
   // Returns valid info_path for multireddit with name `name`.
@@ -239,7 +239,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
           .replaceAll(_multiredditRegExp, name)
           .replaceAll(_userRegExp, user);
 
-  // Converts input text into camelCase.
+  // Returns `str` in camel case.
   static String _convertToCamelCase(String str) {
     if (str == null) {
       return null;
@@ -254,7 +254,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     return strBuffer.toString();
   }
 
-  /// Returns a slug version of the [title].
+  /// Returns a slug version of the `title`.
   static String _sluggify(String title) {
     if (title == null) {
       return null;
@@ -274,13 +274,13 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
 
   /// Add a [Subreddit] to this [Multireddit].
   ///
-  /// [subreddit] is the name of the [Subreddit] to be added to this [Multireddit].
+  /// `subreddit` is the name of the [Subreddit] to be added to this [Multireddit].
   Future add(/* String, Subreddit */ subreddit) async {
     final subredditName = _subredditNameHelper(subreddit);
     final newSubredditObject = {'name': "$subredditName"};
     if (subreddit == null) return;
     final url = apiPath[_kMultiredditUpdate]
-        .replaceAll(_userRegExp, _author)
+        .replaceAll(_userRegExp, _author.displayName)
         .replaceAll(_multiredditRegExp, displayName)
         .replaceAll(_subredditRegExp, subreddit);
     await reddit.put(url, body: {'model': '{"name": "$subredditName"}'});
@@ -289,10 +289,8 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     }
   }
 
-  // TODO(@ckartik): Ask @bkonyi if this function should me moved in as a static function
-  // in the [Subreddit] class, and the respective versions of it like [_redditorNameHelper]
-  // in [Subreddit] me moved into the [Redditor] class as a static function.
-  String _subredditNameHelper(/* String, Subreddit */ subreddit) {
+  // Returns a string displayName of a subreddit.
+  static String _subredditNameHelper(/* String, Subreddit */ subreddit) {
     if (subreddit is Subreddit) {
       return subreddit.displayName;
     } else if (subreddit is! String) {
@@ -304,8 +302,8 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
 
   /// Copy this [Multireddit], and return the new [Multireddit] of type [Future].
   ///
-  /// [multiName] is an optional string that will become the display name of the new
-  /// multireddit and be used as the source for the [name]. If [multiName] is not
+  /// `multiName` is an optional string that will become the display name of the new
+  /// [Multireddit] and be used as the source for the [displayName]. If `multiName` is not
   /// provided, the [name] of this [Multireddit] will be used.
   Future<Multireddit> copy([String multiName]) async {
     final url = apiPath['multireddit_copy'];
@@ -324,11 +322,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   }
 
   /// Delete this [Multireddit].
-  ///
-  /// Does not refresh current instance of Multireddit, as it has been deleted.
-  Future delete() async {
-    await reddit.delete(apiPath['multireddit_base'] + _infoPath);
-  }
+  Future delete() async => await reddit.delete(apiPath['multireddit_base'] + _infoPath);
 
 /*
   /// Remove a [Subreddit] from this [Multireddit].
@@ -339,7 +333,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     if (subreddit == null) return;
     final url = apiPath[_kMultiredditUpdate]
         .replaceAll(_multiredditRegExp, _name)
-        .replaceAll(User.userRegExp, _author)
+        .replaceAll(User.userRegExp, _author.displayName)
         .replaceAll(_subredditRegExp, subreddit);
     final data = {'model': "{'name': $subreddit}"};
     await reddit.delete(url, body: data);
