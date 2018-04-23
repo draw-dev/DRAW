@@ -4,6 +4,7 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:collection';
 
 // Required for `hash2`
 import 'package:quiver/core.dart' show hash2;
@@ -251,7 +252,10 @@ class Comment extends CommentRef
   /// Did the currently authenticated [User] post this [Comment].
   bool get isSubmitter => data['is_submitter'];
 
-  /// Does the currently authenticated [User] like this [Comment].
+  /// Has the currently authenticated [User] voted on this [Comment].
+  ///
+  /// Returns `true` if the comment is upvoted, `false` if it is downvoted,
+  /// and `null` otherwise.
   bool get likes => data['likes'];
 
   /// The id of the [Submission] link.
@@ -351,6 +355,35 @@ class Comment extends CommentRef
     setData(this, data);
   }
 
+  @override
+  Future refresh() async {
+    final path = submission.infoPath + '_/' + _id;
+    final params = {
+      'context': '100',
+    };
+    // TODO(bkonyi): clean-up this so it's objectified in a nicer way?
+    final commentList = (await reddit.get(path, params: params))[1]['listing'];
+    final queue = new Queue.from(commentList);
+    var comment;
+    while (queue.isNotEmpty && ((comment == null) || (comment._id != _id))) {
+      comment = queue.removeFirst();
+      if (comment is CommentRef) {
+        queue.addAll(comment.replies.toList());
+      }
+    }
+    if ((comment == null) || comment._id != _id) {
+      throw new DRAWClientError('Could not find comment with id $_id');
+    }
+
+    // Update the backing state of this comment object.
+    setData(this, comment.data);
+
+    _replies = comment.replies;
+
+    // Ensure all the sub-comments are pointing to the same submission as this.
+    setSubmissionInternal(this, submission);
+  }
+
   /// The [Submission] which this comment belongs to.
   SubmissionRef get submission {
     if (_submission == null) {
@@ -365,14 +398,58 @@ class Comment extends CommentRef
 class CommentRef extends UserContent {
   SubmissionRef _submission;
   CommentForest _replies;
+  final String _id;
 
   static final RegExp _commentRegExp = new RegExp(r'{id}');
 
-  CommentRef.withID(Reddit reddit, String id)
-      : super.withPath(reddit, _infoPath(id));
+  CommentRef.withID(Reddit reddit, this._id)
+      : super.withPath(reddit, _infoPath(_id));
+
+  CommentRef.withPath(Reddit reddit, url)
+      : _id = idFromUrl(url),
+        super.withPath(reddit, _infoPath(idFromUrl(url)));
 
   static String _infoPath(String id) =>
       apiPath['comment'].replaceAll(_commentRegExp, id);
+
+  // TODO(bkonyi): allow for paths without trailing '/'.
+  /// Retrieve a comment ID from a given URL.
+  ///
+  /// Note: when [url] is a [String], it must end with a trailing '/'. This is a
+  /// bug and will be fixed eventually.
+  static String idFromUrl(/*String, Uri*/ url) {
+    Uri uri;
+    if (url is String) {
+      uri = Uri.parse(url);
+    } else if (url is Uri) {
+      uri = url;
+    } else {
+      throw new DRAWArgumentError('idFromUrl expects either a String or Uri as'
+          ' input');
+    }
+    final parts = uri.path.split('/');
+    final commentsIndex = parts.indexOf('comments');
+    // Check formatting of the URL.
+    if (commentsIndex != parts.length - 5) {
+      throw new DRAWArgumentError("'$url' is not a valid comment url.");
+    }
+    return parts[parts.length - 2];
+  }
+
+  /// Promotes this [CommentRef] into a populated [Comment].
+  Future<Comment> populate() async {
+    final params = {
+      'id': reddit.config.commentKind + '_' + _id,
+    };
+    // Gets some general info about the comment.
+    final result = await reddit.get(apiPath['info'], params: params);
+    final comment = result['listing'][0];
+
+    // The returned comment isn't fully populated, so refresh it here to
+    // grab replies, etc.
+    await comment.refresh();
+    return comment;
+  }
 
   /// A forest of replies to the current comment.
   CommentForest get replies => _replies;

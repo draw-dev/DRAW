@@ -28,7 +28,7 @@ Future prettyPrint(comments, depth) async {
   }
 }
 
-// Note: this tests are skipped on Windows due to issues with line endings.
+// Note: these tests are skipped on Windows due to issues with line endings.
 // TODO(bkonyi): fix these tests on Windows at some point?
 Future main() async {
   test('lib/comment/continue_test', () async {
@@ -70,4 +70,23 @@ Future main() async {
         .readAsStringSync();
     expect(output, equals(actual));
   }, skip: Platform.isWindows);
+
+  test('lib/comment/comment_ref_test', () async {
+    final reddit =
+        await createRedditTestInstance('test/comment/comment_ref_test.json');
+    final comment = await reddit.comment(id: 'dxj0i8m').populate();
+    final commentWithPath = await reddit
+        .comment(
+            url:
+                'https://www.reddit.com/r/pics/comments/8cz8v0/owls_born_outside_of_office_window_wont_stop/dxj0i8m/')
+        .populate();
+
+    expect(
+        comment.body, '“ ok class, everyone have a look into our Humanarium”');
+    expect(commentWithPath.body, comment.body);
+    expect(commentWithPath.id, comment.id);
+    expect(comment.id, 'dxj0i8m');
+    expect(comment.submission.shortlink, commentWithPath.submission.shortlink);
+    print(comment.likes);
+  });
 }

@@ -14,6 +14,7 @@ import 'package:draw/src/frontpage.dart';
 import 'package:draw/src/objector.dart';
 import 'package:draw/src/user.dart';
 
+import 'package:draw/src/models/comment.dart';
 import 'package:draw/src/models/inbox.dart';
 import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission.dart';
@@ -280,6 +281,33 @@ class Reddit {
     _initializationCallback(auth);
   }
 
+  /// Creates a lazily initialized [CommentRef].
+  ///
+  /// `id` is the fullname ID of the comment without the ID prefix
+  /// (i.e., t1_).
+  ///
+  /// `url` is the URL to the comment.
+  ///
+  /// Only one of `id` and `url` can be provided.
+  CommentRef comment({String id, /* Uri, String */ url}) {
+    if ((id != null) && (url != null)) {
+      throw new DRAWArgumentError('One of either id or url can be provided');
+    } else if ((id == null) && (url == null)) {
+      throw new DRAWArgumentError('id and url cannot both be null');
+    } else if (id != null) {
+      return new CommentRef.withID(this, id);
+    }
+    return new CommentRef.withPath(this, (url is Uri) ? url.toString() : url);
+  }
+
+  /// Creates a lazily initialized [SubmissionRef].
+  ///
+  /// `id` is the fullname ID of the submission without the ID prefix
+  /// (i.e., t3_).
+  ///
+  /// `url` is the URL to the submission.
+  ///
+  /// Only one of `id` and `url` can be provided.
   SubmissionRef submission({String id, /* Uri, String */ url}) {
     if ((id != null) && (url != null)) {
       throw new DRAWArgumentError('One of either id or url can be provided');
