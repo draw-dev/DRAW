@@ -190,10 +190,6 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     return subredditList;
   }
 
-//  /// The [Map] of data associated with this multireddit.
-//  Map get data => data;
-//  Map data;
-
   /// The [Redditor] associated with this multireddit.
   RedditorRef get author => _author;
   RedditorRef _author;
