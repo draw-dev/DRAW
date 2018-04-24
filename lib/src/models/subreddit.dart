@@ -4,7 +4,6 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:math';
 
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
@@ -58,8 +57,7 @@ class SubredditRef extends RedditBase
       .replaceAll(SubredditRef._subredditRegExp, name);
 
   /// Promotes this [SubredditRef] into a populated [Subreddit].
-  Future<Subreddit> populate() async =>
-      new Subreddit.parse(reddit, await fetch());
+  Future<Subreddit> populate() async => await fetch();
 
   String get displayName => _name;
   String _name;
@@ -344,6 +342,13 @@ class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
   String get title => data['title'];
 
   Subreddit._(Reddit reddit) : super(reddit);
+
+  Subreddit._fromSubreddit(Subreddit subreddit) : super(subreddit.reddit) {
+    setData(this, subreddit.data);
+    _name = subreddit._name;
+    _path =
+        apiPath['subreddit'].replaceAll(SubredditRef._subredditRegExp, _name);
+  }
 
   Subreddit.parse(Reddit reddit, Map data) : super(reddit) {
     if (!data['data'].containsKey('name')) {

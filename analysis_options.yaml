@@ -33,7 +33,6 @@ linter:
     - test_types_in_equals
     - type_init_formals
     - throw_in_finally
-    - unawaited_futures
     - unnecessary_brace_in_string_interp
     - unnecessary_getters_setters
     - unrelated_type_equality_checks

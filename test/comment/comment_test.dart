@@ -87,6 +87,5 @@ Future main() async {
     expect(commentWithPath.id, comment.id);
     expect(comment.id, 'dxj0i8m');
     expect(comment.submission.shortlink, commentWithPath.submission.shortlink);
-    print(comment.likes);
   });
 }
