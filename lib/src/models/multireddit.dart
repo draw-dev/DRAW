@@ -20,11 +20,11 @@ enum Visibility { hidden, private, public }
 String _visibilityToString(Visibility visibility) {
   switch (visibility) {
     case Visibility.hidden:
-      return "hidden";
+      return 'hidden';
     case Visibility.private:
-      return "private";
+      return 'private';
     case Visibility.public:
-      return "public";
+      return 'public';
     default:
       throw new DRAWInternalError('Visiblitity: $visibility is not supported');
   }
@@ -35,9 +35,9 @@ enum WeightingScheme { classic, fresh }
 String _weightingSchemeToString(WeightingScheme weightingScheme) {
   switch (weightingScheme) {
     case WeightingScheme.classic:
-      return "classic";
+      return 'classic';
     case WeightingScheme.fresh:
-      return "fresh";
+      return 'fresh';
     default:
       throw new DRAWInternalError(
           'WeightingScheme: $weightingScheme is not supported');
@@ -81,67 +81,67 @@ enum IconName {
 String _iconNameToString(IconName iconName) {
   switch (iconName) {
     case IconName.artAndDesign:
-      return "art and design";
+      return 'art and design';
     case IconName.ask:
-      return "ask";
+      return 'ask';
     case IconName.books:
-      return "books";
+      return 'books';
     case IconName.business:
-      return "business";
+      return 'business';
     case IconName.cars:
-      return "cars";
+      return 'cars';
     case IconName.comic:
-      return "comics";
+      return 'comics';
     case IconName.cuteAnimals:
-      return "cute animals";
+      return 'cute animals';
     case IconName.diy:
-      return "diy";
+      return 'diy';
     case IconName.entertainment:
-      return "entertainment";
+      return 'entertainment';
     case IconName.foodAndDrink:
-      return "food and drink";
+      return 'food and drink';
     case IconName.funny:
-      return "funny";
+      return 'funny';
     case IconName.games:
-      return "games";
+      return 'games';
     case IconName.grooming:
-      return "grooming";
+      return 'grooming';
     case IconName.health:
-      return "health";
+      return 'health';
     case IconName.lifeAdvice:
-      return "life advice";
+      return 'life advice';
     case IconName.military:
-      return "military";
+      return 'military';
     case IconName.modelsPinup:
-      return "models pinup";
+      return 'models pinup';
     case IconName.music:
-      return "music";
+      return 'music';
     case IconName.news:
-      return "news";
+      return 'news';
     case IconName.philosophy:
-      return "philosophy";
+      return 'philosophy';
     case IconName.picturesAndGifs:
-      return "pictures and gifs";
+      return 'pictures and gifs';
     case IconName.science:
-      return "science";
+      return 'science';
     case IconName.shopping:
-      return "shopping";
+      return 'shopping';
     case IconName.sports:
-      return "sports";
+      return 'sports';
     case IconName.style:
-      return "style";
+      return 'style';
     case IconName.tech:
-      return "tech";
+      return 'tech';
     case IconName.travel:
-      return "travel";
+      return 'travel';
     case IconName.unusualStories:
-      return "unusual stories";
+      return 'unusual stories';
     case IconName.video:
-      return "video";
+      return 'video';
     case IconName.emptyString:
-      return "";
+      return '';
     case IconName.none:
-      return "None";
+      return 'None';
     default:
       throw new DRAWInternalError('IconName: $iconName is not supported');
   }
@@ -156,10 +156,10 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   static const String _kMultiApi = 'multireddit_api';
   static const String _kMultiredditRename = 'multireddit_rename';
   static const String _kMultiredditUpdate = 'multireddit_update';
-  static const String _kSubreddits = "subreddits";
-  static const String _kTo = "to";
-  static const String _kVisibility = "visibility";
-  static const String _kWeightingScheme = "weighting_scheme";
+  static const String _kSubreddits = 'subreddits';
+  static const String _kTo = 'to';
+  static const String _kVisibility = 'visibility';
+  static const String _kWeightingScheme = 'weighting_scheme';
   static const int _redditorNameInPathIndex = 2;
   static final _subredditRegExp = new RegExp(r'{subreddit}');
   static final RegExp _userRegExp = new RegExp(r'{user}');
@@ -197,10 +197,6 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   /// The displayName given to the [Multireddit].
   String get displayName => data['display_name'];
 
-  /// The infoPath will be used to uniquely identify this multireddit.
-  String get infoPath => _infoPath ?? '/';
-  String _infoPath;
-
   /// The visibility of this multireddit.
   ///
   /// Refer to [Visibility]'s Enum definition for more information.
@@ -224,14 +220,22 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   /// Does this multireddit require visitors to be over the age of 18.
   bool get over18 => data['over_18'];
 
-  Multireddit.parse(Reddit reddit, Map data) : super(reddit) {
+  Multireddit.parse(Reddit reddit, Map data)
+      : super.withPath(reddit,
+            _generateInfoPath(data['data']['name'], _getAuthorName(data))) {
     if (!data['data'].containsKey('name')) {
       throw new DRAWUnimplementedError();
     }
     setData(this, data['data']);
     _author = new RedditorRef.name(
         reddit, data['data']['path']?.split('/')[_redditorNameInPathIndex]);
-    _infoPath = _generateInfoPath(data['data']['name'], _author.displayName);
+  }
+
+  static String _getAuthorName(data) {
+    if (data['data']['path'] == null) {
+      throw new DRAWInternalError('JSON data should contain value for path');
+    }
+    return data['data']['path']?.split('/')[_redditorNameInPathIndex];
   }
 
   // Returns valid info_path for multireddit with name `name`.
@@ -314,7 +318,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
 
     final jsonData = {
       _kDisplayName: scopedMultiName,
-      _kFrom: _infoPath,
+      _kFrom: infoPath,
       _kTo: apiPath['multireddit']
           .replaceAll(_multiredditRegExp, name)
           .replaceAll(_userRegExp, userName),
@@ -324,7 +328,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
 
   /// Delete this [Multireddit].
   Future delete() async =>
-      await reddit.delete(apiPath['multireddit_base'] + _infoPath);
+      await reddit.delete(apiPath['multireddit_base'] + infoPath);
 
 /*
   /// Remove a [Subreddit] from this [Multireddit].
@@ -348,7 +352,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   Future rename(newName) async {
     final url = apiPath["multireddit_rename"];
     final data = {
-      _kFrom: _infoPath,
+      _kFrom: infoPath,
       _kTo: newName,
     };
     final response = await reddit.post(url, data);
@@ -391,7 +395,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
       newSettings["key_color"] = color.toHexColor().toString();
     }
     //Link to api docs: https://www.reddit.com/dev/api/#PUT_api_multi_{multipath}
-    final res = await reddit.put(_infoPath, body: newSettings.toString());
+    final res = await reddit.put(infoPath, body: newSettings.toString());
     final Multireddit newMulti = new Multireddit.parse(reddit, res['data']);
     _name = newMulti.displayName;
     _subreddits = newMulti._subreddits;
