@@ -8,9 +8,8 @@ dart:
   - dev
   - stable
 
-script: ./tools/travis.sh
-
-dart_task:
-  - test: -p vm
+script: 
+  - ./tools/travis.sh
+  - pub run test -p vm
   - dartfmt
-  - dartanalyzer: --strong --fatal-warnings --fatal-lints lib/ test/
+  - dartanalyzer --strong --fatal-warnings --fatal-lints lib/ test/
