@@ -91,7 +91,6 @@ Future main() async {
     expect(message.id, equals('awl3r7'));
     expect(message.body, equals('Hi!'));
     expect(message.replies.length, equals(2));
-    print(message);
   });
 
   test('lib/inbox/messages', () async {
