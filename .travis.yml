@@ -8,6 +8,8 @@ dart:
   - dev
   - stable
 
+script: ./tools/travis.sh
+
 dart_task:
   - test: -p vm
   - dartfmt
