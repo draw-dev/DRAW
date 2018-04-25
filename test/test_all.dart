@@ -20,11 +20,7 @@ void main() {
   comment_test.main();
   frontpage_test.main();
   inbox_test.main();
-  redditor_test.main();
-  submission_test.main();
-  subreddit_test.main();
-  subreddit_mod_test.main();
-  draw_config_test.main();
+  redditor_test.main(); submission_test.main(); subreddit_test.main(); subreddit_mod_test.main(); draw_config_test.main();
   user_test.main();
   user_content_test.main();
 }
