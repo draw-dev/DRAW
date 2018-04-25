@@ -11,5 +11,5 @@ dart:
 script: 
   - ./tools/travis.sh
   - pub run test -p vm
-  - dartfmt
+  - dartfmt -n .
   - dartanalyzer --strong --fatal-warnings --fatal-lints lib/ test/
