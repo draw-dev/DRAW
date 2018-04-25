@@ -19,7 +19,7 @@ import 'user_content/user_content_test.dart' as user_content_test;
 void main() {
   comment_test.main();
   frontpage_test.main();
-  //inbox_test.main();
+  inbox_test.main();
   redditor_test.main();
   submission_test.main();
   subreddit_test.main();

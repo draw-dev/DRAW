@@ -23,7 +23,7 @@ abstract class InboxableMixin implements RedditBaseInitializedMixin {
   String get subject => data['subject'];
 
   /// Returns true if the current [Inbox] reply was from a [Comment].
-  bool get wasComment => data['wasComment'];
+  bool get wasComment => data['was_comment'];
 
   /// Block the user who sent the item.
   ///
