@@ -15,7 +15,7 @@ if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "stable" ]; then
     --debug \
     test/test_all.dart
   echo "Coverage complete."
-els
+else
   if [ -z ${COVERALLS_TOKEN+x} ]; then echo "COVERALLS_TOKEN is unset"; fi
   if [ -z ${TRAVIS_DART_VERSION+x} ]; then
     echo "TRAVIS_DART_VERSION is unset";
