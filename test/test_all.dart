@@ -8,6 +8,8 @@ import 'dart:async';
 import 'comment/comment_test.dart' as comment_test;
 import 'frontpage/frontpage_test.dart' as frontpage_test;
 import 'inbox/inbox_test.dart' as inbox_test;
+import 'messageable_mixin/messageable_mixin_test.dart'
+    as messageable_mixin_test;
 import 'redditor/redditor_test.dart' as redditor_test;
 import 'rising_listing_mixin/rising_listing_mixin_test.dart'
     as rising_listing_mixin_test;
@@ -22,6 +24,7 @@ void main() {
   comment_test.main();
   frontpage_test.main();
   inbox_test.main();
+  messageable_mixin_test.main();
   rising_listing_mixin_test.main();
   redditor_test.main();
   submission_test.main();
