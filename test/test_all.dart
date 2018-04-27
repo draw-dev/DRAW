@@ -9,7 +9,8 @@ import 'comment/comment_test.dart' as comment_test;
 import 'frontpage/frontpage_test.dart' as frontpage_test;
 import 'inbox/inbox_test.dart' as inbox_test;
 import 'redditor/redditor_test.dart' as redditor_test;
-import 'rising_listing_mixin/rising_listing_mixin_test.dart' as rising_listing_mixin_test;
+import 'rising_listing_mixin/rising_listing_mixin_test.dart'
+    as rising_listing_mixin_test;
 import 'submission/submission_test.dart' as submission_test;
 import 'subreddit/subreddit_test.dart' as subreddit_test;
 import 'subreddit/subreddit_moderation_test.dart' as subreddit_mod_test;
