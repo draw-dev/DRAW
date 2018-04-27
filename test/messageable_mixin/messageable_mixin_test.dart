@@ -23,6 +23,7 @@ Future main() async {
         'test/messageable_mixin/subreddit_message.json');
     final receiver = reddit.redditor('Toxicity-Moderator');
     final subreddit = reddit.subreddit('drawapitesting');
-    await receiver.message('Test message', 'Hello Toxicity-Moderator!', fromSubreddit: subreddit);
+    await receiver.message('Test message', 'Hello Toxicity-Moderator!',
+        fromSubreddit: subreddit);
   });
 }
