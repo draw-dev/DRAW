@@ -18,6 +18,7 @@ export 'package:draw/src/models/inbox.dart';
 export 'package:draw/src/models/mixins/user_content_moderation.dart'
     show DistinctionType;
 export 'package:draw/src/models/message.dart';
+export 'package:draw/src/models/mixins/user_content_mixin.dart';
 export 'package:draw/src/models/multireddit.dart';
 export 'package:draw/src/models/redditor.dart';
 export 'package:draw/src/models/submission.dart';

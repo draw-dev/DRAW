@@ -173,7 +173,7 @@ class Comment extends CommentRef
         ReplyableMixin,
         ReportableMixin,
         SaveableMixin,
-        UserContentMixin,
+        UserContentInitialized,
         VoteableMixin {
   // CommentModeration get mod; // TODO(bkonyi): implement
 
@@ -240,9 +240,6 @@ class Comment extends CommentRef
   // `edited` is `false` iff the comment hasn't been edited.
   // `else edited` is a timestamp.
   bool get edited => (data['edited'] is double);
-
-  /// Has this [Comment] be given Reddit Gold.
-  int get gilded => data['gilded'];
 
   /// Ignore reports for this [Comment].
   ///

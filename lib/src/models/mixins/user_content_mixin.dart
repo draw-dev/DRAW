@@ -5,7 +5,10 @@
 
 import 'package:draw/src/base_impl.dart';
 
-abstract class UserContentMixin implements RedditBaseInitializedMixin {
+abstract class UserContentInitialized implements RedditBaseInitializedMixin {
+  /// Has this [UserContent] be given Reddit Gold.
+  int get gilded => data['gilded'];
+
   /// A [List] of reports made by moderators.
   ///
   /// Each report consists of a list with two entries. The first entry is the
