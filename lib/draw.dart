@@ -16,6 +16,7 @@ export 'package:draw/src/models/comment.dart';
 export 'package:draw/src/models/comment_forest.dart';
 export 'package:draw/src/models/inbox.dart';
 export 'package:draw/src/models/message.dart';
+export 'package:draw/src/models/mixins/user_content_mixin.dart';
 export 'package:draw/src/models/multireddit.dart';
 export 'package:draw/src/models/redditor.dart';
 export 'package:draw/src/models/submission.dart';

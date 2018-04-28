@@ -41,9 +41,8 @@ void insertCommentById(SubmissionRef s, /*Comment, MoreComments*/ c) {
 /// A fully initialized representation of a standard Reddit submission.
 class Submission extends SubmissionRef
     with
-        UserContentMixin,
         RedditBaseInitializedMixin,
-        UserContentMixin,
+        UserContentInitialized,
         EditableMixin,
         GildableMixin,
         InboxableMixin,

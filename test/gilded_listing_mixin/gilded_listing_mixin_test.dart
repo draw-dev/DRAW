@@ -15,7 +15,7 @@ Future main() async {
     final reddit = await createRedditTestInstance(
         'test/gilded_listing_mixin/lib_gilded_listing_mixin_frontpage.json');
     await for (final content in reddit.front.gilded(params: {'limit': 10})) {
-      expect(content is UserContent, isTrue);
+      expect(content is UserContentInitialized, isTrue);
       expect(content.gilded > 0, isTrue);
     }
   });
