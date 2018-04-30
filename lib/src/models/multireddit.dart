@@ -6,9 +6,8 @@
 import 'dart:async';
 
 import 'package:color/color.dart';
-import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/api_paths.dart';
-import 'package:draw/src/base.dart';
+import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
 import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/subreddit.dart';

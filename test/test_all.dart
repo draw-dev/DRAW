@@ -12,31 +12,33 @@ import 'gilded_listing_mixin/gilded_listing_mixin_test.dart'
 import 'inbox/inbox_test.dart' as inbox_test;
 import 'messageable_mixin/messageable_mixin_test.dart'
     as messageable_mixin_test;
+import 'multireddit/multireddit_test.dart' as multireddit_test;
 import 'redditor/redditor_test.dart' as redditor_test;
 import 'rising_listing_mixin/rising_listing_mixin_test.dart'
     as rising_listing_mixin_test;
 import 'submission/submission_test.dart' as submission_test;
-import 'subreddit/subreddit_test.dart' as subreddit_test;
 import 'subreddit/subreddit_listing_mixin_test.dart'
     as subreddit_listing_mixin_test;
 import 'subreddit/subreddit_moderation_test.dart' as subreddit_mod_test;
+import 'subreddit/subreddit_test.dart' as subreddit_test;
 import 'unit_tests/src/test_draw_config_context.dart' as draw_config_test;
 import 'user/user_test.dart' as user_test;
 import 'user_content/user_content_test.dart' as user_content_test;
 
 void main() {
   comment_test.main();
+  draw_config_test.main();
   frontpage_test.main();
   gilded_listing_mixin_test.main();
   inbox_test.main();
   messageable_mixin_test.main();
-  rising_listing_mixin_test.main();
+  multireddit_test.main();
   redditor_test.main();
+  rising_listing_mixin_test.main();
   submission_test.main();
-  subreddit_test.main();
   subreddit_listing_mixin_test.main();
   subreddit_mod_test.main();
-  draw_config_test.main();
-  user_test.main();
+  subreddit_test.main();
   user_content_test.main();
+  user_test.main();
 }
