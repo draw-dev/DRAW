@@ -278,6 +278,8 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
 
   /// Add a [Subreddit] to this [Multireddit].
   ///
+  /// Throws a [DRAWArgumentError] if [subreddit] is not of type [Subreddit] or [String].
+  ///
   /// `subreddit` is the name of the [Subreddit] to be added to this [Multireddit].
   Future add(/* String, Subreddit */ subreddit) async {
     final subredditName = _subredditNameHelper(subreddit);
@@ -294,6 +296,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   }
 
   // Returns a string displayName of a subreddit.
+  // Throws a [DRAWArgumentError] if [subreddit] is not of type [Subreddit] or [String].
   static String _subredditNameHelper(/* String, Subreddit */ subreddit) {
     if (subreddit is Subreddit) {
       return subreddit.displayName;
