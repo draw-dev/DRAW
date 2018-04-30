@@ -227,8 +227,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
       throw new DRAWUnimplementedError();
     }
     setData(this, data['data']);
-    _author = new RedditorRef.name(
-        reddit, data['data']['path']?.split('/')[_redditorNameInPathIndex]);
+    _author = new RedditorRef.name(reddit, _getAuthorName(data));
   }
 
   static String _getAuthorName(data) {
