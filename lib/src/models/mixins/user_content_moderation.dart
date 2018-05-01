@@ -62,7 +62,7 @@ abstract class UserContentModerationMixin {
       'id': content.fullname,
       'api_type': 'json'
     };
-    if (sticky && (content is! Submission) && content.isRoot) {
+    if (sticky && (content is Comment) && content.isRoot) {
       data['sticky'] = 'true';
     }
     return content.reddit.post(apiPath['distinguish'], data);
