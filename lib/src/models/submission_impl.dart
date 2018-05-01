@@ -466,8 +466,8 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
     if (subreddit is! Subreddit) {
       subreddit = await subreddit.populate();
     }
-    final url = apiPath['flair']
-        .replaceAll(_subModRegExp, subreddit.displayName);
+    final url =
+        apiPath['flair'].replaceAll(_subModRegExp, subreddit.displayName);
     await _content.reddit.post(url, data, discardResponse: true);
   }
 

@@ -7,7 +7,7 @@ import 'dart:async';
 
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/exceptions.dart';
-import 'package:draw/src/models/submission.dart';
+import 'package:draw/src/models/comment.dart';
 
 enum DistinctionType {
   yes,
