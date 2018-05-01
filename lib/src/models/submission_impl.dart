@@ -20,6 +20,7 @@ import 'package:draw/src/models/mixins/replyable.dart';
 import 'package:draw/src/models/mixins/reportable.dart';
 import 'package:draw/src/models/mixins/saveable.dart';
 import 'package:draw/src/models/mixins/user_content_mixin.dart';
+import 'package:draw/src/models/mixins/user_content_moderation.dart';
 import 'package:draw/src/models/mixins/voteable.dart';
 import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/subreddit.dart';
@@ -250,6 +251,13 @@ class Submission extends SubmissionRef
   /// Has this [Submission] been visited by the current [User].
   bool get visited => data['visited'];
 
+  SubmissionModeration get mod {
+    _mod ??= new SubmissionModeration._(this);
+    return _mod;
+  }
+
+  SubmissionModeration _mod;
+
   Submission.parse(Reddit reddit, Map data)
       : super.withPath(reddit, SubmissionRef._infoPath(data['id'])) {
     setData(this, data);
@@ -337,9 +345,6 @@ class SubmissionRef extends UserContent {
   static String _infoPath(String id) =>
       apiPath['submission'].replaceAll(_submissionRegExp, id);
 
-  // TODO(bkonyi): implement
-  // SubmissionModeration get mod;
-
   /// The shortened link for the [Submission].
   Uri get shortlink => Uri.parse(reddit.config.shortUrl + _id);
 
@@ -380,4 +385,180 @@ class SubmissionRef extends UserContent {
         new CommentForest(submission, response[1]['listing']);
     return submission;
   }
+}
+
+String _commentSortTypeToString(CommentSortType t) {
+  switch (t) {
+    case CommentSortType.confidence:
+      return 'confidence';
+    case CommentSortType.top:
+      return 'top';
+    case CommentSortType.newest:
+      return 'new';
+    case CommentSortType.controversial:
+      return 'controversial';
+    case CommentSortType.old:
+      return 'old';
+    case CommentSortType.random:
+      return 'random';
+    case CommentSortType.qa:
+      return 'qa';
+    case CommentSortType.blank:
+      return 'blank';
+    default:
+      throw new DRAWInternalError('CommentSortType: $t is not supported.');
+  }
+}
+
+enum CommentSortType {
+  confidence,
+  top,
+  newest,
+  controversial,
+  old,
+  random,
+  qa,
+  blank
+}
+
+class SubmissionModeration extends Object with UserContentModerationMixin {
+  static final RegExp _subModRegExp = new RegExp(r'{subreddit}');
+
+  Submission get content => _content;
+  final Submission _content;
+
+  SubmissionModeration._(this._content);
+
+  /// Enables contest mode for the [Comment]s in this [Submission].
+  ///
+  /// If `state` is true (default), contest mode is enabled for this
+  /// [Submission].
+  ///
+  /// Contest mode have the following effects:
+  ///     * The comment thread will default to being sorted randomly.
+  ///     * Replies to top-level comments will be hidden behind
+  ///       "[show replies]" buttons.
+  ///     * Scores will be hidden from non-moderators.
+  ///     * Scores accessed through the API (mobile apps, bots) will be
+  ///       obscured to "1" for non-moderators.
+  Future contestMode({bool state = true}) async => _content.reddit.post(
+      apiPath['contest_mode'],
+      {
+        'id': _content.fullname,
+        'state': state.toString(),
+      },
+      discardResponse: true);
+
+  /// Sets the flair for the [Submission].
+  ///
+  /// `text` is the flair text to be associated with the [Submission].
+  /// `cssClass` is the CSS class to associate with the flair HTML.
+  ///
+  /// This method can only be used by an authenticated user who has moderation
+  /// rights for this [Submission].
+  Future flair({String text = '', String cssClass = ''}) async {
+    final data = {
+      'css_class': cssClass,
+      'link': _content.fullname,
+      'text': text,
+    };
+    var subreddit = _content.subreddit;
+    if (subreddit is! Subreddit) {
+      subreddit = await subreddit.populate();
+    }
+    final url =
+        apiPath['flair'].replaceAll(_subModRegExp, subreddit.displayName);
+    await _content.reddit.post(url, data, discardResponse: true);
+  }
+
+  /// Locks the [Submission] to new [Comment]s.
+  Future lock() async => _content.reddit.post(
+      apiPath['lock'],
+      {
+        'id': _content.fullname,
+      },
+      discardResponse: true);
+
+  /// Marks the [Submission] as not safe for work.
+  ///
+  /// Both the [Submission] author and users with moderation rights for this
+  /// submission can set this flag.
+  Future nsfw() async => _content.reddit.post(
+      apiPath['marknsfw'],
+      {
+        'id': _content.fullname,
+      },
+      discardResponse: true);
+
+  /// Marks the [Submission] as safe for work.
+  ///
+  /// Both the [Submission] author and users with moderation rights for this
+  /// submission can set this flag.
+  Future sfw() async => _content.reddit.post(
+      apiPath['unmarknsfw'],
+      {
+        'id': _content.fullname,
+      },
+      discardResponse: true);
+
+  /// Indicate that the submission contains spoilers.
+  ///
+  /// Both the [Submission] author and users with moderation rights for this
+  /// submission can set this flag.
+  Future spoiler() async => _content.reddit.post(
+      apiPath['spoiler'],
+      {
+        'id': _content.fullname,
+      },
+      discardResponse: true);
+
+  /// Set the [Submission]'s sticky state in its [Subreddit].
+  ///
+  /// If `state` is `true`, the [Submission] is stickied. If `false`, it is
+  /// unstickied.
+  ///
+  /// If `bottom` is `true`, the [Submission] is set as the bottom sticky. If
+  /// no top sticky exists, this [Submission] will become the top sticky.
+  Future sticky({bool state = true, bool bottom = true}) async {
+    final Map<String, dynamic> data = {
+      'id': _content.fullname,
+      'state': state.toString(),
+      'api_type': 'json',
+    };
+    if (!bottom) {
+      data['num'] = '1';
+    }
+    return _content.reddit.post(apiPath['sticky_submission'], data);
+  }
+
+  /// Sets the suggested [Comment] sorting for the [Submission].
+  ///
+  /// Defaults to [CommentSortType.blank].
+  Future suggestedSort({CommentSortType sort = CommentSortType.blank}) =>
+      _content.reddit.post(
+          apiPath['suggested_sort'],
+          {
+            'id': _content.fullname,
+            'sort': _commentSortTypeToString(sort),
+          },
+          discardResponse: true);
+
+  /// Unlocks the [Submission] to allow for new [Comment]s.
+  Future unlock() async => _content.reddit.post(
+      apiPath['unlock'],
+      {
+        'id': _content.fullname,
+      },
+      discardResponse: true);
+
+  /// Indicate that the submission contains spoilers.
+  ///
+  /// Both the [Submission] author and users with moderation rights for this
+  /// submission can set this flag.
+  Future unspoiler() async => _content.reddit.post(
+      apiPath['unspoiler'],
+      {
+        'id': _content.fullname,
+      },
+      discardResponse: true);
 }

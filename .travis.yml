@@ -8,8 +8,8 @@ dart:
   - dev
   - stable
 
-script: 
+script:
   - ./tools/travis.sh
   - pub run test -p vm
-  - dartfmt -n .
+  - dartfmt -n --set-exit-if-changed .
   - dartanalyzer --strong --fatal-warnings --fatal-lints lib/ test/
