@@ -1,5 +1,19 @@
 Change Log
 =================================
+## Unreleased
+Major breaking changes:
+* Dropped support for Dart 1.x. Flutter has moved to enable Dart 2 by default
+  which required some changes in DRAW that are not compatible with Dart 1.x.
+  Some of these changes required some method signatures to be modified, but
+  this shouldn't require any changes for users.
+
+  If running in a command-line script, that script must be run using a dev SDK
+  while passing the `--preview-dart-2` flag.
+
+  If used in a Flutter application, `--preview-dart-2` is enabled by default as
+  of the Flutter Beta 2 release.
+
+
 ## Version 0.2.1 (2018/04/17)
 * Added `Reddit.comment`, which allows for the creation of `CommentRef` objects
   from a comment ID or url.

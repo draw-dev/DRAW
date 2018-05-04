@@ -22,8 +22,10 @@ import 'subreddit/subreddit_listing_mixin_test.dart'
 import 'subreddit/subreddit_moderation_test.dart' as subreddit_mod_test;
 import 'subreddit/subreddit_test.dart' as subreddit_test;
 import 'unit_tests/src/test_draw_config_context.dart' as draw_config_test;
-import 'user/user_test.dart' as user_test;
+import 'user_content_moderation/user_content_moderation_test.dart'
+    as user_content_moderation_test;
 import 'user_content/user_content_test.dart' as user_content_test;
+import 'user/user_test.dart' as user_test;
 
 void main() {
   comment_test.main();
@@ -39,6 +41,7 @@ void main() {
   subreddit_listing_mixin_test.main();
   subreddit_mod_test.main();
   subreddit_test.main();
+  user_content_moderation_test.main();
   user_content_test.main();
   user_test.main();
 }
