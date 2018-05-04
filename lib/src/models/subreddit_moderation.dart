@@ -493,9 +493,9 @@ class SubredditModeration {
     return params;
   }
 
-  Stream _subredditModerationListingGeneratorHelper(
+  Stream<T> _subredditModerationListingGeneratorHelper<T>(
           String api, SubredditModerationContentTypeFilter only, {int limit}) =>
-      ListingGenerator.generator(_subreddit.reddit, _formatApiPath(api),
+      ListingGenerator.generator<T>(_subreddit.reddit, _formatApiPath(api),
           params: _buildOnlyMap(only), limit: limit);
 
   String _formatApiPath(String api) =>
@@ -602,7 +602,8 @@ class SubredditModeration {
 
   /// Returns a [Stream<Message>] of unread moderator messages.
   Stream<Message> unread({int limit}) =>
-      _subredditModerationListingGeneratorHelper('moderator_unread', null,
+      _subredditModerationListingGeneratorHelper<Message>(
+          'moderator_unread', null,
           limit: limit);
 
   /// Update the [Subreddit]s settings.
@@ -610,8 +611,8 @@ class SubredditModeration {
     if (updated == null) {
       throw new DRAWArgumentError("Field 'updated' cannot be null.");
     }
-    final data = new Map.from(updated._data);
-    final remap = {
+    final data = new Map<String, dynamic>.from(updated._data);
+    final remap = <String, String>{
       'allow_top': 'default_set',
       'lang': 'language',
       'link_type': 'content_options',
@@ -642,6 +643,7 @@ class SubredditModeration {
     });
 
     data['api_type'] = 'json';
-    return _subreddit.reddit.post(apiPath['site_admin'], data);
+    return _subreddit.reddit
+        .post(apiPath['site_admin'], data.cast<String, String>());
   }
 }

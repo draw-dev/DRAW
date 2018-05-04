@@ -382,7 +382,7 @@ class SubmissionRef extends UserContent {
     final response = await fetch();
     final submission = response[0]['listing'][0];
     submission._comments =
-        new CommentForest(submission, response[1]['listing']);
+        new CommentForest(submission, response[1]['listing'].cast<Comment>());
     return submission;
   }
 }
@@ -520,7 +520,7 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
   /// If `bottom` is `true`, the [Submission] is set as the bottom sticky. If
   /// no top sticky exists, this [Submission] will become the top sticky.
   Future sticky({bool state = true, bool bottom = true}) async {
-    final Map<String, dynamic> data = {
+    final data = <String, String>{
       'id': _content.fullname,
       'state': state.toString(),
       'api_type': 'json',
