@@ -367,8 +367,7 @@ class Comment extends CommentRef
     var comment;
     while (queue.isNotEmpty && ((comment == null) || (comment._id != _id))) {
       comment = queue.removeFirst();
-      if ((comment is CommentRef) &&
-          (comment.replies != null)) {
+      if ((comment is CommentRef) && (comment.replies != null)) {
         queue.addAll(comment.replies.toList());
       }
     }
