@@ -1,30 +1,33 @@
 Change Log
 =================================
-## Unreleased
-Major breaking changes:
-* Dropped support for Dart 1.x. Flutter has moved to enable Dart 2 by default
-  which required some changes in DRAW that are not compatible with Dart 1.x.
-  Some of these changes required some method signatures to be modified, but
-  this shouldn't require any changes for users.
+## Version 0.3.0 (2018/05/05)
+### Major breaking changes:
+Dropped support for Dart 1.x. Flutter has moved to enable Dart 2 by default
+which required some changes in DRAW that are not compatible with Dart 1.x.
+Some of these changes required some method signatures to be modified, but
+this shouldn't require any changes for users.
 
-  If running in a command-line script, that script must be run using a dev SDK
-  while passing the `--preview-dart-2` flag.
+If running in a command-line script, that script must be run using a dev SDK
+while passing the `--preview-dart-2` flag.
 
-  If used in a Flutter application, `--preview-dart-2` is enabled by default as
-  of the Flutter Beta 2 release.
+If used in a Flutter application, `--preview-dart-2` is enabled by default as
+of the Flutter Beta 2 release.
 
-A basic implementation of `Multireddit` added with the following functionality:
-* Added `Multireddit.parse(reddit, data)` constructor that will create an instance of 
+### Functionality:
+* Basic `Multireddit` functionality:
+  * Added `Multireddit.parse(reddit, data)` constructor that will create an instance of 
   a `Multireddit`, given the correct `Map` of `data`.
-* Added `add(subreddit)` method to add the corresponding `subreddit` to the 
-  instance of `Multireddit`. `subreddit` can be of type `Subreddit` or `String`.
-* Added `delete()` method to delete the multireddit.
-* Added `copy()` and `copy(multiName)`, this will create a copy of the `Multireddit` for 
-  for the currently authenticated user and return an instance of the new `Multireddit`
-  encapsulated as a `Future`. When `multiName` is provided it will set the display name 
-  of the new `Multireddit` to `multiName`. 
-* Added getters for the following properties: `keyColor`, `iconName`, `subreddits`, `author`
-  `displayName`, `visibility`, `weightingScheme`, `canEdit`, `over18`.
+  * Added `add(subreddit)` method to add the corresponding `subreddit` to the 
+    instance of `Multireddit`. `subreddit` can be of type `Subreddit` or `String`.
+  * Added `delete()` method to delete the multireddit.
+  * Added `copy()` and `copy(multiName)`, this will create a copy of the `Multireddit` for 
+    for the currently authenticated user and return an instance of the new `Multireddit`
+    encapsulated as a `Future`. When `multiName` is provided it will set the display name 
+    of the new `Multireddit` to `multiName`. 
+  * Added getters for the following properties: `keyColor`, `iconName`, `subreddits`, `author`
+    `displayName`, `visibility`, `weightingScheme`, `canEdit`, `over18`.
+* Comment and Submission moderation.
+* Miscellaneous bug fixes.
 
 ## Version 0.2.1 (2018/04/17)
 * Added `Reddit.comment`, which allows for the creation of `CommentRef` objects
