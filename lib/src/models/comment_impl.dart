@@ -102,8 +102,8 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   Future<List<dynamic>> _continueComments(bool update) async {
     assert(_children.isEmpty);
     final parent = await _loadComment(_parentId.split('_')[1]);
-    _comments = parent.replies.comments;
-    if (update) {
+    _comments = parent.replies?.comments;
+    if (update && (_comments != null)) {
       for (final comment in _comments) {
         if (comment is! MoreComments) {
           setSubmissionInternal(comment, _submission);
@@ -367,7 +367,8 @@ class Comment extends CommentRef
     var comment;
     while (queue.isNotEmpty && ((comment == null) || (comment._id != _id))) {
       comment = queue.removeFirst();
-      if (comment is CommentRef) {
+      if ((comment is CommentRef) &&
+          (comment.replies != null)) {
         queue.addAll(comment.replies.toList());
       }
     }
