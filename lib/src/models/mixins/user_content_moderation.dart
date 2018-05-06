@@ -42,9 +42,9 @@ abstract class UserContentModerationMixin {
   /// counter, adds a green check mark which is visible to other moderators
   /// on the site, and sets the `approvedBy` property to the authenticated
   /// user.
-  Future approve() async =>
-      content.reddit.post(apiPath['approve'], {'id': content.fullname},
-          discardResponse: true);
+  Future approve() async => content.reddit.post(
+      apiPath['approve'], <String, String>{'id': content.fullname},
+      discardResponse: true);
 
   /// Distinguish a [Comment] or [Submission].
   ///
@@ -57,7 +57,7 @@ abstract class UserContentModerationMixin {
   /// is not a [Comment] or is not a top-level [Comment], this parameter is
   /// ignored.
   Future distinguish({DistinctionType how, bool sticky: false}) async {
-    final data = {
+    final data = <String, String>{
       'how': _distinctionTypeToString(how),
       'id': content.fullname,
       'api_type': 'json'
@@ -73,15 +73,16 @@ abstract class UserContentModerationMixin {
   /// Prevents future reports on this [Comment] or [Submission] from triggering
   /// notifications and appearing in the mod queue. The report count will
   /// continue to increment.
-  Future ignoreReports() async =>
-      content.reddit.post(apiPath['ignore_reports'], {'id': content.fullname},
-          discardResponse: true);
+  Future ignoreReports() async => content.reddit.post(
+      apiPath['ignore_reports'], <String, String>{'id': content.fullname},
+      discardResponse: true);
 
   /// Remove a [Comment] or [Submission].
   ///
   /// Set `spam` to `true` to help train the subreddit's spam filter.
   Future remove({bool spam: false}) async => content.reddit.post(
-      apiPath['remove'], {'id': content.fullname, 'spam': spam.toString()},
+      apiPath['remove'],
+      <String, String>{'id': content.fullname, 'spam': spam.toString()},
       discardResponse: true);
 
   /// Remove distinguishing on a [Comment] or [Submission].
@@ -90,7 +91,7 @@ abstract class UserContentModerationMixin {
   /// Resume receiving future reports for a [Comment] or [Submission].
   ///
   /// Future reports will trigger notifications and appear in the mod queue.
-  Future unignoreReports() async =>
-      content.reddit.post(apiPath['unignore_reports'], {'id': content.fullname},
-          discardResponse: true);
+  Future unignoreReports() async => content.reddit.post(
+      apiPath['unignore_reports'], <String, String>{'id': content.fullname},
+      discardResponse: true);
 }

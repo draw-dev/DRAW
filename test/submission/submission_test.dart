@@ -12,7 +12,7 @@ import '../test_utils.dart';
 
 Future main() async {
   Stream<Submission> submissionsHelper(SubredditRef subreddit) {
-    return subreddit.newest();
+    return subreddit.newest().map<Submission>((u) => u as Submission);
   }
 
   // TODO(bkonyi): crosspost is fairly new on Reddit and is only available to

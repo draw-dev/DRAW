@@ -42,12 +42,12 @@ abstract class ListingGenerator {
     List<T> listing;
     bool exhausted = false;
 
-    Future<List<T>> _nextBatch() async {
+    Future<List> _nextBatch() async {
       if (exhausted) {
         return null;
       }
       final response = (await reddit.get(api, params: paramsInternal)) as Map;
-      final newListing = response['listing'];
+      final newListing = response['listing'].cast<T>();
       if (response[kAfterKey] == null) {
         exhausted = true;
       } else {
@@ -62,7 +62,7 @@ abstract class ListingGenerator {
 
     while ((_limit == null) || (yielded < _limit)) {
       if ((listing == null) || (index >= listing.length)) {
-        listing = await _nextBatch();
+        listing = (await _nextBatch())?.cast<T>();
         if (listing == null) {
           break;
         }

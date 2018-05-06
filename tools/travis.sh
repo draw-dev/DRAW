@@ -4,14 +4,19 @@
 set -e
 
 # Install dart_coveralls; gather and send coverage data.
-if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "stable" ]; then
+if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "dev" ]; then
   pub global activate dart_coveralls
+  git clone https://github.com/bkonyi/dart-coveralls.git
+  cd dart-coveralls
+  pub get
+  cd ..
   echo "Running coverage..."
-  dart_coveralls report \
+  dart dart-coveralls/bin/dart_coveralls.dart report \
     --retry 2 \
     --exclude-test-files \
     --throw-on-error \
     --throw-on-connectivity-error \
+    --preview-dart-2 \
     test/test_all.dart
   echo "Coverage complete."
 else

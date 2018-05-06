@@ -12,7 +12,7 @@ import '../test_utils.dart';
 
 Future main() async {
   Stream<Submission> submissionsHelper(SubredditRef subreddit) {
-    return subreddit.newest();
+    return subreddit.newest().cast<Submission>();
   }
 
   test('lib/user_content/replyable', () async {
@@ -37,7 +37,7 @@ Future main() async {
     await submission.report('Breaks rule 42');
     await submission.refresh();
     expect(submission.modReports[0],
-        equals(['Breaks rule 42', 'DRAWApiOfficial']));
+        equals(<String>['Breaks rule 42', 'DRAWApiOfficial']));
     await submission.delete();
   });
 

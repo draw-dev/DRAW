@@ -54,7 +54,7 @@ void setRepliesInternal(commentLike, CommentForest comments) {
 /// or 'continue this thread' section.
 class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   static final RegExp _submissionRegExp = new RegExp(r'{id}');
-  List<Comment> _comments;
+  List _comments;
   List<String> _children;
   int _count;
   String _parentId;
@@ -70,7 +70,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   String get parentId => _parentId;
 
   MoreComments.parse(Reddit reddit, Map data)
-      : _children = data['children'],
+      : _children = data['children'].cast<String>(),
         _count = data['count'],
         _parentId = data['parent_id'],
         super(reddit) {
@@ -99,7 +99,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
     return buffer.toString();
   }
 
-  Future<List<Comment>> _continueComments(bool update) async {
+  Future<List<dynamic>> _continueComments(bool update) async {
     assert(_children.isEmpty);
     final parent = await _loadComment(_parentId.split('_')[1]);
     _comments = parent.replies.comments;
@@ -133,7 +133,9 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   }
 
   /// Expand [MoreComments] into the list of actual [Comments] it represents.
-  Future<List<Comment>> comments({bool update: true}) async {
+  ///
+  /// Can contain additional [MoreComments] objects.
+  Future<List<dynamic>> comments({bool update: true}) async {
     if (_comments == null) {
       if (_submission is! Submission) {
         _submission = await _submission.populate();

@@ -183,9 +183,9 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
       orElse: () => null);
 
   List<SubredditRef> get subreddits {
-    final subredditList = [];
-    subredditList.addAll(data['subreddits']
-        .map((subreddit) => new SubredditRef.name(reddit, subreddit['name'])));
+    final subredditList = <SubredditRef>[];
+    subredditList.addAll(data['subreddits'].map<SubredditRef>(
+        (subreddit) => new SubredditRef.name(reddit, subreddit['name'])));
     return subredditList;
   }
 
@@ -317,7 +317,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     final userName = await reddit.user.me().then((me) => me.displayName);
     final scopedMultiName = multiName ?? data['display_name'];
 
-    final jsonData = {
+    final jsonData = <String, String>{
       _kDisplayName: scopedMultiName,
       _kFrom: infoPath,
       _kTo: apiPath['multireddit']
