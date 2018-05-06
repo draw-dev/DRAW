@@ -152,7 +152,8 @@ Future main() async {
       expect(subscription.displayName == 'WTF', isFalse);
     }
 
-    await subreddit.subscribe(otherSubreddits: [reddit.subreddit('WTF')]);
+    await subreddit
+        .subscribe(otherSubreddits: <SubredditRef>[reddit.subreddit('WTF')]);
 
     // When running this live, Reddit seems to subscribe to the
     // 'otherSubreddits' slightly after the single subreddit is being subscribed

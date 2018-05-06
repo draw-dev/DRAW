@@ -4,7 +4,6 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:math';
 
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
@@ -58,8 +57,7 @@ class SubredditRef extends RedditBase
       .replaceAll(SubredditRef._subredditRegExp, name);
 
   /// Promotes this [SubredditRef] into a populated [Subreddit].
-  Future<Subreddit> populate() async =>
-      new Subreddit.parse(reddit, await fetch());
+  Future<Subreddit> populate() async => await fetch();
 
   String get displayName => _name;
   String _name;
@@ -187,8 +185,9 @@ class SubredditRef extends RedditBase
   }
 
   /// Return the rules for the subreddit.
-  Future<List<Rule>> rules() async => reddit
-      .get(apiPath['rules'].replaceAll(SubredditRef._subredditRegExp, _name));
+  Future<List<Rule>> rules() async => (await reddit.get(
+          apiPath['rules'].replaceAll(SubredditRef._subredditRegExp, _name)))
+      .cast<Rule>();
 
   /// Returns a [Stream] of [UserContent] that match [query].
   ///
@@ -278,14 +277,14 @@ class SubredditRef extends RedditBase
       data['kind'] = 'link';
       data['url'] = url;
     }
-    return reddit.post(apiPath['submit'], data);
+    return (await reddit.post(apiPath['submit'], data)) as Submission;
   }
 
   /// Subscribes to the subreddit.
   ///
   /// When [otherSubreddits] is provided, the provided subreddits will also be
   /// subscribed to.
-  Future subscribe({List<Subreddit> otherSubreddits}) {
+  Future subscribe({List<SubredditRef> otherSubreddits}) {
     final data = {
       'action': 'sub',
       'skip_initial_defaults': 'true',
@@ -299,14 +298,14 @@ class SubredditRef extends RedditBase
   ///
   /// Raises an error when the traffic statistics aren't available to the
   /// authenticated user (i.e., not a moderator of the subreddit).
-  Future<Map> traffic() async => reddit.get(apiPath['about_traffic']
-      .replaceAll(SubredditRef._subredditRegExp, _name));
+  Future<Map> traffic() async => (await reddit.get(apiPath['about_traffic']
+      .replaceAll(SubredditRef._subredditRegExp, _name))) as Map;
 
   /// Unsubscribes from the subreddit.
   ///
   /// When [otherSubreddits] is provided, the provided subreddits will also be
   /// unsubscribed from.
-  Future unsubscribe({List<Subreddit> otherSubreddits}) async {
+  Future unsubscribe({List<SubredditRef> otherSubreddits}) async {
     final data = {
       'action': 'unsub',
       'sr_name': _subredditList(this, otherSubreddits),
@@ -344,6 +343,13 @@ class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
   String get title => data['title'];
 
   Subreddit._(Reddit reddit) : super(reddit);
+
+  Subreddit._fromSubreddit(Subreddit subreddit) : super(subreddit.reddit) {
+    setData(this, subreddit.data);
+    _name = subreddit._name;
+    _path =
+        apiPath['subreddit'].replaceAll(SubredditRef._subredditRegExp, _name);
+  }
 
   Subreddit.parse(Reddit reddit, Map data) : super(reddit) {
     if (!data['data'].containsKey('name')) {
@@ -574,18 +580,18 @@ class SubredditTraffic {
   /// made internal at some point.
   static Map<String, List<SubredditTraffic>> parseTrafficResponse(
       Map response) {
-    return {
+    return <String, List<SubredditTraffic>>{
       'hour': _generateTrafficList(response['hour']),
       'day': _generateTrafficList(response['day'], isDay: true),
       'month': _generateTrafficList(response['month']),
     };
   }
 
-  static List<SubredditTraffic> _generateTrafficList(List<List<int>> values,
+  static List<SubredditTraffic> _generateTrafficList(List values,
       {bool isDay = false}) {
     final traffic = <SubredditTraffic>[];
     for (final entry in values) {
-      traffic.add(new SubredditTraffic(entry));
+      traffic.add(new SubredditTraffic(entry.cast<int>()));
     }
     return traffic;
   }

@@ -67,7 +67,7 @@ class CommentForest {
 
   void _update(List comments) {
     _comments.clear();
-    _comments.addAll(comments);
+    _comments.addAll(comments.cast<dynamic>());
     for (final comment in _comments) {
       setSubmissionInternal(comment, _submission);
     }

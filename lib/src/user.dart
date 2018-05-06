@@ -20,7 +20,7 @@ class User extends RedditBase {
 
   /// Returns a [Future<List<Redditor>>] of blocked Redditors.
   Future<List<Redditor>> blocked() async {
-    return reddit.get(apiPath['blocked']);
+    return (await reddit.get(apiPath['blocked'])).cast<Redditor>();
   }
 
   /// Returns a [Stream] of [Subreddit]s the currently authenticated user is a
@@ -36,7 +36,7 @@ class User extends RedditBase {
 
   /// Returns a [Future<List<Redditor>>] of friends.
   Future<List<Redditor>> friends() async {
-    return reddit.get(apiPath['friends']);
+    return (await reddit.get(apiPath['friends'])).cast<Redditor>();
   }
 
   /// Returns a [Future<Map>] mapping subreddits to karma earned on the given
@@ -48,7 +48,7 @@ class User extends RedditBase {
   // TODO(bkonyi): actually do something with [useCache].
   /// Returns a [Future<Redditor>] which represents the current user.
   Future<Redditor> me({useCache: true}) async {
-    return reddit.get(apiPath['me']);
+    return (await reddit.get(apiPath['me'])) as Redditor;
   }
 
   /// Returns a [Stream] of [Subreddit]s the currently authenticated user is a
@@ -69,7 +69,7 @@ class User extends RedditBase {
   /// contain any additional parameters that should be sent as part of the API
   /// request.
   Future<List<Multireddit>> multireddits() async {
-    return reddit.get(apiPath['my_multireddits']);
+    return (await reddit.get(apiPath['my_multireddits'])).cast<Multireddit>();
   }
 
   /// Returns a [Stream] of [Subreddit]s the currently authenticated user is a

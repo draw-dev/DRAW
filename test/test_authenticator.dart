@@ -36,7 +36,9 @@ class TestAuthenticator extends Authenticator {
         super(new DRAWConfigContext(), null) {
     if (isRecording) {
       final rawRecording = new File(recordingPath).readAsStringSync();
-      _recording = new Recording.fromJson(JSON.decode(rawRecording),
+      final recording = JSON.decode(rawRecording).cast<Map<String, dynamic>>();
+
+      _recording = new Recording.fromJson(recording,
           toRequest: (q) => q,
           toResponse: (r) => r,
           requestEquality: const ListEquality());

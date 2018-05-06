@@ -6,10 +6,9 @@ os:
 
 dart:
   - dev
-  - stable
 
-script: 
+script:
   - ./tools/travis.sh
-  - pub run test -p vm
-  - dartfmt -n .
+  - dart --preview-dart-2 test/test_all.dart
+  - dartfmt -n --set-exit-if-changed .
   - dartanalyzer --strong --fatal-warnings --fatal-lints lib/ test/

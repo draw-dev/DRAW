@@ -42,7 +42,8 @@ class Objector extends RedditBase {
           (commentData['replies']['data'] is Map) &&
           commentData['replies']['data'].containsKey('children')) {
         final replies =
-            _objectifyList(commentData['replies']['data']['children']);
+            _objectifyList(commentData['replies']['data']['children'])
+                .cast<Comment>();
         final submission = new SubmissionRef.withID(
             reddit, _removeIDPrefix(commentData['link_id']));
         final commentForest = new CommentForest(submission, replies);
