@@ -6,7 +6,7 @@
 import 'dart:async';
 import 'package:draw/draw.dart';
 
-Future main() async {
+Future<void> main() async {
   // Create the `Reddit` instance and authenticate
   Reddit reddit = await Reddit.createInstance(
     clientId: CLIENT_ID,

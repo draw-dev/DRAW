@@ -9,7 +9,7 @@ import 'package:draw/draw.dart';
 import 'package:test/test.dart';
 import '../test_utils.dart';
 
-Future main() async {
+Future<void> main() async {
   final expectedSubredditList = [
     {'name': 'solotravel'},
     {'name': 'Fishing'},

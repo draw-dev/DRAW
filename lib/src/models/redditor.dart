@@ -87,7 +87,7 @@ class Redditor extends RedditorRef with RedditBaseInitializedMixin {
     if (!data.containsKey('name') &&
         !(data.containsKey('kind') &&
             data['kind'] == Reddit.defaultRedditorKind)) {
-      throw new DRAWArgumentError("input argument 'data' is not a valid"
+      throw DRAWArgumentError("input argument 'data' is not a valid"
           " representation of a Redditor");
     }
     setData(this, data);
@@ -127,7 +127,7 @@ class RedditorRef extends RedditBase
 
   /// Adds the [Redditor] as a friend. [note] is an optional string that is
   /// associated with the friend entry. Providing [note] requires Reddit Gold.
-  Future friend({String note = ''}) async =>
+  Future<void> friend({String note = ''}) async =>
       reddit.put(apiPath['friend_v1'].replaceAll(_userRegExp, _name),
           body: JSON.encode({'note': note}));
 
@@ -140,7 +140,7 @@ class RedditorRef extends RedditBase
 
   /// Gives Reddit Gold to the [Redditor]. [months] is the number of months of
   /// Reddit Gold to be given to the [Redditor].
-  Future gild({int months = 1}) async {
+  Future<void> gild({int months = 1}) async {
     final body = {
       'months': months.toString(),
     };
@@ -164,7 +164,7 @@ class RedditorRef extends RedditBase
   RedditorStream get stream => new RedditorStream(this);
 
   /// Unblock the [Redditor].
-  Future unblock() async {
+  Future<void> unblock() async {
     final currentUser = await reddit.user.me();
     final data = {
       'container': 't2_' + currentUser.data['id'],
@@ -178,7 +178,7 @@ class RedditorRef extends RedditBase
   }
 
   /// Unfriend the [Redditor].
-  Future unfriend() async =>
+  Future<void> unfriend() async =>
       reddit.delete(apiPath['friend_v1'].replaceAll(_userRegExp, _name));
 }
 

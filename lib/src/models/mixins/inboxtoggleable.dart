@@ -15,12 +15,12 @@ abstract class InboxToggleableMixin implements RedditBase {
   String get fullname;
 
   /// Disable inbox replies for the item.
-  Future disableInboxReplies() async =>
+  Future<void> disableInboxReplies() async =>
       reddit.post(apiPath['sendreplies'], {'id': fullname, 'state': 'false'},
           discardResponse: true);
 
   /// Enable inbox replies for the item.
-  Future enableInboxReplies() async =>
+  Future<void> enableInboxReplies() async =>
       reddit.post(apiPath['sendreplies'], {'id': fullname, 'state': 'true'},
           discardResponse: true);
 }

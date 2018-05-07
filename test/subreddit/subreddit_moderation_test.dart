@@ -19,7 +19,7 @@ Future<SubredditModeration> subredditModerationHelper(String path,
   return subreddit.mod;
 }
 
-Future main() async {
+Future<void> main() async {
   test('lib/subreddit/subreddit_edited', () async {
     final morbidRealityMod = await subredditModerationHelper(
         'test/subreddit/subreddit_moderation_edited.json');

@@ -137,7 +137,7 @@ class DRAWConfigContext {
   //Note this accessor throws if _shortURL is not set.
   String get shortUrl {
     if (_shortURL == kNotSet) {
-      throw new DRAWClientError('No short domain specified');
+      throw DRAWClientError('No short domain specified');
     }
     return _shortURL;
   }
@@ -191,7 +191,7 @@ class DRAWConfigContext {
         try {
           _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
         } catch (exception) {
-          throw new DRAWClientError('Could not parse configuration file.');
+          throw DRAWClientError('Could not parse configuration file.');
         }
       }
     }
@@ -253,7 +253,7 @@ class DRAWConfigContext {
             _username = value;
             break;
           default:
-            throw new DRAWInternalError(
+            throw DRAWInternalError(
                 'Parameter $param does not exist in the fieldMap for $type');
             break;
         }
@@ -271,7 +271,7 @@ class DRAWConfigContext {
           _revokeToken = value ?? kDefaultRevokeToken;
           break;
         default:
-          throw new DRAWInternalError(
+          throw DRAWInternalError(
               'Parameter $param does not exist in the fieldMap for $type');
           break;
       }
@@ -285,7 +285,7 @@ class DRAWConfigContext {
           _redditUrl = value ?? kDefaultRedditUrl;
           break;
         default:
-          throw new DRAWInternalError(
+          throw DRAWInternalError(
               'Parameter $param does not exist in the fieldMap for $type');
           break;
       }
@@ -313,7 +313,7 @@ class DRAWConfigContext {
     try {
       return _customConfig.get(_primarySiteName, key);
     } catch (exception) {
-      throw new DRAWArgumentError(
+      throw DRAWArgumentError(
           'Invalid paramter value, siteName cannot be null');
     }
   }

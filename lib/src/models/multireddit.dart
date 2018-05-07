@@ -25,7 +25,7 @@ String _visibilityToString(Visibility visibility) {
     case Visibility.public:
       return 'public';
     default:
-      throw new DRAWInternalError('Visiblitity: $visibility is not supported');
+      throw DRAWInternalError('Visiblitity: $visibility is not supported');
   }
 }
 
@@ -38,7 +38,7 @@ String _weightingSchemeToString(WeightingScheme weightingScheme) {
     case WeightingScheme.fresh:
       return 'fresh';
     default:
-      throw new DRAWInternalError(
+      throw DRAWInternalError(
           'WeightingScheme: $weightingScheme is not supported');
   }
 }
@@ -142,7 +142,7 @@ String _iconNameToString(IconName iconName) {
     case IconName.none:
       return 'None';
     default:
-      throw new DRAWInternalError('IconName: $iconName is not supported');
+      throw DRAWInternalError('IconName: $iconName is not supported');
   }
 }
 
@@ -223,7 +223,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
       : super.withPath(reddit,
             _generateInfoPath(data['data']['name'], _getAuthorName(data))) {
     if (!data['data'].containsKey('name')) {
-      throw new DRAWUnimplementedError();
+      throw DRAWUnimplementedError();
     }
     setData(this, data['data']);
     _author = new RedditorRef.name(reddit, _getAuthorName(data));
@@ -231,7 +231,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
 
   static String _getAuthorName(data) {
     if (data['data']['path'] == null) {
-      throw new DRAWInternalError('JSON data should contain value for path');
+      throw DRAWInternalError('JSON data should contain value for path');
     }
     return data['data']['path']?.split('/')[_redditorNameInPathIndex];
   }
@@ -280,7 +280,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   /// Throws a [DRAWArgumentError] if [subreddit] is not of type [Subreddit] or [String].
   ///
   /// `subreddit` is the name of the [Subreddit] to be added to this [Multireddit].
-  Future add(/* String, Subreddit */ subreddit) async {
+  Future<void> add(/* String, Subreddit */ subreddit) async {
     final subredditName = _subredditNameHelper(subreddit);
     final newSubredditObject = {'name': "$subredditName"};
     if (subreddit == null) return;
@@ -300,7 +300,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     if (subreddit is Subreddit) {
       return subreddit.displayName;
     } else if (subreddit is! String) {
-      throw new DRAWArgumentError('Parameter subreddit must be either a'
+      throw DRAWArgumentError('Parameter subreddit must be either a'
           'String or Subreddit');
     }
     return subreddit;
@@ -328,14 +328,14 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   }
 
   /// Delete this [Multireddit].
-  Future delete() async =>
+  Future<void> delete() async =>
       await reddit.delete(apiPath['multireddit_base'] + infoPath);
 
 /*
   /// Remove a [Subreddit] from this [Multireddit].
   ///
   /// [subreddit] contains the name of the subreddit to be deleted.
-  Future remove({String subreddit, Subreddit subredditInstance}) async {
+  Future<void> remove({String subreddit, Subreddit subredditInstance}) async {
     subreddit = subredditInstance?.displayName;
     if (subreddit == null) return;
     final url = apiPath[_kMultiredditUpdate]
@@ -350,7 +350,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   ///
   /// [newName] is the new display for this [Multireddit].
   /// The [name] will be auto generated from the displayName.
-  Future rename(newName) async {
+  Future<void> rename(newName) async {
     final url = apiPath["multireddit_rename"];
     final data = {
       _kFrom: infoPath,
@@ -362,7 +362,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   }
 
   /// Update this [Multireddit].
-  Future update(
+  Future<void> update(
       {final String displayName,
       final List<String> subreddits,
       final String descriptionMd,

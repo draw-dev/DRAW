@@ -38,7 +38,7 @@ String timeFilterToString(TimeFilter filter) {
     case TimeFilter.year:
       return 'year';
     default:
-      throw new DRAWInternalError('TimeFilter $filter is not'
+      throw DRAWInternalError('TimeFilter $filter is not'
           'supported');
   }
 }
@@ -66,7 +66,7 @@ String sortToString(Sort sort) {
     case Sort.comments:
       return 'comments';
     default:
-      throw new DRAWInternalError('Sort $sort is not supported');
+      throw DRAWInternalError('Sort $sort is not supported');
   }
 }
 
@@ -95,7 +95,7 @@ abstract class BaseListingMixin {
   Stream<UserContent> _buildTimeFilterGenerator(
       Map params, String sort, TimeFilter timeFilter) {
     if (timeFilter == null) {
-      throw new DRAWArgumentError('Argument "timeFilter" cannot be null');
+      throw DRAWArgumentError('Argument "timeFilter" cannot be null');
     }
     final _params = params ?? new Map();
     _params['t'] = timeFilterToString(timeFilter);

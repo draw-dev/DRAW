@@ -38,7 +38,7 @@ String _searchSyntaxToString(_SearchSyntax s) {
     case _SearchSyntax.plain:
       return 'plain';
     default:
-      throw new DRAWInternalError('SearchSyntax $s is not supported');
+      throw DRAWInternalError('SearchSyntax $s is not supported');
   }
 }
 
@@ -250,7 +250,7 @@ class SubredditRef extends RedditBase
       bool sendReplies: true}) async {
     if ((selftext == null && url == null) ||
         (selftext != null && url != null)) {
-      throw new DRAWArgumentError('One of either selftext or url must be '
+      throw DRAWArgumentError('One of either selftext or url must be '
           'provided');
     }
 
@@ -284,7 +284,7 @@ class SubredditRef extends RedditBase
   ///
   /// When [otherSubreddits] is provided, the provided subreddits will also be
   /// subscribed to.
-  Future subscribe({List<SubredditRef> otherSubreddits}) {
+  Future<void> subscribe({List<SubredditRef> otherSubreddits}) {
     final data = {
       'action': 'sub',
       'skip_initial_defaults': 'true',
@@ -305,7 +305,7 @@ class SubredditRef extends RedditBase
   ///
   /// When [otherSubreddits] is provided, the provided subreddits will also be
   /// unsubscribed from.
-  Future unsubscribe({List<SubredditRef> otherSubreddits}) async {
+  Future<void> unsubscribe({List<SubredditRef> otherSubreddits}) async {
     final data = {
       'action': 'unsub',
       'sr_name': _subredditList(this, otherSubreddits),
@@ -354,7 +354,7 @@ class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
   Subreddit.parse(Reddit reddit, Map data) : super(reddit) {
     if (!data['data'].containsKey('name')) {
       // TODO(bkonyi) throw invalid object exception.
-      throw new DRAWUnimplementedError();
+      throw DRAWUnimplementedError();
     }
     setData(this, data['data']);
     _name = data['data']['display_name'];
@@ -372,7 +372,7 @@ class SubredditFilters {
   SubredditFilters._(this._subreddit) {
     if ((_subreddit.displayName != 'all') &&
         (_subreddit.displayName != 'mod')) {
-      throw new DRAWArgumentError(
+      throw DRAWArgumentError(
           'Only special Subreddits can be filtered (r/all or r/mod)');
     }
   }
@@ -395,14 +395,14 @@ class SubredditFilters {
   /// Filtered subreddits will no longer be included when requesting listings
   /// from `/r/all`. `subreddit` can be either an instance of [String] or
   /// [SubredditRef].
-  Future add(/* String, Subreddit */ subreddit) async {
+  Future<void> add(/* String, Subreddit */ subreddit) async {
     var filteredSubreddit = '';
     if (subreddit is String) {
       filteredSubreddit = subreddit;
     } else if (subreddit is SubredditRef) {
       filteredSubreddit = subreddit.displayName;
     } else {
-      throw new DRAWArgumentError(
+      throw DRAWArgumentError(
           "Field 'subreddit' must be either a 'String' or 'SubredditRef'");
     }
 
@@ -420,14 +420,14 @@ class SubredditFilters {
   /// Filtered subreddits will no longer be included when requesting listings
   /// from `/r/all`. `subreddit` can be either an instance of [String] or
   /// [SubredditRef].
-  Future remove(/* String, Subreddit */ subreddit) async {
+  Future<void> remove(/* String, Subreddit */ subreddit) async {
     var filteredSubreddit = '';
     if (subreddit is String)
       filteredSubreddit = subreddit;
     else if (subreddit is SubredditRef)
       filteredSubreddit = subreddit.displayName;
     else
-      throw new DRAWArgumentError(
+      throw DRAWArgumentError(
           "Field 'subreddit' must be either a 'String' or 'SubredditRef'");
 
     final user = await _subreddit.reddit.user.me();
@@ -444,7 +444,7 @@ class SubredditFilters {
 /*class SubredditFlair {
   final Subreddit _subreddit;
   SubredditFlair(this._subreddit) {
-    throw new DRAWUnimplementedError();
+    throw DRAWUnimplementedError();
   }
 }*/
 
@@ -453,7 +453,7 @@ class SubredditFilters {
 /*class SubredditFlairTemplates {
   final Subreddit _subreddit;
   SubredditFlairTemplates(this._subreddit) {
-    throw new DRAWUnimplementedError();
+    throw DRAWUnimplementedError();
   }
 }*/
 
@@ -479,7 +479,7 @@ class SubredditQuarantine {
   SubredditQuarantine._(this._subreddit);
 
   /// Opt-in the current [User] to seeing the quarantined [Subreddit].
-  Future optIn() async {
+  Future<void> optIn() async {
     final data = {'sr_name': _subreddit.displayName};
     await _subreddit.reddit
         .post(apiPath['quarantine_opt_in'], data, discardResponse: true);
@@ -490,7 +490,7 @@ class SubredditQuarantine {
   /// When trying to request content from a quarantined subreddit, a
   /// `DRAWAuthenticationError` is thrown if the current [User] has not opted in
   /// to see content from that subreddit.
-  Future optOut() async {
+  Future<void> optOut() async {
     final data = {'sr_name': _subreddit.displayName};
     await _subreddit.reddit
         .post(apiPath['quarantine_opt_out'], data, discardResponse: true);
@@ -521,7 +521,7 @@ class SubredditRelationship {
   ///
   /// `redditor` can be either an instance of [Redditor] or the name of a
   /// Redditor.
-  Future add(/* String, Redditor */ redditor) async {
+  Future<void> add(/* String, Redditor */ redditor) async {
     final data = {
       'name': await _redditorNameHelper(redditor),
       'type': relationship,
@@ -537,7 +537,7 @@ class SubredditRelationship {
   ///
   /// `redditor` can be either an instance of [Redditor] or the name of a
   /// Redditor.
-  Future remove(/* String, Redditor */ redditor) async {
+  Future<void> remove(/* String, Redditor */ redditor) async {
     final data = {
       'name': await _redditorNameHelper(redditor),
       'type': relationship,
@@ -553,7 +553,7 @@ class SubredditRelationship {
     if (redditor is Redditor) {
       return redditor.displayName;
     } else if (redditor is! String) {
-      throw new DRAWArgumentError('Parameter redditor must be either a'
+      throw DRAWArgumentError('Parameter redditor must be either a'
           'String or Redditor');
     }
     return redditor;
@@ -619,7 +619,7 @@ class ContributorRelationship extends SubredditRelationship {
       : super(subreddit, relationship);
 
   /// Have the current [User] remove themself from the contributors list.
-  Future leave() async {
+  Future<void> leave() async {
     if (_subreddit is! Subreddit) {
       _subreddit = await _subreddit.populate();
     }
@@ -636,7 +636,7 @@ class ContributorRelationship extends SubredditRelationship {
 /*class ModeratorRelationship extends SubredditRelationship {
   ModeratorRelationship(Subreddit subreddit, String relationship)
       : super(subreddit, relationship) {
-    throw new DRAWUnimplementedError();
+    throw DRAWUnimplementedError();
   }
 }*/
 
@@ -645,7 +645,7 @@ class ContributorRelationship extends SubredditRelationship {
 /*class Modmail {
   Subreddit _subreddit;
   Modmail(this._subreddit) {
-    throw new DRAWUnimplementedError();
+    throw DRAWUnimplementedError();
   }
 }*/
 
@@ -710,7 +710,7 @@ class SubredditStream {
 /*class SubredditStyleSheet {
   final Subreddit _subreddit;
   SubredditStyleSheet(this._subreddit) {
-    throw new DRAWUnimplementedError();
+    throw DRAWUnimplementedError();
   }
 }*/
 
@@ -719,6 +719,6 @@ class SubredditStream {
 /*class SubredditWiki {
   final Subreddit _subreddit;
   SubredditWiki(this._subreddit) {
-    throw new DRAWUnimplementedError();
+    throw DRAWUnimplementedError();
   }
 }*/

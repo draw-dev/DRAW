@@ -29,25 +29,26 @@ abstract class InboxableMixin implements RedditBaseInitializedMixin {
   ///
   /// Note: Reddit does not permit blocking users unless you have a [Comment] or
   /// [Message] from them in your inbox.
-  Future block() async => await reddit.post(apiPath['block'], {'id': fullname});
+  Future<void> block() async =>
+      await reddit.post(apiPath['block'], {'id': fullname});
 
   /// Mark the item as collapsed.
   ///
   /// This method pertains only to objects which were retrieved via the inbox.
-  Future collapse() async => await reddit.inbox.collapse([this]);
+  Future<void> collapse() async => await reddit.inbox.collapse([this]);
 
   /// Mark the item as read.
   ///
   /// This method pertains only to objects which were retrieved via the inbox.
-  Future markRead() async => await reddit.inbox.markRead([this]);
+  Future<void> markRead() async => await reddit.inbox.markRead([this]);
 
   /// Mark the item as unread.
   ///
   /// This method pertains only to objects which were retrieved via the inbox.
-  Future markUnread() async => await reddit.inbox.markUnread([this]);
+  Future<void> markUnread() async => await reddit.inbox.markUnread([this]);
 
   /// Mark the item as collapsed.
   ///
   /// This method pertains only to objects which were retrieved via the inbox.
-  Future uncollapse() async => await reddit.inbox.uncollapse([this]);
+  Future<void> uncollapse() async => await reddit.inbox.uncollapse([this]);
 }

@@ -6,8 +6,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'exceptions.dart';
-import 'reddit.dart';
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/reddit.dart';
 
 void setData(RedditBaseInitializedMixin base, Map data) {
   base._data = data;
@@ -35,7 +35,7 @@ abstract class RedditBaseInitializedMixin {
 
   /// Requests updated information from the Reddit API and updates the current
   /// object properties.
-  Future refresh() async {
+  Future<dynamic> refresh() async {
     final response = await reddit.get(infoPath);
     if (response is Map) {
       _data = response;
@@ -47,7 +47,7 @@ abstract class RedditBaseInitializedMixin {
       _data = response[0]['listing'][0].data;
       return [this, response[1]['listing']];
     } else {
-      throw new DRAWInternalError('Refresh response is of unknown type: '
+      throw DRAWInternalError('Refresh response is of unknown type: '
           '${response.runtimeType}.');
     }
     return this;
@@ -78,5 +78,5 @@ abstract class RedditBase {
   RedditBase.withPath(this.reddit, String infoPath) : _infoPath = infoPath;
 
   /// Requests the data associated with the current object.
-  Future fetch() async => reddit.get(_infoPath);
+  Future<dynamic> fetch() async => reddit.get(_infoPath);
 }

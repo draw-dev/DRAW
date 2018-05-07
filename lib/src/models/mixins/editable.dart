@@ -16,7 +16,7 @@ abstract class EditableMixin implements RedditBaseInitializedMixin {
   String get fullname;
 
   /// Delete the object.
-  Future delete() async =>
+  Future<void> delete() async =>
       reddit.post(apiPath['del'], {'id': fullname}, discardResponse: true);
 
   /// Replace the body of the object with [body].

@@ -10,7 +10,7 @@ import 'package:draw/draw.dart';
 
 import '../test_utils.dart';
 
-Future main() async {
+Future<void> main() async {
   // TODO(bkonyi): this is more of a sanity check, but all the functionality in
   // [FrontPage] should have been tested elsewhere. Might want to expand this
   // coverage anyway.

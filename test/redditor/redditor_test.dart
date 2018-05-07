@@ -10,7 +10,7 @@ import 'package:draw/draw.dart';
 
 import '../test_utils.dart';
 
-Future main() async {
+Future<void> main() async {
   test('lib/redditor/friend', () async {
     final reddit = await createRedditTestInstance(
         'test/redditor/lib_redditor_friend.json');

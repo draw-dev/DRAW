@@ -131,7 +131,7 @@ class Reddit {
     if (initialized) {
       return reddit;
     }
-    throw new DRAWAuthenticationError('Unable to authenticate with Reddit');
+    throw DRAWAuthenticationError('Unable to authenticate with Reddit');
   }
 
   /// Creates a new authenticated [Reddit] instance from cached credentials.
@@ -180,7 +180,7 @@ class Reddit {
       Uri configUri,
       String siteName = 'default'}) async {
     if (credentialsJson == null) {
-      throw new DRAWArgumentError('credentialsJson cannot be null.');
+      throw DRAWArgumentError('credentialsJson cannot be null.');
     }
     final reddit = new Reddit._(
       clientId,
@@ -199,7 +199,7 @@ class Reddit {
     if (initialized) {
       return reddit;
     }
-    throw new DRAWAuthenticationError('Unable to authenticate with Reddit');
+    throw DRAWAuthenticationError('Unable to authenticate with Reddit');
   }
 
   // TODO(bkonyi): inherit from some common base class.
@@ -229,13 +229,13 @@ class Reddit {
         siteName: siteName);
 
     if (_config.clientId == null) {
-      throw new DRAWAuthenticationError('clientId cannot be null.');
+      throw DRAWAuthenticationError('clientId cannot be null.');
     }
     if (_config.clientSecret == null) {
-      throw new DRAWAuthenticationError('clientSecret cannot be null.');
+      throw DRAWAuthenticationError('clientSecret cannot be null.');
     }
     if (_config.userAgent == null) {
-      throw new DRAWAuthenticationError('userAgent cannot be null.');
+      throw DRAWAuthenticationError('userAgent cannot be null.');
     }
 
     if (credentialsJson == null) {
@@ -262,7 +262,7 @@ class Reddit {
         _initializationCallback(WebAuthenticator.create(_config, grant));
         _readOnly = false;
       } else {
-        throw new DRAWUnimplementedError('Unsupported authentication type.');
+        throw DRAWUnimplementedError('Unsupported authentication type.');
       }
     } else {
       // TODO(bkonyi): we might want to add restore methods for the other
@@ -275,7 +275,7 @@ class Reddit {
 
   Reddit.fromAuthenticator(Authenticator auth) {
     if (auth == null) {
-      throw new DRAWAuthenticationError('auth cannot be null.');
+      throw DRAWAuthenticationError('auth cannot be null.');
     }
     _config = new DRAWConfigContext();
     _initializationCallback(auth);
@@ -291,9 +291,9 @@ class Reddit {
   /// Only one of `id` and `url` can be provided.
   CommentRef comment({String id, /* Uri, String */ url}) {
     if ((id != null) && (url != null)) {
-      throw new DRAWArgumentError('One of either id or url can be provided');
+      throw DRAWArgumentError('One of either id or url can be provided');
     } else if ((id == null) && (url == null)) {
-      throw new DRAWArgumentError('id and url cannot both be null');
+      throw DRAWArgumentError('id and url cannot both be null');
     } else if (id != null) {
       return new CommentRef.withID(this, id);
     }
@@ -310,9 +310,9 @@ class Reddit {
   /// Only one of `id` and `url` can be provided.
   SubmissionRef submission({String id, /* Uri, String */ url}) {
     if ((id != null) && (url != null)) {
-      throw new DRAWArgumentError('One of either id or url can be provided');
+      throw DRAWArgumentError('One of either id or url can be provided');
     } else if ((id == null) && (url == null)) {
-      throw new DRAWArgumentError('id and url cannot both be null');
+      throw DRAWArgumentError('id and url cannot both be null');
     } else if (id != null) {
       return new SubmissionRef.withID(this, id);
     }
@@ -327,7 +327,7 @@ class Reddit {
 
   Future<dynamic> get(String api, {Map params, bool objectify: true}) async {
     if (!_initialized) {
-      throw new DRAWAuthenticationError(
+      throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
     final path = new Uri.https(defaultOAuthApiEndpoint, api);
@@ -338,7 +338,7 @@ class Reddit {
   Future<dynamic> post(String api, Map<String, String> body,
       {bool discardResponse: false}) async {
     if (!_initialized) {
-      throw new DRAWAuthenticationError(
+      throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
     final path = new Uri.https(defaultOAuthApiEndpoint, api);
@@ -349,9 +349,10 @@ class Reddit {
     return _objector.objectify(response);
   }
 
-  Future put(String api, {/* Map<String, String>, String */ body}) async {
+  Future<dynamic> put(String api,
+      {/* Map<String, String>, String */ body}) async {
     if (!_initialized) {
-      throw new DRAWAuthenticationError(
+      throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
     final path = new Uri.https(defaultOAuthApiEndpoint, api);
@@ -359,9 +360,10 @@ class Reddit {
     return _objector.objectify(response);
   }
 
-  Future delete(String api, {/* Map<String, String>, String */ body}) async {
+  Future<dynamic> delete(String api,
+      {/* Map<String, String>, String */ body}) async {
     if (!_initialized) {
-      throw new DRAWAuthenticationError(
+      throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
     final path = new Uri.https(defaultOAuthApiEndpoint, api);

@@ -63,7 +63,7 @@ class ConfigFileReader {
     } else if (Platform.isAndroid) {
       // TODO(ckartik): Look into supporting android configuration files.
     } else {
-      throw new DRAWInternalError('OS not Recognized by DRAW');
+      throw DRAWInternalError('OS not Recognized by DRAW');
     }
     if (osConfigPath == null) {
       // Sets osConfigPath to the corresponding root path

@@ -11,7 +11,7 @@ import 'package:draw/draw.dart';
 
 import '../test_utils.dart';
 
-Future prettyPrint(comments, depth) async {
+Future<void> prettyPrint(comments, depth) async {
   if (comments == null) {
     return;
   }
@@ -30,7 +30,7 @@ Future prettyPrint(comments, depth) async {
 
 // Note: these tests are skipped on Windows due to issues with line endings.
 // TODO(bkonyi): fix these tests on Windows at some point?
-Future main() async {
+Future<void> main() async {
   test('lib/comment/continue_test', () async {
     final reddit =
         await createRedditTestInstance('test/comment/continue_test.json');
