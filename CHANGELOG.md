@@ -1,5 +1,9 @@
 Change Log
 =================================
+## Version 0.3.1 (2018/05/06)
+Bug fixes:
+  * Fixed exception thrown from `WebAuthenticator` when running in Dart 2.
+
 ## Version 0.3.0 (2018/05/05)
 ### Major breaking changes:
 Dropped support for Dart 1.x. Flutter has moved to enable Dart 2 by default
