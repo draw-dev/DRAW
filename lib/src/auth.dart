@@ -157,7 +157,8 @@ abstract class Authenticator {
   ///
   /// [path] is the destination URI and [body] contains the DELETE parameters
   /// that will be sent with the request.
-  Future<dynamic> delete(Uri path, {/* Map<String,String>, String */ body}) async {
+  Future<dynamic> delete(Uri path,
+      {/* Map<String,String>, String */ body}) async {
     return _request(_kDeleteRequest, path, body: body);
   }
 
