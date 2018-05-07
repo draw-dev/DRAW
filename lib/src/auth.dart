@@ -50,6 +50,19 @@ abstract class Authenticator {
             secret: config.clientSecret,
             httpClient: new http.Client());
 
+  /// Not implemented for [Authenticator]s other than [WebAuthenticator].
+  Future authorize(String code) async {
+    throw new DRAWInternalError(
+        "'authorize' is only implemented for 'WebAuthenticator'");
+  }
+
+  /// Not implemented for [Authenticator]s other than [WebAuthenticator].
+  Uri url(List<String> scopes, String state,
+      {String duration = 'permanent', bool compactLogin = false}) {
+    throw new DRAWInternalError(
+        "'url' is only implemented for 'WebAuthenticator'");
+  }
+
   /// Request a new access token from the Reddit API. Throws a
   /// [DRAWAuthenticationError] if the [Authenticator] is not yet initialized.
   Future refresh() async {
@@ -367,6 +380,7 @@ class WebAuthenticator extends Authenticator {
   /// or not a permanent token is needed for the client, and can take the value
   /// of either 'permanent' (default) or 'temporary'. If [compactLogin] is true,
   /// then the Uri will link to a mobile-friendly Reddit authentication screen.
+  @override
   Uri url(List<String> scopes, String state,
       {String duration = 'permanent', bool compactLogin = false}) {
     // TODO(bkonyi) do we want to add the [implicit] flag to the argument list?
@@ -382,7 +396,8 @@ class WebAuthenticator extends Authenticator {
     }
     // getAuthorizationUrl returns a Uri which is missing the duration field, so
     // we need to add it here.
-    final queryParameters = new Map.from(redditAuthUri.queryParameters);
+    final queryParameters =
+        new Map<String, dynamic>.from(redditAuthUri.queryParameters);
     queryParameters[_kDurationKey] = duration;
     redditAuthUri = redditAuthUri.replace(queryParameters: queryParameters);
     if (compactLogin) {
@@ -399,6 +414,7 @@ class WebAuthenticator extends Authenticator {
   /// [code] is the value passed as a query parameter to `redirect`. This value
   /// must be parsed from the request made to `redirect` before being passed to
   /// this method.
+  @override
   Future authorize(String code) async {
     if (code == null) {
       // code cannot be null.
