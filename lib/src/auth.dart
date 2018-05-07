@@ -133,7 +133,7 @@ abstract class Authenticator {
   /// Make a simple `GET` request.
   ///
   /// [path] is the destination URI that the request will be made to.
-  Future<void> get(Uri path, {Map params}) async {
+  Future<dynamic> get(Uri path, {Map params}) async {
     return _request(_kGetRequest, path, params: params);
   }
 
@@ -141,7 +141,7 @@ abstract class Authenticator {
   ///
   /// [path] is the destination URI and [body] contains the POST parameters
   /// that will be sent with the request.
-  Future<void> post(Uri path, Map<String, String> body) async {
+  Future<dynamic> post(Uri path, Map<String, String> body) async {
     return _request(_kPostRequest, path, body: body);
   }
 
@@ -149,7 +149,7 @@ abstract class Authenticator {
   ///
   /// [path] is the destination URI and [body] contains the PUT parameters that
   /// will be sent with the request.
-  Future<void> put(Uri path, {/* Map<String,String>, String */ body}) async {
+  Future<dynamic> put(Uri path, {/* Map<String,String>, String */ body}) async {
     return _request(_kPutRequest, path, body: body);
   }
 
@@ -157,7 +157,7 @@ abstract class Authenticator {
   ///
   /// [path] is the destination URI and [body] contains the DELETE parameters
   /// that will be sent with the request.
-  Future<void> delete(Uri path, {/* Map<String,String>, String */ body}) async {
+  Future<dynamic> delete(Uri path, {/* Map<String,String>, String */ body}) async {
     return _request(_kDeleteRequest, path, body: body);
   }
 
@@ -166,7 +166,7 @@ abstract class Authenticator {
   /// [type] can be one of `GET`, `POST`, and `PUT`. [path] represents the
   /// request parameters. [body] is an optional parameter which contains the
   /// body fields for a POST request.
-  Future<void> _request(String type, Uri path,
+  Future<dynamic> _request(String type, Uri path,
       {/* Map<String,String>, String */ body, Map params}) async {
     if (_client == null) {
       throw DRAWAuthenticationError(
