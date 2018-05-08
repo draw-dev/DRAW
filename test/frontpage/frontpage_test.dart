@@ -17,7 +17,7 @@ Future main() async {
   test('lib/frontpage/sanity', () async {
     final reddit = await createRedditTestInstance(
         'test/frontpage/lib_frontpage_sanity.json');
-    await for (final hot in reddit.front.hot(params: {'limit': 10})) {
+    await for (final hot in reddit.front.hot(params: {'limit': '10'})) {
       expect(hot is Submission, isTrue);
     }
   });

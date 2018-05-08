@@ -1,5 +1,9 @@
 Change Log
 =================================
+## Version 0.3.2 (2018/05/07)
+Bug fixes:
+  * Fixed additional Dart 2 runtime type errors.
+
 ## Version 0.3.1 (2018/05/06)
 Bug fixes:
   * Fixed exception thrown from `WebAuthenticator` when running in Dart 2.

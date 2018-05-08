@@ -199,7 +199,7 @@ class SubredditRef extends RedditBase
       {Sort sort: Sort.relevance,
       _SearchSyntax syntax: _SearchSyntax.lucene,
       TimeFilter timeFilter: TimeFilter.all,
-      Map params}) {
+      Map<String, String> params}) {
     final timeStr = timeFilterToString(timeFilter);
     final isNotAll = !(_name.toLowerCase() == 'all');
     final data = (params != null) ? new Map.from(params) : new Map();
@@ -504,7 +504,8 @@ class SubredditRelationship {
 
   SubredditRelationship(this._subreddit, this.relationship);
 
-  Stream<Redditor> call({/* String, Redditor */ redditor, Map params}) {
+  Stream<Redditor> call(
+      {/* String, Redditor */ redditor, Map<String, String> params}) {
     final data = (params != null) ? new Map.from(params) : null;
     if (redditor != null) {
       data['user'] = _redditorNameHelper(redditor);

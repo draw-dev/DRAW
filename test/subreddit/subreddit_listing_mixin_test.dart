@@ -15,7 +15,7 @@ Future main() async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_listing_mixin_sanity.json');
     final subreddit = reddit.subreddit('funny');
-    await for (final content in subreddit.comments(params: {'limit': 10})) {
+    await for (final content in subreddit.comments(params: {'limit': '10'})) {
       expect(content is Comment, isTrue);
       expect(content.body, isNotNull);
     }

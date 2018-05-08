@@ -29,7 +29,7 @@ class CommentHelper extends RedditBase with GildedListingMixin {
   final SubredditRef _subreddit;
   CommentHelper(this._subreddit) : super(_subreddit.reddit);
 
-  Stream<Comment> call({Map params}) =>
+  Stream<Comment> call({Map<String, String> params}) =>
       ListingGenerator.generator<Comment>(reddit, _path(),
           limit: ListingGenerator.getLimit(params), params: params);
 

@@ -54,7 +54,7 @@ Future main() async {
 
     final other = reddit.redditor('spez');
     final posts = [];
-    await for (final post in other.controversial(params: {'limit': 2})) {
+    await for (final post in other.controversial(params: {'limit': '2'})) {
       expect(post is UserContent, isTrue);
       posts.add(post);
     }
@@ -77,7 +77,7 @@ Future main() async {
 
     final other = reddit.redditor('spez');
     final posts = [];
-    await for (final post in other.hot(params: {'limit': 2})) {
+    await for (final post in other.hot(params: {'limit': '2'})) {
       expect(post is UserContent, isTrue);
       posts.add(post);
     }
@@ -100,7 +100,7 @@ Future main() async {
 
     final other = reddit.redditor('spez');
     final posts = [];
-    await for (final post in other.newest(params: {'limit': 2})) {
+    await for (final post in other.newest(params: {'limit': '2'})) {
       expect(post is UserContent, isTrue);
       posts.add(post);
     }
@@ -123,7 +123,7 @@ Future main() async {
 
     final other = reddit.redditor('spez');
     final posts = [];
-    await for (final post in other.top(params: {'limit': 2})) {
+    await for (final post in other.top(params: {'limit': '2'})) {
       expect(post is UserContent, isTrue);
       posts.add(post);
     }
@@ -168,7 +168,7 @@ Future main() async {
 
     final other = reddit.redditor('DRAWApiOfficial');
     final content = [];
-    await for (final downvoted in other.downvoted(params: {'limit': 10})) {
+    await for (final downvoted in other.downvoted(params: {'limit': '10'})) {
       content.add(downvoted);
     }
 
@@ -189,7 +189,7 @@ Future main() async {
 
     final other = reddit.redditor('DRAWApiOfficial');
     final content = [];
-    await for (final hidden in other.hidden(params: {'limit': 10})) {
+    await for (final hidden in other.hidden(params: {'limit': '10'})) {
       content.add(hidden);
     }
 
@@ -206,7 +206,7 @@ Future main() async {
 
     final other = reddit.redditor('DRAWApiOfficial');
     final content = [];
-    await for (final upvoted in other.upvoted(params: {'limit': 10})) {
+    await for (final upvoted in other.upvoted(params: {'limit': '10'})) {
       content.add(upvoted);
     }
 

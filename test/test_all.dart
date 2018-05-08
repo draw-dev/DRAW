@@ -3,8 +3,6 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
-import 'dart:async';
-
 import 'comment/comment_test.dart' as comment_test;
 import 'frontpage/frontpage_test.dart' as frontpage_test;
 import 'gilded_listing_mixin/gilded_listing_mixin_test.dart'
