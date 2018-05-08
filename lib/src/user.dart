@@ -30,7 +30,8 @@ class User extends RedditBase {
   /// contain any additional parameters that should be sent as part of the API
   /// request.
   Stream<Subreddit> contributorSubreddits(
-          {int limit = ListingGenerator.defaultRequestLimit, Map params}) =>
+          {int limit = ListingGenerator.defaultRequestLimit,
+          Map<String, String> params}) =>
       ListingGenerator.generator<Subreddit>(reddit, apiPath['my_contributor'],
           limit: limit, params: params);
 
@@ -58,7 +59,8 @@ class User extends RedditBase {
   /// contain any additional parameters that should be sent as part of the API
   /// request.
   Stream<Subreddit> moderatorSubreddits(
-          {int limit = ListingGenerator.defaultRequestLimit, Map params}) =>
+          {int limit = ListingGenerator.defaultRequestLimit,
+          Map<String, String> params}) =>
       ListingGenerator.generator<Subreddit>(reddit, apiPath['my_moderator'],
           limit: limit, params: params);
 
@@ -79,7 +81,8 @@ class User extends RedditBase {
   /// contain any additional parameters that should be sent as part of the API
   /// request.
   Stream<Subreddit> subreddits(
-          {int limit = ListingGenerator.defaultRequestLimit, Map params}) =>
+          {int limit = ListingGenerator.defaultRequestLimit,
+          Map<String, String> params}) =>
       ListingGenerator.generator<Subreddit>(reddit, apiPath['my_subreddits'],
           limit: limit, params: params);
 }

@@ -76,14 +76,14 @@ abstract class BaseListingMixin {
   Reddit get reddit;
   String get path;
 
-  Stream<UserContent> _buildGenerator(Map params, String sort) {
-    Map _params = params;
+  Stream<UserContent> _buildGenerator(Map<String, String> params, String sort) {
+    Map<String, String> _params = params;
     if ((this is RedditorRef) || (this is SubListing)) {
       var arg = '';
       if (this is RedditorRef) {
         arg = 'overview';
       }
-      _params ??= new Map();
+      _params ??= new Map<String, String>();
       _params['sort'] = sort;
       return ListingGenerator.generator<UserContent>(reddit, path + arg,
           limit: ListingGenerator.getLimit(params), params: _params);
@@ -93,7 +93,7 @@ abstract class BaseListingMixin {
   }
 
   Stream<UserContent> _buildTimeFilterGenerator(
-      Map params, String sort, TimeFilter timeFilter) {
+      Map<String, String> params, String sort, TimeFilter timeFilter) {
     if (timeFilter == null) {
       throw new DRAWArgumentError('Argument "timeFilter" cannot be null');
     }
@@ -105,18 +105,22 @@ abstract class BaseListingMixin {
   /// Returns a [Stream] of controversial comments and submissions. [timeFilter]
   /// is used to filter comments and submissions by time period.
   Stream<UserContent> controversial(
-          {TimeFilter timeFilter: TimeFilter.all, Map params}) =>
+          {TimeFilter timeFilter: TimeFilter.all,
+          Map<String, String> params}) =>
       _buildTimeFilterGenerator(params, 'controversial', timeFilter);
 
   /// Returns a [Stream] of hot comments and submissions.
-  Stream<UserContent> hot({Map params}) => _buildGenerator(params, 'hot');
+  Stream<UserContent> hot({Map<String, String> params}) =>
+      _buildGenerator(params, 'hot');
 
   /// Returns a [Stream] of the newest comments and submissions.
-  Stream<UserContent> newest({Map params}) => _buildGenerator(params, 'new');
+  Stream<UserContent> newest({Map<String, String> params}) =>
+      _buildGenerator(params, 'new');
 
   /// Returns a [Stream] of the top comments and submissions. [timeFilter] is
   /// used to filter comments and submissions by time period.
   Stream<UserContent> top(
-          {TimeFilter timeFilter: TimeFilter.all, Map params}) =>
+          {TimeFilter timeFilter: TimeFilter.all,
+          Map<String, String> params}) =>
       _buildTimeFilterGenerator(params, 'top', timeFilter);
 }

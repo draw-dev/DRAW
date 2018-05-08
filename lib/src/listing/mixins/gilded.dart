@@ -16,7 +16,7 @@ abstract class GildedListingMixin {
   String get path;
 
   /// Returns a [Stream] of content that has been gilded.
-  Stream<UserContentInitialized> gilded({Map params}) =>
+  Stream<UserContentInitialized> gilded({Map<String, String> params}) =>
       ListingGenerator.createBasicGenerator<UserContentInitialized>(
           reddit, path + 'gilded',
           params: params);

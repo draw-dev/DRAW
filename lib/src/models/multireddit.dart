@@ -231,7 +231,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
 
   static String _getAuthorName(data) {
     if (data['data']['path'] == null) {
-      throw new DRAWInternalError('JSON data should contain value for path');
+      throw new DRAWInternalError('json data should contain value for path');
     }
     return data['data']['path']?.split('/')[_redditorNameInPathIndex];
   }

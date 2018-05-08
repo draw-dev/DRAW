@@ -129,7 +129,7 @@ class RedditorRef extends RedditBase
   /// associated with the friend entry. Providing [note] requires Reddit Gold.
   Future friend({String note = ''}) async =>
       reddit.put(apiPath['friend_v1'].replaceAll(_userRegExp, _name),
-          body: JSON.encode({'note': note}));
+          body: json.encode({'note': note}));
 
   /// Returns a [Redditor] object with friend information populated.
   ///

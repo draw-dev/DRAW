@@ -136,7 +136,7 @@ class Reddit {
 
   /// Creates a new authenticated [Reddit] instance from cached credentials.
   ///
-  /// [credentialsJson] is a JSON string containing the cached credentials. This
+  /// [credentialsJson] is a json string containing the cached credentials. This
   /// parameter is required and cannot be 'null'.
   ///
   /// This string can be retrieved from an authenticated [Reddit] instance in
@@ -325,7 +325,8 @@ class Reddit {
   SubredditRef subreddit(String subreddit) =>
       new SubredditRef.name(this, subreddit);
 
-  Future<dynamic> get(String api, {Map params, bool objectify: true}) async {
+  Future<dynamic> get(String api,
+      {Map<String, String> params, bool objectify: true}) async {
     if (!_initialized) {
       throw new DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');

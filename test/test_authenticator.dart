@@ -36,7 +36,7 @@ class TestAuthenticator extends Authenticator {
         super(new DRAWConfigContext(), null) {
     if (isRecording) {
       final rawRecording = new File(recordingPath).readAsStringSync();
-      final recording = JSON.decode(rawRecording).cast<Map<String, dynamic>>();
+      final recording = json.decode(rawRecording).cast<Map<String, dynamic>>();
 
       _recording = new Recording.fromJson(recording,
           toRequest: (q) => q,
@@ -64,11 +64,11 @@ class TestAuthenticator extends Authenticator {
   dynamic _copyResponse(response) {
     // This is a way to do a recursive deep-copy of the response so we don't
     // accidentally overwrite data in the tests.
-    return JSON.decode(JSON.encode(response));
+    return json.decode(json.encode(response));
   }
 
   @override
-  Future get(Uri path, {Map params}) async {
+  Future get(Uri path, {Map<String, String> params}) async {
     const redirectResponseStr = 'DRAWRedirectResponse';
     var result;
     if (isRecording) {
@@ -148,7 +148,7 @@ class TestAuthenticator extends Authenticator {
   /// does nothing and returns null.
   Future<File> writeRecording() {
     if (!isRecording) {
-      return (new File(_recordingPath)).writeAsString(JSON
+      return (new File(_recordingPath)).writeAsString(json
           .encode(_recorder.toRecording().toJsonEncodable(
               encodeRequest: (q) => q, encodeResponse: (r) => r))
           .toString());
