@@ -53,23 +53,40 @@ Future<void> main() async {
 
     // Retrieve the last mod action.
     final modAction = await morbidRealityMod.log(limit: 1).first;
-    expect(modAction.data['subreddit'], 'MorbidReality');
-    expect(modAction.data['action'], 'removecomment');
+    expect(modAction.subreddit, reddit.subreddit('MorbidReality'));
+    expect(modAction.action, ModeratorActionType.removeComment);
 
     final cheese =
         await morbidRealityMod.log(limit: 1, mod: 'XtremeCheese').first;
-    expect(cheese.data['mod'], 'XtremeCheese');
+    expect(cheese.mod.displayName, 'XtremeCheese');
+    expect(cheese.action, ModeratorActionType.approveComment);
 
     final redditor =
         await morbidRealityMod.log(mod: reddit.redditor('XtremeCheese')).first;
-    expect(redditor.data['mod'], 'XtremeCheese');
+    expect(redditor.mod.displayName, 'XtremeCheese');
 
     final redditorsList = <RedditorRef>[];
     redditorsList.add(reddit.redditor('XtremeCheese'));
     redditorsList.add(reddit.redditor('spez'));
     final redditors =
         await morbidRealityMod.log(mod: redditorsList, limit: 5).first;
-    expect(redditor.data['mod'], 'XtremeCheese');
+    expect(redditors.mod.displayName, 'XtremeCheese');
+
+    try {
+      final wiki = await morbidRealityMod
+          .log(
+              mod: reddit.redditor('XtremeCheese'),
+              type: ModeratorActionType.wikiUnbanned,
+              limit: 1)
+          .first;
+    } on StateError catch (e) {
+      // Keep the analyzer quiet.
+      expect(e is StateError, isTrue);
+    } catch (e) {
+      fail("Expected 'StateError' to be throw, got '$e'");
+    }
+
+    expect(redditors.toString(), isNotNull);
   });
 
   test('lib/subreddit/subreddit_mod_queue', () async {
@@ -190,6 +207,9 @@ Future<void> main() async {
         'test/subreddit/subreddit_moderation_settings.json');
     final settings = await morbidRealityMod.settings();
     expect(settings.allowPostCrossposts, isTrue);
+    expect(settings.defaultSet, isTrue);
+    expect(settings.description, isNotNull);
+    expect(settings.publicDescription, isNotNull);
     expect(settings.subredditType, SubredditType.publicSubreddit);
     expect(settings.commentScoreHideMins, 60);
     expect(settings.showMediaPreview, isTrue);
@@ -213,6 +233,155 @@ Future<void> main() async {
     expect(settings.showMediaPreview, isTrue);
     expect(settings.commentScoreHideMins, 60);
     expect(settings.excludeBannedModQueue, isTrue);
+    expect(settings.toString(), isNotNull);
+  });
+
+  test('lib/subreddit/subreddit_settings_local_modify', () async {
+    final morbidRealityMod = await subredditModerationHelper(
+        'test/subreddit/subreddit_moderation_settings.json');
+    final settings = await morbidRealityMod.settings();
+    expect(settings.allowPostCrossposts, isTrue);
+    settings.allowPostCrossposts = false;
+    expect(settings.allowPostCrossposts, isFalse);
+
+    expect(settings.showMedia, isTrue);
+    settings.showMedia = false;
+    expect(settings.showMedia, isFalse);
+
+    expect(settings.defaultSet, isTrue);
+    settings.defaultSet = false;
+    expect(settings.defaultSet, isFalse);
+
+    expect(settings.description, isNotNull);
+    settings.description = null;
+    expect(settings.description, isNull);
+
+    expect(settings.publicDescription, isNotNull);
+    settings.publicDescription = null;
+    expect(settings.publicDescription, isNull);
+
+    expect(settings.subredditType, SubredditType.publicSubreddit);
+    settings.subredditType = SubredditType.restrictedSubreddit;
+    expect(settings.subredditType, SubredditType.restrictedSubreddit);
+
+    expect(settings.commentScoreHideMins, 60);
+    settings.commentScoreHideMins = 30;
+    expect(settings.commentScoreHideMins, 30);
+
+    expect(settings.showMediaPreview, isTrue);
+    settings.showMediaPreview = false;
+    expect(settings.showMediaPreview, isFalse);
+
+    expect(settings.allowImages, isTrue);
+    settings.allowImages = false;
+    expect(settings.allowImages, isFalse);
+
+    expect(settings.allowFreeformReports, isTrue);
+    settings.allowFreeformReports = false;
+    expect(settings.allowFreeformReports, isFalse);
+
+    expect(settings.wikiEditAge, 365);
+    settings.wikiEditAge = 10;
+    expect(settings.wikiEditAge, 10);
+
+    expect(settings.submitText, '');
+    settings.submitText = 'foobar';
+    expect(settings.submitText, 'foobar');
+
+    expect(settings.title, 'The darkest recesses of humanity');
+    settings.title = 'testing';
+    expect(settings.title, 'testing');
+
+    expect(settings.collapseDeletedComments, isTrue);
+    settings.collapseDeletedComments = false;
+    expect(settings.collapseDeletedComments, isFalse);
+
+    expect(settings.publicTraffic, isFalse);
+    settings.publicTraffic = true;
+    expect(settings.publicTraffic, isTrue);
+
+    expect(settings.over18, isTrue);
+    settings.over18 = false;
+    expect(settings.over18, isFalse);
+
+    expect(settings.allowVideos, isFalse);
+    settings.allowVideos = true;
+    expect(settings.allowVideos, isTrue);
+
+    expect(settings.spoilersEnabled, isFalse);
+    settings.spoilersEnabled = true;
+    expect(settings.spoilersEnabled, isTrue);
+
+    expect(settings.submitLinkLabel, 'Submit');
+    settings.submitLinkLabel = 'Post';
+    expect(settings.submitLinkLabel, 'Post');
+
+    expect(settings.submitTextLabel, isNull);
+    settings.submitTextLabel = 'foobar';
+    expect(settings.submitTextLabel, 'foobar');
+
+    expect(settings.language, 'en');
+    settings.language = 'de';
+    expect(settings.language, 'de');
+
+    expect(settings.wikiEditKarma, 1000);
+    settings.wikiEditKarma = 10;
+    expect(settings.wikiEditKarma, 10);
+
+    expect(settings.hideAds, isFalse);
+    settings.hideAds = true;
+    expect(settings.hideAds, isTrue);
+
+    expect(settings.headerHoverText, 'MorbidReality');
+    settings.headerHoverText = 'foobar';
+    expect(settings.headerHoverText, 'foobar');
+
+    expect(settings.allowDiscovery, isTrue);
+    settings.allowDiscovery = false;
+    expect(settings.allowDiscovery, isFalse);
+
+    expect(settings.excludeBannedModQueue, isTrue);
+    settings.excludeBannedModQueue = false;
+    expect(settings.excludeBannedModQueue, isFalse);
+
+    expect(settings.toString(), isNotNull);
+  });
+
+  test('lib/subreddit/subreddit_settings_copy', () async {
+    final morbidRealityMod = await subredditModerationHelper(
+        'test/subreddit/subreddit_moderation_settings.json');
+
+    final settings = await morbidRealityMod.settings();
+    final settingsCopy = new SubredditSettings.copy(settings);
+    expect(settings.allowPostCrossposts, settingsCopy.allowPostCrossposts);
+    expect(settings.defaultSet, settingsCopy.defaultSet);
+    expect(settings.description, settingsCopy.description);
+    expect(settings.publicDescription, settingsCopy.publicDescription);
+    expect(settings.subredditType, settingsCopy.subredditType);
+    expect(settings.commentScoreHideMins, settingsCopy.commentScoreHideMins);
+    expect(settings.showMediaPreview, settingsCopy.showMediaPreview);
+    expect(settings.allowImages, settingsCopy.allowImages);
+    expect(settings.allowFreeformReports, settingsCopy.allowFreeformReports);
+    expect(settings.wikiEditAge, settingsCopy.wikiEditAge);
+    expect(settings.submitText, settingsCopy.submitText);
+    expect(settings.title, settingsCopy.title);
+    expect(
+        settings.collapseDeletedComments, settingsCopy.collapseDeletedComments);
+    expect(settings.publicTraffic, settingsCopy.publicTraffic);
+    expect(settings.over18, settingsCopy.over18);
+    expect(settings.allowVideos, settingsCopy.allowVideos);
+    expect(settings.spoilersEnabled, settingsCopy.spoilersEnabled);
+    expect(settings.submitLinkLabel, settingsCopy.submitLinkLabel);
+    expect(settings.submitTextLabel, settingsCopy.submitTextLabel);
+    expect(settings.language, settingsCopy.language);
+    expect(settings.wikiEditKarma, settingsCopy.wikiEditKarma);
+    expect(settings.hideAds, settingsCopy.hideAds);
+    expect(settings.headerHoverText, settingsCopy.headerHoverText);
+    expect(settings.allowDiscovery, settingsCopy.allowDiscovery);
+    expect(settings.showMediaPreview, settingsCopy.showMediaPreview);
+    expect(settings.commentScoreHideMins, settingsCopy.commentScoreHideMins);
+    expect(settings.excludeBannedModQueue, settingsCopy.excludeBannedModQueue);
+    expect(settings.toString(), settingsCopy.toString());
   });
 
   test('lib/subreddit/subreddit_update_settings', () async {
