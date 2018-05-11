@@ -479,8 +479,8 @@ class SubredditModeration {
   final SubredditRef _subreddit;
   SubredditModeration(this._subreddit);
 
-  Map _buildOnlyMap(SubredditModerationContentTypeFilter only) {
-    final params = {};
+  Map<String, String> _buildOnlyMap(SubredditModerationContentTypeFilter only) {
+    final params = <String, String>{};
     if (only != null) {
       var _only;
       if (only == SubredditModerationContentTypeFilter.submissionsOnly) {
@@ -532,7 +532,7 @@ class SubredditModeration {
       {/* RedditorRef, List<RedditorRef>, String */ mod,
       ModeratorActionType type,
       int limit}) {
-    final params = {};
+    final params = <String, String>{};
     if (mod != null) {
       const kMods = 'mod';
       if (mod is RedditorRef) {

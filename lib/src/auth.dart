@@ -118,7 +118,7 @@ abstract class Authenticator {
 
       if (response.statusCode != 204) {
         // We should always get a 204 response for this call.
-        final parsed = JSON.decode(response.body);
+        final parsed = json.decode(response.body);
         _throwAuthenticationError(parsed);
       }
     }
@@ -133,7 +133,7 @@ abstract class Authenticator {
   /// Make a simple `GET` request.
   ///
   /// [path] is the destination URI that the request will be made to.
-  Future<dynamic> get(Uri path, {Map params}) async {
+  Future<dynamic> get(Uri path, {Map<String, String> params}) async {
     return _request(_kGetRequest, path, params: params);
   }
 
@@ -168,7 +168,8 @@ abstract class Authenticator {
   /// request parameters. [body] is an optional parameter which contains the
   /// body fields for a POST request.
   Future<dynamic> _request(String type, Uri path,
-      {/* Map<String,String>, String */ body, Map params}) async {
+      {/* Map<String,String>, String */ body,
+      Map<String, String> params}) async {
     if (_client == null) {
       throw DRAWAuthenticationError(
           'The authenticator does not have a valid token.');
@@ -202,7 +203,7 @@ abstract class Authenticator {
     }
     final response = await responseStream.stream.bytesToString();
     if (response.isEmpty) return null;
-    final parsed = JSON.decode(response);
+    final parsed = json.decode(response);
     if ((parsed is Map) && parsed.containsKey(_kErrorKey)) {
       _throwAuthenticationError(parsed);
     }
@@ -233,7 +234,7 @@ abstract class Authenticator {
         body: accountInfo);
 
     // Check for error response.
-    final responseMap = JSON.decode(response.body);
+    final responseMap = json.decode(response.body);
     if (responseMap.containsKey(_kErrorKey)) {
       _throwAuthenticationError(responseMap);
     }
