@@ -407,7 +407,7 @@ class SubredditSettings {
   void set allowDiscovery(bool x) => _data['allow_discovery'] = x;
 
   String get publicDescription => _data['public_description'];
-  void set publicDescription(String x) => _data['public_description'];
+  void set publicDescription(String x) => _data['public_description'] = x;
 
   bool get showMediaPreview => _data['show_media_preview'];
   void set showMediaPreview(bool x) => _data['show_media_preview'] = x;
