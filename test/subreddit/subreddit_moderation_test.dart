@@ -79,7 +79,10 @@ Future<void> main() async {
               type: ModeratorActionType.wikiUnbanned,
               limit: 1)
           .first;
-    } on StateError catch (e) {} catch (e) {
+    } on StateError catch (e) {
+      // Keep the analyzer quiet.
+      expect(e is StateError, isTrue);
+    } catch (e) {
       fail("Expected 'StateError' to be throw, got '$e'");
     }
 
