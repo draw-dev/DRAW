@@ -25,20 +25,21 @@ class Inbox extends RedditBase {
       ListingGenerator.createBasicGenerator(reddit, apiPath['inbox']);
 
   /// Marks a list of [Comment] and/or [Message] objects as collapsed.
-  Future collapse(List items) => _itemHelper(apiPath['collapse'], items);
+  Future<void> collapse(List items) => _itemHelper(apiPath['collapse'], items);
 
   /// Returns a [Stream<Comment>] of all comment replies.
   Stream<Comment> commentReplies() =>
       ListingGenerator.createBasicGenerator(reddit, apiPath['comment_replies']);
 
   /// Marks a list of [Comment] and/or [Message] objects as read.
-  Future markRead(List items) => _itemHelper(apiPath['read_message'], items);
+  Future<void> markRead(List items) =>
+      _itemHelper(apiPath['read_message'], items);
 
   /// Marks a list of [Comment] and/or [Message] objects as unread.
-  Future markUnread(List items) =>
+  Future<void> markUnread(List items) =>
       _itemHelper(apiPath['unread_message'], items);
 
-  Future _itemHelper(String api, List items) async {
+  Future<void> _itemHelper(String api, List items) async {
     var start = 0;
     var end = min(items.length, 25);
     while (true) {
@@ -106,7 +107,8 @@ class Inbox extends RedditBase {
       reddit, apiPath['submission_replies']);
 
   /// Marks a list of [Comment] and/or [Message] objects as uncollapsed.
-  Future uncollapse(List items) => _itemHelper(apiPath['uncollapse'], items);
+  Future<void> uncollapse(List items) =>
+      _itemHelper(apiPath['uncollapse'], items);
 
   /// Returns a [Stream] of [Comment] and/or [Message] objects that have not yet
   /// been read.

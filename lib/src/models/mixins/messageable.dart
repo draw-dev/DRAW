@@ -21,7 +21,8 @@ abstract class MessageableMixin {
   /// message, and [fromSubreddit] is a [Subreddit] that the message should be
   /// sent from. [fromSubreddit] must be a subreddit that the current user is a
   /// moderator of and has permissions to send mail on behalf of the subreddit.
-  Future message(String subject, String message, {SubredditRef fromSubreddit}) {
+  Future<void> message(String subject, String message,
+      {SubredditRef fromSubreddit}) {
     var messagePrefix = '';
     if (this is Subreddit) {
       messagePrefix = '#';

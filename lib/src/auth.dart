@@ -51,30 +51,29 @@ abstract class Authenticator {
             httpClient: new http.Client());
 
   /// Not implemented for [Authenticator]s other than [WebAuthenticator].
-  Future authorize(String code) async {
-    throw new DRAWInternalError(
+  Future<void> authorize(String code) async {
+    throw DRAWInternalError(
         "'authorize' is only implemented for 'WebAuthenticator'");
   }
 
   /// Not implemented for [Authenticator]s other than [WebAuthenticator].
   Uri url(List<String> scopes, String state,
       {String duration = 'permanent', bool compactLogin = false}) {
-    throw new DRAWInternalError(
-        "'url' is only implemented for 'WebAuthenticator'");
+    throw DRAWInternalError("'url' is only implemented for 'WebAuthenticator'");
   }
 
   /// Request a new access token from the Reddit API. Throws a
   /// [DRAWAuthenticationError] if the [Authenticator] is not yet initialized.
-  Future refresh() async {
+  Future<void> refresh() async {
     if (_client == null) {
-      throw new DRAWAuthenticationError(
+      throw DRAWAuthenticationError(
           'cannot refresh uninitialized Authenticator.');
     }
     await _authenticationFlow();
   }
 
   /// Revokes any outstanding tokens associated with the [Authenticator].
-  Future revoke() async {
+  Future<void> revoke() async {
     if (credentials == null) {
       return;
     }
@@ -129,7 +128,7 @@ abstract class Authenticator {
   /// [Map<String,String>] with information needed for authentication, and then
   /// call [_requestToken] to authenticate. All classes inheriting from
   /// [Authenticator] must implement this method.
-  Future _authenticationFlow();
+  Future<void> _authenticationFlow();
 
   /// Make a simple `GET` request.
   ///
@@ -172,7 +171,7 @@ abstract class Authenticator {
       {/* Map<String,String>, String */ body,
       Map<String, String> params}) async {
     if (_client == null) {
-      throw new DRAWAuthenticationError(
+      throw DRAWAuthenticationError(
           'The authenticator does not have a valid token.');
     }
     if (!isValid) {
@@ -200,7 +199,7 @@ abstract class Authenticator {
       if (redirectStr.endsWith('.json')) {
         redirectStr = redirectStr.substring(0, redirectStr.length - 5);
       }
-      throw new DRAWRedirectResponse(redirectStr, responseStream);
+      throw DRAWRedirectResponse(redirectStr, responseStream);
     }
     final response = await responseStream.stream.bytesToString();
     if (response.isEmpty) return null;
@@ -213,7 +212,7 @@ abstract class Authenticator {
 
   /// Requests the authentication token from Reddit based on parameters provided
   /// in [accountInfo] and [_grant].
-  Future _requestToken(Map<String, String> accountInfo) async {
+  Future<void> _requestToken(Map<String, String> accountInfo) async {
     // Retrieve the client ID and secret.
     final clientId = _grant.identifier;
     final clientSecret = _grant.secret;
@@ -252,7 +251,7 @@ abstract class Authenticator {
   void _throwAuthenticationError(Map response) {
     final statusCode = response[_kErrorKey];
     final reason = response[_kMessageKey];
-    throw new DRAWAuthenticationError(
+    throw DRAWAuthenticationError(
         'Status Code: ${statusCode} Reason: ${reason}');
   }
 
@@ -299,7 +298,7 @@ class ScriptAuthenticator extends Authenticator {
   /// [Map<String,String>] with information needed for authentication, and then
   /// call [_requestToken] to authenticate.
   @override
-  Future _authenticationFlow() async {
+  Future<void> _authenticationFlow() async {
     final accountInfo = new Map<String, String>();
     accountInfo[_kUsernameKey] = _config.username;
     accountInfo[_kPasswordKey] = _config.password;
@@ -333,7 +332,7 @@ class ReadOnlyAuthenticator extends Authenticator {
   /// [Map<String,String>] with information needed for authentication, and then
   /// call [_requestToken] to authenticate.
   @override
-  Future _authenticationFlow() async {
+  Future<void> _authenticationFlow() async {
     final accountInfo = new Map<String, String>();
     accountInfo[_kGrantTypeKey] = 'client_credentials';
     await _requestToken(accountInfo);
@@ -388,12 +387,12 @@ class WebAuthenticator extends Authenticator {
     // TODO(bkonyi) do we want to add the [implicit] flag to the argument list?
     if (scopes == null) {
       // scopes cannot be null.
-      throw new DRAWAuthenticationError('Parameter scopes cannot be null.');
+      throw DRAWAuthenticationError('Parameter scopes cannot be null.');
     }
     Uri redditAuthUri =
         _grant.getAuthorizationUrl(_redirect, scopes: scopes, state: state);
     if (redditAuthUri == null) {
-      throw new DRAWAuthenticationError('The Auth URL for Reddit must not be '
+      throw DRAWAuthenticationError('The Auth URL for Reddit must not be '
           'null');
     }
     // getAuthorizationUrl returns a Uri which is missing the duration field, so
@@ -417,10 +416,10 @@ class WebAuthenticator extends Authenticator {
   /// must be parsed from the request made to `redirect` before being passed to
   /// this method.
   @override
-  Future authorize(String code) async {
+  Future<void> authorize(String code) async {
     if (code == null) {
       // code cannot be null.
-      throw new DRAWAuthenticationError('Parameter code cannot be null.');
+      throw DRAWAuthenticationError('Parameter code cannot be null.');
     }
     _client = await _grant.handleAuthorizationCode(code);
   }
@@ -429,17 +428,17 @@ class WebAuthenticator extends Authenticator {
   /// [Map<String,String>] with information needed for authentication, and then
   /// call [_requestToken] to authenticate.
   @override
-  Future _authenticationFlow() async {
-    throw new UnimplementedError(
+  Future<void> _authenticationFlow() async {
+    throw UnimplementedError(
         '_authenticationFlow is not used in WebAuthenticator.');
   }
 
   /// Request a new access token from the Reddit API. Throws a
   /// [DRAWAuthenticationError] if the [Authenticator] is not yet initialized.
   @override
-  Future refresh() async {
+  Future<void> refresh() async {
     if (_client == null) {
-      throw new DRAWAuthenticationError(
+      throw DRAWAuthenticationError(
           'cannot refresh uninitialized Authenticator.');
     }
     _client = await _client.refreshCredentials();

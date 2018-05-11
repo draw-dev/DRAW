@@ -340,14 +340,14 @@ class Comment extends CommentRef
     if (id != null) {
       final split = id.split('/');
       print(split);
-      throw new DRAWUnimplementedError();
+      throw DRAWUnimplementedError();
       return split[split.length - 4];
     }
     id = data['link_id'];
     if (id != null) {
       return id.split('_')[1];
     }
-    throw new DRAWInternalError('Cannot extract submission ID from a'
+    throw DRAWInternalError('Cannot extract submission ID from a'
         ' lazy-comment');
   }
 
@@ -356,7 +356,7 @@ class Comment extends CommentRef
   }
 
   @override
-  Future refresh() async {
+  Future<void> refresh() async {
     final path = submission.infoPath + '_/' + _id;
     final params = {
       'context': '100',
@@ -372,7 +372,7 @@ class Comment extends CommentRef
       }
     }
     if ((comment == null) || comment._id != _id) {
-      throw new DRAWClientError('Could not find comment with id $_id');
+      throw DRAWClientError('Could not find comment with id $_id');
     }
 
     // Update the backing state of this comment object.
@@ -424,14 +424,14 @@ class CommentRef extends UserContent {
     } else if (url is Uri) {
       uri = url;
     } else {
-      throw new DRAWArgumentError('idFromUrl expects either a String or Uri as'
+      throw DRAWArgumentError('idFromUrl expects either a String or Uri as'
           ' input');
     }
     final parts = uri.path.split('/');
     final commentsIndex = parts.indexOf('comments');
     // Check formatting of the URL.
     if (commentsIndex != parts.length - 5) {
-      throw new DRAWArgumentError("'$url' is not a valid comment url.");
+      throw DRAWArgumentError("'$url' is not a valid comment url.");
     }
     return parts[parts.length - 2];
   }

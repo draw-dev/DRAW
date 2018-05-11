@@ -32,7 +32,7 @@ String _subredditTypeToString(SubredditType type) {
     case SubredditType.restrictedSubreddit:
       return 'restricted';
     default:
-      throw new DRAWInternalError('Invalid subreddit type: $type.');
+      throw DRAWInternalError('Invalid subreddit type: $type.');
   }
 }
 
@@ -53,7 +53,7 @@ SubredditType _stringToSubredditType(String s) {
     case 'restricted':
       return SubredditType.restrictedSubreddit;
     default:
-      throw new DRAWInternalError("Invalid subreddit type: $s.");
+      throw DRAWInternalError("Invalid subreddit type: $s.");
   }
 }
 
@@ -211,7 +211,7 @@ String _moderatorActionTypesToString(ModeratorActionType a) {
     case ModeratorActionType.wikiUnbanned:
       return 'wikiunbanned';
     default:
-      throw new DRAWInternalError('Invalid moderator action type: $a.');
+      throw DRAWInternalError('Invalid moderator action type: $a.');
   }
 }
 
@@ -310,7 +310,7 @@ ModeratorActionType _stringToModeratorActionType(String s) {
     case 'wikiunbanned':
       return ModeratorActionType.wikiUnbanned;
     default:
-      throw new DRAWInternalError("Invalid moderator action type: $s.");
+      throw DRAWInternalError("Invalid moderator action type: $s.");
   }
 }
 
@@ -420,7 +420,7 @@ class SubredditSettings {
 
   void set subredditType(SubredditType type) {
     if (type == null) {
-      throw new DRAWArgumentError("Parameter 'type' cannot be null.");
+      throw DRAWArgumentError("Parameter 'type' cannot be null.");
     }
     _data['subreddit_type'] = _subredditTypeToString(type);
   }
@@ -502,7 +502,7 @@ class SubredditModeration {
       apiPath[api].replaceAll(_subredditRegExp, _subreddit.displayName);
 
   /// Accept an invitation to moderate the community.
-  Future acceptInvite() async {
+  Future<void> acceptInvite() async {
     final url = apiPath['accept_mod_invite']
         .replaceAll(_subredditRegExp, _subreddit.displayName);
     return _subreddit.reddit.post(url, {});
@@ -542,7 +542,7 @@ class SubredditModeration {
       } else if (mod is String) {
         params[kMods] = mod;
       } else {
-        throw new DRAWArgumentError("Argument type 'mod' must be of "
+        throw DRAWArgumentError("Argument type 'mod' must be of "
             "'RedditorRef' `List<RedditorRef>`, or `String`; got "
             "${mod.runtimeType}.");
       }
@@ -607,9 +607,9 @@ class SubredditModeration {
           limit: limit);
 
   /// Update the [Subreddit]s settings.
-  Future update(SubredditSettings updated) async {
+  Future<void> update(SubredditSettings updated) async {
     if (updated == null) {
-      throw new DRAWArgumentError("Field 'updated' cannot be null.");
+      throw DRAWArgumentError("Field 'updated' cannot be null.");
     }
     final data = new Map<String, dynamic>.from(updated._data);
     final remap = <String, String>{

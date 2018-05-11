@@ -10,7 +10,7 @@ import 'package:test/test.dart';
 
 import '../test_utils.dart';
 
-Future main() async {
+Future<void> main() async {
   test('lib/user_content_moderation/contest-mode', () async {
     final reddit = await createRedditTestInstance(
         'test/user_content_moderation/lib_user_content_moderation_contest_mode.json');
@@ -104,7 +104,7 @@ Future main() async {
       case CommentSortType.blank:
         return 'blank';
       default:
-        throw new DRAWInternalError('CommentSortType: $t is not supported.');
+        throw DRAWInternalError('CommentSortType: $t is not supported.');
     }
   }
 

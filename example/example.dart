@@ -10,7 +10,7 @@ String kClientId;
 String kSecret;
 String kAgentName;
 
-Future main() async {
+Future<void> main() async {
   // Create the `Reddit` instance and authenticate
   final Reddit reddit = await Reddit.createInstance(
     clientId: kClientId,

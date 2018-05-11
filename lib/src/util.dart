@@ -27,7 +27,8 @@ class BoundedSet<T> {
 
   void add(T object) {
     if (_set.length == _maxItems) {
-      assert(_set.remove(_fifo.removeAt(0)));
+      final success = _set.remove(_fifo.removeAt(0));
+      assert(success);
     }
     _fifo.add(object);
     _set.add(object);

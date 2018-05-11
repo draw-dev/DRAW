@@ -46,17 +46,17 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future refresh() async {
+  Future<void> refresh() async {
     if (isRecording) {
-      throw new DRAWAuthenticationError('cannot refresh a TestAuthenticator.');
+      throw DRAWAuthenticationError('cannot refresh a TestAuthenticator.');
     }
     return _recordAuth.refresh();
   }
 
   @override
-  Future revoke() async {
+  Future<void> revoke() async {
     if (isRecording) {
-      throw new DRAWAuthenticationError('cannot revoke a TestAuthenticator.');
+      throw DRAWAuthenticationError('cannot revoke a TestAuthenticator.');
     }
     return _recordAuth.revoke();
   }
@@ -68,13 +68,13 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future get(Uri path, {Map<String, String> params}) async {
+  Future<dynamic> get(Uri path, {Map<String, String> params}) async {
     const redirectResponseStr = 'DRAWRedirectResponse';
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), params.toString()]);
       if ((result is List) && (result[0] == redirectResponseStr)) {
-        throw new DRAWRedirectResponse(result[1], null);
+        throw DRAWRedirectResponse(result[1], null);
       }
     } else {
       try {
@@ -93,7 +93,7 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future post(Uri path, Map<String, String> body) async {
+  Future<void> post(Uri path, Map<String, String> body) async {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);
@@ -108,7 +108,7 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future put(Uri path, {/* Map<String, String>, String */ body}) async {
+  Future<void> put(Uri path, {/* Map<String, String>, String */ body}) async {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);
@@ -123,7 +123,8 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future delete(Uri path, {/* Map<String, String>, String */ body}) async {
+  Future<void> delete(Uri path,
+      {/* Map<String, String>, String */ body}) async {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);

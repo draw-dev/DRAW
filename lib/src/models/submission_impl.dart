@@ -292,7 +292,7 @@ class Submission extends SubmissionRef
   ///
   /// If provided, [otherSubmissions] is a list of other submissions to be
   /// unhidden.
-  Future unhide({List<Submission> otherSubmissions}) async {
+  Future<void> unhide({List<Submission> otherSubmissions}) async {
     for (final submissions in _chunk(otherSubmissions, 50)) {
       await reddit.post(apiPath['unhide'], {'id': submissions},
           discardResponse: true);
@@ -303,7 +303,7 @@ class Submission extends SubmissionRef
   ///
   /// If provided, [otherSubmissions] is a list of other submissions to be
   /// hidden.
-  Future hide({List<Submission> otherSubmissions}) async {
+  Future<void> hide({List<Submission> otherSubmissions}) async {
     for (final submissions in _chunk(otherSubmissions, 50)) {
       await reddit.post(apiPath['hide'], {'id': submissions},
           discardResponse: true);
@@ -360,7 +360,7 @@ class SubmissionRef extends UserContent {
     } else if (url is Uri) {
       uri = url;
     } else {
-      throw new DRAWArgumentError('idFromUrl expects either a String or Uri as'
+      throw DRAWArgumentError('idFromUrl expects either a String or Uri as'
           ' input');
     }
     var submissionId = '';
@@ -375,7 +375,7 @@ class SubmissionRef extends UserContent {
   }
 
   // TODO(bkonyi): implement
-  // Stream duplicates() => throw new DRAWUnimplementedError();
+  // Stream duplicates() => throw DRAWUnimplementedError();
 
   /// Promotes this [SubmissionRef] into a populated [Submission].
   Future<Submission> populate() async {
@@ -406,7 +406,7 @@ String _commentSortTypeToString(CommentSortType t) {
     case CommentSortType.blank:
       return 'blank';
     default:
-      throw new DRAWInternalError('CommentSortType: $t is not supported.');
+      throw DRAWInternalError('CommentSortType: $t is not supported.');
   }
 }
 
@@ -441,7 +441,7 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
   ///     * Scores will be hidden from non-moderators.
   ///     * Scores accessed through the API (mobile apps, bots) will be
   ///       obscured to "1" for non-moderators.
-  Future contestMode({bool state = true}) async => _content.reddit.post(
+  Future<void> contestMode({bool state = true}) async => _content.reddit.post(
       apiPath['contest_mode'],
       {
         'id': _content.fullname,
@@ -456,7 +456,7 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
   ///
   /// This method can only be used by an authenticated user who has moderation
   /// rights for this [Submission].
-  Future flair({String text = '', String cssClass = ''}) async {
+  Future<void> flair({String text = '', String cssClass = ''}) async {
     final data = {
       'css_class': cssClass,
       'link': _content.fullname,
@@ -472,7 +472,7 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
   }
 
   /// Locks the [Submission] to new [Comment]s.
-  Future lock() async => _content.reddit.post(
+  Future<void> lock() async => _content.reddit.post(
       apiPath['lock'],
       {
         'id': _content.fullname,
@@ -483,7 +483,7 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
   ///
   /// Both the [Submission] author and users with moderation rights for this
   /// submission can set this flag.
-  Future nsfw() async => _content.reddit.post(
+  Future<void> nsfw() async => _content.reddit.post(
       apiPath['marknsfw'],
       {
         'id': _content.fullname,
@@ -494,7 +494,7 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
   ///
   /// Both the [Submission] author and users with moderation rights for this
   /// submission can set this flag.
-  Future sfw() async => _content.reddit.post(
+  Future<void> sfw() async => _content.reddit.post(
       apiPath['unmarknsfw'],
       {
         'id': _content.fullname,
@@ -505,7 +505,7 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
   ///
   /// Both the [Submission] author and users with moderation rights for this
   /// submission can set this flag.
-  Future spoiler() async => _content.reddit.post(
+  Future<void> spoiler() async => _content.reddit.post(
       apiPath['spoiler'],
       {
         'id': _content.fullname,
@@ -519,7 +519,7 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
   ///
   /// If `bottom` is `true`, the [Submission] is set as the bottom sticky. If
   /// no top sticky exists, this [Submission] will become the top sticky.
-  Future sticky({bool state = true, bool bottom = true}) async {
+  Future<void> sticky({bool state = true, bool bottom = true}) async {
     final data = <String, String>{
       'id': _content.fullname,
       'state': state.toString(),
@@ -534,7 +534,7 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
   /// Sets the suggested [Comment] sorting for the [Submission].
   ///
   /// Defaults to [CommentSortType.blank].
-  Future suggestedSort({CommentSortType sort = CommentSortType.blank}) =>
+  Future<void> suggestedSort({CommentSortType sort = CommentSortType.blank}) =>
       _content.reddit.post(
           apiPath['suggested_sort'],
           {
@@ -544,7 +544,7 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
           discardResponse: true);
 
   /// Unlocks the [Submission] to allow for new [Comment]s.
-  Future unlock() async => _content.reddit.post(
+  Future<void> unlock() async => _content.reddit.post(
       apiPath['unlock'],
       {
         'id': _content.fullname,
@@ -555,7 +555,7 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
   ///
   /// Both the [Submission] author and users with moderation rights for this
   /// submission can set this flag.
-  Future unspoiler() async => _content.reddit.post(
+  Future<void> unspoiler() async => _content.reddit.post(
       apiPath['unspoiler'],
       {
         'id': _content.fullname,

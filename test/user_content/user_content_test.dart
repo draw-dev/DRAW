@@ -10,7 +10,7 @@ import 'package:test/test.dart';
 
 import '../test_utils.dart';
 
-Future main() async {
+Future<void> main() async {
   Stream<Submission> submissionsHelper(SubredditRef subreddit) {
     return subreddit.newest().cast<Submission>();
   }

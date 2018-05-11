@@ -88,11 +88,11 @@ class Objector extends RedditBase {
       }
       return rules;
     } else if (data.containsKey('kind') && (data['kind'] == _testThrowKind)) {
-      throw new DRAWAuthenticationError('This is an error that should only be '
+      throw DRAWAuthenticationError('This is an error that should only be '
           'seen in tests. Please file an issue if you see this while not running'
           ' tests.');
     } else {
-      throw new DRAWInternalError('Cannot objectify unsupported'
+      throw DRAWInternalError('Cannot objectify unsupported'
           ' response:\n$data');
     }
   }
@@ -118,7 +118,7 @@ class Objector extends RedditBase {
     if (data is List) {
       return _objectifyList(data);
     } else if (data is! Map) {
-      throw new DRAWInternalError('data must be of type List or Map, got '
+      throw DRAWInternalError('data must be of type List or Map, got '
           '${data.runtimeType}');
     } else if (data.containsKey('kind')) {
       final kind = data['kind'];
@@ -160,17 +160,17 @@ class Objector extends RedditBase {
         } else if (data['json']['data'].containsKey('things')) {
           return _objectifyList(data['json']['data']['things']);
         } else {
-          throw new DRAWInternalError('Invalid json response: $data');
+          throw DRAWInternalError('Invalid json response: $data');
         }
       } else if (data['json'].containsKey('errors')) {
         final errors = data['json']['errors'];
         if (errors is List && errors.isNotEmpty) {
           // TODO(bkonyi): make an actual exception for this.
-          throw new DRAWUnimplementedError('Error response: $errors');
+          throw DRAWUnimplementedError('Error response: $errors');
         }
         return null;
       } else {
-        throw new DRAWInternalError('Invalid json response: $data');
+        throw DRAWInternalError('Invalid json response: $data');
       }
     }
     return _objectifyDictionary(data);

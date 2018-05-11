@@ -25,7 +25,7 @@ abstract class VoteableMixin implements RedditBaseInitializedMixin {
   /// The karma score of the voteable item.
   int get score => data['score'];
 
-  Future _vote(String direction) async =>
+  Future<void> _vote(String direction) async =>
       reddit.post(apiPath['vote'], {'dir': direction, 'id': fullname},
           discardResponse: true);
 
@@ -34,19 +34,19 @@ abstract class VoteableMixin implements RedditBaseInitializedMixin {
   /// Note: votes must be cast on behalf of a human user (i.e., no automatic
   /// voting by bots). See Reddit rules for more details on what is considered
   /// vote cheating or manipulation.
-  Future clearVote() async => _vote('0');
+  Future<void> clearVote() async => _vote('0');
 
   /// Clear the authenticated user's vote on the object.
   ///
   /// Note: votes must be cast on behalf of a human user (i.e., no automatic
   /// voting by bots). See Reddit rules for more details on what is considered
   /// vote cheating or manipulation.
-  Future downvote() async => _vote('-1');
+  Future<void> downvote() async => _vote('-1');
 
   /// Clear the authenticated user's vote on the object.
   ///
   /// Note: votes must be cast on behalf of a human user (i.e., no automatic
   /// voting by bots). See Reddit rules for more details on what is considered
   /// vote cheating or manipulation.
-  Future upvote() async => _vote('1');
+  Future<void> upvote() async => _vote('1');
 }

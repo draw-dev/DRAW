@@ -10,7 +10,7 @@ import 'package:test/test.dart';
 
 import '../test_utils.dart';
 
-Future main() async {
+Future<void> main() async {
   test('lib/inbox/all', () async {
     final reddit =
         await createRedditTestInstance('test/inbox/lib_inbox_all.json');

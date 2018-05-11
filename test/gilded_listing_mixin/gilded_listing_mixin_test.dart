@@ -10,7 +10,7 @@ import 'package:draw/draw.dart';
 
 import '../test_utils.dart';
 
-Future main() async {
+Future<void> main() async {
   test('lib/gilded_listing_mixin/front_page_gilded', () async {
     final reddit = await createRedditTestInstance(
         'test/gilded_listing_mixin/lib_gilded_listing_mixin_frontpage.json');

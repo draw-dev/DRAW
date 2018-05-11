@@ -23,7 +23,7 @@ Assuming you already have your [Reddit OAuth credentials](https://github.com/red
 import 'dart:async';
 import 'package:draw/draw.dart';
 
-Future main() async {
+Future<void> main() async {
   // Create the `Reddit` instance and authenticated
   Reddit reddit = await Reddit.createInstance(
     clientId: CLIENT_ID,

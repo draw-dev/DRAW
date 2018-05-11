@@ -8,7 +8,7 @@ import 'dart:async';
 import 'package:test/test.dart';
 import '../test_utils.dart';
 
-Future main() async {
+Future<void> main() async {
   // TODO(bkonyi): rewrite these to actually check that the messages were
   // received. Manually confirmed for now.
   test('lib/messageable_mixin/basic_message', () async {

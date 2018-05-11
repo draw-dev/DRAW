@@ -12,7 +12,7 @@ import '../test_utils.dart';
 
 // ignore_for_file: unused_local_variable
 
-Future main() async {
+Future<void> main() async {
   test('lib/subreddit/banned', () async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_banned.json');
