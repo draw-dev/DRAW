@@ -53,7 +53,7 @@ Future<void> main() async {
 
     // Retrieve the last mod action.
     final modAction = await morbidRealityMod.log(limit: 1).first;
-    expect(modAction.subreddit, new SubredditRef.name(null, 'MorbidReality'));
+    expect(modAction.subreddit, reddit.subreddit('MorbidReality'));
     expect(modAction.action, ModeratorActionType.removeComment);
 
     final cheese =
@@ -71,6 +71,17 @@ Future<void> main() async {
     final redditors =
         await morbidRealityMod.log(mod: redditorsList, limit: 5).first;
     expect(redditors.mod.displayName, 'XtremeCheese');
+
+    try {
+      final wiki = await morbidRealityMod
+          .log(
+              mod: reddit.redditor('XtremeCheese'),
+              type: ModeratorActionType.wikiUnbanned,
+              limit: 1)
+          .first;
+    } on StateError catch (e) {} catch (e) {
+      fail("Expected 'StateError' to be throw, got '$e'");
+    }
 
     expect(redditors.toString(), isNotNull);
   });
@@ -229,6 +240,10 @@ Future<void> main() async {
     expect(settings.allowPostCrossposts, isTrue);
     settings.allowPostCrossposts = false;
     expect(settings.allowPostCrossposts, isFalse);
+
+    expect(settings.showMedia, isTrue);
+    settings.showMedia = false;
+    expect(settings.showMedia, isFalse);
 
     expect(settings.defaultSet, isTrue);
     settings.defaultSet = false;
