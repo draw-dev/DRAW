@@ -223,4 +223,67 @@ Future<void> main() async {
             ' ignore.'));
     expect(await content[1].author, equals('DRAWApiOfficial'));
   });
+
+  test('lib/redditor/comments_sanity', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_comments.json');
+    final redditor = reddit.redditor('DRAWApiOfficial');
+    final content = <Comment>[];
+    await for (final comment in redditor.comments.top(params: {'limit': '2'})) {
+      expect(comment is Comment, isTrue);
+      content.add(comment);
+    }
+
+    expect(content.length, 2);
+    expect(content[0].body, 'And this is a test comment!\n');
+    expect(content[1].body, 'Woohoo!');
+  });
+
+  test('lib/redditor/submissions_sanity', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_submissions.json');
+    final redditor = reddit.redditor('DRAWApiOfficial');
+    final content = <Submission>[];
+    await for (final submission
+        in redditor.submissions.newest(params: {'limit': '2'})) {
+      expect(submission is Submission, isTrue);
+      content.add(submission);
+    }
+
+    expect(content.length, 2);
+    expect(content[0].title,
+        'DRAW: Using Dart to Moderate Reddit Comments (DartConf 2018)');
+    expect(content[1].title, 'Tons of comments');
+  });
+
+  test('lib/redditor/saved_listing', () async {
+    final reddit =
+        await createRedditTestInstance('test/redditor/lib_redditor_saved.json');
+    final redditor = reddit.redditor('DRAWApiOfficial');
+    final content = <UserContent>[];
+    await for (final post in redditor.saved(params: {'limit': '2'})) {
+      content.add(post);
+    }
+
+    expect(content.length, 2);
+    expect(content[0] is Comment, isTrue);
+    expect((content[0] as Comment).body, "He gon' steal yo girl");
+    expect(content[1] is Submission, isTrue);
+    expect((content[1] as Submission).title, '😉');
+  });
+
+  test('lib/redditor/gildings', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_gildings.json');
+    final redditor = reddit.redditor('DRAWApiOfficial');
+    final content = <UserContent>[];
+    await for (final post in redditor.gildings(params: {'limit': '2'})) {
+      content.add(post);
+    }
+
+    expect(content.length, 1);
+    expect(content[0] is Submission, isTrue);
+    expect((content[0] as Submission).title, "Gilded post!");
+    expect((content[0] as Submission).gilded, 1);
+  });
 }

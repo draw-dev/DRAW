@@ -27,7 +27,7 @@ abstract class RedditorListingMixin {
   /// Provides an instance of [SubListing], used to make requests for
   /// [Submission]s.
   SubListing get submissions {
-    _submissions ??= new SubListing(reddit, path, 'submissions/');
+    _submissions ??= new SubListing(reddit, path, 'submitted/');
     return _submissions;
   }
 
