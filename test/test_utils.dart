@@ -13,11 +13,17 @@ Future<Reddit> createRedditTestInstance(String path, {bool live: false}) async {
   if (live) {
     final tempReddit = await Reddit.createInstance(
         userAgent: 'foobar',
-        siteName: 'XtremeCheese',
-        configUri: Uri.parse('../../draw.ini'));
+        siteName: 'DRAWApiOfficial',
+        configUri: Uri.parse('../draw.ini'));
     testAuth = new TestAuthenticator(path, recordAuth: tempReddit.auth);
   } else {
     testAuth = new TestAuthenticator(path);
   }
   return new Reddit.fromAuthenticator(testAuth);
+}
+
+Future<void> writeRecording(Reddit reddit) async {
+  assert(reddit.auth is TestAuthenticator);
+  final TestAuthenticator auth = reddit.auth;
+  await auth.writeRecording();
 }
