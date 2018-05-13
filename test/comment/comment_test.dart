@@ -88,4 +88,50 @@ Future<void> main() async {
     expect(comment.id, 'dxj0i8m');
     expect(comment.submission.shortlink, commentWithPath.submission.shortlink);
   });
+
+  test('lib/comment/comment_properties_test', () async {
+    final reddit =
+        await createRedditTestInstance('test/comment/continue_test.json');
+    final submission = await reddit.submission(id: '7czz1q').populate();
+    final comment = submission.comments[0] as Comment;
+
+    expect(comment.approved, isFalse);
+    expect(comment.approvedAtUtc, isNull);
+    expect(comment.approvedBy, isNull);
+    expect(comment.archived, isFalse);
+    expect(comment.authorFlairText, isNull);
+    expect(comment.bannedAtUtc, isNull);
+    expect(comment.bannedBy, isNull);
+    expect(comment.canGild, isFalse);
+    expect(comment.canModPost, isTrue);
+    expect(comment.collapsed, isFalse);
+    expect(comment.collapsedReason, isNull);
+    expect(
+        comment.createdUtc,
+        new DateTime.fromMillisecondsSinceEpoch(1510703692 * 1000,
+            isUtc: true));
+    expect(comment.depth, 0);
+    expect(comment.downvotes, 0);
+    expect(comment.edited, isFalse);
+    expect(comment.ignoreReports, isFalse);
+    expect(comment.isSubmitter, isTrue);
+    expect(comment.vote, VoteState.upvoted);
+    expect(comment.linkId, 't3_7czz1q');
+    expect(comment.numReports, 0);
+    expect(comment.parentId, 't3_7czz1q');
+    expect(comment.permalink,
+        '/r/drawapitesting/comments/7czz1q/testing/dpty59t/');
+    expect(comment.removalReason, isNull);
+    expect(comment.removed, isFalse);
+    expect(comment.saved, isFalse);
+    expect(comment.score, 1);
+    expect(comment.scoreHidden, isFalse);
+    expect(comment.spam, isFalse);
+    expect(comment.stickied, isFalse);
+    expect(comment.subreddit, reddit.subreddit('drawapitesting'));
+    expect(comment.subredditId, 't5_3mqw1');
+    expect(comment.subredditType, 'restricted');
+    expect(comment.upvotes, 1);
+    expect(comment.isRoot, isTrue);
+  });
 }
