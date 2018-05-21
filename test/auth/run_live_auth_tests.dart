@@ -4,12 +4,12 @@
 // can be found in the LICENSE file.
 
 import 'credentials.dart';
-import 'read_only.dart' as readOnly;
+import 'read_only.dart' as read_only;
 import 'script_auth.dart' as script;
 
 void main() {
   if (isScriptAuthConfigured) {
     script.main();
-    readOnly.main();
+    read_only.main();
   }
 }

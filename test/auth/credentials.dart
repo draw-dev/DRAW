@@ -5,12 +5,14 @@
 
 import 'dart:io';
 
-final SCRIPT_CLIENT_ID = Platform.environment['SCRIPT_CLIENT_ID'];
-final SCRIPT_CLIENT_SECRET = Platform.environment['SCRIPT_CLIENT_SECRET'];
-final WEB_CLIENT_ID = Platform.environment['WEB_CLIENT_ID'];
-final WEB_CLIENT_SECRET = Platform.environment['WEB_CLIENT_SECRET'];
-const USERNAME = 'DRAWApiOfficial';
-final PASSWORD = Platform.environment['PASSWORD'];
+final kScriptClientID = Platform.environment['SCRIPT_CLIENT_ID'];
+final kScriptClientSecret = Platform.environment['SCRIPT_CLIENT_SECRET'];
+final kWebClientID = Platform.environment['WEB_CLIENT_ID'];
+final kWebClientSecret = Platform.environment['WEB_CLIENT_SECRET'];
+const kUsername = 'DRAWApiOfficial';
+final kPassword = Platform.environment['PASSWORD'];
 
 bool isScriptAuthConfigured =
-    (SCRIPT_CLIENT_ID != null) && (SCRIPT_CLIENT_SECRET != null);
+    (kScriptClientID != null) && (kScriptClientSecret != null);
+
+bool isWebAuthConfigured = (kWebClientID != null) && (kWebClientSecret != null);

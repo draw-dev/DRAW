@@ -12,14 +12,14 @@ import 'credentials.dart';
 
 Future<void> main() async {
   test('script authenticator', () async {
-    if (SCRIPT_CLIENT_SECRET == null) return;
+    if (kScriptClientSecret == null) return;
     final reddit = await Reddit.createScriptInstance(
-        clientId: SCRIPT_CLIENT_ID,
-        clientSecret: SCRIPT_CLIENT_SECRET,
+        clientId: kScriptClientID,
+        clientSecret: kScriptClientSecret,
         userAgent: 'script-client-DRAW-live-testing',
-        username: USERNAME,
-        password: PASSWORD);
+        username: kUsername,
+        password: kPassword);
     expect(reddit.readOnly, isFalse);
-    print(await reddit.user.me());
+    expect(await reddit.user.me(), isNotNull);
   });
 }
