@@ -74,6 +74,37 @@ class Reddit {
   final _initializedCompleter = new Completer<bool>();
   Objector _objector;
 
+  /// Creates a new read-only [Reddit] instance.
+  static Future<Reddit> createReadOnlyInstance(
+      String clientId, String clientSecret, String userAgent) async {
+    final reddit =
+        new Reddit._readOnlyInstance(clientId, clientSecret, userAgent);
+    final initialized = await reddit._initializedCompleter.future;
+    if (initialized) {
+      return reddit;
+    }
+    throw DRAWAuthenticationError('Unable to authenticate with Reddit');
+  }
+
+  static Future<Reddit> createScriptInstance(
+      {String clientId,
+      String clientSecret,
+      String userAgent,
+      String username,
+      String password,
+      Uri tokenEndpoint,
+      Uri authEndpoint,
+      Uri configUri,
+      String siteName = 'default'}) async {
+    final reddit = new Reddit._scriptInstance(clientId, clientSecret, userAgent,
+        username, password, tokenEndpoint, authEndpoint, configUri, siteName);
+    final initialized = await reddit._initializedCompleter.future;
+    if (initialized) {
+      return reddit;
+    }
+    throw DRAWAuthenticationError('Unable to authenticate with Reddit');
+  }
+
   /// Creates a new authenticated [Reddit] instance.
   ///
   /// [clientId] is the identifier associated with your authorized application
@@ -271,6 +302,64 @@ class Reddit {
           WebAuthenticator.restore(_config, credentialsJson));
       _readOnly = false;
     }
+  }
+
+  Reddit._readOnlyInstance(
+      String clientId, String clientSecret, String userAgent) {
+    // Loading passed in values into config file.
+    _config = new DRAWConfigContext(
+        clientId: clientId, clientSecret: clientSecret, userAgent: userAgent);
+
+    if (_config.userAgent == null) {
+      throw DRAWAuthenticationError('userAgent cannot be null.');
+    }
+
+    final grant = new oauth2.AuthorizationCodeGrant(_config.clientId,
+        Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
+        secret: _config.clientSecret);
+
+    ReadOnlyAuthenticator.create(_config, grant).then(_initializationCallback);
+    _readOnly = true;
+  }
+
+  Reddit._scriptInstance(
+      String clientId,
+      String clientSecret,
+      String userAgent,
+      String username,
+      String password,
+      Uri tokenEndpoint,
+      Uri authEndpoint,
+      Uri configUri,
+      String siteName) {
+    // Loading passed in values into config file.
+    _config = new DRAWConfigContext(
+        clientId: clientId,
+        clientSecret: clientSecret,
+        userAgent: userAgent,
+        username: username,
+        password: password,
+        accessToken: tokenEndpoint.toString(),
+        authorizeUrl: authEndpoint.toString(),
+        configUrl: configUri.toString(),
+        siteName: siteName);
+
+    if (_config.clientId == null) {
+      throw DRAWAuthenticationError('clientId cannot be null.');
+    }
+    if (_config.clientSecret == null) {
+      throw DRAWAuthenticationError('clientSecret cannot be null.');
+    }
+    if (_config.userAgent == null) {
+      throw DRAWAuthenticationError('userAgent cannot be null.');
+    }
+
+    final grant = new oauth2.AuthorizationCodeGrant(_config.clientId,
+        Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
+        secret: _config.clientSecret);
+
+    ScriptAuthenticator.create(_config, grant).then(_initializationCallback);
+    _readOnly = false;
   }
 
   Reddit.fromAuthenticator(Authenticator auth) {
