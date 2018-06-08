@@ -3,6 +3,7 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
+import 'auth/run_live_auth_tests.dart' as live_auth_test;
 import 'comment/comment_test.dart' as comment_test;
 import 'frontpage/frontpage_test.dart' as frontpage_test;
 import 'gilded_listing_mixin/gilded_listing_mixin_test.dart'
@@ -27,6 +28,7 @@ import 'user_content/user_content_test.dart' as user_content_test;
 import 'user/user_test.dart' as user_test;
 
 void main() {
+  live_auth_test.main();
   comment_test.main();
   draw_config_test.main();
   frontpage_test.main();
