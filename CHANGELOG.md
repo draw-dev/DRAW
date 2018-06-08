@@ -1,5 +1,14 @@
 Change Log
 =================================
+## Version 0.3.3 (2018/06/08)
+* Added the following static methods to `Reddit`:
+  * `createUntrustedReadOnlyInstance`
+  * `createReadOnlyInstance`
+  * `createScriptInstance`
+
+  This should make creating `Reddit` instances simpler and easier to debug.
+* Added live tests to exercise the read-only and script authentication modes.
+
 ## Version 0.3.2 (2018/05/07)
 Bug fixes:
   * Fixed additional Dart 2 runtime type errors.
