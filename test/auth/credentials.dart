@@ -5,6 +5,7 @@
 
 import 'dart:io';
 
+final kApplicationClientID = Platform.environment['APP_CLIENT_ID'];
 final kScriptClientID = Platform.environment['SCRIPT_CLIENT_ID'];
 final kScriptClientSecret = Platform.environment['SCRIPT_CLIENT_SECRET'];
 final kWebClientID = Platform.environment['WEB_CLIENT_ID'];

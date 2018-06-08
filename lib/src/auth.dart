@@ -18,6 +18,7 @@ const String _kGetRequest = 'GET';
 const String _kPostRequest = 'POST';
 const String _kPutRequest = 'PUT';
 
+const String _kAuthorizationKey = 'Authorization';
 const String _kDurationKey = 'duration';
 const String _kErrorKey = 'error';
 const String _kGrantTypeKey = 'grant_type';
@@ -255,6 +256,36 @@ abstract class Authenticator {
         'Status Code: ${statusCode} Reason: ${reason}');
   }
 
+  Future<void> _requestTokenUntrusted(Map<String, String> accountInfo) async {
+    // Retrieve the client ID and secret.
+    final clientId = _grant.identifier;
+
+    final httpClient = new http.Client();
+    final start = new DateTime.now();
+    final headers = new Map<String, String>();
+    headers[_kUserAgentKey] = _config.userAgent;
+    headers[_kAuthorizationKey] =
+        'Basic ${base64Encode((clientId + ":").codeUnits)})';
+
+    // Request the token from the server.
+    final response = await httpClient.post(_grant.tokenEndpoint,
+        headers: headers, body: accountInfo);
+
+    // Check for error response.
+    final responseMap = json.decode(response.body);
+    if (responseMap.containsKey(_kErrorKey)) {
+      _throwAuthenticationError(responseMap);
+    }
+
+    // Create the Credentials object from the authentication token.
+    final credentials = handleAccessTokenResponse(
+        response, _grant.tokenEndpoint, start, ['*'], ',');
+
+    // Generate the OAuth2 client that will be used to query Reddit servers.
+    _client = new oauth2.Client(credentials,
+        identifier: clientId, httpClient: httpClient);
+  }
+
   /// The credentials associated with this authenticator instance.
   ///
   /// Returns an [oauth2.Credentials] object associated with the current
@@ -316,14 +347,30 @@ class ScriptAuthenticator extends Authenticator {
 /// [documentation](https://github.com/reddit/reddit/wiki/OAuth2-App-Types) for
 /// descriptions of valid app types.
 class ReadOnlyAuthenticator extends Authenticator {
+  static const String _kDeviceIdKey = 'device_id';
+
+  final bool _applicationOnlyOAuth;
+  final String _deviceId;
+
   ReadOnlyAuthenticator._(
-      DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant)
+      DRAWConfigContext config,
+      oauth2.AuthorizationCodeGrant grant,
+      this._applicationOnlyOAuth,
+      this._deviceId)
       : super(config, grant);
 
   static Future<ReadOnlyAuthenticator> create(
       DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant) async {
     final ReadOnlyAuthenticator authenticator =
-        new ReadOnlyAuthenticator._(config, grant);
+        new ReadOnlyAuthenticator._(config, grant, false, null);
+    await authenticator._authenticationFlow();
+    return authenticator;
+  }
+
+  static Future<ReadOnlyAuthenticator> createUntrusted(DRAWConfigContext config,
+      oauth2.AuthorizationCodeGrant grant, String deviceId) async {
+    final ReadOnlyAuthenticator authenticator =
+        new ReadOnlyAuthenticator._(config, grant, true, deviceId);
     await authenticator._authenticationFlow();
     return authenticator;
   }
@@ -334,8 +381,15 @@ class ReadOnlyAuthenticator extends Authenticator {
   @override
   Future<void> _authenticationFlow() async {
     final accountInfo = new Map<String, String>();
-    accountInfo[_kGrantTypeKey] = 'client_credentials';
-    await _requestToken(accountInfo);
+    if (_applicationOnlyOAuth) {
+      accountInfo[_kGrantTypeKey] =
+          'https://oauth.reddit.com/grants/installed_client';
+      accountInfo[_kDeviceIdKey] = _deviceId;
+      await _requestTokenUntrusted(accountInfo);
+    } else {
+      accountInfo[_kGrantTypeKey] = 'client_credentials';
+      await _requestToken(accountInfo);
+    }
   }
 }
 
