@@ -5,9 +5,6 @@
 
 import 'dart:async';
 import 'dart:math';
-import 'dart:io';
-
-import 'package:draw/src/models/user_content.dart';
 
 /// A set that can only contain up to a max number of elements. If the set is
 /// full and another item is added, the oldest item in the set is removed.
