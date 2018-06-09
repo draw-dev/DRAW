@@ -692,7 +692,7 @@ class SubredditStream {
   /// Yields new [Comment]s as they become available.
   ///
   /// [Comment]s are yielded oldest first. Up to 100 historical comments will
-  /// initially be returned. If [limit] is provided, the stream will close 
+  /// initially be returned. If [limit] is provided, the stream will close
   /// after [limit] iterations. If [pauseAfter] is provided, null will be
   /// returned after [pauseAfter] requests without new items.
   Stream<Comment> comments({int limit, int pauseAfter}) =>
