@@ -28,6 +28,18 @@ Future<void> main() async {
     }
   });
 
+  test('lib/subreddit/comment_stream', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_comments_stream.json');
+    int count = 0;
+    await for (final comment
+        in reddit.subreddit('drawapitesting').stream.comments(limit: 10)) {
+      expect(comment is CommentRef, isTrue);
+      count++;
+    }
+    expect(count, 10);
+  });
+
   test('lib/subreddit/contributor', () async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_contributor.json');

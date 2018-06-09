@@ -685,25 +685,29 @@ class Rule {
 
 /// Provides [Comment] and [Submission] streams for the subreddit.
 class SubredditStream {
-  final Subreddit _subreddit;
+  final SubredditRef _subreddit;
 
   SubredditStream(this._subreddit);
 
   /// Yields new [Comment]s as they become available.
   ///
   /// [Comment]s are yielded oldest first. Up to 100 historical comments will
-  /// initially be returned. If [pauseAfter] is provided, the stream will return
-  /// null after [pauseAfter] iterations.
-  Stream<Comment> comments({int pauseAfter}) =>
-      streamGenerator(_subreddit.comments, pauseAfter: pauseAfter);
+  /// initially be returned. If [limit] is provided, the stream will close
+  /// after [limit] iterations. If [pauseAfter] is provided, null will be
+  /// returned after [pauseAfter] requests without new items.
+  Stream<Comment> comments({int limit, int pauseAfter}) =>
+      streamGenerator<Comment>(_subreddit.comments,
+          itemLimit: limit, pauseAfter: pauseAfter);
 
   /// Yields new [Submission]s as they become available.
   ///
   /// [Submission]s are yielded oldest first. Up to 100 historical submissions
-  /// will initially be returned. If [pauseAfter] is provided, the stream will
-  /// return null after [pauseAfter] iterations.
-  Stream<Submission> submissions({int pauseAfter}) =>
-      streamGenerator(_subreddit.newest, pauseAfter: pauseAfter);
+  /// will initially be returned. If [limit] is provided, the stream will close
+  /// after [limit] iterations. If [pauseAfter] is provided, null will be
+  /// returned after [pauseAfter] requests without new items.
+  Stream<Submission> submissions({int limit, int pauseAfter}) =>
+      streamGenerator<Submission>(_subreddit.newest,
+          itemLimit: limit, pauseAfter: pauseAfter);
 }
 
 // TODO(bkonyi): implement

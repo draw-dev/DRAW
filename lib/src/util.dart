@@ -5,9 +5,6 @@
 
 import 'dart:async';
 import 'dart:math';
-import 'dart:io';
-
-import 'package:draw/src/models/user_content.dart';
 
 /// A set that can only contain up to a max number of elements. If the set is
 /// full and another item is added, the oldest item in the set is removed.
@@ -60,12 +57,13 @@ class ExponentialCounter {
   }
 }
 
-Stream<UserContent> streamGenerator(function, {int pauseAfter}) async* {
+Stream<T> streamGenerator<T>(function, {int itemLimit, int pauseAfter}) async* {
   final counter = new ExponentialCounter(16);
   final seen = new BoundedSet<String>(301);
   var withoutBeforeCounter = 0;
   var responsesWithoutNew = 0;
   var beforeFullname;
+  var count = 0;
 
   while (true) {
     var limit = 100;
@@ -77,13 +75,15 @@ Stream<UserContent> streamGenerator(function, {int pauseAfter}) async* {
     }
 
     final results = [];
-    await for (final item
-        in function(params: {'limit': limit, 'before': beforeFullname})) {
+    await for (final item in function(params: <String, String>{
+      'limit': min(limit, itemLimit ?? limit).toString(),
+      'before': beforeFullname
+    })) {
       results.add(item);
     }
 
     for (final item in results.reversed) {
-      final fullname = await item.property('name');
+      final fullname = await item.fullname;
       if (seen.contains(fullname)) {
         continue;
       }
@@ -91,6 +91,10 @@ Stream<UserContent> streamGenerator(function, {int pauseAfter}) async* {
       seen.add(fullname);
       newestFullname = fullname;
       yield item;
+      count++;
+      if (itemLimit == count) {
+        return;
+      }
     }
 
     beforeFullname = newestFullname;
@@ -105,7 +109,7 @@ Stream<UserContent> streamGenerator(function, {int pauseAfter}) async* {
         responsesWithoutNew = 0;
         yield null;
       } else {
-        sleep(new Duration(seconds: counter.counter()));
+        await Future.delayed(Duration(seconds: counter.counter()));
       }
     }
   }
