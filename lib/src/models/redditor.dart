@@ -192,21 +192,22 @@ class RedditorStream extends RedditBase {
   /// available.
   ///
   /// Comments are streamed oldest first, and up to 100 historical comments will
-  /// be returned initially. [pauseAfter] determines how many comments will be
-  /// listened for before returning `null`, allowing for an opportunity to
-  /// perform specific actions. If [pauseAfter] is not provided, `null` will not
-  /// be received.
-  Stream<Comment> comments({int pauseAfter}) =>
-      streamGenerator(redditor.comments.newest, pauseAfter: pauseAfter);
+  /// be returned initially. If [limit] is provided, the stream will close after
+  /// after [limit] iterations. If [pauseAfter] is provided, null will be
+  /// returned after [pauseAfter] requests without new items.
+  Stream<Comment> comments({int limit, int pauseAfter}) =>
+      streamGenerator(redditor.comments.newest,
+          itemLimit: limit, pauseAfter: pauseAfter);
 
   /// Returns a [Stream<Submissions>] which listens for new submissions as they
   /// become available.
   ///
   /// Submissions are streamed oldest first, and up to 100 historical
-  /// submissions will be returned initially. [pauseAfter] determines how many
-  /// submissions will be listened for before returning `null`, allowing for an
-  /// opportunity to perform specific actions. If [pauseAfter] is not provided,
-  /// `null` will not be received.
-  Stream<Submission> submissions({int pauseAfter}) =>
-      streamGenerator(redditor.submissions.newest, pauseAfter: pauseAfter);
+  /// submissions will be returned initially. If [limit] is provided,
+  /// the stream will close after after [limit] iterations. If [pauseAfter] is
+  /// provided, null will be returned after [pauseAfter] requests without new
+  /// items.
+  Stream<Submission> submissions({int limit, int pauseAfter}) =>
+      streamGenerator(redditor.submissions.newest,
+          itemLimit: limit, pauseAfter: pauseAfter);
 }
