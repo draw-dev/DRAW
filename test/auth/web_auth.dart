@@ -34,6 +34,7 @@ Future<void> main() async {
       'https://ssl.reddit.com/api/login'
     ]);
     print(loginResult.stdout);
+    print("stderr");
     print(loginResult.stderr);
     final loginResponseMap = json.decode(loginResult.stdout);
     final modhash = loginResponseMap['json']['data']['modhash'];
