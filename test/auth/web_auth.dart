@@ -30,7 +30,8 @@ Future<void> main() async {
       '-d"api_type=json"',
       '-H"user-agent: draw_web_test"',
       '-j',
-      '-c Cookie.txt' 'https://ssl.reddit.com/api/login'
+      '-c Cookie.txt',
+      'https://ssl.reddit.com/api/login'
     ]);
     print(loginResult.stdout);
     print(loginResult.stderr);
