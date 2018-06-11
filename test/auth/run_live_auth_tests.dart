@@ -6,10 +6,14 @@
 import 'credentials.dart';
 import 'read_only.dart' as read_only;
 import 'script_auth.dart' as script;
+import 'web_auth.dart' as web_auth;
 
 void main() {
   if (isScriptAuthConfigured) {
     script.main();
     read_only.main();
+  }
+  if (isWebAuthConfigured) {
+    web_auth.main();
   }
 }
