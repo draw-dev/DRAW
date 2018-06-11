@@ -27,7 +27,8 @@ Future<void> main() async {
     final loginResult = Process.runSync('curl', [
       '-d"user=$kUsername"',
       '-d"passwd=$kPassword"',
-      '-d"api_type=json"' '-H"user-agent: draw_web_test"',
+      '-d"api_type=json"',
+      '-H"user-agent: draw_web_test"',
       '-j',
       '-c Cookie.txt' 'https://ssl.reddit.com/api/login'
     ]);
