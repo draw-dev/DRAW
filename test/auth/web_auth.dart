@@ -13,54 +13,74 @@ import 'package:test/test.dart';
 import 'credentials.dart';
 
 Future<void> main() async {
+  const cookieFile = 'cookie.txt';
+  const expectedState = 'foobar';
+  const headerFile = 'response.txt';
+  const redirect = 'https://www.google.com';
+  const scope = '*';
+  const userAgent = 'draw_web_test_agent';
+
   test('web authenticator', () async {
     final reddit = await Reddit.createInstance(
       clientId: kWebClientID,
       clientSecret: kWebClientSecret,
-      redirectUri: Uri.parse('https://www.google.com'),
-      userAgent: 'draw_web_test',
+      redirectUri: Uri.parse(redirect),
+      userAgent: userAgent 
     );
 
-    final dest = reddit.auth.url(['identity'], 'foobar');
-    print('Destination URL: $dest');
+    // Create our implicit grant flow URI.
+    final dest = reddit.auth.url([scope], expectedState);
 
+    // ------------------------------------------------------------------ //
+    // Start Web Authentication Flow to Emulate User Granting Permissions //
+    // ------------------------------------------------------------------ //
+
+    // Login.
     final loginResult = Process.runSync('curl', [
-      '-d"user=$kUsername"',
-      '-d"passwd=$kPassword"',
-      '-d"api_type=json"',
-      '-H"user-agent: draw_web_test"',
+      '-duser=$kUsername',
+      '-dpasswd=$kPassword',
+      '-dapi_type=json',
       '-j',
-      '-c Cookie.txt',
+      '-A', '"$userAgent"',
+      '-c$cookieFile',
+      '-v',
       'https://ssl.reddit.com/api/login'
     ]);
-    print(loginResult.stdout);
-    print("stderr");
-    print(loginResult.stderr);
+
     final loginResponseMap = json.decode(loginResult.stdout);
     final modhash = loginResponseMap['json']['data']['modhash'];
 
-    final authResult = Process.runSync('curl', [
+    // Wait 2 seconds to avoid being rate limited (just in case).
+    await new Future.delayed(Duration(seconds: 2));
+    
+    // Accept permissions.
+    Process.runSync('curl', [
       '-L',
-      '--dump-header foobar.txt',
-      '-d"client_id=$kWebClientID"',
-      '-d"redirect_uri=https://www.google.com"',
-      '-d"scope=*"',
-      '-d"state=foobar"',
-      '-d"response_type=code"',
-      '-d"duration=permanent"',
-      '-d"uh=$modhash"',
-      '-d"authorize=Allow"',
-      '-H"user-agent: draw_web_test"',
-      '-c Cookie.txt',
-      '-b Cookie.txt',
-      '$dest'
+      '--dump-header', headerFile,
+      '-dclient_id=$kWebClientID',
+      '-dredirect_uri=$redirect',
+      '-dscope=$scope',
+      '-dstate=$expectedState',
+      '-dresponse_type=code',
+      '-dduration=permanent',
+      '-duh=$modhash',
+      '-dauthorize=Allow',
+      '-A', '"$userAgent"',
+      '-c$cookieFile',
+      '-b$cookieFile',
+      Uri.decodeFull(dest.toString()),
     ]);
 
-    final outputHeaderFile = new File('foobar.txt');
+    // The code is in the header of the response, which we've stored in
+    // response.txt.
+    final outputHeaderFile = new File(headerFile);
     expect(outputHeaderFile.existsSync(), isTrue);
+
     final fileLines = outputHeaderFile.readAsStringSync().split('\n');
     String state;
     String code;
+
+    // Try and find the code and state in the response.
     for (final line in fileLines) {
       if (line.startsWith('location:')) {
         final split = line.split(' ');
@@ -72,10 +92,24 @@ Future<void> main() async {
       }
     }
 
+    // Check to see if we've found our code and state.
     expect(state, isNotNull);
-    expect(state, 'foobar');
+    expect(state, expectedState);
     expect(code, isNotNull);
+    
+    if (Platform.isWindows) {
+      // Remove \r (this was annoying to find).
+      code = code.substring(0, code.length - 1);
+    }
+ 
+    // ------------------------------------------------------------------ //
+    //  End Web Authentication Flow to Emulate User Granting Permissions  //
+    // ------------------------------------------------------------------ //
+
+    // Authorize via OAuth2.  
     await reddit.auth.authorize(code);
+
+    // Sanity check to ensure we have valid credentials.
     expect(await reddit.user.me(), isNotNull);
   });
 }

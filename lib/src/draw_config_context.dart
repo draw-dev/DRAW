@@ -18,7 +18,7 @@ const String kClientSecret = 'client_secret';
 const String kComment = 'comment_kind';
 const String kDefaultAccessToken =
     r'https://www.reddit.com/api/v1/access_token';
-const String kDefaultAuthorizeUrl = r'https://reddit.com/api/v1/authorize';
+const String kDefaultAuthorizeUrl = r'https://www.reddit.com/api/v1/authorize';
 const String kDefaultOAuthUrl = r'oauth.reddit.com';
 const String kDefaultRedditUrl = 'https://www.reddit.com';
 const String kDefaultRevokeToken =
