@@ -54,6 +54,7 @@ Future<void> main() async {
     await new Future.delayed(Duration(seconds: 2));
     
     // Accept permissions.
+    try {
     Process.runSync('curl', [
       '-L',
       '--dump-header', headerFile,
@@ -70,6 +71,11 @@ Future<void> main() async {
       '-b$cookieFile',
       Uri.decodeFull(dest.toString()),
     ]);
+    } catch(e) {
+      print('Exception caught: $e');
+      print(modhash);
+      print(userAgent);
+    }
 
     // The code is in the header of the response, which we've stored in
     // response.txt.
