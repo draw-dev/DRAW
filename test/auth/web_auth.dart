@@ -25,7 +25,7 @@ Future<void> main() async {
       clientId: kWebClientID,
       clientSecret: kWebClientSecret,
       redirectUri: Uri.parse(redirect),
-      userAgent: userAgent 
+      userAgent: userAgent + '_authenticated' 
     );
 
     // Create our implicit grant flow URI.
