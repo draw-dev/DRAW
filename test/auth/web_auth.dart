@@ -22,11 +22,10 @@ Future<void> main() async {
 
   test('web authenticator', () async {
     final reddit = await Reddit.createInstance(
-      clientId: kWebClientID,
-      clientSecret: kWebClientSecret,
-      redirectUri: Uri.parse(redirect),
-      userAgent: userAgent + '_authenticated' 
-    );
+        clientId: kWebClientID,
+        clientSecret: kWebClientSecret,
+        redirectUri: Uri.parse(redirect),
+        userAgent: userAgent + '_authenticated');
 
     // Create our implicit grant flow URI.
     final dest = reddit.auth.url([scope], expectedState);
@@ -41,7 +40,8 @@ Future<void> main() async {
       '-dpasswd=$kPassword',
       '-dapi_type=json',
       '-j',
-      '-A', '"$userAgent"',
+      '-A',
+      '"$userAgent"',
       '-c$cookieFile',
       '-v',
       'https://ssl.reddit.com/api/login'
@@ -52,29 +52,31 @@ Future<void> main() async {
 
     // Wait 2 seconds to avoid being rate limited (just in case).
     await new Future.delayed(Duration(seconds: 2));
-    
+
     // Accept permissions.
     try {
-    Process.runSync('curl', [
-      '-L',
-      '--dump-header', headerFile,
-      '-dclient_id=$kWebClientID',
-      '-dredirect_uri=$redirect',
-      '-dscope=$scope',
-      '-dstate=$expectedState',
-      '-dresponse_type=code',
-      '-dduration=permanent',
-      '-duh=$modhash',
-      '-dauthorize=Allow',
-      '-A', '"$userAgent"',
-      '-c$cookieFile',
-      '-b$cookieFile',
-      Uri.decodeFull(dest.toString()),
-    ]);
-    } catch(e) {
+      // This sometimes throws with a FormatException: Bad UTF-8 encoding.
+      // Should probably hunt the cause down and file an issue...
+      Process.runSync('curl', [
+        '-L',
+        '--dump-header',
+        headerFile,
+        '-dclient_id=$kWebClientID',
+        '-dredirect_uri=$redirect',
+        '-dscope=$scope',
+        '-dstate=$expectedState',
+        '-dresponse_type=code',
+        '-dduration=permanent',
+        '-duh=$modhash',
+        '-dauthorize=Allow',
+        '-A',
+        '"$userAgent"',
+        '-c$cookieFile',
+        '-b$cookieFile',
+        Uri.decodeFull(dest.toString()),
+      ]);
+    } catch (e) {
       print('Exception caught: $e');
-      print(modhash);
-      print(userAgent);
     }
 
     // The code is in the header of the response, which we've stored in
@@ -102,7 +104,7 @@ Future<void> main() async {
     expect(state, isNotNull);
     expect(state, expectedState);
     expect(code, isNotNull);
-    
+
     if (code.codeUnitAt(code.length - 1) == 13) {
       // Remove \r (this was annoying to find).
       code = code.substring(0, code.length - 1);
@@ -112,7 +114,7 @@ Future<void> main() async {
     //  End Web Authentication Flow to Emulate User Granting Permissions  //
     // ------------------------------------------------------------------ //
 
-    // Authorize via OAuth2.  
+    // Authorize via OAuth2.
     await reddit.auth.authorize(code);
 
     // Sanity check to ensure we have valid credentials.
