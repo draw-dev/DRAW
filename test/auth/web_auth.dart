@@ -103,14 +103,11 @@ Future<void> main() async {
     expect(state, expectedState);
     expect(code, isNotNull);
     
-    if (Platform.isWindows) {
-      print('is windows?');
+    if (code.codeUnitAt(code.length - 1) == 13) {
       // Remove \r (this was annoying to find).
       code = code.substring(0, code.length - 1);
     }
 
-    print(code);
-    print(code.codeUnits);
     // ------------------------------------------------------------------ //
     //  End Web Authentication Flow to Emulate User Granting Permissions  //
     // ------------------------------------------------------------------ //
