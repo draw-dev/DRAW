@@ -1,10 +1,26 @@
 Change Log
 =================================
+## Version 0.3.4 (2018/06/12)
+### Deprecation Notice:
+`Reddit.createInstance` has been deprecated and will be removed in the 0.4.0 release. Please use one of the following static methods instead:
+
+* `createReadOnlyInstance`
+* `createScriptInstance`
+* `createUntrustedReadOnlyInstance`
+* `createWebFlowInstance`
+* `restoreAuthenticatedInstance`
+
+### Other changes:
+* Added the following static methods to `Reddit`:
+  * `createWebFlowInstance`
+* Added live tests to exercise the web implicit grant flow authentication mode.
+
+
 ## Version 0.3.3 (2018/06/08)
 * Added the following static methods to `Reddit`:
-  * `createUntrustedReadOnlyInstance`
   * `createReadOnlyInstance`
   * `createScriptInstance`
+  * `createUntrustedReadOnlyInstance`
 
   This should make creating `Reddit` instances simpler and easier to debug.
 * Added live tests to exercise the read-only and script authentication modes.

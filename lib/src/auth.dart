@@ -412,7 +412,8 @@ class WebAuthenticator extends Authenticator {
   }
 
   WebAuthenticator._restore(DRAWConfigContext config, String credentialsJson)
-      : _redirect = Uri.parse(config.redirectUrl),
+      : _redirect =
+            (config.redirectUrl != null) ? Uri.parse(config.redirectUrl) : null,
         super.restore(config, new oauth2.Credentials.fromJson(credentialsJson));
 
   static WebAuthenticator create(
