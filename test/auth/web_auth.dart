@@ -21,7 +21,7 @@ Future<void> main() async {
   const userAgent = 'draw_web_test_agent';
 
   test('web authenticator', () async {
-    final reddit = await Reddit.createInstance(
+    final reddit = Reddit.createWebFlowInstance(
         clientId: kWebClientID,
         clientSecret: kWebClientSecret,
         redirectUri: Uri.parse(redirect),
@@ -119,5 +119,14 @@ Future<void> main() async {
 
     // Sanity check to ensure we have valid credentials.
     expect(await reddit.user.me(), isNotNull);
+
+    final creds = reddit.auth.credentials.toJson();
+
+    // Attempt to create a new instance with the saved credentials.
+    final redditRestored = await Reddit.restoreAuthenticatedInstance(creds,
+        clientId: kWebClientID,
+        clientSecret: kWebClientSecret,
+        userAgent: userAgent);
+    expect(await redditRestored.user.me(), isNotNull);
   });
 }

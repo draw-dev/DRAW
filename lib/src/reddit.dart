@@ -176,9 +176,6 @@ class Reddit {
   /// These fields are required in order to perform any account actions or make
   /// posts.
   ///
-  /// [redirectUri] is the redirect URI associated with your Reddit application.
-  /// This field is unused for script and read-only instances.
-  ///
   /// [tokenEndpoint] is a [Uri] to an alternative token endpoint. If not
   /// provided, [defaultTokenEndpoint] is used.
   ///
@@ -208,6 +205,46 @@ class Reddit {
     }
     throw DRAWAuthenticationError('Unable to authenticate with Reddit');
   }
+
+  /// Creates a new [Reddit] instance for use with the web authentication flow.
+  /// This instance is not authenticated until a valid response code is
+  /// provided to `WebAuthenticator.authorize` (see test/auth/web_auth.dart
+  /// for an example usage).
+  ///
+  /// [clientId] is the identifier associated with your authorized application
+  /// on Reddit. To get a client ID, create an authorized application
+  /// [here](http://www.reddit.com/prefs/apps).
+  ///
+  /// [clientSecret] is the unique secret associated with your client ID. This
+  /// is required for script and web applications.
+  ///
+  /// [userAgent] is an arbitrary identifier used by the Reddit API to
+  /// differentiate between client instances. This should be relatively unique.
+  ///
+  /// [redirectUri] is the redirect URI associated with your Reddit application.
+  ///
+  /// [tokenEndpoint] is a [Uri] to an alternative token endpoint. If not
+  /// provided, [defaultTokenEndpoint] is used.
+  ///
+  /// [authEndpoint] is a [Uri] to an alternative authentication endpoint. If not
+  /// provided, [defaultAuthTokenEndpoint] is used.
+  ///
+  /// [configUri] is a [Uri] pointing to a 'draw.ini' file, which can be used to
+  /// populate the previously described parameters.
+  ///
+  /// [siteName] is the name of the configuration to use from draw.ini. Defaults
+  /// to 'default'.
+  static Reddit createWebFlowInstance(
+          {String clientId,
+          String clientSecret,
+          String userAgent,
+          Uri redirectUri,
+          Uri tokenEndpoint,
+          Uri authEndpoint,
+          Uri configUri,
+          String siteName = 'default'}) =>
+      new Reddit._webFlowInstance(clientId, clientSecret, userAgent,
+          redirectUri, tokenEndpoint, authEndpoint, configUri, siteName);
 
   /// Creates a new authenticated [Reddit] instance.
   ///
@@ -239,6 +276,8 @@ class Reddit {
   ///
   /// [siteName] is the name of the configuration to use from draw.ini. Defaults
   /// to 'default'.
+  @Deprecated(
+      'Will be removed in 0.4.0. Please use `createScriptInstance`, etc.')
   static Future<Reddit> createInstance({
     String clientId,
     String clientSecret,
@@ -317,19 +356,16 @@ class Reddit {
     if (credentialsJson == null) {
       throw DRAWArgumentError('credentialsJson cannot be null.');
     }
-    final reddit = new Reddit._(
-      clientId,
-      clientSecret,
-      userAgent,
-      null,
-      null,
-      redirectUri,
-      tokenEndpoint,
-      authEndpoint,
-      configUri,
-      siteName,
-      credentialsJson,
-    );
+    final reddit = new Reddit._webFlowInstanceRestore(
+        clientId,
+        clientSecret,
+        userAgent,
+        credentialsJson,
+        redirectUri,
+        tokenEndpoint,
+        authEndpoint,
+        configUri,
+        siteName);
     final initialized = await reddit._initializedCompleter.future;
     if (initialized) {
       return reddit;
@@ -507,6 +543,79 @@ class Reddit {
         secret: _config.clientSecret);
 
     ScriptAuthenticator.create(_config, grant).then(_initializationCallback);
+    _readOnly = false;
+  }
+
+  Reddit._webFlowInstance(
+      String clientId,
+      String clientSecret,
+      String userAgent,
+      Uri redirectUri,
+      Uri tokenEndpoint,
+      Uri authEndpoint,
+      Uri configUri,
+      String siteName) {
+    // Loading passed in values into config file.
+    _config = new DRAWConfigContext(
+        clientId: clientId,
+        clientSecret: clientSecret,
+        userAgent: userAgent,
+        redirectUrl: redirectUri.toString(),
+        accessToken: tokenEndpoint.toString(),
+        authorizeUrl: authEndpoint.toString(),
+        configUrl: configUri.toString(),
+        siteName: siteName);
+
+    if (_config.clientId == null) {
+      throw DRAWAuthenticationError('clientId cannot be null.');
+    }
+    if (_config.clientSecret == null) {
+      throw DRAWAuthenticationError('clientSecret cannot be null.');
+    }
+    if (_config.userAgent == null) {
+      throw DRAWAuthenticationError('userAgent cannot be null.');
+    }
+
+    final grant = new oauth2.AuthorizationCodeGrant(_config.clientId,
+        Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
+        secret: _config.clientSecret);
+
+    _initializationCallback(WebAuthenticator.create(_config, grant));
+    _readOnly = false;
+  }
+
+  Reddit._webFlowInstanceRestore(
+      String clientId,
+      String clientSecret,
+      String userAgent,
+      String credentialsJson,
+      Uri redirectUri,
+      Uri tokenEndpoint,
+      Uri authEndpoint,
+      Uri configUri,
+      String siteName) {
+    // Loading passed in values into config file.
+    _config = new DRAWConfigContext(
+        clientId: clientId,
+        clientSecret: clientSecret,
+        userAgent: userAgent,
+        redirectUrl: redirectUri.toString(),
+        accessToken: tokenEndpoint.toString(),
+        authorizeUrl: authEndpoint.toString(),
+        configUrl: configUri.toString(),
+        siteName: siteName);
+
+    if (_config.clientId == null) {
+      throw DRAWAuthenticationError('clientId cannot be null.');
+    }
+    if (_config.clientSecret == null) {
+      throw DRAWAuthenticationError('clientSecret cannot be null.');
+    }
+    if (_config.userAgent == null) {
+      throw DRAWAuthenticationError('userAgent cannot be null.');
+    }
+
+    _initializationCallback(WebAuthenticator.restore(_config, credentialsJson));
     _readOnly = false;
   }
 
