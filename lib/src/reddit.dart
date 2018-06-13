@@ -331,7 +331,6 @@ class Reddit {
   /// differentiate between client instances. This should be relatively unique.
   ///
   /// [redirectUri] is the redirect URI associated with your Reddit application.
-  /// This field is unused for script and read-only instances.
   ///
   /// [tokenEndpoint] is a [Uri] to an alternative token endpoint. If not
   /// provided, [defaultTokenEndpoint] is used.
