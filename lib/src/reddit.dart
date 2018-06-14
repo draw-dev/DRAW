@@ -246,7 +246,6 @@ class Reddit {
       new Reddit._webFlowInstance(clientId, clientSecret, userAgent,
           redirectUri, tokenEndpoint, authEndpoint, configUri, siteName);
 
-
   /// Creates a new authenticated [Reddit] instance from cached credentials.
   ///
   /// [credentialsJson] is a json string containing the cached credentials. This
@@ -410,6 +409,79 @@ class Reddit {
         secret: _config.clientSecret);
 
     ScriptAuthenticator.create(_config, grant).then(_initializationCallback);
+    _readOnly = false;
+  }
+
+  Reddit._webFlowInstance(
+      String clientId,
+      String clientSecret,
+      String userAgent,
+      Uri redirectUri,
+      Uri tokenEndpoint,
+      Uri authEndpoint,
+      Uri configUri,
+      String siteName) {
+    // Loading passed in values into config file.
+    _config = new DRAWConfigContext(
+        clientId: clientId,
+        clientSecret: clientSecret,
+        userAgent: userAgent,
+        redirectUrl: redirectUri.toString(),
+        accessToken: tokenEndpoint.toString(),
+        authorizeUrl: authEndpoint.toString(),
+        configUrl: configUri.toString(),
+        siteName: siteName);
+
+    if (_config.clientId == null) {
+      throw DRAWAuthenticationError('clientId cannot be null.');
+    }
+    if (_config.clientSecret == null) {
+      throw DRAWAuthenticationError('clientSecret cannot be null.');
+    }
+    if (_config.userAgent == null) {
+      throw DRAWAuthenticationError('userAgent cannot be null.');
+    }
+
+    final grant = new oauth2.AuthorizationCodeGrant(_config.clientId,
+        Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
+        secret: _config.clientSecret);
+
+    _initializationCallback(WebAuthenticator.create(_config, grant));
+    _readOnly = false;
+  }
+
+  Reddit._webFlowInstanceRestore(
+      String clientId,
+      String clientSecret,
+      String userAgent,
+      String credentialsJson,
+      Uri redirectUri,
+      Uri tokenEndpoint,
+      Uri authEndpoint,
+      Uri configUri,
+      String siteName) {
+    // Loading passed in values into config file.
+    _config = new DRAWConfigContext(
+        clientId: clientId,
+        clientSecret: clientSecret,
+        userAgent: userAgent,
+        redirectUrl: redirectUri.toString(),
+        accessToken: tokenEndpoint.toString(),
+        authorizeUrl: authEndpoint.toString(),
+        configUrl: configUri.toString(),
+        siteName: siteName);
+
+    if (_config.clientId == null) {
+      throw DRAWAuthenticationError('clientId cannot be null.');
+    }
+    if (_config.clientSecret == null) {
+      throw DRAWAuthenticationError('clientSecret cannot be null.');
+    }
+    if (_config.userAgent == null) {
+      throw DRAWAuthenticationError('userAgent cannot be null.');
+    }
+
+    _initializationCallback(WebAuthenticator.restore(_config, credentialsJson));
     _readOnly = false;
   }
 
