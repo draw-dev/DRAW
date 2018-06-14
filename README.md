@@ -25,7 +25,7 @@ import 'package:draw/draw.dart';
 
 Future<void> main() async {
   // Create the `Reddit` instance and authenticated
-  Reddit reddit = await Reddit.createInstance(
+  Reddit reddit = await Reddit.createScriptInstance(
     clientId: CLIENT_ID,
     clientSecret: SECRET,
     userAgent: AGENT_NAME,
