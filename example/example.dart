@@ -12,7 +12,7 @@ String kAgentName;
 
 Future<void> main() async {
   // Create the `Reddit` instance and authenticate
-  final Reddit reddit = await Reddit.createInstance(
+  final Reddit reddit = await Reddit.createScriptInstance(
     clientId: kClientId,
     clientSecret: kSecret,
     userAgent: kAgentName,
