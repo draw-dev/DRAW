@@ -196,7 +196,7 @@ abstract class Authenticator {
     var responseStream;
     try {
       responseStream = await _client.send(request);
-    } on oauth2.AuthorizationException catch(e) {
+    } on oauth2.AuthorizationException catch (e) {
       throw DRAWAuthenticationError('$e');
     }
     if (responseStream.isRedirect) {
