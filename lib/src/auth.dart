@@ -100,14 +100,13 @@ abstract class Authenticator {
       var path = Uri.parse(_config.revokeToken);
 
       // Retrieve the client ID and secret.
-      final clientId = _grant.identifier;
-      final clientSecret = _grant.secret;
+      final clientId = _config.clientId;
+      final clientSecret = _config.clientSecret;
 
-      if ((_config.clientId != null) && (_config.clientSecret != null)) {
+      if ((clientId != null) && (clientSecret != null)) {
         final userInfo = '$clientId:$clientSecret';
         path = path.replace(userInfo: userInfo);
       }
-
       final headers = new Map<String, String>();
       headers[_kUserAgentKey] = _config.userAgent;
 
@@ -194,7 +193,12 @@ abstract class Authenticator {
         request.body = body;
       }
     }
-    final responseStream = await _client.send(request);
+    var responseStream;
+    try {
+      responseStream = await _client.send(request);
+    } on oauth2.AuthorizationException catch(e) {
+      throw DRAWAuthenticationError('$e');
+    }
     if (responseStream.isRedirect) {
       var redirectStr = Uri.parse(responseStream.headers['location']).path;
       if (redirectStr.endsWith('.json')) {

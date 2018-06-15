@@ -26,7 +26,7 @@ Future<void> main() async {
         clientSecret: kWebClientSecret,
         redirectUri: Uri.parse(redirect),
         userAgent: userAgent + '_authenticated');
-
+    expect(reddit.auth.userAgent, userAgent + '_authenticated');
     // Create our implicit grant flow URI.
     final dest = reddit.auth.url([scope], expectedState);
 
@@ -128,5 +128,14 @@ Future<void> main() async {
         clientSecret: kWebClientSecret,
         userAgent: userAgent);
     expect(await redditRestored.user.me(), isNotNull);
+
+    // Ensure we can refresh credentials.
+    await redditRestored.auth.refresh();
+    expect(await redditRestored.user.me(), isNotNull);
+
+    // Revoke the OAuth2 token and ensure an exception is thrown.
+    await redditRestored.auth.revoke();
+    expect(() async => await redditRestored.user.me(),
+        throwsA(isInstanceOf<DRAWAuthenticationError>()));
   });
 }
