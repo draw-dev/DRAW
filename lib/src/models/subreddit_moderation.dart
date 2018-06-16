@@ -15,7 +15,7 @@ import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/user_content.dart';
 import 'package:draw/src/reddit.dart';
 
-String _subredditTypeToString(SubredditType type) {
+String subredditTypeToString(SubredditType type) {
   switch (type) {
     case SubredditType.archivedSubreddit:
       return 'archived';
@@ -36,7 +36,7 @@ String _subredditTypeToString(SubredditType type) {
   }
 }
 
-SubredditType _stringToSubredditType(String s) {
+SubredditType stringToSubredditType(String s) {
   switch (s) {
     case 'archived':
       return SubredditType.archivedSubreddit;
@@ -116,7 +116,7 @@ enum ModeratorActionType {
   wikiUnbanned,
 }
 
-String _moderatorActionTypesToString(ModeratorActionType a) {
+String moderatorActionTypesToString(ModeratorActionType a) {
   switch (a) {
     case ModeratorActionType.acceptModeratorInvite:
       return 'acceptmoderatorinvite';
@@ -215,7 +215,7 @@ String _moderatorActionTypesToString(ModeratorActionType a) {
   }
 }
 
-ModeratorActionType _stringToModeratorActionType(String s) {
+ModeratorActionType stringToModeratorActionType(String s) {
   switch (s) {
     case 'acceptmoderatorinvite':
       return ModeratorActionType.acceptModeratorInvite;
@@ -416,13 +416,13 @@ class SubredditSettings {
   void set commentScoreHideMins(int x) => _data['comment_score_hide_mins'] = x;
 
   SubredditType get subredditType =>
-      _stringToSubredditType(_data['subreddit_type']);
+      stringToSubredditType(_data['subreddit_type']);
 
   void set subredditType(SubredditType type) {
     if (type == null) {
       throw DRAWArgumentError("Parameter 'type' cannot be null.");
     }
-    _data['subreddit_type'] = _subredditTypeToString(type);
+    _data['subreddit_type'] = subredditTypeToString(type);
   }
 
   bool get excludeBannedModQueue => _data['exclude_banned_modqueue'];
@@ -456,8 +456,7 @@ class ModeratorAction {
   final Map data;
   ModeratorAction._(this._reddit, this.data);
 
-  ModeratorActionType get action =>
-      _stringToModeratorActionType(data['action']);
+  ModeratorActionType get action => stringToModeratorActionType(data['action']);
 
   RedditorRef get mod => _reddit.redditor(data['mod']);
 
@@ -550,7 +549,7 @@ class SubredditModeration {
 
     if (type != null) {
       const kType = 'type';
-      params[kType] = _moderatorActionTypesToString(type);
+      params[kType] = moderatorActionTypesToString(type);
     }
     return ListingGenerator.generator(
         _subreddit.reddit, _formatApiPath('about_log'),

@@ -387,7 +387,7 @@ class SubmissionRef extends UserContent {
   }
 }
 
-String _commentSortTypeToString(CommentSortType t) {
+String commentSortTypeToString(CommentSortType t) {
   switch (t) {
     case CommentSortType.confidence:
       return 'confidence';
@@ -539,7 +539,7 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
           apiPath['suggested_sort'],
           {
             'id': _content.fullname,
-            'sort': _commentSortTypeToString(sort),
+            'sort': commentSortTypeToString(sort),
           },
           discardResponse: true);
 

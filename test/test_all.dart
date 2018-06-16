@@ -20,6 +20,7 @@ import 'subreddit/subreddit_listing_mixin_test.dart'
     as subreddit_listing_mixin_test;
 import 'subreddit/subreddit_moderation_test.dart' as subreddit_mod_test;
 import 'subreddit/subreddit_test.dart' as subreddit_test;
+import 'unit_tests/enum_stringify_test.dart' as enum_stringify_test;
 import 'unit_tests/test_draw_config_context.dart' as draw_config_test;
 import 'unit_tests/utils_test.dart' as utils_test;
 import 'user_content_moderation/user_content_moderation_test.dart'
@@ -31,6 +32,7 @@ void main() {
   live_auth_test.main();
   comment_test.main();
   draw_config_test.main();
+  enum_stringify_test.main();
   frontpage_test.main();
   gilded_listing_mixin_test.main();
   inbox_test.main();
