@@ -23,19 +23,19 @@ import 'package:draw/src/models/submission.dart';
 import 'package:draw/src/models/subreddit_moderation.dart';
 import 'package:draw/src/models/user_content.dart';
 
-enum _SearchSyntax {
+enum SearchSyntax {
   cloudSearch,
   lucene,
   plain,
 }
 
-String _searchSyntaxToString(_SearchSyntax s) {
+String searchSyntaxToString(SearchSyntax s) {
   switch (s) {
-    case _SearchSyntax.cloudSearch:
+    case SearchSyntax.cloudSearch:
       return 'cloudsearch';
-    case _SearchSyntax.lucene:
+    case SearchSyntax.lucene:
       return 'lucene';
-    case _SearchSyntax.plain:
+    case SearchSyntax.plain:
       return 'plain';
     default:
       throw DRAWInternalError('SearchSyntax $s is not supported');
@@ -197,7 +197,7 @@ class SubredditRef extends RedditBase
   /// week, year.
   Stream<UserContent> search(String query,
       {Sort sort: Sort.relevance,
-      _SearchSyntax syntax: _SearchSyntax.lucene,
+      SearchSyntax syntax: SearchSyntax.lucene,
       TimeFilter timeFilter: TimeFilter.all,
       Map<String, String> params}) {
     final timeStr = timeFilterToString(timeFilter);
@@ -206,7 +206,7 @@ class SubredditRef extends RedditBase
     data['q'] = query;
     data['restrict_sr'] = isNotAll.toString();
     data['sort'] = sortToString(sort);
-    data['syntax'] = _searchSyntaxToString(syntax);
+    data['syntax'] = searchSyntaxToString(syntax);
     data['t'] = timeStr;
     return ListingGenerator.createBasicGenerator(reddit,
         apiPath['search'].replaceAll(SubredditRef._subredditRegExp, _name),

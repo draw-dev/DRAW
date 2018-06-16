@@ -19,10 +19,16 @@ export 'package:draw/src/models/mixins/user_content_moderation.dart'
     show DistinctionType;
 export 'package:draw/src/models/message.dart';
 export 'package:draw/src/models/mixins/user_content_mixin.dart';
-export 'package:draw/src/models/multireddit.dart';
+export 'package:draw/src/models/multireddit.dart'
+    hide iconNameToString, visibilityToString, weightingSchemeToString;
 export 'package:draw/src/models/redditor.dart';
 export 'package:draw/src/models/submission.dart';
-export 'package:draw/src/models/subreddit.dart';
+export 'package:draw/src/models/subreddit.dart' hide searchSyntaxToString;
 export 'package:draw/src/models/subreddit_moderation.dart'
-    hide buildModeratorAction;
+    hide
+        buildModeratorAction,
+        moderatorActionTypesToString,
+        stringToModeratorActionType,
+        stringToSubredditType,
+        subredditTypeToString;
 export 'package:draw/src/models/user_content.dart';

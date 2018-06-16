@@ -16,7 +16,7 @@ enum DistinctionType {
   special,
 }
 
-String _distinctionTypeToString(DistinctionType type) {
+String distinctionTypeToString(DistinctionType type) {
   switch (type) {
     case DistinctionType.yes:
       return 'yes';
@@ -57,7 +57,7 @@ abstract class UserContentModerationMixin {
   /// ignored.
   Future<void> distinguish({DistinctionType how, bool sticky: false}) async {
     final data = <String, String>{
-      'how': _distinctionTypeToString(how),
+      'how': distinctionTypeToString(how),
       'id': content.fullname,
       'api_type': 'json'
     };

@@ -16,7 +16,7 @@ import 'package:draw/src/user.dart';
 
 enum Visibility { hidden, private, public }
 
-String _visibilityToString(Visibility visibility) {
+String visibilityToString(Visibility visibility) {
   switch (visibility) {
     case Visibility.hidden:
       return 'hidden';
@@ -31,7 +31,7 @@ String _visibilityToString(Visibility visibility) {
 
 enum WeightingScheme { classic, fresh }
 
-String _weightingSchemeToString(WeightingScheme weightingScheme) {
+String weightingSchemeToString(WeightingScheme weightingScheme) {
   switch (weightingScheme) {
     case WeightingScheme.classic:
       return 'classic';
@@ -77,7 +77,7 @@ enum IconName {
   none,
 }
 
-String _iconNameToString(IconName iconName) {
+String iconNameToString(IconName iconName) {
   switch (iconName) {
     case IconName.artAndDesign:
       return 'art and design';
