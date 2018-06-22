@@ -9,6 +9,6 @@ dart:
 
 script:
   - ./tools/travis.sh
-  - dart --preview-dart-2 test/test_all.dart
+  - dart test/test_all.dart
   - dartfmt -n --set-exit-if-changed .
   - dartanalyzer --strong --fatal-warnings --fatal-lints lib/ test/
