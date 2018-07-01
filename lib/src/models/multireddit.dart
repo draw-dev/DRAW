@@ -152,13 +152,8 @@ String iconNameToString(IconName iconName) {
 class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   static const String _kDisplayName = 'display_name';
   static const String _kFrom = "from";
-  static const String _kMultiApi = 'multireddit_api';
-  static const String _kMultiredditRename = 'multireddit_rename';
   static const String _kMultiredditUpdate = 'multireddit_update';
-  static const String _kSubreddits = 'subreddits';
   static const String _kTo = 'to';
-  static const String _kVisibility = 'visibility';
-  static const String _kWeightingScheme = 'weighting_scheme';
   static const int _redditorNameInPathIndex = 2;
   static final _subredditRegExp = new RegExp(r'{subreddit}');
   static final RegExp _userRegExp = new RegExp(r'{user}');
