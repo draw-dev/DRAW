@@ -6,15 +6,21 @@
 import 'dart:async';
 
 import 'package:draw/draw.dart';
+import 'package:draw/src/logging.dart';
+import 'auth/credentials.dart';
 import 'test_authenticator.dart';
 
 Future<Reddit> createRedditTestInstance(String path, {bool live: false}) async {
   var testAuth;
+//  DRAWLoggingUtils.initialize();
+//  DRAWLoggingUtils.setLogLevel(Level.INFO);
   if (live) {
     final tempReddit = await Reddit.createScriptInstance(
         userAgent: 'foobar',
-        siteName: 'DRAWApiOfficial',
-        configUri: Uri.parse('../draw.ini'));
+        username: kUsername,
+        password: kPassword,
+        clientId: kScriptClientID,
+        clientSecret: kScriptClientSecret);
     testAuth = new TestAuthenticator(path, recordAuth: tempReddit.auth);
   } else {
     testAuth = new TestAuthenticator(path);

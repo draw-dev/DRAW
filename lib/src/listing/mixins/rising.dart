@@ -19,6 +19,7 @@ abstract class RisingListingMixin {
           params: params);
 
   /// Returns a [UserContent] that is "rising".
-  Stream<UserContent> rising({Map<String, String> params}) => ListingGenerator
-      .createBasicGenerator(reddit, path + 'rising', params: params);
+  Stream<UserContent> rising({Map<String, String> params}) =>
+      ListingGenerator.createBasicGenerator(reddit, path + 'rising',
+          params: params);
 }

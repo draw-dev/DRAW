@@ -11,6 +11,7 @@ import 'package:oauth2/oauth2.dart' as oauth2;
 import "package:oauth2/src/handle_access_token_response.dart";
 
 import 'draw_config_context.dart';
+import 'logging.dart';
 import 'exceptions.dart';
 
 const String _kDeleteRequest = 'DELETE';
@@ -28,6 +29,8 @@ const String _kTokenKey = 'token';
 const String _kTokenTypeHintKey = 'token_type_hint';
 const String _kUserAgentKey = 'user-agent';
 const String _kUsernameKey = 'username';
+
+final Logger _logger = new Logger('Authenticator');
 
 /// The [Authenticator] class provides an interface to interact with the Reddit API
 /// using OAuth2. An [Authenticator] is responsible for keeping track of OAuth2
@@ -134,6 +137,7 @@ abstract class Authenticator {
   ///
   /// [path] is the destination URI that the request will be made to.
   Future<dynamic> get(Uri path, {Map<String, String> params}) async {
+    _logger.info('GET: $path params: ${DRAWLoggingUtils.jsonify(params)}');
     return _request(_kGetRequest, path, params: params);
   }
 
@@ -142,6 +146,7 @@ abstract class Authenticator {
   /// [path] is the destination URI and [body] contains the POST parameters
   /// that will be sent with the request.
   Future<dynamic> post(Uri path, Map<String, String> body) async {
+    _logger.info('POST: $path body: ${DRAWLoggingUtils.jsonify(body)}');
     return _request(_kPostRequest, path, body: body);
   }
 
@@ -150,6 +155,7 @@ abstract class Authenticator {
   /// [path] is the destination URI and [body] contains the PUT parameters that
   /// will be sent with the request.
   Future<dynamic> put(Uri path, {/* Map<String,String>, String */ body}) async {
+    _logger.info('PUT: $path body: ${DRAWLoggingUtils.jsonify(body)}');
     return _request(_kPutRequest, path, body: body);
   }
 
@@ -159,6 +165,7 @@ abstract class Authenticator {
   /// that will be sent with the request.
   Future<dynamic> delete(Uri path,
       {/* Map<String,String>, String */ body}) async {
+    _logger.info('DELETE: $path body: ${DRAWLoggingUtils.jsonify(body)}');
     return _request(_kDeleteRequest, path, body: body);
   }
 
@@ -212,6 +219,7 @@ abstract class Authenticator {
     if ((parsed is Map) && parsed.containsKey(_kErrorKey)) {
       _throwAuthenticationError(parsed);
     }
+    _logger.finest('RESPONSE: ${DRAWLoggingUtils.jsonify(parsed)}');
     return parsed;
   }
 

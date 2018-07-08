@@ -10,6 +10,7 @@ import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
 import 'package:draw/src/getter_utils.dart';
+import 'package:draw/src/logging.dart';
 import 'package:draw/src/models/comment_forest.dart';
 import 'package:draw/src/models/comment_impl.dart';
 import 'package:draw/src/models/mixins/editable.dart';
@@ -27,7 +28,9 @@ import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/user_content.dart';
 import 'package:draw/src/reddit.dart';
 
-CommentRef getCommentByIdInternal(SubmissionRef s, String id) {
+final Logger _logger = new Logger('Submission');
+
+Comment getCommentByIdInternal(SubmissionRef s, String id) {
   if (s._commentsById.containsKey(id)) {
     return s._commentsById[id];
   }
@@ -35,8 +38,17 @@ CommentRef getCommentByIdInternal(SubmissionRef s, String id) {
 }
 
 void insertCommentById(SubmissionRef s, /*Comment, MoreComments*/ c) {
-  assert(!s._commentsById.containsKey(c.fullname));
+  assert((c is Comment) || (c is MoreComments));
+  _logger.info('insertCommentById: Comment(id:${c.fullname}) Submission(id:${s
+      ._id},hash:${s.hashCode})');
   s._commentsById[c.fullname] = c;
+  if ((c is Comment) && (c.replies != null)) {
+    for (final reply in c.replies.toList()) {
+      if (reply is Comment) {
+        s._commentsById[reply.fullname] = reply;
+      }
+    }
+  }
 }
 
 /// A fully initialized representation of a standard Reddit submission.
@@ -382,7 +394,7 @@ class SubmissionRef extends UserContent {
     final response = await fetch();
     final submission = response[0]['listing'][0];
     submission._comments =
-        new CommentForest(submission, response[1]['listing'].cast<Comment>());
+        new CommentForest(submission, response[1]['listing']);
     return submission;
   }
 }

@@ -8,13 +8,20 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 
+import 'package:draw/src/logging.dart';
 import 'comment_impl.dart';
 import 'submission_impl.dart';
+
+final Logger _logger = new Logger('CommentForest');
+void setSubmission(CommentForest f, SubmissionRef s) {
+  assert(f != null);
+  f._submission = s;
+}
 
 /// A user-friendly representation of a forest of [Comment] objects.
 class CommentForest {
   final List _comments;
-  final SubmissionRef _submission;
+  SubmissionRef _submission;
 
   /// The number of top-level comments associated with the current
   /// [CommentForest].
@@ -23,10 +30,36 @@ class CommentForest {
   /// A list of top-level comments associated with the current [CommentForest].
   List get comments => _comments;
 
-  CommentForest(SubmissionRef submission, [List<Comment> comments])
+  CommentForest(SubmissionRef submission, [List comments])
       : _comments = new List(),
         _submission = submission {
-    _update(comments);
+    if (comments != null) {
+      _comments.addAll(comments);
+      _comments.forEach((c) => setSubmissionInternal(c, _submission));
+    }
+  }
+
+  void _insertComment(comment) {
+    assert((comment is MoreComments) ||
+        ((comment is Comment) &&
+            (getCommentByIdInternal(_submission, comment.fullname) == null)));
+    setSubmissionInternal(comment, _submission);
+    assert((comment is MoreComments) ||
+        (getCommentByIdInternal(_submission, comment.fullname) != null));
+
+    if ((comment is MoreComments) || comment.isRoot) {
+      _comments.add(comment);
+    } else {
+      final parent = getCommentByIdInternal(_submission, comment.parentId);
+      assert(parent != null);
+      parent.replies._comments.add(comment);
+    }
+  }
+
+  void _removeMore(MoreComments more) {
+    final parent = getCommentByIdInternal(_submission, more.parentId);
+    assert(parent != null);
+    parent.replies._comments.remove(more);
   }
 
   dynamic operator [](int i) => _comments[i];
@@ -56,23 +89,6 @@ class CommentForest {
     return comments;
   }
 
-  Future<void> _insertComment(comment) async {
-    if ((comment is MoreComments) || (await comment.isRoot)) {
-      _comments.add(comment);
-    } else {
-      final parent = getCommentByIdInternal(_submission, comment.parentId);
-      parent.replies._comments.add(comment);
-    }
-  }
-
-  void _update(List comments) {
-    _comments.clear();
-    _comments.addAll(comments.cast<dynamic>());
-    for (final comment in _comments) {
-      setSubmissionInternal(comment, _submission);
-    }
-  }
-
   /// Iterate through the [CommentForest], expanding instances of [MoreComments].
   ///
   /// [limit] represents the maximum number of [MoreComments] to expand
@@ -85,59 +101,65 @@ class CommentForest {
     final skipped = [];
 
     while (moreComments.isNotEmpty) {
-      final item = moreComments.removeFirst();
-      final commentItem = item[0];
-      if (((remaining != null) && (remaining <= 0)) ||
-          (commentItem.count < threshold)) {
-        skipped.add(commentItem);
-        item[1].remove(commentItem);
+      final moreComment = moreComments.removeFirst();
+
+      // If we have already expanded `limit` instances of MoreComments or this
+      // instance's comment count is below the threshold, add the comments to
+      // the skipped list.
+      if (((remaining != null) && remaining <= 0) ||
+          (moreComment.count < threshold)) {
+        skipped.add(moreComment);
+        _removeMore(moreComment);
         continue;
       }
 
-      final newComments = await commentItem.comments(update: false);
+      final newComments = await moreComment.comments(update: false);
       if (remaining != null) {
         --remaining;
       }
 
-      for (final more in _getMoreComments(newComments, _comments).toList()) {
+      // Add any additional MoreComments objects to the heap.
+      for (final more in _getMoreComments(newComments, _comments)?.toList()) {
         setSubmissionInternal(more, _submission);
         moreComments.add(more);
       }
 
-      for (final comment in newComments) {
-        await _insertComment(comment);
-      }
-
-      // Remove entry from forest.
-      item[1].remove(commentItem);
+      newComments.forEach(_insertComment);
+      _removeMore(moreComment);
     }
-    return skipped;
   }
 
-  static HeapPriorityQueue<List> _getMoreComments(List<Comment> tree,
-      [List<Comment> parentTree]) {
-    final int Function(List, List) comparator = (List a, List b) {
-      return a[0].count.compareTo(b[0].count);
+  static final _kNoParent = null;
+  static final _kParentIndex = 0;
+  static final _kCommentIndex = 1;
+
+  static HeapPriorityQueue<MoreComments> _getMoreComments(List currentRoot,
+      [List rootParent]) {
+    final int Function(MoreComments, MoreComments) comparator = (a, b) {
+      return a.count.compareTo(b.count);
     };
-    final moreComments = new HeapPriorityQueue<List>(comparator);
+    final moreComments = new HeapPriorityQueue<MoreComments>(comparator);
     final queue = new Queue<List>();
-    for (final x in tree) {
-      queue.add([null, x]);
+
+    for (final rootComment in currentRoot) {
+      queue.add([_kNoParent, rootComment]);
     }
+    // Keep track of which comments we've seen already.
+    final seen = Set();
 
     while (queue.isNotEmpty) {
-      final entry = queue.removeFirst();
-      final parent = entry[0];
-      final comment = entry[1];
+      final pair = queue.removeFirst();
+      final parent = pair[_kParentIndex];
+      final comment = pair[_kCommentIndex];
+
       if (comment is MoreComments) {
-        if (parent != null) {
-          moreComments.add([comment, parent.replies._comments]);
-        } else {
-          moreComments.add([comment, parentTree ?? tree]);
-        }
+        moreComments.add(comment);
       } else if (comment.replies != null) {
         for (final item in comment.replies.toList()) {
-          queue.add([comment, item]);
+          if (!seen.contains(comment)) {
+            queue.add([comment, item]);
+            seen.add(comment);
+          }
         }
       }
     }

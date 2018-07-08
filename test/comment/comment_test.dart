@@ -28,8 +28,15 @@ Future<void> prettyPrint(comments, depth) async {
   }
 }
 
-// Note: these tests are skipped on Windows due to issues with line endings.
-// TODO(bkonyi): fix these tests on Windows at some point?
+void submissionChecker(rootSubmission, comments) {
+  if (comments == null) {
+    return;
+  }
+  for (final c in comments.toList()) {
+    expect(c.submission.hashCode, rootSubmission.hashCode);
+  }
+}
+
 Future<void> main() async {
   test('lib/comment/continue_test', () async {
     final reddit =
@@ -47,14 +54,39 @@ Future<void> main() async {
     }));
     final actual =
         new File('test/comment/continue_test_expected.out').readAsStringSync();
-    expect(output, equals(actual));
-  }, skip: Platform.isWindows);
+    expect(output, actual);
+  });
+
+  test('lib/comment/more_comment_expand_test', () async {
+    final reddit =
+        await createRedditTestInstance('test/comment/more_comment_expand_test');
+    final Comment comment = await reddit.comment(id: 'e1mnhdn').populate();
+    submissionChecker(comment.submission, comment.replies);
+
+    await comment.replies.replaceMore();
+    final printer = () async {
+      await prettyPrint(<Comment>[comment], 0);
+    };
+
+    var output = "";
+    var count = 0;
+    await runZoned(printer, zoneSpecification:
+        new ZoneSpecification(print: (self, parent, zone, message) {
+      count++;
+      output += "$count" + message + '\n';
+    }));
+    final actual =
+        new File('test/comment/more_comment_expand_test_expected.out')
+            .readAsStringSync();
+    expect(output, actual);
+  });
 
   test('lib/comment/tons_of_comments_test', () async {
     final reddit = await createRedditTestInstance(
         'test/comment/tons_of_comments_test.json');
     final submission = await reddit.submission(id: '7gylz9').populate();
     final comments = submission.comments;
+    submissionChecker(submission, comments);
     final printer = () async {
       await prettyPrint(comments, 0);
     };
@@ -69,7 +101,7 @@ Future<void> main() async {
     final actual = new File('test/comment/tons_of_comments_expected.out')
         .readAsStringSync();
     expect(output, equals(actual));
-  }, skip: Platform.isWindows);
+  });
 
   test('lib/comment/comment_ref_test', () async {
     final reddit =

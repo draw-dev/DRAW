@@ -3,8 +3,11 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
+import 'dart:convert';
+
 import 'package:draw/src/base.dart';
 import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/logging.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/models/comment_impl.dart';
 import 'package:draw/src/models/comment_forest.dart';
@@ -14,6 +17,10 @@ import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission_impl.dart';
 import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/subreddit_moderation.dart';
+
+import 'package:logging/logging.dart';
+
+//final //logger = Logger('Objector');
 
 /// Converts responses from the Reddit API into instances of [RedditBase].
 class Objector extends RedditBase {
@@ -27,13 +34,17 @@ class Objector extends RedditBase {
   }
 
   dynamic _objectifyDictionary(Map data) {
+    //logger.log(Level.INFO, '_objectifyDictionary');
     if (data.containsKey('name')) {
       // Redditor type.
+      //logger.log(Level.FINE, 'parsing Redditor');
       return new Redditor.parse(reddit, data);
     } else if (data.containsKey('kind') &&
         (data['kind'] == Reddit.defaultCommentKind)) {
       final commentData = data['data'];
       final comment = new Comment.parse(reddit, commentData);
+      ////logger.log(Level.INFO, 'parsing Comment(id: ${comment.id})');
+      ////logger.log(Level.INFO, 'Comment Data: ${DRAWLoggingUtils.jsonify(data)}');
       if (commentData.containsKey('replies') &&
           (commentData['replies'] is Map) &&
           commentData['replies'].containsKey('kind') &&
@@ -41,11 +52,13 @@ class Objector extends RedditBase {
           commentData['replies'].containsKey('data') &&
           (commentData['replies']['data'] is Map) &&
           commentData['replies']['data'].containsKey('children')) {
+        //logger.log(Level.FINE, 'and parsing CommentForest for ${comment.id}');
         final replies =
-            _objectifyList(commentData['replies']['data']['children'])
-                .cast<Comment>();
+            _objectifyList(commentData['replies']['data']['children']);
+        //logger.log(Level.INFO, 'Done objectifying list of comments for CommentForest for ${comment.id}');
         final submission = new SubmissionRef.withID(
             reddit, _removeIDPrefix(commentData['link_id']));
+        //logger.log(Level.INFO, 'Parent submission for Comment(id: ${comment.id}): ${_removeIDPrefix(commentData["link_id"])}');
         final commentForest = new CommentForest(submission, replies);
         setRepliesInternal(comment, commentForest);
       }
@@ -98,6 +111,7 @@ class Objector extends RedditBase {
   }
 
   List _objectifyList(List listing) {
+    //logger.log(Level.FINE, 'objectifying list(len: ${listing.length})');
     final objectifiedListing = new List(listing.length);
     for (var i = 0; i < listing.length; ++i) {
       objectifiedListing[i] = objectify(listing[i]);
@@ -112,6 +126,7 @@ class Objector extends RedditBase {
   /// [RedditBase], [List<RedditBase>], or [Map<RedditBase>] depending on the
   /// response type.
   dynamic objectify(dynamic data) {
+    //logger.log(Level.FINE, 'objectifying');
     if (data == null) {
       return null;
     }
@@ -123,6 +138,7 @@ class Objector extends RedditBase {
     } else if (data.containsKey('kind')) {
       final kind = data['kind'];
       if (kind == 'Listing') {
+        //logger.log(Level.FINE, 'parsing Listing');
         final listing = data['data']['children'];
         final before = data['data']['before'];
         final after = data['data']['after'];
@@ -134,9 +150,11 @@ class Objector extends RedditBase {
         };
         return result;
       } else if (kind == 'UserList') {
+        //logger.log(Level.FINE, 'parsing UserList');
         final listing = data['data']['children'];
         return _objectifyList(listing);
       } else if (kind == 'KarmaList') {
+        //logger.log(Level.FINE, 'parsing KarmaList');
         final listing = _objectifyList(data['data']);
         final karmaMap = new Map<Subreddit, Map<String, int>>();
         listing.forEach((map) {
@@ -146,15 +164,20 @@ class Objector extends RedditBase {
       } else if (kind == 't2') {
         // Account information about a redditor who isn't the currently
         // authenticated user.
+        //logger.log(Level.INFO, 'account information for non-current user');
         return data['data'];
       } else if (kind == 'more') {
+        //logger.log(Level.INFO, 'parsing MoreComments');
+        //logger.log(Level.INFO, 'Data: ${DRAWLoggingUtils.jsonify(data["data"])}');
         return new MoreComments.parse(reddit, data['data']);
       } else {
+        //logger.log(Level.INFO, 't2 but not more comments or Redditor');
         return _objectifyDictionary(data);
       }
     } else if (data.containsKey('json')) {
       if (data['json'].containsKey('data')) {
         // Response from Subreddit.submit.
+        //logger.log(Level.FINE, 'Subreddit.submit response');
         if (data['json']['data'].containsKey('url')) {
           return new Submission.parse(reddit, data['json']['data']);
         } else if (data['json']['data'].containsKey('things')) {
@@ -164,6 +187,7 @@ class Objector extends RedditBase {
         }
       } else if (data['json'].containsKey('errors')) {
         final errors = data['json']['errors'];
+        //logger.log(Level.SEVERE, 'Error response: $errors');
         if (errors is List && errors.isNotEmpty) {
           // TODO(bkonyi): make an actual exception for this.
           throw DRAWUnimplementedError('Error response: $errors');
