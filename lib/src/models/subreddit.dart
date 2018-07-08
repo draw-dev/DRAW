@@ -607,7 +607,7 @@ class SubredditTraffic {
 
   String toString() {
     return '${periodStart
-        .toUtc()} => unique visits: $uniques, page views: $pageviews'
+            .toUtc()} => unique visits: $uniques, page views: $pageviews'
         ' subscriptions: $subscriptions';
   }
 }

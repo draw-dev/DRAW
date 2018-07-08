@@ -366,8 +366,7 @@ class Reddit {
         Uri.parse(_config.accessToken), Uri.parse(_config.accessToken),
         secret: null);
 
-    ReadOnlyAuthenticator
-        .createUntrusted(_config, grant, deviceId)
+    ReadOnlyAuthenticator.createUntrusted(_config, grant, deviceId)
         .then(_initializationCallback);
     _readOnly = true;
   }

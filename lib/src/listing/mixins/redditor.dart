@@ -43,29 +43,33 @@ abstract class RedditorListingMixin {
   ///
   /// May raise an exception on access if the current user is not authorized to
   /// access this list.
-  Stream<UserContent> gildings({Map<String, String> params}) => ListingGenerator
-      .createBasicGenerator(reddit, path + 'gilded/given', params: params);
+  Stream<UserContent> gildings({Map<String, String> params}) =>
+      ListingGenerator.createBasicGenerator(reddit, path + 'gilded/given',
+          params: params);
 
   /// Returns a [Stream] of content that the user has hidden.
   ///
   /// May raise an exception on access if the current user is not authorized to
   /// access this list.
-  Stream<UserContent> hidden({Map<String, String> params}) => ListingGenerator
-      .createBasicGenerator(reddit, path + 'hidden', params: params);
+  Stream<UserContent> hidden({Map<String, String> params}) =>
+      ListingGenerator.createBasicGenerator(reddit, path + 'hidden',
+          params: params);
 
   /// Returns a [Stream] of content that the user has saved.
   ///
   /// May raise an exception on access if the current user is not authorized to
   /// access this list.
-  Stream<UserContent> saved({Map<String, String> params}) => ListingGenerator
-      .createBasicGenerator(reddit, path + 'saved', params: params);
+  Stream<UserContent> saved({Map<String, String> params}) =>
+      ListingGenerator.createBasicGenerator(reddit, path + 'saved',
+          params: params);
 
   /// Returns a [Stream] of content that the user has upvoted.
   ///
   /// May raise an exception on access if the current user is not authorized to
   /// access this list.
-  Stream<UserContent> upvoted({Map<String, String> params}) => ListingGenerator
-      .createBasicGenerator(reddit, path + 'upvoted', params: params);
+  Stream<UserContent> upvoted({Map<String, String> params}) =>
+      ListingGenerator.createBasicGenerator(reddit, path + 'upvoted',
+          params: params);
 }
 
 class SubListing extends Object with BaseListingMixin {

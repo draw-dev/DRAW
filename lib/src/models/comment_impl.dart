@@ -13,6 +13,7 @@ import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
 import 'package:draw/src/getter_utils.dart';
+import 'package:draw/src/logging.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/models/comment_forest.dart';
 import 'package:draw/src/models/redditor.dart';
@@ -75,6 +76,8 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   /// The ID of the parent [Comment] or [Submission].
   String get parentId => _parentId;
 
+  SubmissionRef get submission => _submission;
+
   MoreComments.parse(Reddit reddit, Map data)
       : _children = data['children'].cast<String>(),
         _count = data['count'],
@@ -110,11 +113,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
     final parent = await _loadComment(_parentId.split('_')[1]);
     _comments = parent.replies?.comments;
     if (update && (_comments != null)) {
-      for (final comment in _comments) {
-        if (comment is! MoreComments) {
-          setSubmissionInternal(comment, _submission);
-        }
-      }
+      _comments.forEach((c) => setSubmissionInternal(c, submission));
     }
     return _comments;
   }
@@ -143,9 +142,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   /// Can contain additional [MoreComments] objects.
   Future<List<dynamic>> comments({bool update: true}) async {
     if (_comments == null) {
-      if (_submission is! Submission) {
-        _submission = await _submission.populate();
-      }
+      assert(_submission is Submission);
       final Submission initializedSubmission = _submission;
       if (_count == 0) {
         return await _continueComments(update);
@@ -161,9 +158,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
       _comments = await reddit.post(apiPath['morechildren'], data);
 
       if (update) {
-        for (final comment in _comments) {
-          comment._submission = _submission;
-        }
+        _comments.forEach((c) => c._submission = _submission);
       }
     }
     return _comments;
@@ -347,7 +342,7 @@ class Comment extends CommentRef
     }
 
     // Check if the comment already exists.
-    var parent = getCommentByIdInternal(_submission, parentId);
+    CommentRef parent = getCommentByIdInternal(_submission, parentId);
     if (parent == null) {
       parent = new CommentRef.withID(reddit, parentId.split('_')[1]);
       parent._submission = _submission;
@@ -377,6 +372,9 @@ class Comment extends CommentRef
 
   @override
   Future<void> refresh() async {
+    if ((_submission == null) || (_submission is SubmissionRef)) {
+      _submission = await submission.populate();
+    }
     final path = submission.infoPath + '_/' + _id;
     final params = {
       'context': '100',
@@ -416,9 +414,17 @@ class Comment extends CommentRef
 /// A lazily initialized class which represents a single Reddit comment. Can be
 /// promoted to a [Comment].
 class CommentRef extends UserContent {
-  SubmissionRef _submission;
   CommentForest _replies;
+  SubmissionRef __submission;
   final String _id;
+
+  SubmissionRef get _submission => __submission;
+  void set _submission(SubmissionRef s) {
+    __submission = s;
+    if (_replies != null) {
+      setSubmission(_replies, s);
+    }
+  }
 
   static final RegExp _commentRegExp = new RegExp(r'{id}');
 
