@@ -24,7 +24,7 @@ void main() {
     expect(commentSortTypeToString(CommentSortType.qa), 'qa');
     expect(commentSortTypeToString(CommentSortType.blank), 'blank');
     expect(() => commentSortTypeToString(null),
-        throwsA(isInstanceOf<DRAWInternalError>()));
+        throwsA(TypeMatcher<DRAWInternalError>()));
   });
 
   test('distinctionTypeToString', () {
@@ -33,7 +33,7 @@ void main() {
     expect(distinctionTypeToString(DistinctionType.special), 'special');
     expect(distinctionTypeToString(DistinctionType.yes), 'yes');
     expect(() => distinctionTypeToString(null),
-        throwsA(isInstanceOf<DRAWInternalError>()));
+        throwsA(TypeMatcher<DRAWInternalError>()));
   });
 
   test('iconNameToString', () {
@@ -69,7 +69,7 @@ void main() {
     expect(iconNameToString(IconName.emptyString), '');
     expect(iconNameToString(IconName.none), 'None');
     expect(() => iconNameToString(null),
-        throwsA(isInstanceOf<DRAWInternalError>()));
+        throwsA(TypeMatcher<DRAWInternalError>()));
   });
 
   test('moderatorActionTypeToString', () {
@@ -165,7 +165,7 @@ void main() {
     expect(moderatorActionTypesToString(ModeratorActionType.wikiUnbanned),
         'wikiunbanned');
     expect(() => moderatorActionTypesToString(null),
-        throwsA(isInstanceOf<DRAWInternalError>()));
+        throwsA(TypeMatcher<DRAWInternalError>()));
   });
 
   test('searchSyntaxToString', () {
@@ -173,7 +173,7 @@ void main() {
     expect(searchSyntaxToString(SearchSyntax.lucene), 'lucene');
     expect(searchSyntaxToString(SearchSyntax.plain), 'plain');
     expect(() => searchSyntaxToString(null),
-        throwsA(isInstanceOf<DRAWInternalError>()));
+        throwsA(TypeMatcher<DRAWInternalError>()));
   });
 
   test('subredditTypeToString', () {
@@ -188,7 +188,7 @@ void main() {
     expect(
         subredditTypeToString(SubredditType.restrictedSubreddit), 'restricted');
     expect(() => subredditTypeToString(null),
-        throwsA(isInstanceOf<DRAWInternalError>()));
+        throwsA(TypeMatcher<DRAWInternalError>()));
   });
 
   test('stringToModeratorActionType', () {
@@ -280,7 +280,7 @@ void main() {
     expect(stringToModeratorActionType('wikiunbanned'),
         ModeratorActionType.wikiUnbanned);
     expect(() => stringToModeratorActionType(null),
-        throwsA(isInstanceOf<DRAWInternalError>()));
+        throwsA(TypeMatcher<DRAWInternalError>()));
   });
 
   test('stringToSubredditType', () {
@@ -295,7 +295,7 @@ void main() {
     expect(
         stringToSubredditType('restricted'), SubredditType.restrictedSubreddit);
     expect(() => stringToSubredditType(null),
-        throwsA(isInstanceOf<DRAWInternalError>()));
+        throwsA(TypeMatcher<DRAWInternalError>()));
   });
 
   test('timeFilterToString', () {
@@ -306,7 +306,7 @@ void main() {
     expect(timeFilterToString(TimeFilter.week), 'week');
     expect(timeFilterToString(TimeFilter.year), 'year');
     expect(() => timeFilterToString(null),
-        throwsA(isInstanceOf<DRAWInternalError>()));
+        throwsA(TypeMatcher<DRAWInternalError>()));
   });
 
   test('sortToString', () {
@@ -316,7 +316,7 @@ void main() {
     expect(sortToString(Sort.relevance), 'relevance');
     expect(sortToString(Sort.top), 'top');
     expect(
-        () => sortToString(null), throwsA(isInstanceOf<DRAWInternalError>()));
+        () => sortToString(null), throwsA(TypeMatcher<DRAWInternalError>()));
   });
 
   test('visibilityToString', () {
@@ -324,13 +324,13 @@ void main() {
     expect(visibilityToString(Visibility.private), 'private');
     expect(visibilityToString(Visibility.public), 'public');
     expect(() => visibilityToString(null),
-        throwsA(isInstanceOf<DRAWInternalError>()));
+        throwsA(TypeMatcher<DRAWInternalError>()));
   });
 
   test('weightingSchemeToString', () {
     expect(weightingSchemeToString(WeightingScheme.classic), 'classic');
     expect(weightingSchemeToString(WeightingScheme.fresh), 'fresh');
     expect(() => weightingSchemeToString(null),
-        throwsA(isInstanceOf<DRAWInternalError>()));
+        throwsA(TypeMatcher<DRAWInternalError>()));
   });
 }
