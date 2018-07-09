@@ -315,8 +315,7 @@ void main() {
     expect(sortToString(Sort.newest), 'new');
     expect(sortToString(Sort.relevance), 'relevance');
     expect(sortToString(Sort.top), 'top');
-    expect(
-        () => sortToString(null), throwsA(TypeMatcher<DRAWInternalError>()));
+    expect(() => sortToString(null), throwsA(TypeMatcher<DRAWInternalError>()));
   });
 
   test('visibilityToString', () {
