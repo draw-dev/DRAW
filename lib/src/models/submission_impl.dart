@@ -289,7 +289,7 @@ class Submission extends SubmissionRef
   /// crossposting is out of beta on Reddit (still in beta as of 2017/10/27).
   Future<Submission> crosspost(Subreddit subreddit,
       {String title, bool sendReplies: true}) async {
-    final data = {
+    final data = <String, String>{
       'sr': subreddit.displayName,
       'title': title ?? this.data['title'],
       'sendreplies': sendReplies.toString(),
@@ -297,7 +297,7 @@ class Submission extends SubmissionRef
       'crosspost_fullname': fullname,
       'api_type': 'json',
     };
-    return reddit.post(apiPath['submit'], data);
+    return await reddit.post(apiPath['submit'], data);
   }
 
   /// Unhide the submission.
