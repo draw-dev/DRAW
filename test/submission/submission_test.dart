@@ -15,24 +15,20 @@ Future<void> main() async {
     return subreddit.newest().map<Submission>((u) => u as Submission);
   }
 
-  // TODO(bkonyi): crosspost is fairly new on Reddit and is only available to
-  // certain users on select subreddits who opted in to the beta. This method
-  // does work, but is difficult to test correctly while the feature is in beta.
-  // Rewrite this test when crosspost is out of beta.
-/*
   test('lib/submission/crosspost', () async {
     final reddit = await createRedditTestInstance(
-        'test/submission/lib_submission_crosspost.json',
-        live: true);
-    final subreddit = new Subreddit.name(reddit, 'woahdude');
-    print(await subreddit.property('name'));
-    final originalSubmission = new Submission.withPath(reddit,
-        'https://www.reddit.com/r/tf2/comments/7919oe/greetings_from_banana_bay/');
+      'test/submission/lib_submission_crosspost.json',
+    );
+    final subreddit = await reddit.subreddit('drawapitesting').populate();
+    final originalSubmission = await reddit
+        .submission(
+            url:
+                'https://www.reddit.com/r/tf2/comments/7919oe/greetings_from_banana_bay/')
+        .populate();
     await originalSubmission.crosspost(subreddit,
         title: 'r/tf2 crosspost'
             ' test');
   });
-*/
 
   test('lib/submission/idFromUrl', () {
     final urls = [
