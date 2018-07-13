@@ -29,7 +29,7 @@ class Redditor extends RedditorRef with RedditBaseInitializedMixin {
   /// The time the Redditor's account was created.
   DateTime get createdUtc => GetterUtils.dateTimeOrNull(data['created_utc']);
 
-  /// The amount of Reddit Gold a Redditor currently has.
+  /// The amount of Reddit Gold creddits a Redditor currently has.
   int get goldCreddits => data['gold_creddits'];
 
   /// The UTC date and time that the Redditor's Reddit Gold subscription ends.
@@ -106,6 +106,7 @@ class RedditorRef extends RedditBase
         RedditorListingMixin {
   static final _subredditRegExp = new RegExp(r'{subreddit}');
   static final _userRegExp = new RegExp(r'{user}');
+  static final _usernameRegExp = new RegExp(r'{username}');
 
   /// The Redditor's display name (e.g., spez or XtremeCheese).
   String get displayName => _name;
@@ -140,17 +141,26 @@ class RedditorRef extends RedditBase
 
   /// Gives Reddit Gold to the [Redditor]. [months] is the number of months of
   /// Reddit Gold to be given to the [Redditor].
+  ///
+  /// Throws a [DRAWGildingError] if the [Redditor] has insufficient gold
+  /// creddits.
   Future<void> gild({int months = 1}) async {
     final body = {
+      'username': _name,
       'months': months.toString(),
     };
-    await reddit.post(
-        apiPath['gild_user'].replaceAll(_userRegExp, _name), body);
+    final path = new Uri.https(Reddit.defaultOAuthApiEndpoint,
+        apiPath['gild_user'].replaceAll(_usernameRegExp, _name));
+    final result = await reddit.auth.post(path, body);
+    if (result is Map) {
+      throw DRAWGildingException(result.cast<String, String>());
+    }
   }
 
   /// Returns a [List] of the [Redditor]'s public [Multireddit]'s.
-  Future<List<Multireddit>> multireddits() async =>
-      reddit.get(apiPath['multi_user'].replaceAll(_userRegExp, _name));
+  Future<List<Multireddit>> multireddits() async => (await reddit
+          .get(apiPath['multireddit_user'].replaceAll(_userRegExp, _name)))
+      .cast<Multireddit>();
 
   /// Promotes this [RedditorRef] into a populated [Redditor].
   Future<Redditor> populate() async =>
