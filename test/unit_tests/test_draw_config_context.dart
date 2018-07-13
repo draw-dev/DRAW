@@ -110,13 +110,13 @@ void main() {
   });
 
   test('DRAWConfigContext sanity', () async {
-    final config = DRAWConfigContext(configUrl: 'test.ini');
+    final config = DRAWConfigContext(configUrl: 'test/unit_tests/test.ini');
     expect(config.accessToken, 'abc123');
     expect(config.authorizeUrl, 'https://www.reddit.com/api/v1/authorize');
     expect(config.clientId, 'Y4PJOclpDQy3xZ');
     expect(config.clientSecret, 'UkGLTe6oqsMk5nHCJTHLrwgvHpr');
     expect(config.commentKind, 't1');
-    expect(config.configUrl, 'test.ini');
+    expect(config.configUrl, 'test/unit_tests/test.ini');
     expect(config.httpProxy, 'http://proxy1.com');
     expect(config.httpsProxy, 'https://proxy1-secure.com');
     expect(config.messageKind, 't_10');
