@@ -111,7 +111,8 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<dynamic> put(Uri path, {/* Map<String, String>, String */ body}) async {
+  Future<dynamic> put(Uri path,
+      {/* Map<String, String>, String */ body}) async {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);
