@@ -11,6 +11,28 @@ import 'package:draw/draw.dart';
 import '../test_utils.dart';
 
 Future<void> main() async {
+  test('lib/redditor/properties', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_properties.json');
+    final redditor = await reddit.redditor('DRAWApiOfficial').populate();
+    expect(redditor.commentKarma, 0);
+    expect(redditor.goldCreddits, 0);
+    expect(redditor.goldExpiration, isNull);
+    expect(redditor.hasGold, isFalse);
+    expect(redditor.hasModMail, isFalse);
+    expect(redditor.hasVerifiedEmail, isTrue);
+    expect(redditor.inBeta, isTrue);
+    expect(redditor.inboxCount, 7);
+    expect(redditor.isEmployee, isFalse);
+    expect(redditor.isModerator, isTrue);
+    expect(redditor.isSuspended, isFalse);
+    expect(redditor.linkKarma, 1);
+    expect(redditor.newModMailExists, isTrue);
+    expect(redditor.over18, isTrue);
+    expect(redditor.preferNoProfanity, isTrue);
+    expect(redditor.suspensionExpirationUtc, isNull);
+  });
+
   test('lib/redditor/friend', () async {
     final reddit = await createRedditTestInstance(
         'test/redditor/lib_redditor_friend.json');
@@ -24,7 +46,7 @@ Future<void> main() async {
     expect(friend is Redditor, isTrue);
 
     expect(friend.displayName, equals('XtremeCheese'));
-    expect(friend.data['note'], equals('My best friend!'));
+    expect(friend.note, equals('My best friend!'));
 
     await friendToBe.unfriend();
     final noFriends = await reddit.user.friends();
@@ -138,28 +160,37 @@ Future<void> main() async {
     expect(await comment.parentId, equals('t1_dkz1y5k'));
   });
 
-  // TODO(bkonyi): Actually get gilded.
-  test('lib/redditor/gilded', () async {
-    /*final reddit = await createRedditTestInstance(
-        'test/redditor/lib_reddit_gilded.json',
-        live: true);
-    final other = reddit.redditor('DRAWApiOfficial');
-    await for (final gilded in other.gilded()) {
-      print(gilded);
-      print('');
-    }*/
+  test('lib/redditor/gild', () async {
+    final reddit =
+        await createRedditTestInstance('test/redditor/lib_reddit_gild.json');
+    final other = await reddit.redditor('XtremeCheese').populate();
+    await other.gild();
   });
 
-  // TODO(bkonyi): Actually gild someone.
-  test('lib/redditor/gildings', () async {
-    /*final reddit = await createRedditTestInstance(
-        'test/redditor/lib_reddit_gildings.json',
-        live: true);
-    final other = reddit.redditor('DRAWApiOfficial');
-    await for (final gild in other.gildings()) {
-      print(gilded);
-      print('');
-    }*/
+  test('lib/redditor/gild_insufficient_creddits', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_reddit_gild_insufficient.json');
+    final current = await reddit.user.me();
+    expect(current.goldCreddits, 0);
+
+    final other = await reddit.redditor('XtremeCheese').populate();
+    try {
+      await other.gild();
+    } on DRAWGildingException catch (e) {
+      // Success
+    } catch (e) {
+      rethrow;
+    }
+  });
+
+  test('lib/redditor/multireddits', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_multireddits.json');
+    final current = await reddit.user.me();
+    final multis = await current.multireddits();
+    expect(multis.length, 7);
+    expect(multis[0].displayName, 'all');
+    expect(multis[0].subreddits.length, 0);
   });
 
   test('lib/redditor/downvoted', () async {

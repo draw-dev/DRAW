@@ -46,7 +46,7 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<void> refresh() async {
+  Future refresh() async {
     if (isRecording) {
       throw DRAWAuthenticationError('cannot refresh a TestAuthenticator.');
     }
@@ -54,7 +54,7 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<void> revoke() async {
+  Future revoke() async {
     if (isRecording) {
       throw DRAWAuthenticationError('cannot revoke a TestAuthenticator.');
     }
@@ -62,6 +62,9 @@ class TestAuthenticator extends Authenticator {
   }
 
   dynamic _copyResponse(response) {
+    if (response == null) {
+      return '';
+    }
     // This is a way to do a recursive deep-copy of the response so we don't
     // accidentally overwrite data in the tests.
     return json.decode(json.encode(response));
@@ -93,7 +96,7 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<void> post(Uri path, Map<String, String> body) async {
+  Future<dynamic> post(Uri path, Map<String, String> body) async {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);
@@ -108,7 +111,7 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<void> put(Uri path, {/* Map<String, String>, String */ body}) async {
+  Future<dynamic> put(Uri path, {/* Map<String, String>, String */ body}) async {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);
@@ -123,7 +126,7 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<void> delete(Uri path,
+  Future<dynamic> delete(Uri path,
       {/* Map<String, String>, String */ body}) async {
     var result;
     if (isRecording) {

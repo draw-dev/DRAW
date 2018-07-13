@@ -43,6 +43,16 @@ class DRAWRedirectResponse implements Exception {
   String toString() => 'DRAWRedirectResponse: Unexpected redirect to ${path}.';
 }
 
+/// Thrown if a call to gild a [Comment], [Redditor], or [Submission] fails.
+class DRAWGildingException implements Exception {
+  final Map<String, String> response;
+  DRAWGildingException(this.response);
+  String get explanation => response['explanation'];
+  String get message => response['message'];
+  String get reason => response['reason'];
+  String toString() => 'DRAWGildingException: $explanation (reason: $reason)';
+}
+
 /// Thrown by unfinished code that hasn't yet implemented all the features it
 /// needs.
 class DRAWUnimplementedError extends UnimplementedError {
