@@ -108,4 +108,28 @@ void main() {
       }
     });
   });
+
+  test('DRAWConfigContext sanity', () async {
+    final config = DRAWConfigContext(configUrl: 'test/unit_tests/test.ini');
+    expect(config.accessToken, 'abc123');
+    expect(config.authorizeUrl, 'https://www.reddit.com/api/v1/authorize');
+    expect(config.clientId, 'Y4PJOclpDQy3xZ');
+    expect(config.clientSecret, 'UkGLTe6oqsMk5nHCJTHLrwgvHpr');
+    expect(config.commentKind, 't1');
+    expect(config.configUrl, 'test/unit_tests/test.ini');
+    expect(config.httpProxy, 'http://proxy1.com');
+    expect(config.httpsProxy, 'https://proxy1-secure.com');
+    expect(config.messageKind, 't_10');
+    expect(config.oauthUrl, 'oauth.reddit.com');
+    expect(config.password, 'pni9ubeht4wd50gk');
+    expect(config.redditUrl, 'https://www.reddit_test.com');
+    expect(config.redditorKind, 't2');
+    expect(config.redirectUrl, 'www.google.com');
+    expect(config.refreshToken, 'refresh123');
+    expect(config.revokeToken, 'revoke123');
+    expect(config.submissionKind, 't3');
+    expect(config.subredditKind, 't5');
+    expect(config.userAgent, 'foobar');
+    expect(config.username, 'fakebot1');
+  });
 }

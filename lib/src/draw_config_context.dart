@@ -121,11 +121,11 @@ class DRAWConfigContext {
   String get configUrl => _configUrl;
   String get httpProxy => _httpProxy;
   String get httpsProxy => _httpsProxy;
-  String get messageKind => _kind[kMessage] ?? kMessage;
+  String get messageKind => _kind[kMessage] ?? kMessageKind;
   String get oauthUrl => _oauthUrl;
   String get password => _password;
   String get redditUrl => _redditUrl;
-  String get redditorKind => _kind[kRedditor] ?? kRedditor;
+  String get redditorKind => _kind[kRedditor] ?? kRedditorKind;
   String get redirectUrl => _redirectUrl;
   String get refreshToken => _refreshToken;
   String get revokeToken => _revokeToken;
