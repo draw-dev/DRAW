@@ -39,8 +39,8 @@ Comment getCommentByIdInternal(SubmissionRef s, String id) {
 
 void insertCommentById(SubmissionRef s, /*Comment, MoreComments*/ c) {
   assert((c is Comment) || (c is MoreComments));
-  _logger.info('insertCommentById: Comment(id:${c.fullname}) Submission(id:${s
-      ._id},hash:${s.hashCode})');
+  _logger.info(
+      'insertCommentById: Comment(id:${c.fullname}) Submission(id:${s._id},hash:${s.hashCode})');
   s._commentsById[c.fullname] = c;
   if ((c is Comment) && (c.replies != null)) {
     for (final reply in c.replies.toList()) {
