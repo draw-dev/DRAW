@@ -590,7 +590,7 @@ class SubredditFlair {
     if ((flairList is! List<String>) &&
             (flairList is! List<RedditorRef>) &&
             (flairList is! List<Flair>) ||
-        (flairList == null)) {
+            (flairList == null)) {
       throw DRAWArgumentError('flairList must be one of List<String>,'
           ' List<Redditor>, or List<Map<String,String>>.');
     }
