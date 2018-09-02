@@ -8,7 +8,7 @@ dart:
   - dev
 
 script:
-  - ./tools/travis.sh
+  - ./tool/travis.sh
   - dart test/test_all.dart
   - dartfmt -n --set-exit-if-changed .
   - dartanalyzer --strong --fatal-warnings --fatal-lints lib/ test/
