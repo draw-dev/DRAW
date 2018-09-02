@@ -199,6 +199,22 @@ class Submission extends SubmissionRef
   /// Is this [Submission] restricted to [Redditor]s 18+.
   bool get over18 => data['over_18'];
 
+  /// The preview images for this [Submission].
+  ///
+  /// Returns an empty list if the [Submission] does not have a preview image.
+  List<SubmissionPreview> get preview {
+    final previews = <SubmissionPreview>[];
+    if (!data.containsKey('preview')) {
+      return previews;
+    }
+    assert(data['preview'].containsKey('images'));
+    final raw = data['preview']['images'].cast<Map<String, dynamic>>();
+    for (final i in raw) {
+      previews.add(SubmissionPreview._fromMap(i));
+    }
+    return previews;
+  }
+
   /// Is this [Submission] pinned.
   bool get pinned => data['pinned'];
 
@@ -397,6 +413,45 @@ class SubmissionRef extends UserContent {
         new CommentForest(submission, response[1]['listing']);
     return submission;
   }
+}
+
+/// A representation of a submission's preview.
+class SubmissionPreview {
+  /// The preview ID.
+  String get id => _id;
+
+  /// A list of preview images scaled to various resolutions.
+  List<PreviewImage> get resolutions => _resolutions;
+
+  /// The original source of the preview image.
+  PreviewImage get source => _source;
+
+  PreviewImage _source;
+  List<PreviewImage> _resolutions;
+  String _id;
+
+  SubmissionPreview._fromMap(Map<String, dynamic> map) {
+    final sourceMap = map['source'];
+    final resolutionsList = map['resolutions'].cast<Map<String, dynamic>>();
+    assert(sourceMap != null);
+    assert(resolutionsList != null);
+
+    _source = PreviewImage._fromMap(sourceMap);
+    _resolutions = List<PreviewImage>();
+    resolutionsList.forEach((e) => _resolutions.add(PreviewImage._fromMap(e)));
+    _id = map['id'];
+  }
+}
+
+class PreviewImage {
+  final Uri url;
+  final int width;
+  final int height;
+
+  PreviewImage._fromMap(Map<String, dynamic> map)
+      : url = Uri.parse(map['url']),
+        width = map['width'],
+        height = map['height'];
 }
 
 String commentSortTypeToString(CommentSortType t) {
