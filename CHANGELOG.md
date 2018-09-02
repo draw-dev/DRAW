@@ -1,5 +1,21 @@
 Change Log
 =================================
+## Version 0.4.0 (2018/09/01)
+### Major breaking changes:
+`Reddit.createInstance` has been removed. Please use one of the following static methods instead:
+
+* `createReadOnlyInstance`
+* `createScriptInstance`
+* `createUntrustedReadOnlyInstance`
+* `createWebFlowInstance`
+* `restoreAuthenticatedInstance`
+
+## Other changes:
+* Bumped SDK constraints to reflect official Dart 2.0 release.
+* Added `SubmissionPreview` and `PreviewImage` which represent preview images for a `Submission`.
+* Added `preview` to `Submission`, which returns a `List<SubmissionPreview>`.
+* Fixed various bugs discovered while improving code coverage.
+
 ## Version 0.3.4 (2018/06/12)
 ### Deprecation Notice:
 `Reddit.createInstance` has been deprecated and will be removed in the 0.4.0 release. Please use one of the following static methods instead:
