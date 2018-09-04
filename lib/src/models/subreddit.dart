@@ -17,6 +17,7 @@ import 'package:draw/src/listing/mixins/subreddit.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/util.dart';
 import 'package:draw/src/models/comment.dart';
+import 'package:draw/src/models/flair.dart';
 import 'package:draw/src/models/mixins/messageable.dart';
 import 'package:draw/src/models/multireddit.dart';
 import 'package:draw/src/models/redditor.dart';
@@ -471,7 +472,7 @@ class SubredditFlair {
     return _linkTemplates;
   }
 
-  Stream<Redditor> call(
+  Stream<Flair> call(
       {/* Redditor, String */ redditor, Map<String, String> params}) {
     final data = (params != null) ? new Map.from(params) : null;
     if (redditor != null) {
@@ -504,6 +505,7 @@ class SubredditFlair {
     final disabledPosition = (position == FlairPosition.disabled);
     final disabledLinkPosition = (linkPosition == FlairPosition.disabled);
     final data = <String, String>{
+      'api_type': 'json',
       'flair_enabled': disabledPosition.toString(),
       'flair_position': _flairPositionToString(position),
       'flair_self_assign_enabled': selfAssign.toString(),
@@ -526,7 +528,7 @@ class SubredditFlair {
     return _subreddit.reddit.post(
         apiPath['deleteflair']
             .replaceAll(_kSubredditRegExp, _subreddit.displayName),
-        <String, String>{'name': redditorName});
+        <String, String>{'api_type': 'json', 'name': redditorName});
   }
 
   /// Deletes all Redditor flair in the [Subreddit].
@@ -534,9 +536,9 @@ class SubredditFlair {
   /// Returns [Future<List<Map>>] containing the success or failure of each
   /// delete.
   Future<List<Map>> deleteAll() async {
-    final updates = [];
+    final updates = <Flair>[];
     await for (final f in call()) {
-      updates.add(f);
+      updates.add(Flair(f.user));
     }
     return update(updates);
   }
@@ -553,6 +555,7 @@ class SubredditFlair {
       {String text: '', String cssClass: ''}) {
     final redditorName = _redditorNameHelper(redditor);
     final data = <String, String>{
+      'api_type': 'json',
       'css_class': cssClass,
       'name': redditorName,
       'text': text,
@@ -566,12 +569,8 @@ class SubredditFlair {
   ///
   /// `flairList` can be one of:
   ///     * [List<String>] of Redditor names
-  ///     * [List<Redditor>]
-  ///     * [List<Map<String, String>>>] which is a mapping containing entries
-  ///       for `user`, `flair_text`, and `flair_css_class`. `user` must be
-  ///       provided and be a Redditor name. If `flair_text` or
-  ///       `flair_css_class` are not provided, the values from parameters
-  ///       `text` and/or `cssClass` will be used.
+  ///     * [List<RedditorRef>]
+  ///     * [List<Flair>]
   ///
   /// `text` is the flair text to use when `flair_text` is missing or
   /// `flairList` is not a list of mappings.
@@ -581,16 +580,16 @@ class SubredditFlair {
   ///
   /// Returns [Future<List<Map<String, String>>>] containing the success or
   /// failure of each update.
-  Future<List<Map<String, String>>> update(
+  Future<List<Map<String, dynamic>>> update(
       /* List<String>,
-         List<Redditor>,
-         List<Map<String,String>> */
+         List<RedditorRef>,
+         List<Flair> */
       flairList,
       {String text: '',
       String cssClass: ''}) async {
     if ((flairList is! List<String>) &&
-            (flairList is! List<Redditor>) &&
-            (flairList is! List<Map<String, String>>) ||
+            (flairList is! List<RedditorRef>) &&
+            (flairList is! List<Flair>) ||
         (flairList == null)) {
       throw DRAWArgumentError('flairList must be one of List<String>,'
           ' List<Redditor>, or List<Map<String,String>>.');
@@ -599,19 +598,21 @@ class SubredditFlair {
     for (final f in flairList) {
       if (f is String) {
         lines.add('"$f","$text","$cssClass"');
-      } else if (f is Redditor) {
+      } else if (f is RedditorRef) {
         lines.add('"${f.displayName}","$text","$cssClass"');
-      } else {
-        final name = f['name'];
-        final tmpText = f['flair_text'] ?? text;
-        final tmpCssClass = f['flair_css_class'] ?? cssClass;
+      } else if (f is Flair) {
+        final name = f.user.displayName;
+        final tmpText = f.flairText ?? text;
+        final tmpCssClass = f.flairCssClass ?? cssClass;
         if (name == null) {
           continue;
         }
         lines.add('"$name","$tmpText","$tmpCssClass"');
+      } else {
+        throw DRAWInternalError('Invalid flair format');
       }
     }
-    final response = <Map<String, String>>[];
+    final response = <Map<String, dynamic>>[];
     final url = apiPath['flaircsv']
         .replaceAll(_kSubredditRegExp, _subreddit.displayName);
     while (lines.isNotEmpty) {
@@ -619,9 +620,13 @@ class SubredditFlair {
       final data = <String, String>{
         'flair_csv': batch.join('\n'),
       };
-      final List<Map<String, String>> maps =
-          await _subreddit.reddit.post(url, data);
+      final List<Map<String, dynamic>> maps =
+          (await _subreddit.reddit.post(url, data))
+              .cast<Map<String, dynamic>>();
       response.addAll(maps);
+      if (lines.length < 100) {
+        break;
+      }
       lines = lines.sublist(min(lines.length - 1, 100));
     }
     return response;

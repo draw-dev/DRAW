@@ -213,4 +213,112 @@ Future<void> main() async {
     expect(october.subscriptions, equals(0));
     expect(october.periodStart, equals(new DateTime.utc(2017, 10)));
   });
+
+  test('lib/subreddit_flair/call', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_flair_call.json');
+    final subreddit = reddit.subreddit('drawapitesting');
+    final subredditFlair = subreddit.flair;
+    final flair = await subredditFlair().first;
+    expect(flair.user.displayName, 'DRAWApiOfficial');
+    expect(flair.flairCssClass, '');
+    expect(flair.flairText, 'Test Flair');
+  });
+
+  // TODO(bkonyi): Check that changes are sticking.
+  test('lib/subreddit_flair/configure', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_flair_configure.json');
+    final subreddit = await reddit.subreddit('drawapitesting').populate();
+    final subredditFlair = subreddit.flair;
+    await subredditFlair.configure(
+        linkPosition: FlairPosition.left,
+        position: FlairPosition.right,
+        linkSelfAssign: true,
+        selfAssign: true);
+    await subredditFlair.configure();
+  });
+
+  test('lib/subreddit_flair/setFlair', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_flair_set_flair.json');
+    final subreddit = reddit.subreddit('drawapitesting');
+    final subredditFlair = subreddit.flair;
+    final flairs = <Flair>[];
+    await for (final f in subredditFlair()) {
+      flairs.add(f);
+    }
+    expect(flairs.length, 1);
+    await subredditFlair.setFlair('XtremeCheese', text: 'Test flair 2');
+    flairs.clear();
+    await for (final f in subredditFlair()) {
+      flairs.add(f);
+    }
+    expect(flairs.length, 2);
+  });
+
+  test('lib/subreddit_flair/deleteAll', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_flair_delete_all.json');
+    final subreddit = reddit.subreddit('drawapitesting');
+    final subredditFlair = subreddit.flair;
+    final flairs = <Flair>[];
+    await for (final f in subredditFlair()) {
+      flairs.add(f);
+    }
+    expect(flairs.length, 1);
+    await subredditFlair.deleteAll();
+
+    flairs.clear();
+    await for (final f in subredditFlair()) {
+      flairs.add(f);
+    }
+    expect(flairs.length, 0);
+  });
+
+  test('lib/subreddit_flair/delete', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_flair_delete.json');
+    final subreddit = reddit.subreddit('drawapitesting');
+    final subredditFlair = subreddit.flair;
+    final flairs = <Flair>[];
+    await for (final f in subredditFlair()) {
+      flairs.add(f);
+    }
+    expect(flairs.length, 1);
+    await subredditFlair.delete('DRAWApiOfficial');
+
+    flairs.clear();
+    await for (final f in subredditFlair()) {
+      flairs.add(f);
+    }
+    expect(flairs.length, 0);
+  });
+
+  test('lib/subreddit_flair/update', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_flair_update.json');
+    final subreddit = reddit.subreddit('drawapitesting');
+    final subredditFlair = subreddit.flair;
+
+    final users = <String>['DRAWApiOfficial', 'XtremeCheese'];
+    await subredditFlair.update(users, text: 'Flair Test');
+
+    int count = 0;
+    await for (final f in subredditFlair()) {
+      expect(f.flairText, 'Flair Test');
+      ++count;
+    }
+    expect(count, 2);
+
+    final redditors =
+        users.map<RedditorRef>((String user) => reddit.redditor(user)).toList();
+    print(redditors.runtimeType);
+    await subredditFlair.update(redditors);
+    count = 0;
+    await for (final f in subredditFlair()) {
+      ++count;
+    }
+    expect(count, 0);
+  });
 }
