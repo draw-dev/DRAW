@@ -452,7 +452,6 @@ String _flairPositionToString(FlairPosition p) {
   }
 }
 
-// TODO(bkonyi): implement.
 /// Provides a set of functions to interact with a [Subreddit]'s flair.
 class SubredditFlair {
   static final RegExp _kSubredditRegExp = RegExp(r'{subreddit}');
@@ -463,12 +462,12 @@ class SubredditFlair {
   SubredditFlair(this._subreddit);
 
   SubredditFlairTemplates get templates {
-    _templates ??= SubredditFlairTemplates(_subreddit);
+    _templates ??= SubredditFlairTemplates._(_subreddit);
     return _templates;
   }
 
   SubredditLinkFlairTemplates get linkTemplates {
-    _linkTemplates ??= SubredditLinkFlairTemplates(_subreddit);
+    _linkTemplates ??= SubredditLinkFlairTemplates._(_subreddit);
     return _linkTemplates;
   }
 
@@ -590,7 +589,7 @@ class SubredditFlair {
     if ((flairList is! List<String>) &&
             (flairList is! List<RedditorRef>) &&
             (flairList is! List<Flair>) ||
-            (flairList == null)) {
+        (flairList == null)) {
       throw DRAWArgumentError('flairList must be one of List<String>,'
           ' List<Redditor>, or List<Map<String,String>>.');
     }
@@ -633,23 +632,89 @@ class SubredditFlair {
   }
 }
 
-// TODO(bkonyi): implement.
-// Provides functions to interact with a [Subreddit]'s flair templates.
+/// Provides functions to interact with a [Subreddit]'s flair templates.
 class SubredditFlairTemplates {
+  static final RegExp _kSubredditRegExp = RegExp(r'{subreddit}');
   final SubredditRef _subreddit;
-  SubredditFlairTemplates(this._subreddit);
+  SubredditFlairTemplates._(this._subreddit);
+
+  static String _flairType(bool isLink) => isLink ? 'LINK_FLAIR' : 'USER_FLAIR';
+
+  Future<void> _add(
+      String text, String cssClass, bool textEditable, bool isLink) async {
+    final url = apiPath['flairtemplate']
+        .replaceAll(_kSubredditRegExp, _subreddit.displayName);
+    final data = <String, String>{
+      'api_type': 'json',
+      'css_class': cssClass,
+      'flair_type': _flairType(isLink),
+      'text': text,
+      'text_editable': textEditable.toString(),
+    };
+    await _subreddit.reddit.post(url, data);
+  }
+
+  Future<void> _clear(bool isLink) async {
+    final url = apiPath['flairtemplateclear']
+        .replaceAll(_kSubredditRegExp, _subreddit.displayName);
+    await _subreddit.reddit.post(url,
+        <String, String>{'api_type': 'json', 'flair_type': _flairType(isLink)});
+  }
+
+  Future<void> delete(String templateId) async {
+    final url = apiPath['flairtemplatedelete']
+        .replaceAll(_kSubredditRegExp, _subreddit.displayName);
+    print(url);
+    await _subreddit.reddit.post(url,
+        <String, String>{'api_type': 'json', 'flair_template_id': templateId});
+  }
+
+  Future<void> update(String templateId, String text,
+      {String cssClass = '', bool textEditable = false}) async {
+    final url = apiPath['flairtemplate']
+        .replaceAll(_kSubredditRegExp, _subreddit.displayName);
+    final data = <String, String>{
+      'api_type': 'json',
+      'css_class': cssClass,
+      'flair_template_id': templateId,
+      'text': text,
+      'text_editable': textEditable.toString(),
+    };
+    await _subreddit.reddit.post(url, data);
+  }
 }
 
-// TODO(bkonyi): implement.
-// Provides functions to interact with [Redditor] flair templates.
+/// Provides functions to interact with [Redditor] flair templates.
 class SubredditRedditorFlairTemplates extends SubredditFlairTemplates {
-  SubredditRedditorFlairTemplates(SubredditRef subreddit) : super(subreddit);
+  SubredditRedditorFlairTemplates._(SubredditRef subreddit)
+      : super._(subreddit);
+
+  /// Add a Redditor flair template to the subreddit.
+  ///
+  /// `text` is the template's text, `cssClass` is the template's CSS class,
+  /// and `textEditable` specifies if flair text can be edited for each editor.
+  Future<void> add(String text,
+          {String cssClass = '', bool textEditable = false}) async =>
+      _add(text, cssClass, textEditable, false);
+
+  /// Remove all Redditor flair templates from the subreddit.
+  Future<void> clear() async => _clear(false);
 }
 
-// TODO(bkonyi): implement.
-// Provides functions to interact with link flair templates.
+/// Provides functions to interact with link flair templates.
 class SubredditLinkFlairTemplates extends SubredditFlairTemplates {
-  SubredditLinkFlairTemplates(SubredditRef subreddit) : super(subreddit);
+  SubredditLinkFlairTemplates._(SubredditRef subreddit) : super._(subreddit);
+
+  /// Add a link flair template to the subreddit.
+  ///
+  /// `text` is the template's text, `cssClass` is the template's CSS class,
+  /// and `textEditable` specifies if flair text can be edited for each editor.
+  Future<void> add(String text,
+          {String cssClass = '', bool textEditable = false}) async =>
+      _add(text, cssClass, textEditable, true);
+
+  /// Remove all link flair templates from the subreddit.
+  Future<void> clear() async => _clear(true);
 }
 
 /// Provides subreddit quarantine related methods.

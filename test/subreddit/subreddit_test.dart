@@ -313,12 +313,25 @@ Future<void> main() async {
 
     final redditors =
         users.map<RedditorRef>((String user) => reddit.redditor(user)).toList();
-    print(redditors.runtimeType);
     await subredditFlair.update(redditors);
     count = 0;
     await for (final f in subredditFlair()) {
       ++count;
     }
     expect(count, 0);
+  });
+
+  test('lib/subreddit_flair/link_templates', () async {
+    final reddit = await createRedditTestInstance(
+      'test/subreddit/lib_subreddit_flair_link_templates.json',
+    );
+    final subreddit = reddit.subreddit('drawapitesting');
+    final linkTemplate = subreddit.flair.linkTemplates;
+    await linkTemplate.add('Foobazbar');
+    await linkTemplate.add('Foobarz');
+    // TODO(bkonyi): grab flair ID.
+    // await linkTemplate.delete('Foobazbar');
+    // await linkTemplate.update('Foobarz', 'Foo');
+    await linkTemplate.clear();
   });
 }
