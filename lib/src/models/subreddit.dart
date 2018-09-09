@@ -4,6 +4,7 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
@@ -16,6 +17,7 @@ import 'package:draw/src/listing/mixins/subreddit.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/util.dart';
 import 'package:draw/src/models/comment.dart';
+import 'package:draw/src/models/flair.dart';
 import 'package:draw/src/models/mixins/messageable.dart';
 import 'package:draw/src/models/multireddit.dart';
 import 'package:draw/src/models/redditor.dart';
@@ -68,7 +70,7 @@ class SubredditRef extends RedditBase
   ContributorRelationship _contributor;
 
   SubredditFilters _filters;
-  // SubredditFlair _flair; TODO(bkonyi): implement
+  SubredditFlair _flair;
   SubredditModeration _mod;
   // ModeratorRelationship _moderator; TODO(bkonyi): implement
   // Modmail _modmail; TODO(bkonyi): implement
@@ -97,14 +99,12 @@ class SubredditRef extends RedditBase
     return _filters;
   }
 
-/*
   SubredditFlair get flair {
     if (_flair == null) {
       _flair = new SubredditFlair(this);
     }
     return _flair;
   }
-*/
 
   SubredditModeration get mod {
     _mod ??= new SubredditModeration(this);
@@ -439,35 +439,291 @@ class SubredditFilters {
   }
 }
 
-// TODO(bkonyi): implement.
-// Provides a set of functions to interact with a [Subreddit]'s flair.
-/*class SubredditFlair {
-  final Subreddit _subreddit;
-  SubredditFlair(this._subreddit) {
-    throw DRAWUnimplementedError();
+/// Provides a set of functions to interact with a [Subreddit]'s flair.
+class SubredditFlair {
+  static final RegExp _kSubredditRegExp = RegExp(r'{subreddit}');
+  final SubredditRef _subreddit;
+  SubredditRedditorFlairTemplates _templates;
+  SubredditLinkFlairTemplates _linkTemplates;
+
+  SubredditFlair(this._subreddit);
+
+  SubredditRedditorFlairTemplates get templates {
+    _templates ??= SubredditRedditorFlairTemplates._(_subreddit);
+    return _templates;
   }
-}*/
 
-// TODO(bkonyi): implement.
-// Provides functions to interact with a [Subreddit]'s flair templates.
-/*class SubredditFlairTemplates {
-  final Subreddit _subreddit;
-  SubredditFlairTemplates(this._subreddit) {
-    throw DRAWUnimplementedError();
+  SubredditLinkFlairTemplates get linkTemplates {
+    _linkTemplates ??= SubredditLinkFlairTemplates._(_subreddit);
+    return _linkTemplates;
   }
-}*/
 
-// TODO(bkonyi): implement.
-// Provides functions to interact with [Redditor] flair templates.
-/*class SubredditRedditorFlairTemplates extends SubredditFlairTemplates {
-  SubredditRedditorFlairTemplates(Subreddit subreddit) : super(subreddit);
-}*/
+  Stream<Flair> call(
+      {/* Redditor, String */ redditor, Map<String, String> params}) {
+    final data = (params != null) ? new Map.from(params) : null;
+    if (redditor != null) {
+      data['user'] = _redditorNameHelper(redditor);
+    }
+    return ListingGenerator.createBasicGenerator(
+        _subreddit.reddit,
+        apiPath['flairlist']
+            .replaceAll(_kSubredditRegExp, _subreddit.displayName),
+        params: data);
+  }
 
-// TODO(bkonyi): implement.
-// Provides functions to interact with link flair templates.
-/*class SubredditLinkFlairTemplates extends SubredditFlairTemplates {
-  SubredditLinkFlairTemplates(Subreddit subreddit) : super(subreddit);
-}*/
+  /// Update the [Subreddit]'s flair configuration.
+  ///
+  /// `position` specifies where flair is displayed relative to the
+  /// name of the Redditor. `FlairPosition.disabled` will hide flair.
+  ///
+  /// `selfAssign` specifies whether or not a Redditor can set their own flair.
+  ///
+  /// `linkPosition' specifies where flair is displayed relative to a
+  /// submission link. `FlairPosition.disabled` will hide flair for links.
+  ///
+  /// 'linkSelfAssign' specifies whether or not a Redditor can set flair on
+  /// their links.
+  Future<void> configure(
+      {FlairPosition position: FlairPosition.right,
+      bool selfAssign: false,
+      FlairPosition linkPosition: FlairPosition.left,
+      bool linkSelfAssign: false}) {
+    final disabledPosition = (position == FlairPosition.disabled);
+    final disabledLinkPosition = (linkPosition == FlairPosition.disabled);
+    final data = <String, String>{
+      'api_type': 'json',
+      'flair_enabled': disabledPosition.toString(),
+      'flair_position': flairPositionToString(position),
+      'flair_self_assign_enabled': selfAssign.toString(),
+      'link_flair_position':
+          disabledLinkPosition ? '' : flairPositionToString(linkPosition),
+      'link_flair_self_assign_enabled': linkSelfAssign.toString(),
+    };
+    return _subreddit.reddit.post(
+        apiPath['flairtemplate']
+            .replaceAll(_kSubredditRegExp, _subreddit.displayName),
+        data);
+  }
+
+  /// Deletes flair for a Redditor.
+  ///
+  /// `redditor` can be either a [String] representing the Redditor's name or
+  /// an instance of [Redditor].
+  Future<void> delete(/* Redditor, String */ redditor) {
+    final redditorName = _redditorNameHelper(redditor);
+    return _subreddit.reddit.post(
+        apiPath['deleteflair']
+            .replaceAll(_kSubredditRegExp, _subreddit.displayName),
+        <String, String>{'api_type': 'json', 'name': redditorName});
+  }
+
+  /// Deletes all Redditor flair in the [Subreddit].
+  ///
+  /// Returns [Future<List<Map>>] containing the success or failure of each
+  /// delete.
+  Future<List<Map>> deleteAll() async {
+    final updates = <Flair>[];
+    await for (final f in call()) {
+      updates.add(Flair(f.user));
+    }
+    return update(updates);
+  }
+
+  /// Sets the flair for a [Redditor].
+  ///
+  /// `redditor` can be either a [String] representing the Redditor's name or
+  /// an instance of [Redditor]. Must not be null.
+  ///
+  /// `text` is the flair text to associate with the Redditor.
+  ///
+  /// `cssClass` is the CSS class to apply to the flair.
+  Future<void> setFlair(/* Redditor, String */ redditor,
+      {String text: '', String cssClass: ''}) {
+    final redditorName = _redditorNameHelper(redditor);
+    final data = <String, String>{
+      'api_type': 'json',
+      'css_class': cssClass,
+      'name': redditorName,
+      'text': text,
+    };
+    return _subreddit.reddit.post(
+        apiPath['flair'].replaceAll(_kSubredditRegExp, _subreddit.displayName),
+        data);
+  }
+
+  /// Set or clear the flair of multiple Redditors at once.
+  ///
+  /// `flairList` can be one of:
+  ///     * [List<String>] of Redditor names
+  ///     * [List<RedditorRef>]
+  ///     * [List<Flair>]
+  ///
+  /// `text` is the flair text to use when `flair_text` is missing or
+  /// `flairList` is not a list of mappings.
+  ///
+  /// `cssClass` is the CSS class to use when `flair_css_class` is missing or
+  /// `flairList` is not a list of mappings.
+  ///
+  /// Returns [Future<List<Map<String, String>>>] containing the success or
+  /// failure of each update.
+  Future<List<Map<String, dynamic>>> update(
+      /* List<String>,
+         List<RedditorRef>,
+         List<Flair> */
+      flairList,
+      {String text: '',
+      String cssClass: ''}) async {
+    if ((flairList is! List<String>) &&
+            (flairList is! List<RedditorRef>) &&
+            (flairList is! List<Flair>) ||
+        (flairList == null)) {
+      throw DRAWArgumentError('flairList must be one of List<String>,'
+          ' List<Redditor>, or List<Map<String,String>>.');
+    }
+    var lines = <String>[];
+    for (final f in flairList) {
+      if (f is String) {
+        lines.add('"$f","$text","$cssClass"');
+      } else if (f is RedditorRef) {
+        lines.add('"${f.displayName}","$text","$cssClass"');
+      } else if (f is Flair) {
+        final name = f.user.displayName;
+        final tmpText = f.flairText ?? text;
+        final tmpCssClass = f.flairCssClass ?? cssClass;
+        if (name == null) {
+          continue;
+        }
+        lines.add('"$name","$tmpText","$tmpCssClass"');
+      } else {
+        throw DRAWInternalError('Invalid flair format');
+      }
+    }
+    final response = <Map<String, dynamic>>[];
+    final url = apiPath['flaircsv']
+        .replaceAll(_kSubredditRegExp, _subreddit.displayName);
+    while (lines.isNotEmpty) {
+      final batch = lines.sublist(0, min(100, lines.length));
+      final data = <String, String>{
+        'flair_csv': batch.join('\n'),
+      };
+      final List<Map<String, dynamic>> maps =
+          (await _subreddit.reddit.post(url, data))
+              .cast<Map<String, dynamic>>();
+      response.addAll(maps);
+      if (lines.length < 100) {
+        break;
+      }
+      lines = lines.sublist(min(lines.length - 1, 100));
+    }
+    return response;
+  }
+}
+
+/// Provides functions to interact with a [Subreddit]'s flair templates.
+class SubredditFlairTemplates {
+  static final RegExp _kSubredditRegExp = RegExp(r'{subreddit}');
+  final SubredditRef _subreddit;
+  SubredditFlairTemplates._(this._subreddit);
+
+  static String _flairType(bool isLink) => isLink ? 'LINK_FLAIR' : 'USER_FLAIR';
+
+  Future<void> _add(
+      String text, String cssClass, bool textEditable, bool isLink) async {
+    final url = apiPath['flairtemplate']
+        .replaceAll(_kSubredditRegExp, _subreddit.displayName);
+    final data = <String, String>{
+      'api_type': 'json',
+      'css_class': cssClass,
+      'flair_type': _flairType(isLink),
+      'text': text,
+      'text_editable': textEditable.toString(),
+    };
+    await _subreddit.reddit.post(url, data);
+  }
+
+  Future<void> _clear(bool isLink) async {
+    final url = apiPath['flairtemplateclear']
+        .replaceAll(_kSubredditRegExp, _subreddit.displayName);
+    await _subreddit.reddit.post(url,
+        <String, String>{'api_type': 'json', 'flair_type': _flairType(isLink)});
+  }
+
+  Future<void> delete(String templateId) async {
+    final url = apiPath['flairtemplatedelete']
+        .replaceAll(_kSubredditRegExp, _subreddit.displayName);
+    await _subreddit.reddit.post(url,
+        <String, String>{'api_type': 'json', 'flair_template_id': templateId});
+  }
+
+  Future<void> update(String templateId, String text,
+      {String cssClass = '', bool textEditable = false}) async {
+    final url = apiPath['flairtemplate']
+        .replaceAll(_kSubredditRegExp, _subreddit.displayName);
+    final data = <String, String>{
+      'api_type': 'json',
+      'css_class': cssClass,
+      'flair_template_id': templateId,
+      'text': text,
+      'text_editable': textEditable.toString(),
+    };
+    await _subreddit.reddit.post(url, data);
+  }
+}
+
+/// Provides functions to interact with [Redditor] flair templates.
+class SubredditRedditorFlairTemplates extends SubredditFlairTemplates {
+  SubredditRedditorFlairTemplates._(SubredditRef subreddit)
+      : super._(subreddit);
+
+  /// A [Stream] of the subreddit's Redditor flair templates.
+  Stream<FlairTemplate> call() async* {
+    final url = apiPath['flairselector'].replaceAll(
+        SubredditFlairTemplates._kSubredditRegExp, _subreddit.displayName);
+    final data = <String, String>{};
+    final result = (await _subreddit.reddit.post(url, data))['choices'];
+    for (final r in result) {
+      yield FlairTemplate.parse(r.cast<String, dynamic>());
+    }
+  }
+
+  /// Add a Redditor flair template to the subreddit.
+  ///
+  /// `text` is the template's text, `cssClass` is the template's CSS class,
+  /// and `textEditable` specifies if flair text can be edited for each editor.
+  Future<void> add(String text,
+          {String cssClass = '', bool textEditable = false}) async =>
+      _add(text, cssClass, textEditable, false);
+
+  /// Remove all Redditor flair templates from the subreddit.
+  Future<void> clear() async => _clear(false);
+}
+
+/// Provides functions to interact with link flair templates.
+class SubredditLinkFlairTemplates extends SubredditFlairTemplates {
+  SubredditLinkFlairTemplates._(SubredditRef subreddit) : super._(subreddit);
+
+  /// A [Stream] of the subreddit's link flair templates.
+  Stream<FlairTemplate> call() async* {
+    final url = apiPath['link_flair'].replaceAll(
+        SubredditFlairTemplates._kSubredditRegExp, _subreddit.displayName);
+    final result = (await _subreddit.reddit.get(url, objectify: false));
+    for (final r in result) {
+      r['flair_template_id'] = r['id'];
+      yield FlairTemplate.parse(r.cast<String, dynamic>());
+    }
+  }
+
+  /// Add a link flair template to the subreddit.
+  ///
+  /// `text` is the template's text, `cssClass` is the template's CSS class,
+  /// and `textEditable` specifies if flair text can be edited for each editor.
+  Future<void> add(String text,
+          {String cssClass = '', bool textEditable = false}) async =>
+      _add(text, cssClass, textEditable, true);
+
+  /// Remove all link flair templates from the subreddit.
+  Future<void> clear() async => _clear(true);
+}
 
 /// Provides subreddit quarantine related methods.
 ///
@@ -524,7 +780,7 @@ class SubredditRelationship {
   /// Redditor.
   Future<void> add(/* String, Redditor */ redditor) async {
     final data = {
-      'name': await _redditorNameHelper(redditor),
+      'name': _redditorNameHelper(redditor),
       'type': relationship,
     };
     await _subreddit.reddit.post(
@@ -540,7 +796,7 @@ class SubredditRelationship {
   /// Redditor.
   Future<void> remove(/* String, Redditor */ redditor) async {
     final data = {
-      'name': await _redditorNameHelper(redditor),
+      'name': _redditorNameHelper(redditor),
       'type': relationship,
     };
     await _subreddit.reddit.post(
@@ -549,16 +805,16 @@ class SubredditRelationship {
         data,
         discardResponse: true);
   }
+}
 
-  Future<String> _redditorNameHelper(/* String, Redditor */ redditor) async {
-    if (redditor is Redditor) {
-      return redditor.displayName;
-    } else if (redditor is! String) {
-      throw DRAWArgumentError('Parameter redditor must be either a'
-          'String or Redditor');
-    }
-    return redditor;
+String _redditorNameHelper(/* String, Redditor */ redditor) {
+  if (redditor is Redditor) {
+    return redditor.displayName;
+  } else if (redditor is! String) {
+    throw DRAWArgumentError('Parameter redditor must be either a'
+        'String or Redditor');
   }
+  return redditor;
 }
 
 /// Contains [Subreddit] traffic information for a specific time slice.

@@ -11,14 +11,13 @@ import 'package:draw/src/logging.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/models/comment_impl.dart';
 import 'package:draw/src/models/comment_forest.dart';
+import 'package:draw/src/models/flair.dart';
 import 'package:draw/src/models/message.dart';
 import 'package:draw/src/models/multireddit.dart';
 import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission_impl.dart';
 import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/subreddit_moderation.dart';
-
-import 'package:logging/logging.dart';
 
 //final //logger = Logger('Objector');
 
@@ -104,6 +103,22 @@ class Objector extends RedditBase {
       throw DRAWAuthenticationError('This is an error that should only be '
           'seen in tests. Please file an issue if you see this while not running'
           ' tests.');
+    } else if (data.containsKey('users')) {
+      final flairListRaw = data['users'].cast<Map<String, dynamic>>();
+      final flairList = <Flair>[];
+      for (final flair in flairListRaw) {
+        flairList.add(Flair.parse(reddit, flair.cast<String, String>()));
+      }
+      return flairList;
+    } else if (data.containsKey('status') &&
+        data.containsKey('errors') &&
+        data.containsKey('ok') &&
+        data.containsKey('warnings')) {
+      // Flair update response.
+      return data;
+    } else if (data.containsKey('current') && data.containsKey('choices')) {
+      // Flair template listing.
+      return data;
     } else {
       throw DRAWInternalError('Cannot objectify unsupported'
           ' response:\n$data');
