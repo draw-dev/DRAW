@@ -14,6 +14,7 @@ import 'package:draw/src/logging.dart';
 import 'package:draw/src/models/comment_forest.dart';
 import 'package:draw/src/models/comment_impl.dart';
 import 'package:draw/src/models/mixins/editable.dart';
+import 'package:draw/src/models/flair.dart';
 import 'package:draw/src/models/mixins/gildable.dart';
 import 'package:draw/src/models/mixins/inboxable.dart';
 import 'package:draw/src/models/mixins/inboxtoggleable.dart';
@@ -152,8 +153,13 @@ class Submission extends SubmissionRef
   /// Has this [Submission] been edited.
   bool get edited => (data['edited'] is double);
 
-  // TODO(bkonyi): implement
-  // SubmissionFlair get flair;
+  SubmissionFlair _flair;
+
+  /// Helper utilities to manage flair for this [Submission].
+  SubmissionFlair get flair {
+    _flair ??= SubmissionFlair._(this);
+    return _flair;
+  }
 
   /// The number of times this [Submission] was awarded Reddit Gold.
   int get gilded => data['gilded'];
@@ -186,6 +192,11 @@ class Submission extends SubmissionRef
   /// Returns `true` if the submission is upvoted, `false` if it is downvoted,
   /// and `null` otherwise.
   bool get likes => data['likes'];
+
+  /// Text of the flair set for this [Submission].
+  ///
+  /// May return `null` if the submission has no flair.
+  String get linkFlairText => data['link_flair_text'];
 
   /// Has this [Submission] been locked.
   bool get locked => data['locked'];
@@ -629,4 +640,46 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
         'id': _content.fullname,
       },
       discardResponse: true);
+}
+
+/// Provides functionality for setting flair for this [Submission].
+class SubmissionFlair {
+  final RegExp _kSubredditRegExp = RegExp('{subreddit}');
+  final Submission _submission;
+
+  SubmissionFlair._(this._submission);
+
+  /// The list of available [FlairTemplate]s for this [Submission].
+  Future<List<FlairTemplate>> choices() async {
+    final url = apiPath['flairselector']
+        .replaceAll(_kSubredditRegExp, _submission.subreddit.displayName);
+    final List rawChoices =
+        (await _submission.reddit.post(url, <String, String>{
+      'link': _submission.fullname,
+    }))['choices'];
+    final choices = <FlairTemplate>[];
+    rawChoices.forEach((e) => choices.add(FlairTemplate.parse(e)));
+    return choices;
+  }
+
+  /// Sets the flair for the current [Submission].
+  ///
+  /// `flairTemplateId` is the name of the [FlairTemplate] retrieved from
+  /// `choices()`. If the [FlairTemplate] allows for editable text, providing
+  /// `text` will be set as the custom text. `text` must be shorter than 64
+  /// characters.
+  Future<void> select(String flairTemplateId, {String text = ''}) async {
+    if (text.length > 64) {
+      throw DRAWArgumentError("Argument 'text' must not be longer than"
+      " 64 characters");
+    }
+    final data = <String, String>{
+      'flair_template_id': flairTemplateId,
+      'link': _submission.fullname,
+      'text': text,
+    };
+    final url = apiPath['select_flair']
+        .replaceAll(_kSubredditRegExp, _submission.subreddit.displayName);
+    await _submission.reddit.post(url, data, discardResponse: true);
+  }
 }

@@ -161,4 +161,21 @@ Future<void> main() async {
         .populate();
     await submission.reply('Woohoo!');
   });
+
+  test('lib/submission/submission_flair', () async {
+    final reddit = await createRedditTestInstance(
+        'test/submission/lib_submission_flair.json');
+    final submission = await reddit.submission(id: '7x6ew7').populate();
+    final flair = submission.flair;
+    final choices = await flair.choices();
+    expect(choices.length, 1);
+    expect(submission.linkFlairText, null);
+    await flair.select(choices[0].flairTemplateId,
+        text: 'Testing Submission Flair');
+    await submission.refresh();
+    expect(submission.linkFlairText, 'Testing Submission Flair');
+    await flair.select(choices[0].flairTemplateId);
+    await submission.refresh();
+    expect(submission.linkFlairText, '');
+  });
 }

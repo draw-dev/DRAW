@@ -14,7 +14,8 @@ export 'package:draw/src/objector.dart';
 export 'package:draw/src/user.dart';
 export 'package:draw/src/models/comment.dart';
 export 'package:draw/src/models/comment_forest.dart';
-export 'package:draw/src/models/flair.dart';
+export 'package:draw/src/models/flair.dart'
+    hide flairPositionToString, stringToFlairPosition;
 export 'package:draw/src/models/inbox.dart';
 export 'package:draw/src/models/mixins/user_content_moderation.dart'
     show DistinctionType;
