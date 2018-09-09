@@ -431,6 +431,7 @@ class SubmissionPreview {
   String _id;
 
   SubmissionPreview._fromMap(Map<String, dynamic> map) {
+    print('Preview: $map');
     final sourceMap = map['source'];
     final resolutionsList = map['resolutions'].cast<Map<String, dynamic>>();
     assert(sourceMap != null);
@@ -449,7 +450,7 @@ class PreviewImage {
   final int height;
 
   PreviewImage._fromMap(Map<String, dynamic> map)
-      : url = Uri.parse(map['url']),
+      : url = Uri.parse(map['url'].replaceAll('amp;', '')),
         width = map['width'],
         height = map['height'];
 }
