@@ -439,30 +439,17 @@ class SubredditFilters {
   }
 }
 
-enum FlairPosition { left, right, disabled }
-
-String _flairPositionToString(FlairPosition p) {
-  switch (p) {
-    case FlairPosition.left:
-      return 'left';
-    case FlairPosition.right:
-      return 'right';
-    default:
-      throw DRAWUnimplementedError();
-  }
-}
-
 /// Provides a set of functions to interact with a [Subreddit]'s flair.
 class SubredditFlair {
   static final RegExp _kSubredditRegExp = RegExp(r'{subreddit}');
   final SubredditRef _subreddit;
-  SubredditFlairTemplates _templates;
+  SubredditRedditorFlairTemplates _templates;
   SubredditLinkFlairTemplates _linkTemplates;
 
   SubredditFlair(this._subreddit);
 
-  SubredditFlairTemplates get templates {
-    _templates ??= SubredditFlairTemplates._(_subreddit);
+  SubredditRedditorFlairTemplates get templates {
+    _templates ??= SubredditRedditorFlairTemplates._(_subreddit);
     return _templates;
   }
 
@@ -506,10 +493,10 @@ class SubredditFlair {
     final data = <String, String>{
       'api_type': 'json',
       'flair_enabled': disabledPosition.toString(),
-      'flair_position': _flairPositionToString(position),
+      'flair_position': flairPositionToString(position),
       'flair_self_assign_enabled': selfAssign.toString(),
       'link_flair_position':
-          disabledLinkPosition ? '' : _flairPositionToString(linkPosition),
+          disabledLinkPosition ? '' : flairPositionToString(linkPosition),
       'link_flair_self_assign_enabled': linkSelfAssign.toString(),
     };
     return _subreddit.reddit.post(
@@ -664,7 +651,6 @@ class SubredditFlairTemplates {
   Future<void> delete(String templateId) async {
     final url = apiPath['flairtemplatedelete']
         .replaceAll(_kSubredditRegExp, _subreddit.displayName);
-    print(url);
     await _subreddit.reddit.post(url,
         <String, String>{'api_type': 'json', 'flair_template_id': templateId});
   }
@@ -689,6 +675,17 @@ class SubredditRedditorFlairTemplates extends SubredditFlairTemplates {
   SubredditRedditorFlairTemplates._(SubredditRef subreddit)
       : super._(subreddit);
 
+  /// A [Stream] of the subreddit's Redditor flair templates.
+  Stream<FlairTemplate> call() async* {
+    final url = apiPath['flairselector'].replaceAll(
+        SubredditFlairTemplates._kSubredditRegExp, _subreddit.displayName);
+    final data = <String, String>{};
+    final result = (await _subreddit.reddit.post(url, data))['choices'];
+    for (final r in result) {
+      yield FlairTemplate.parse(r.cast<String, dynamic>());
+    }
+  }
+
   /// Add a Redditor flair template to the subreddit.
   ///
   /// `text` is the template's text, `cssClass` is the template's CSS class,
@@ -704,6 +701,17 @@ class SubredditRedditorFlairTemplates extends SubredditFlairTemplates {
 /// Provides functions to interact with link flair templates.
 class SubredditLinkFlairTemplates extends SubredditFlairTemplates {
   SubredditLinkFlairTemplates._(SubredditRef subreddit) : super._(subreddit);
+
+  /// A [Stream] of the subreddit's link flair templates.
+  Stream<FlairTemplate> call() async* {
+    final url = apiPath['link_flair'].replaceAll(
+        SubredditFlairTemplates._kSubredditRegExp, _subreddit.displayName);
+    final result = (await _subreddit.reddit.get(url, objectify: false));
+    for (final r in result) {
+      r['flair_template_id'] = r['id'];
+      yield FlairTemplate.parse(r.cast<String, dynamic>());
+    }
+  }
 
   /// Add a link flair template to the subreddit.
   ///

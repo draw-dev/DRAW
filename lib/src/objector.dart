@@ -116,6 +116,9 @@ class Objector extends RedditBase {
         data.containsKey('warnings')) {
       // Flair update response.
       return data;
+    } else if (data.containsKey('current') && data.containsKey('choices')) {
+      // Flair template listing.
+      return data;
     } else {
       throw DRAWInternalError('Cannot objectify unsupported'
           ' response:\n$data');

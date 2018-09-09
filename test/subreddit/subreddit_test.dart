@@ -321,17 +321,53 @@ Future<void> main() async {
     expect(count, 0);
   });
 
+  test('lib/subreddit_flair/redditor_templates', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_flair_redditor_templates.json');
+    final subreddit = reddit.subreddit('drawapitesting');
+    final template = subreddit.flair.templates;
+    await template.add('Foobazbar', textEditable: true);
+    await template.add('Foobarz');
+    final list = <FlairTemplate>[];
+    await for (final t in template()) {
+      list.add(t);
+    }
+    expect(list.length, 2);
+    await template.delete(list[0].flairTemplateId);
+    list.clear();
+    await for (final t in template()) {
+      list.add(t);
+    }
+    expect(list.length, 1);
+    await template.update(list[0].flairTemplateId, 'Foo');
+    await template.clear();
+    await for (final t in template()) {
+      fail('Should not be any flair templates left');
+    }
+  });
+
   test('lib/subreddit_flair/link_templates', () async {
     final reddit = await createRedditTestInstance(
-      'test/subreddit/lib_subreddit_flair_link_templates.json',
-    );
+        'test/subreddit/lib_subreddit_flair_link_templates.json');
     final subreddit = reddit.subreddit('drawapitesting');
     final linkTemplate = subreddit.flair.linkTemplates;
-    await linkTemplate.add('Foobazbar');
+    await linkTemplate.add('Foobazbar', textEditable: true);
     await linkTemplate.add('Foobarz');
-    // TODO(bkonyi): grab flair ID.
-    // await linkTemplate.delete('Foobazbar');
-    // await linkTemplate.update('Foobarz', 'Foo');
+    final list = <FlairTemplate>[];
+    await for (final t in linkTemplate()) {
+      list.add(t);
+    }
+    expect(list.length, 2);
+    await linkTemplate.delete(list[0].flairTemplateId);
+    list.clear();
+    await for (final t in linkTemplate()) {
+      list.add(t);
+    }
+    expect(list.length, 1);
+    await linkTemplate.update(list[0].flairTemplateId, 'Foo');
     await linkTemplate.clear();
+    await for (final t in linkTemplate()) {
+      fail('Should not be any link flair templates left');
+    }
   });
 }
