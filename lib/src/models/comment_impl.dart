@@ -13,7 +13,6 @@ import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
 import 'package:draw/src/getter_utils.dart';
-import 'package:draw/src/logging.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/models/comment_forest.dart';
 import 'package:draw/src/models/redditor.dart';

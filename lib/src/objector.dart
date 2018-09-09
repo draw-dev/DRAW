@@ -3,11 +3,8 @@
 // Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 
-import 'dart:convert';
-
 import 'package:draw/src/base.dart';
 import 'package:draw/src/exceptions.dart';
-import 'package:draw/src/logging.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/models/comment_impl.dart';
 import 'package:draw/src/models/comment_forest.dart';
