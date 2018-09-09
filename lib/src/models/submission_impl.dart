@@ -671,7 +671,7 @@ class SubmissionFlair {
   Future<void> select(String flairTemplateId, {String text = ''}) async {
     if (text.length > 64) {
       throw DRAWArgumentError("Argument 'text' must not be longer than"
-      " 64 characters");
+          " 64 characters");
     }
     final data = <String, String>{
       'flair_template_id': flairTemplateId,
