@@ -1,5 +1,15 @@
 Change Log
 =================================
+## Version 0.4.2 (2018/09/10)
+* Added support for flair. See documentation for `SubredditFlair` and
+  `SubmissionFlair` for details.
+* Updated dependency versions for Dart 2.0.
+
+Bug fixes:
+  * `PreviewImage` now automatically replaces `$amp;` with `$` ([Issue
+    #104](https://github.com/draw-dev/DRAW/issues/104)).
+  * Cleaned up various analyzer failures.
+
 ## Version 0.4.0 (2018/09/01)
 ### Major breaking changes:
 `Reddit.createInstance` has been removed. Please use one of the following static methods instead:
