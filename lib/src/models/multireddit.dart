@@ -331,20 +331,19 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   Future<void> delete() async =>
       await reddit.delete(apiPath['multireddit_base'] + infoPath);
 
-/*
   /// Remove a [Subreddit] from this [Multireddit].
   ///
   /// [subreddit] contains the name of the subreddit to be deleted.
   Future<void> remove({String subreddit, Subreddit subredditInstance}) async {
-    subreddit = subredditInstance?.displayName;
+    final scopedSubreddit = subreddit ?? subredditInstance?.displayName;
     if (subreddit == null) return;
     final url = apiPath[_kMultiredditUpdate]
-        .replaceAll(_multiredditRegExp, _name)
-        .replaceAll(User.userRegExp, _author.displayName)
-        .replaceAll(_subredditRegExp, subreddit);
-    final data = {'model': "{'name': $subreddit}"};
-    await reddit.delete(url, body: data);
+        .replaceAll(_multiredditRegExp, data['display_name'])
+        .replaceAll(_userRegExp, _author.displayName)
+        .replaceAll(_subredditRegExp, scopedSubreddit);
+    await reddit.delete(url, body: {'model': "{'name': $scopedSubreddit}"});
   }
+/*
 
   /// Rename this [Multireddit].
   ///

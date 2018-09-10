@@ -33,3 +33,4 @@ pubspec.lock
 # Intellij Files
 DRAW.iml
 draw.ini
+.dart_tool

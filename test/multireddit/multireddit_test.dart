@@ -126,4 +126,15 @@ Future<void> main() async {
     final multi = multis[1];
     await multi.add('camping');
   });
+
+  test('lib/multireddit/add_subreddit_basic_1', () async {
+    final reddit = await createRedditTestInstance(
+      'test/multireddit/lib_multireddit_add_subreddit_1.json',
+      live: true
+    );
+    final multis = await reddit.user.multireddits();
+    final multi = multis[1];
+    await multi.add('camping');
+    await reddit.auth.writeRecording();
+  });
 }
