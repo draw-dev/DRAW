@@ -247,7 +247,9 @@ class SubredditRef extends RedditBase
       String flairId,
       String flairText,
       bool resubmit: true,
-      bool sendReplies: true}) async {
+      bool sendReplies: true,
+      bool nsfw: false,
+      bool spoiler: false}) async {
     if ((selftext == null && url == null) ||
         (selftext != null && url != null)) {
       throw DRAWArgumentError('One of either selftext or url must be '
@@ -260,6 +262,8 @@ class SubredditRef extends RedditBase
       'resubmit': resubmit.toString(),
       'sendreplies': sendReplies.toString(),
       'title': title,
+      'nsfw': nsfw.toString(),
+      'spoiler': spoiler.toString(),
     };
 
     if (flairId != null) {
