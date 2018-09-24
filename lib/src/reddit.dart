@@ -409,10 +409,10 @@ class Reddit {
         Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
         secret: _config.clientSecret);
 
+    _readOnly = false;
     ScriptAuthenticator.create(_config, grant)
         .then(_initializationCallback)
         .catchError(_initializationError);
-    _readOnly = false;
   }
 
   Reddit._webFlowInstance(
