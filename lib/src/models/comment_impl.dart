@@ -50,12 +50,6 @@ void setRepliesInternal(commentLike, CommentForest comments) {
   commentLike._replies = comments;
 }
 
-enum VoteState {
-  none,
-  upvoted,
-  downvoted,
-}
-
 /// Represents comments which have been collapsed under a 'load more comments'
 /// or 'continue this thread' section.
 class MoreComments extends RedditBase with RedditBaseInitializedMixin {
@@ -308,17 +302,6 @@ class Comment extends CommentRef
 
   /// The number of upvotes this [Comment] has received.
   int get upvotes => data['ups'];
-
-  /// Has the currently authenticated [User] voted on this [Comment].
-  VoteState get vote {
-    if (data['likes'] == null) {
-      return VoteState.none;
-    } else if (data['likes']) {
-      return VoteState.upvoted;
-    } else {
-      return VoteState.downvoted;
-    }
-  }
 
   /// Returns true if the current [Comment] is a top-level comment. A [Comment]
   /// is a top-level comment if its parent is a [Submission].
