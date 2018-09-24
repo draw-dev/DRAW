@@ -76,7 +76,9 @@ class TestAuthenticator extends Authenticator {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), params.toString()]);
-      if ((result is List) && (result[0] == redirectResponseStr)) {
+      if ((result is List) &&
+          result.isNotEmpty &&
+          (result[0] == redirectResponseStr)) {
         throw DRAWRedirectResponse(result[1], null);
       }
     } else {

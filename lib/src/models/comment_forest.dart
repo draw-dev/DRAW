@@ -8,11 +8,9 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 
-import 'package:draw/src/logging.dart';
 import 'comment_impl.dart';
 import 'submission_impl.dart';
 
-final Logger _logger = new Logger('CommentForest');
 void setSubmission(CommentForest f, SubmissionRef s) {
   assert(f != null);
   f._submission = s;
@@ -130,7 +128,7 @@ class CommentForest {
   }
 
   static final _kNoParent = null;
-  static final _kParentIndex = 0;
+  // static final _kParentIndex = 0;
   static final _kCommentIndex = 1;
 
   static HeapPriorityQueue<MoreComments> _getMoreComments(List currentRoot,
@@ -149,7 +147,7 @@ class CommentForest {
 
     while (queue.isNotEmpty) {
       final pair = queue.removeFirst();
-      final parent = pair[_kParentIndex];
+      // final parent = pair[_kParentIndex];
       final comment = pair[_kCommentIndex];
 
       if (comment is MoreComments) {
