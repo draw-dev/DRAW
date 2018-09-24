@@ -1,5 +1,5 @@
 name: draw
-version: 0.4.2
+version: 0.4.3
 description: 'A Reddit API wrapper for Dart, inspired by PRAW.'
 homepage: 'https://github.com/draw-dev/DRAW'
 authors:
@@ -12,14 +12,14 @@ environment:
 dependencies:
   collection: '^1.14.3'
   color:
-    version: '^2.0.2'
     git:
-      git://github.com/draw-dev/Color.git
+      url: git://github.com/draw-dev/Color.git
+      ref: 1557edd4e348926597e4139a2b98f11755eba031
   http: '^0.11.3+14'
   ini:
-    version: '^1.1.0'
     git:
-      git://github.com/draw-dev/dart-ini.git
+      url: git://github.com/draw-dev/dart-ini.git
+      ref: e125c4bd1f62ffa36fc69a5b7f098dc83c11fa68
   logging: '^0.11.3+1'
   oauth2: '^1.1.0'
   path: '^1.4.2'
