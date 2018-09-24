@@ -1,5 +1,9 @@
 Change Log
 =================================
+## Version 0.4.3 (2019/09/23)
+* Added `nsfw` and `spoiler` parameters to `Subreddit.submit` (Thanks @LucasCLuk!)
+* Fixed issue where exceptions generated during client authentication could not be caught.
+
 ## Version 0.4.2 (2018/09/10)
 * Added support for flair. See documentation for `SubredditFlair` and
   `SubmissionFlair` for details.
@@ -74,15 +78,15 @@ of the Flutter Beta 2 release.
 
 ### Functionality:
 * Basic `Multireddit` functionality:
-  * Added `Multireddit.parse(reddit, data)` constructor that will create an instance of 
+  * Added `Multireddit.parse(reddit, data)` constructor that will create an instance of
   a `Multireddit`, given the correct `Map` of `data`.
-  * Added `add(subreddit)` method to add the corresponding `subreddit` to the 
+  * Added `add(subreddit)` method to add the corresponding `subreddit` to the
     instance of `Multireddit`. `subreddit` can be of type `Subreddit` or `String`.
   * Added `delete()` method to delete the multireddit.
-  * Added `copy()` and `copy(multiName)`, this will create a copy of the `Multireddit` for 
+  * Added `copy()` and `copy(multiName)`, this will create a copy of the `Multireddit` for
     for the currently authenticated user and return an instance of the new `Multireddit`
-    encapsulated as a `Future`. When `multiName` is provided it will set the display name 
-    of the new `Multireddit` to `multiName`. 
+    encapsulated as a `Future`. When `multiName` is provided it will set the display name
+    of the new `Multireddit` to `multiName`.
   * Added getters for the following properties: `keyColor`, `iconName`, `subreddits`, `author`
     `displayName`, `visibility`, `weightingScheme`, `canEdit`, `over18`.
 * Comment and Submission moderation.
