@@ -6,8 +6,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:test/test.dart';
 import 'package:draw/draw.dart';
+import 'package:draw/src/models/mixins/voteable.dart';
+import 'package:test/test.dart';
 
 import '../test_utils.dart';
 
