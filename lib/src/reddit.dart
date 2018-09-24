@@ -335,9 +335,10 @@ class Reddit {
     final grant = new oauth2.AuthorizationCodeGrant(_config.clientId,
         Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
         secret: _config.clientSecret);
-
-    ReadOnlyAuthenticator.create(_config, grant).then(_initializationCallback);
     _readOnly = true;
+    ReadOnlyAuthenticator.create(_config, grant)
+        .then(_initializationCallback)
+        .catchError(_initializationError);
   }
 
   Reddit._untrustedReadOnlyInstance(
@@ -366,9 +367,10 @@ class Reddit {
         Uri.parse(_config.accessToken), Uri.parse(_config.accessToken),
         secret: null);
 
-    ReadOnlyAuthenticator.createUntrusted(_config, grant, deviceId)
-        .then(_initializationCallback);
     _readOnly = true;
+    ReadOnlyAuthenticator.createUntrusted(_config, grant, deviceId)
+        .then(_initializationCallback)
+        .catchError(_initializationError);
   }
 
   Reddit._scriptInstance(
@@ -407,8 +409,10 @@ class Reddit {
         Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
         secret: _config.clientSecret);
 
-    ScriptAuthenticator.create(_config, grant).then(_initializationCallback);
     _readOnly = false;
+    ScriptAuthenticator.create(_config, grant)
+        .then(_initializationCallback)
+        .catchError(_initializationError);
   }
 
   Reddit._webFlowInstance(
@@ -591,5 +595,10 @@ class Reddit {
     _user = new User(this);
     _initialized = true;
     _initializedCompleter.complete(true);
+  }
+
+  void _initializationError(e) {
+    _initialized = false;
+    _initializedCompleter.completeError(e);
   }
 }
