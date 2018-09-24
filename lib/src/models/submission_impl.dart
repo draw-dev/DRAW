@@ -13,8 +13,8 @@ import 'package:draw/src/getter_utils.dart';
 import 'package:draw/src/logging.dart';
 import 'package:draw/src/models/comment_forest.dart';
 import 'package:draw/src/models/comment_impl.dart';
-import 'package:draw/src/models/mixins/editable.dart';
 import 'package:draw/src/models/flair.dart';
+import 'package:draw/src/models/mixins/editable.dart';
 import 'package:draw/src/models/mixins/gildable.dart';
 import 'package:draw/src/models/mixins/inboxable.dart';
 import 'package:draw/src/models/mixins/inboxtoggleable.dart';
@@ -191,6 +191,8 @@ class Submission extends SubmissionRef
   ///
   /// Returns `true` if the submission is upvoted, `false` if it is downvoted,
   /// and `null` otherwise.
+  /// depreciated use [vote]
+  @deprecated
   bool get likes => data['likes'];
 
   /// Text of the flair set for this [Submission].
