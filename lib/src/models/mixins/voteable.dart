@@ -9,7 +9,14 @@ import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base.dart';
 import 'package:draw/src/reddit.dart';
 
+enum VoteState {
+  none,
+  upvoted,
+  downvoted,
+}
+
 /// A mixin which implements voting functionality.
+/// eg [Comment] or [Submission]
 abstract class VoteableMixin implements RedditBaseInitializedMixin {
   Reddit get reddit;
   String get fullname;
@@ -25,9 +32,35 @@ abstract class VoteableMixin implements RedditBaseInitializedMixin {
   /// The karma score of the voteable item.
   int get score => data['score'];
 
-  Future<void> _vote(String direction) async =>
-      reddit.post(apiPath['vote'], {'dir': direction, 'id': fullname},
-          discardResponse: true);
+  /// Has the currently authenticated [User] voted on this [VoteableMixin].
+  ///
+  /// returns [VoteState.upvoted] if has been upvoted,
+  /// [VoteState.downvoted] if it is downvoted,
+  /// and [VoteState.none] otherwise.
+  VoteState get vote {
+    if (data['likes'] == null) {
+      return VoteState.none;
+    } else if (data['likes']) {
+      return VoteState.upvoted;
+    } else {
+      return VoteState.downvoted;
+    }
+  }
+
+  Future<void> _vote(String direction) async {
+    reddit.post(apiPath['vote'], {'dir': direction, 'id': fullname},
+        discardResponse: true);
+    switch (direction) {
+      case "0":
+        data['likes'] = null;
+        break;
+      case "1":
+        data['likes'] = true;
+        break;
+      case "-1":
+        data['likes'] = false;
+    }
+  }
 
   /// Clear the authenticated user's vote on the object.
   ///
