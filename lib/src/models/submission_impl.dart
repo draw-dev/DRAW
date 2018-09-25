@@ -191,7 +191,8 @@ class Submission extends SubmissionRef
   ///
   /// Returns `true` if the submission is upvoted, `false` if it is downvoted,
   /// and `null` otherwise.
-  /// depreciated use [vote]
+  ///
+  /// This property is deprecated. Please use `vote` instead.
   @deprecated
   bool get likes => data['likes'];
 

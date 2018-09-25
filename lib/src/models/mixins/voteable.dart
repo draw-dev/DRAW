@@ -15,8 +15,7 @@ enum VoteState {
   downvoted,
 }
 
-/// A mixin which implements voting functionality.
-/// eg [Comment] or [Submission]
+/// A mixin which provides voting functionality for [Comment] and [Submission].
 abstract class VoteableMixin implements RedditBaseInitializedMixin {
   Reddit get reddit;
   String get fullname;
@@ -32,11 +31,11 @@ abstract class VoteableMixin implements RedditBaseInitializedMixin {
   /// The karma score of the voteable item.
   int get score => data['score'];
 
-  /// Has the currently authenticated [User] voted on this [VoteableMixin].
+  /// Has the currently authenticated [User] voted on this [UserContent].
   ///
-  /// returns [VoteState.upvoted] if has been upvoted,
-  /// [VoteState.downvoted] if it is downvoted,
-  /// and [VoteState.none] otherwise.
+  /// Returns [VoteState.upvoted] if the content has been upvoted,
+  /// [VoteState.downvoted] if it has been downvoted, and [VoteState.none]
+  /// otherwise.
   VoteState get vote {
     if (data['likes'] == null) {
       return VoteState.none;
@@ -48,16 +47,16 @@ abstract class VoteableMixin implements RedditBaseInitializedMixin {
   }
 
   Future<void> _vote(String direction) async {
-    reddit.post(apiPath['vote'], {'dir': direction, 'id': fullname},
+    await reddit.post(apiPath['vote'], {'dir': direction, 'id': fullname},
         discardResponse: true);
     switch (direction) {
-      case "0":
+      case '0':
         data['likes'] = null;
         break;
-      case "1":
+      case '1':
         data['likes'] = true;
         break;
-      case "-1":
+      case '-1':
         data['likes'] = false;
     }
   }
