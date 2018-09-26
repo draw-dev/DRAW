@@ -46,6 +46,7 @@ Future<void> main() async {
     expect(submission.isSelf, isFalse);
     expect(submission.isVideo, isFalse);
     expect(submission.likes, isTrue);
+    expect(submission.vote, VoteState.upvoted);
     expect(submission.locked, isFalse);
     expect(submission.numComments, 2);
     expect(submission.numCrossposts, 0);
