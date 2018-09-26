@@ -338,7 +338,6 @@ class Comment extends CommentRef
       final split = id.split('/');
       print(split);
       throw DRAWUnimplementedError();
-      return split[split.length - 4];
     }
     id = data['link_id'];
     if (id != null) {
