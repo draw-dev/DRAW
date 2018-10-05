@@ -5,6 +5,7 @@
 
 import 'package:draw/src/base.dart';
 import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/modmail.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/models/comment_impl.dart';
 import 'package:draw/src/models/comment_forest.dart';
@@ -116,6 +117,18 @@ class Objector extends RedditBase {
     } else if (data.containsKey('current') && data.containsKey('choices')) {
       // Flair template listing.
       return data;
+    } else if (data.containsKey('conversations')) {
+      // Modmail conversations.
+      return data;
+    } else if (data.containsKey('conversation')) {
+      // Single modmail conversation.
+      return ModmailConversation.parse(reddit, data).data;
+    } else if (data.containsKey('body') &&
+        data.containsKey('author') &&
+        data.containsKey('isInternal')) {
+      return ModmailMessage.parse(reddit, data);
+    } else if (data.containsKey('date') && data.containsKey('actionTypeId')) {
+      return ModmailAction.parse(reddit, data);
     } else {
       throw DRAWInternalError('Cannot objectify unsupported'
           ' response:\n$data');

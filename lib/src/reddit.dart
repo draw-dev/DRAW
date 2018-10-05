@@ -552,7 +552,7 @@ class Reddit {
   }
 
   Future<dynamic> post(String api, Map<String, String> body,
-      {bool discardResponse: false}) async {
+      {bool discardResponse: false, bool objectify: true}) async {
     if (!_initialized) {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
@@ -562,7 +562,7 @@ class Reddit {
     if (discardResponse) {
       return null;
     }
-    return _objector.objectify(response);
+    return objectify ? _objector.objectify(response) : response;
   }
 
   Future<dynamic> put(String api,

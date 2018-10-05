@@ -19,6 +19,13 @@ Future<SubredditModeration> subredditModerationHelper(String path,
   return subreddit.mod;
 }
 
+Future<Modmail> subredditModmailHelper(String path,
+    {live: false, sub: 'MorbidReality'}) async {
+  reddit = await createRedditTestInstance(path, live: live);
+  final subreddit = reddit.subreddit(sub);
+  return subreddit.modmail;
+}
+
 Future<void> main() async {
   test('lib/subreddit/subreddit_edited', () async {
     final morbidRealityMod = await subredditModerationHelper(
@@ -402,5 +409,188 @@ Future<void> main() async {
 
     settings = await drawApiTestingMod.settings();
     expect(settings.title, 'DRAW API Testing');
+  });
+
+  test('lib/subreddit/subreddit_modmail_bulkread', () async {
+    final modmail = await subredditModmailHelper(
+        'test/subreddit/subreddit_modmail_bulkread.json',
+        sub: 'drawapitesting');
+    final ModmailConversation conversation =
+        await ModmailConversation(reddit, id: '3nyfr').refresh();
+    await conversation.unread();
+    final oneMarkedRead = await modmail.bulkRead();
+    expect(oneMarkedRead.length, 1);
+    expect(oneMarkedRead[0].id, '3nyfr');
+    final nonMarkedRead = await modmail.bulkRead();
+    expect(nonMarkedRead.isEmpty, true);
+  });
+
+  test('lib/subreddit/subreddit_modmail_conversations', () async {
+    final modmail = await subredditModmailHelper(
+        'test/subreddit/subreddit_modmail_conversation.json',
+        sub: 'drawapitesting');
+    final conversations = <ModmailConversation>[];
+    await for (final c in modmail.conversations()) {
+      conversations.add(c);
+    }
+    expect(conversations.length, 7);
+    final c = conversations[0];
+    expect(c.lastUserUpdate, null);
+    expect(c.isInternal, false);
+    expect(c.isHighlighted, true);
+    expect(c.subject, 'Test message');
+    expect(c.lastModUpdate, DateTime.parse('2018-04-27T23:29:57.985942+00:00'));
+    expect(c.lastUpdated, DateTime.parse('2018-04-27T23:29:57.985942+00:00'));
+    expect(c.authors.length, 1);
+    expect(c.authors[0].isModerator, true);
+    expect(c.authors[0].displayName, 'DRAWApiOfficial');
+    expect(c.owner.displayName, 'drawapitesting');
+    expect(c.participant.displayName, 'Toxicity-Moderator');
+    expect(c.numMessages, 1);
+  });
+
+  test('lib/subreddit/subreddit_modmail_create', () async {
+    final modmail = await subredditModmailHelper(
+        'test/subreddit/subreddit_modmail_create.json',
+        sub: 'drawapitesting');
+    final message = await modmail.create(
+        'Test Message!', 'Hello Reddit!', 'DRAWApiOfficial',
+        authorHidden: true);
+    expect(message.authors.length, 1);
+    expect(message.subject, 'Test Message!');
+    expect(message.isInternal, true);
+    expect(message.numMessages, 1);
+  });
+
+  test('lib/subreddit/subreddit_modmail_subreddits', () async {
+    final modmail = await subredditModmailHelper(
+        'test/subreddit/subreddit_modmail_subreddits.json',
+        sub: 'drawapitesting');
+    await for (final sub in modmail.subreddits()) {
+      expect(sub.displayName, 'drawapitesting');
+    }
+  });
+
+  test('lib/subreddit/subreddit_modmail_unread_count', () async {
+    final modmail = await subredditModmailHelper(
+        'test/subreddit/subreddit_modmail_unread_count.json',
+        sub: 'drawapitesting');
+    final read = await modmail.unreadCount();
+    expect(read.archived, 0);
+    expect(read.highlighted, 0);
+    expect(read.inProgress, 0);
+    expect(read.mod, 0);
+    expect(read.newMail, 0);
+    expect(read.notifications, 0);
+
+    final ModmailConversation conversation =
+        await ModmailConversation(reddit, id: '3nyfr').refresh();
+    await conversation.unread();
+
+    final unread = await modmail.unreadCount();
+    expect(unread.archived, 0);
+    expect(unread.highlighted, 0);
+    expect(unread.inProgress, 1);
+    expect(unread.mod, 0);
+    expect(unread.newMail, 0);
+    expect(unread.notifications, 0);
+
+    await conversation.read();
+  });
+
+  test('lib/subreddit/subreddit_modmail_archive_unarchive', () async {
+    final modmail = await subredditModmailHelper(
+        'test/subreddit/subreddit_modmail_archive_unarchive.json',
+        sub: 'drawapitesting');
+    final ModmailConversation conversation =
+        await ModmailConversation(reddit, id: '3nyfr').refresh();
+    // TODO(bkonyi): figure out how to determine whether or not a conversation is archived.
+    // Manually confirmed this works for now.
+    expect(conversation.isHighlighted, false);
+    await conversation.archive();
+    expect(conversation.isHighlighted, false);
+    await conversation.unarchive();
+    expect(conversation.isHighlighted, false);
+  });
+
+  test('lib/subreddit/subreddit_modmail_highlight_unhighlight', () async {
+    final modmail = await subredditModmailHelper(
+        'test/subreddit/subreddit_modmail_highlight_unhighlight.json',
+        sub: 'drawapitesting');
+    final ModmailConversation conversation =
+        await ModmailConversation(reddit, id: '3nyfr').refresh();
+    expect(conversation.isHighlighted, false);
+    await conversation.highlight();
+    expect(conversation.isHighlighted, true);
+    await conversation.unhighlight();
+    expect(conversation.isHighlighted, false);
+  });
+
+  test('lib/subreddit/subreddit_modmail_mute_unmute', () async {
+    final modmail = await subredditModmailHelper(
+        'test/subreddit/subreddit_modmail_mute_unmute.json',
+        sub: 'drawapitesting');
+    final ModmailConversation conversation =
+        await ModmailConversation(reddit, id: '3nyfr').refresh();
+    // TODO(bkonyi): figure out how to determine whether or not a conversation is muted.
+    // Manually confirmed this works for now.
+    expect(conversation.isHighlighted, false);
+    await conversation.mute();
+    expect(conversation.isHighlighted, false);
+    await conversation.unmute();
+    expect(conversation.isHighlighted, false);
+  });
+
+  test('lib/subreddit/subreddit_modmail_read_unread', () async {
+    final modmail = await subredditModmailHelper(
+        'test/subreddit/subreddit_modmail_read_unread.json',
+        sub: 'drawapitesting');
+    final convos = <ModmailConversation>[];
+    await for (final c in modmail.conversations(limit: 5)) {
+      convos.add(c);
+    }
+
+    // TODO(bkonyi): figure out how to determine whether or not a conversation is read.
+    // Manually confirmed this works for now.
+    final first = convos.first;
+    final rest = convos.sublist(1);
+    await first.read(otherConversations: rest);
+    await first.unread(otherConversations: rest);
+    await first.read(otherConversations: rest);
+  });
+
+  test('lib/subreddit/subreddit_modmail_reply', () async {
+    final modmail = await subredditModmailHelper(
+        'test/subreddit/subreddit_modmail_reply.json',
+        sub: 'drawapitesting');
+    final ModmailConversation conversation = await modmail('3nyfr').refresh();
+    final internal = await conversation.reply('TestInternal',
+        authorHidden: true, internal: true);
+    expect(internal.isInternal, true);
+    expect(internal.isHidden, true);
+    expect(internal.author.displayName, 'DRAWApiOfficial');
+    expect(internal.bodyMarkdown, 'TestInternal');
+
+    final hidden = await conversation.reply('Test hidden', authorHidden: true);
+    expect(hidden.isInternal, false);
+    expect(hidden.isHidden, true);
+    expect(hidden.isOriginalPoster, true);
+    expect(hidden.isDeleted, false);
+    expect(hidden.author.displayName, 'DRAWApiOfficial');
+    expect(hidden.isParticipant, false);
+    expect(hidden.bodyMarkdown, 'Test hidden');
+
+    final reply = await conversation.reply('Visible reply');
+    expect(reply.isInternal, false);
+    expect(reply.isHidden, false);
+    expect(reply.isOriginalPoster, true);
+    expect(reply.isParticipant, false);
+    expect(reply.isDeleted, false);
+    expect(reply.author.isModerator, true);
+    expect(reply.body,
+        '<!-- SC_OFF --><div class=\"md\"><p>Visible reply</p>\n</div><!-- SC_ON -->');
+    expect(reply.bodyMarkdown, 'Visible reply');
+    expect(reply.date, DateTime.parse('2018-09-30 23:00:15.552509Z'));
+    expect(reply.toString() != "", true);
   });
 }

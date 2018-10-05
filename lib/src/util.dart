@@ -114,3 +114,12 @@ Stream<T> streamGenerator<T>(function, {int itemLimit, int pauseAfter}) async* {
     }
   }
 }
+
+Map<String, dynamic> snakeCaseMapKeys(Map<String, dynamic> m) =>
+    m.map((k, v) => MapEntry(snakeCase(k), v));
+
+final RegExp _snakecaseRegexp = new RegExp("[A-Z]");
+String snakeCase(String name, [separator = '_']) => name.replaceAllMapped(
+    _snakecaseRegexp,
+    (Match match) =>
+        (match.start != 0 ? separator : '') + match.group(0).toLowerCase());

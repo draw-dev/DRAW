@@ -4,6 +4,7 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:draw/src/api_paths.dart';
@@ -14,6 +15,7 @@ import 'package:draw/src/listing/mixins/base.dart';
 import 'package:draw/src/listing/mixins/gilded.dart';
 import 'package:draw/src/listing/mixins/rising.dart';
 import 'package:draw/src/listing/mixins/subreddit.dart';
+import 'package:draw/src/modmail.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/util.dart';
 import 'package:draw/src/models/comment.dart';
@@ -73,7 +75,7 @@ class SubredditRef extends RedditBase
   SubredditFlair _flair;
   SubredditModeration _mod;
   // ModeratorRelationship _moderator; TODO(bkonyi): implement
-  // Modmail _modmail; TODO(bkonyi): implement
+  Modmail _modmail;
   SubredditRelationship _muted;
 
   SubredditQuarantine _quarantine;
@@ -118,14 +120,14 @@ class SubredditRef extends RedditBase
     }
     return _moderator;
   }
+*/
 
   Modmail get modmail {
     if (_modmail == null) {
-      _modmail = new Modmail(this);
+      _modmail = Modmail._(this);
     }
     return _modmail;
   }
-*/
 
   SubredditRelationship get muted {
     _muted ??= new SubredditRelationship(this, 'muted');
@@ -811,8 +813,8 @@ class SubredditRelationship {
   }
 }
 
-String _redditorNameHelper(/* String, Redditor */ redditor) {
-  if (redditor is Redditor) {
+String _redditorNameHelper(/* String, RedditorRef */ redditor) {
+  if (redditor is RedditorRef) {
     return redditor.displayName;
   } else if (redditor is! String) {
     throw DRAWArgumentError('Parameter redditor must be either a'
@@ -900,14 +902,227 @@ class ContributorRelationship extends SubredditRelationship {
   }
 }*/
 
-// TODO(bkonyi): implement.
-// Provides modmail functions for a [Subreddit].
-/*class Modmail {
-  Subreddit _subreddit;
-  Modmail(this._subreddit) {
-    throw DRAWUnimplementedError();
+enum ModmailState {
+  all,
+  archived,
+  highlighted,
+  inprogress,
+  mod,
+  newmail,
+  notifications,
+}
+
+String _modmailStateToString(ModmailState s) {
+  switch (s) {
+    case ModmailState.all:
+      return 'all';
+    case ModmailState.archived:
+      return 'archived';
+    case ModmailState.highlighted:
+      return 'highlighted';
+    case ModmailState.inprogress:
+      return 'inprogress';
+    case ModmailState.mod:
+      return 'mod';
+    case ModmailState.newmail:
+      return 'new';
+    case ModmailState.notifications:
+      return 'notifications';
+    default:
+      throw DRAWInternalError('$s is not a valid ModmailSort value.');
   }
-}*/
+}
+
+enum ModmailSort {
+  mod,
+  recent,
+  unread,
+  user,
+}
+
+String _modmailSortToString(ModmailSort s) {
+  switch (s) {
+    case ModmailSort.mod:
+      return 'mod';
+    case ModmailSort.recent:
+      return 'recent';
+    case ModmailSort.unread:
+      return 'unread';
+    case ModmailSort.user:
+      return 'user';
+    default:
+      throw DRAWInternalError('$s is not a valid ModmailSort value.');
+  }
+}
+
+/// Provides modmail functions for a [Subreddit].
+class Modmail {
+  SubredditRef _subreddit;
+  Modmail._(this._subreddit);
+
+  String _buildSubredditList(List<SubredditRef> otherSubreddits) {
+    final subreddits = <SubredditRef>[_subreddit];
+    if (otherSubreddits != null) {
+      subreddits.addAll(otherSubreddits);
+    }
+    return subreddits.map((c) => c.displayName).join(',');
+  }
+
+  ModmailConversation call(String id, {bool markRead = false}) =>
+      ModmailConversation(_subreddit.reddit, id: id, markRead: markRead);
+
+  /// Mark the conversations for provided subreddits as read.
+  ///
+  /// `otherSubreddits`: if provided, all messages in the listed subreddits
+  /// will also be marked as read.
+  ///
+  /// `state`: can be one of all, archived, highlighted, inprogress,
+  /// mod, new, notifications, (default: all). "all" does not include
+  /// internal or archived conversations.
+  ///
+  /// Returns a [List] of [ModmailConversation] instances which were marked as
+  /// read.
+  Future<List<ModmailConversation>> bulkRead(
+      {List<SubredditRef> otherSubreddits,
+      ModmailState state: ModmailState.all}) async {
+    final params = {
+      'entity': _buildSubredditList(otherSubreddits),
+      'state': _modmailStateToString(state),
+    };
+    final response = await _subreddit.reddit
+        .post(apiPath['modmail_bulk_read'], params, objectify: false);
+    final ids = response['conversation_ids'] as List;
+    return ids.map<ModmailConversation>((id) => this(id)).toList();
+  }
+
+  /// A [Stream] of [ModmailConversation] instances for the specified
+  /// subreddits.
+  ///
+  /// `after`: A base36 modmail conversation id. When provided, the limiting
+  /// begins after this conversation.
+  /// `limit`: The maximum number of conversations to fetch. If not provided,
+  /// the server-side default is 25 at the time of writing.
+  /// `otherSubreddits`: A list of other subreddits for which conversations
+  /// should be fetched.
+  /// `sort`: Determines the order that the conversations will be sorted.
+  /// `state`:
+  Stream<ModmailConversation> conversations(
+      {String after,
+      int limit,
+      List<SubredditRef> otherSubreddits,
+      ModmailSort sort: ModmailSort.recent,
+      ModmailState state: ModmailState.all}) async* {
+    final params = <String, String>{};
+    if (_subreddit.displayName != 'all') {
+      params['entity'] = _buildSubredditList(otherSubreddits);
+    }
+
+    if (after != null) {
+      params['after'] = after;
+    }
+
+    if (limit != null) {
+      params['limit'] = limit.toString();
+    }
+
+    if (sort != null) {
+      params['sort'] = _modmailSortToString(sort);
+    }
+
+    if (state != null) {
+      params['state'] = _modmailStateToString(state);
+    }
+
+    final Map<String, dynamic> response = await _subreddit.reddit
+        .get(apiPath['modmail_conversations'], params: params);
+    final ids = (response['conversationIds'] as List).cast<String>();
+    for (final id in ids) {
+      final data = {
+        'conversation': response['conversations'][id],
+        'messages': response['messages']
+      };
+      yield ModmailConversation.parse(_subreddit.reddit, data,
+          convertObjects: false);
+    }
+  }
+
+  /// Create a new conversation.
+  ///
+  /// `subject`: The message subject.
+  /// `body`: The markdown formatted body of the message.
+  /// `recipient`: The recipient of the conversation. Can be either a [String] or
+  /// a [RedditorRef].
+  /// `authorHidden`: When true, the author is hidden from non-moderators. This
+  /// is the same as replying as a subreddit.
+  ///
+  /// Returns a [ModmailConversation] for the newly created conversation.
+  Future<ModmailConversation> create(
+      String subject, String body, /* String, RedditorRef */ recipient,
+      {authorHidden = false}) async {
+    final data = <String, String>{
+      'body': body,
+      'isAuthorHidden': authorHidden.toString(),
+      'srName': _subreddit.displayName,
+      'subject': subject,
+      'to': _redditorNameHelper(recipient),
+    };
+    return ModmailConversation.parse(
+        _subreddit.reddit,
+        await _subreddit.reddit
+            .post(apiPath['modmail_conversations'], data, objectify: false));
+  }
+
+  /// A [Stream] of subreddits which use the new modmail that the authenticated
+  /// user moderates.
+  Stream<SubredditRef> subreddits() async* {
+    final response = await _subreddit.reddit
+        .get(apiPath['modmail_subreddits'], objectify: false);
+    final subreddits =
+        (response['subreddits'] as Map).values.cast<Map<String, dynamic>>();
+    final objectified = subreddits.map<Subreddit>((s) =>
+        Subreddit.parse(_subreddit.reddit, {'data': snakeCaseMapKeys(s)}));
+    for (final s in objectified) {
+      yield s;
+    }
+  }
+
+  /// Return number of unread conversations by conversation state.
+  ///
+  /// Note: at time of writing, only the following states are populated:
+  ///   * archived
+  ///   * highlighted
+  ///   * inprogress
+  ///   * mod
+  ///   * newMail
+  ///   * notifications
+  ///
+  /// Returns an instance of [ModmailUnreadStatistics].
+  Future<ModmailUnreadStatistics> unreadCount() async {
+    final response = await _subreddit.reddit
+        .get(apiPath['modmail_unread_count'], objectify: false);
+    return ModmailUnreadStatistics._(response.cast<String, int>());
+  }
+}
+
+class ModmailUnreadStatistics {
+  Map<String, int> _data;
+  ModmailUnreadStatistics._(this._data);
+
+  int get archived => _data['archived'];
+
+  int get highlighted => _data['highlighted'];
+
+  int get inProgress => _data['inprogress'];
+
+  int get mod => _data['mod'];
+
+  int get newMail => _data['new'];
+
+  int get notifications => _data['notifications'];
+
+  @override
+  String toString() => JsonEncoder.withIndent('  ').convert(_data);
+}
 
 /// A wrapper class for a [Rule] of a [Subreddit].
 class Rule {
