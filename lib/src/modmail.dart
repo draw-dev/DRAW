@@ -113,7 +113,7 @@ class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
     setData(this, newerData);
   }
 
-  static _convertUserSummary(Reddit reddit, Map<String, dynamic> data) {
+  static void _convertUserSummary(Reddit reddit, Map<String, dynamic> data) {
     // Recent Comments
     final recentComments = <Comment>[];
     final rawRecentComments = data['recentComments'] as Map;
