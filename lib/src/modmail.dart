@@ -104,7 +104,7 @@ class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
     }
 
     if (data.containsKey('user')) {
-      _convertUserSummary(reddit, data);
+      _convertUserSummary(reddit, data['user']);
     }
     if (convertObjects) {
       final converted = _convertConversationObjects(reddit, data);
@@ -142,12 +142,13 @@ class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
     // Modmail Conversations
     final conversations = <ModmailConversation>[];
     final rawConversations = data['recentConvos'] as Map;
-    if (rawConversations != null) {
+    /*if (rawConversations != null) {
       rawConversations.forEach((k, v) {
+        print(v);
         conversations.add(ModmailConversation.parse(reddit, v));
       });
       data['recentConvos'] = recentComments;
-    }
+    }*/
 
     // Submissions
     final submissions = <Submission>[];
