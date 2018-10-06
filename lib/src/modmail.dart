@@ -19,7 +19,11 @@ import 'package:draw/src/util.dart';
 
 class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
   static final _kIdRegExp = RegExp(r'{id}');
+  static final _kConvKey = 'conversation';
   final bool _markRead;
+
+  @override
+  String get id => data[_kConvKey]['id'];
 
   String get infoPath =>
       apiPath['modmail_conversation'].replaceAll(_kIdRegExp, id);
@@ -29,33 +33,41 @@ class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
       };
 
   /// An ordered list of [Redditor]s who have participated in the conversation.
-  List<Redditor> get authors => (data['authors'] as List).cast<Redditor>();
+  List<Redditor> get authors =>
+      (data[_kConvKey]['authors'] as List).cast<Redditor>();
 
   /// Whether or not the current conversation highlighted.
-  bool get isHighlighted => data['isHighlighted'];
+  bool get isHighlighted => data[_kConvKey]['isHighlighted'];
 
   /// Whether or not this is a private moderator conversation.
-  bool get isInternal => data['isInternal'];
+  bool get isInternal => data[_kConvKey]['isInternal'];
 
+  /// The date and time the conversation was last updated by a moderator.
   DateTime get lastModUpdate =>
-      GetterUtils.dateTimeOrNullFromString(data['lastModUpdate']);
+      GetterUtils.dateTimeOrNullFromString(data[_kConvKey]['lastModUpdate']);
 
+  /// The date and time the conversation was last updated.
   DateTime get lastUpdated =>
-      GetterUtils.dateTimeOrNullFromString(data['lastUpdated']);
+      GetterUtils.dateTimeOrNullFromString(data[_kConvKey]['lastUpdated']);
 
+  /// The date and time the conversation was last updated by a non-moderator
+  /// user.
   DateTime get lastUserUpdate =>
-      GetterUtils.dateTimeOrNullFromString(data['lastUserUpdate']);
+      GetterUtils.dateTimeOrNullFromString(data[_kConvKey]['lastUserUpdate']);
 
-  int get numMessages => data['numMessages'];
+  /// The number of messages in this conversation.
+  int get numMessages => data[_kConvKey]['numMessages'];
 
   // TODO(bkonyi): find better representation of this
-  List<Map> get objectIds => (data['objIds'] as List).cast<Map>();
+  List<Map> get objectIds => (data[_kConvKey]['objIds'] as List).cast<Map>();
 
-  SubredditRef get owner => data['owner'];
+  /// The subreddit associated with this conversation.
+  SubredditRef get owner => data[_kConvKey]['owner'];
 
-  RedditorRef get participant => data['participant'];
+  RedditorRef get participant => data[_kConvKey]['participant'];
 
-  String get subject => data['subject'];
+  /// The subject line of the conversation.
+  String get subject => data[_kConvKey]['subject'];
 
   ModmailConversation(Reddit reddit,
       {String id, bool markRead = false, Map data})
@@ -64,12 +76,15 @@ class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
     if ((id == null) && (data == null)) {
       throw DRAWArgumentError("Either 'id' or 'data' must be provided");
     }
-    data ??= {};
+    data ??= {
+      _kConvKey: {},
+    };
     if (id != null) {
-      data['id'] = id;
-    } else if ((id == null) && (!data.containsKey('id'))) {
+      data[_kConvKey]['id'] = id;
+    } else if ((id == null) &&
+        (!data.containsKey(_kConvKey) || !data[_kConvKey].containsKey('id'))) {
       throw DRAWArgumentError(
-          "Either 'id' must be provided or 'data' must contain key 'id'");
+          "Either 'id' must be provided or 'data[\"conversation\"]' must contain key 'id'");
     }
     setData(this, data);
   }
@@ -96,7 +111,7 @@ class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
       data.addEntries(converted.entries);
     }
 
-    return ModmailConversation(reddit, data: conversation);
+    return ModmailConversation(reddit, data: data);
   }
 
   String _buildConversationList(List<ModmailConversation> otherConversations) {
@@ -108,9 +123,10 @@ class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
   }
 
   void _internalUpdate(Map newData) {
-    final newerData = newData['conversations'];
-    newerData['id'] = id;
-    setData(this, newerData);
+    newData[_kConvKey] = newData['conversations'];
+    newData.remove('conversations');
+    newData[_kConvKey]['id'] = id;
+    setData(this, newData);
   }
 
   static void _convertUserSummary(Reddit reddit, Map<String, dynamic> data) {
