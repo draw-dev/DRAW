@@ -1,6 +1,6 @@
 name: draw
 version: 0.4.3
-description: 'A Reddit API wrapper for Dart, inspired by PRAW.'
+description: 'A fully-featured Reddit API wrapper for Dart, inspired by PRAW.'
 homepage: 'https://github.com/draw-dev/DRAW'
 authors:
   - Ben Konyi <bkonyi@google.com>

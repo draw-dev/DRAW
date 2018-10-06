@@ -35,3 +35,4 @@ export 'package:draw/src/models/subreddit_moderation.dart'
         subredditTypeToString;
 export 'package:draw/src/models/user_content.dart';
 export 'package:draw/src/models/mixins/voteable.dart';
+export 'package:draw/src/modmail.dart';

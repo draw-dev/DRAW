@@ -16,6 +16,13 @@ abstract class GetterUtils {
         isUtc: true);
   }
 
+  static DateTime dateTimeOrNullFromString(String time) {
+    if (time == null) {
+      return null;
+    }
+    return DateTime.parse(time);
+  }
+
   static RedditorRef redditorRefOrNull(Reddit reddit, String redditor) =>
       (redditor == null) ? null : reddit.redditor(redditor);
 

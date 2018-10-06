@@ -16,6 +16,7 @@ void setData(RedditBaseInitializedMixin base, Map data) {
 abstract class RedditBaseInitializedMixin {
   Reddit get reddit;
   String get infoPath;
+  Map<String, String> get infoParams => null;
 
   /// Returns the raw properties dictionary for this object.
   ///
@@ -36,7 +37,7 @@ abstract class RedditBaseInitializedMixin {
   /// Requests updated information from the Reddit API and updates the current
   /// object properties.
   Future<dynamic> refresh() async {
-    final response = await reddit.get(infoPath);
+    final response = await reddit.get(infoPath, params: infoParams);
     if (response is Map) {
       _data = response;
     } else if (response is List) {
@@ -69,6 +70,8 @@ abstract class RedditBase {
   /// The current [Reddit] instance.
   final Reddit reddit;
 
+  Map<String, String> get infoParams => null;
+
   /// The base request format for the current object.
   String get infoPath => _infoPath;
   String _infoPath;
@@ -78,5 +81,5 @@ abstract class RedditBase {
   RedditBase.withPath(this.reddit, String infoPath) : _infoPath = infoPath;
 
   /// Requests the data associated with the current object.
-  Future<dynamic> fetch() async => reddit.get(_infoPath);
+  Future<dynamic> fetch() async => reddit.get(infoPath, params: infoParams);
 }
