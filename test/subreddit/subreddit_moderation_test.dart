@@ -416,7 +416,7 @@ Future<void> main() async {
         'test/subreddit/subreddit_modmail_bulkread.json',
         sub: 'drawapitesting');
     final ModmailConversation conversation =
-        await ModmailConversation(reddit, id: '3nyfr').refresh();
+        await ModmailConversationRef(reddit, '3nyfr').populate();
     await conversation.unread();
     final oneMarkedRead = await modmail.bulkRead();
     expect(oneMarkedRead.length, 1);
@@ -447,6 +447,8 @@ Future<void> main() async {
     expect(c.owner.displayName, 'drawapitesting');
     expect(c.participant.displayName, 'Toxicity-Moderator');
     expect(c.numMessages, 1);
+    expect(c.messages.length, c.numMessages);
+    expect(c.messages[0].bodyMarkdown, 'Hello Toxicity-Moderator!');
   });
 
   test('lib/subreddit/subreddit_modmail_create', () async {
@@ -484,7 +486,7 @@ Future<void> main() async {
     expect(read.notifications, 0);
 
     final ModmailConversation conversation =
-        await ModmailConversation(reddit, id: '3nyfr').refresh();
+        await ModmailConversationRef(reddit, '3nyfr').populate();
     await conversation.unread();
 
     final unread = await modmail.unreadCount();
@@ -563,7 +565,7 @@ Future<void> main() async {
     final modmail = await subredditModmailHelper(
         'test/subreddit/subreddit_modmail_reply.json',
         sub: 'drawapitesting');
-    final ModmailConversation conversation = await modmail('3nyfr').refresh();
+    final ModmailConversation conversation = await modmail('3nyfr').populate();
     final internal = await conversation.reply('TestInternal',
         authorHidden: true, internal: true);
     expect(internal.isInternal, true);
@@ -590,7 +592,12 @@ Future<void> main() async {
     expect(reply.body,
         '<!-- SC_OFF --><div class=\"md\"><p>Visible reply</p>\n</div><!-- SC_ON -->');
     expect(reply.bodyMarkdown, 'Visible reply');
-    expect(reply.date, DateTime.parse('2018-09-30 23:00:15.552509Z'));
+    expect(reply.date, DateTime.parse('2018-10-06 22:56:49.916324Z'));
     expect(reply.toString() != "", true);
+    final action = conversation.modActions[0];
+    expect(action.actionType, ModmailActionType.highlight);
+    expect(action.date, DateTime.parse('2018-09-29T19:35:25.916654+00:00'));
+    expect(action.id, '37g4f');
+    expect(action.author.displayName, 'DRAWApiOfficial');
   });
 }

@@ -1,5 +1,11 @@
 Change Log
 =================================
+## Version 0.4.4 (2019/10/06)
+* Added `Modmail`, `ModmailConversation`, `ModmailMessage`, `ModmailAction` and
+  `ModmailActionType`, which can be used to perform mod-mail actions.
+* Added `vote` getter to `Submission` to be consistent with `Comment`.
+* Marked `likes` getter in `Submission` as deprecated.
+
 ## Version 0.4.3 (2019/09/23)
 * Added `nsfw` and `spoiler` parameters to `Subreddit.submit` (Thanks @LucasCLuk!)
 * Fixed issue where exceptions generated during client authentication could not be caught.

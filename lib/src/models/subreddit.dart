@@ -968,8 +968,8 @@ class Modmail {
     return subreddits.map((c) => c.displayName).join(',');
   }
 
-  ModmailConversation call(String id, {bool markRead = false}) =>
-      ModmailConversation(_subreddit.reddit, id: id, markRead: markRead);
+  ModmailConversationRef call(String id, {bool markRead = false}) =>
+      ModmailConversationRef(_subreddit.reddit, id, markRead: markRead);
 
   /// Mark the conversations for provided subreddits as read.
   ///
@@ -982,7 +982,7 @@ class Modmail {
   ///
   /// Returns a [List] of [ModmailConversation] instances which were marked as
   /// read.
-  Future<List<ModmailConversation>> bulkRead(
+  Future<List<ModmailConversationRef>> bulkRead(
       {List<SubredditRef> otherSubreddits,
       ModmailState state: ModmailState.all}) async {
     final params = {
@@ -992,7 +992,7 @@ class Modmail {
     final response = await _subreddit.reddit
         .post(apiPath['modmail_bulk_read'], params, objectify: false);
     final ids = response['conversation_ids'] as List;
-    return ids.map<ModmailConversation>((id) => this(id)).toList();
+    return ids.map<ModmailConversationRef>((id) => this(id)).toList();
   }
 
   /// A [Stream] of [ModmailConversation] instances for the specified
@@ -1042,7 +1042,7 @@ class Modmail {
         'messages': response['messages']
       };
       yield ModmailConversation.parse(_subreddit.reddit, data,
-          convertObjects: false);
+          convertObjects: true);
     }
   }
 

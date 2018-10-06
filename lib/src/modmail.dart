@@ -17,13 +17,17 @@ import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/util.dart';
 
-class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
+class ModmailConversationRef extends RedditBase {
   static final _kIdRegExp = RegExp(r'{id}');
-  static final _kConvKey = 'conversation';
-  final bool _markRead;
 
-  @override
-  String get id => data[_kConvKey]['id'];
+  /// A unique ID for this conversation.
+  final String id;
+
+  /// THe subject line of this conversation.
+  ///
+  /// May be null.
+  final String subject;
+  final bool _markRead;
 
   String get infoPath =>
       apiPath['modmail_conversation'].replaceAll(_kIdRegExp, id);
@@ -31,6 +35,33 @@ class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
   Map<String, String> get infoParams => <String, String>{
         'markRead': _markRead.toString(),
       };
+
+  /// Promotes this [ModmailConversationRef] into a populated
+  /// [ModmailCOnversation].
+  Future<ModmailConversation> populate() async =>
+      ModmailConversation(reddit, data: await fetch());
+
+  ModmailConversationRef(Reddit reddit, this.id, {bool markRead: false})
+      : _markRead = markRead,
+        subject = null,
+        super(reddit);
+
+  ModmailConversationRef._(Reddit reddit, this._markRead)
+      : id = null,
+        subject = null,
+        super(reddit);
+  ModmailConversationRef._withSubject(Reddit reddit, this.id, this.subject)
+      : _markRead = false,
+        super(reddit);
+}
+
+class ModmailConversation extends ModmailConversationRef
+    with RedditBaseInitializedMixin {
+  static final _kIdRegExp = RegExp(r'{id}');
+  static final _kConvKey = 'conversation';
+
+  @override
+  String get id => data[_kConvKey]['id'];
 
   /// An ordered list of [Redditor]s who have participated in the conversation.
   List<Redditor> get authors =>
@@ -55,6 +86,13 @@ class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
   DateTime get lastUserUpdate =>
       GetterUtils.dateTimeOrNullFromString(data[_kConvKey]['lastUserUpdate']);
 
+  /// The messages from this conversation.
+  List<ModmailMessage> get messages => data['messages'].cast<ModmailMessage>();
+
+  /// A list of all moderator actions made on this conversation.
+  List<ModmailAction> get modActions =>
+      data['modActions'].cast<ModmailAction>();
+
   /// The number of messages in this conversation.
   int get numMessages => data[_kConvKey]['numMessages'];
 
@@ -71,8 +109,7 @@ class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
 
   ModmailConversation(Reddit reddit,
       {String id, bool markRead = false, Map data})
-      : _markRead = markRead,
-        super(reddit) {
+      : super._(reddit, markRead) {
     if ((id == null) && (data == null)) {
       throw DRAWArgumentError("Either 'id' or 'data' must be provided");
     }
@@ -140,15 +177,15 @@ class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
       data['recentComments'] = recentComments;
     }
     // Modmail Conversations
-    final conversations = <ModmailConversation>[];
+    final conversations = <ModmailConversationRef>[];
     final rawConversations = data['recentConvos'] as Map;
-    /*if (rawConversations != null) {
+    if (rawConversations != null) {
       rawConversations.forEach((k, v) {
-        print(v);
-        conversations.add(ModmailConversation.parse(reddit, v));
+        conversations.add(ModmailConversationRef._withSubject(
+            reddit, data['id'], data['subject']));
       });
       data['recentConvos'] = recentComments;
-    }*/
+    }
 
     // Submissions
     final submissions = <Submission>[];
@@ -170,7 +207,7 @@ class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
     for (final t in data['conversation']['objIds']) {
       final key = t['key'];
       final tData = data[key][t['id']];
-      (result[key] as List).add(reddit.objector.objectify(tData));
+      result[key].add(reddit.objector.objectify(tData));
     }
     return result;
   }
@@ -252,47 +289,98 @@ class ModmailConversation extends RedditBase with RedditBaseInitializedMixin {
   }
 }
 
+/// A class that represents a message from a [ModmailConversation].
 class ModmailMessage {
   final Reddit reddit;
   final Map<String, dynamic> data;
   ModmailMessage.parse(this.reddit, this.data);
 
+  /// The [Redditor] who composed this message.
   Redditor get author =>
       Redditor.parse(reddit, snakeCaseMapKeys(data['author']));
 
+  /// The HTML body of the message.
   String get body => data['body'];
 
+  /// The body of the message in Markdown format.
   String get bodyMarkdown => data['bodyMarkdown'];
 
+  /// The date and time the message was sent.
   DateTime get date => GetterUtils.dateTimeOrNullFromString(data['date']);
 
+  /// A unique ID associated with this message.
   String get id => data['id'];
 
+  /// True if the account that authored this message has been deleted.
   bool get isDeleted => data['author']['isDeleted'];
 
+  /// True if the message was sent on behalf of a subreddit.
   bool get isHidden => data['author']['isHidden'];
 
+  /// True if the message is only visible to moderators.
   bool get isInternal => data['isInternal'];
 
+  /// True if this message was written by the author of the thread.
   bool get isOriginalPoster => data['author']['isOp'];
 
+  /// True if the author of this message has participated in the conversation.
   bool get isParticipant => data['author']['isParticipant'];
 
   String toString() => JsonEncoder.withIndent('  ').convert(data);
 }
 
+ModmailActionType _modmailActionTypeFromInt(int i) {
+  switch (i) {
+    case 0:
+      return ModmailActionType.highlight;
+    case 1:
+      return ModmailActionType.unhighlight;
+    case 2:
+      return ModmailActionType.archive;
+    case 3:
+      return ModmailActionType.unarchive;
+    case 4:
+      return ModmailActionType.reportedToAdmins;
+    case 5:
+      return ModmailActionType.mute;
+    case 6:
+      return ModmailActionType.unmute;
+    default:
+      return ModmailActionType.unknown;
+  }
+}
+
+/// All possible actions that can be made in a [ModmailConversation].
+enum ModmailActionType {
+  highlight,
+  unhighlight,
+  archive,
+  unarchive,
+  reportedToAdmins,
+  mute,
+  unmute,
+  unknown
+}
+
+/// A class that represents an action taken by a moderator in a
+/// [ModmailConversation].
 class ModmailAction {
   final Reddit reddit;
   final Map<String, dynamic> data;
   ModmailAction.parse(this.reddit, this.data);
 
-  int get actionTypeId => data['actionTypeId'];
+  /// The type of moderator action taken.
+  ModmailActionType get actionType =>
+      _modmailActionTypeFromInt(data['actionTypeId']);
 
+  /// The [Redditor] who applied the moderator action.
   Redditor get author =>
       Redditor.parse(reddit, snakeCaseMapKeys(data['author']));
 
+  /// The date the action was made.
   DateTime get date => GetterUtils.dateTimeOrNullFromString(data['date']);
 
+  /// A unique ID associated with this action.
   String get id => data['id'];
 
   String toString() => JsonEncoder.withIndent('  ').convert(data);

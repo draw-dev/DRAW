@@ -70,6 +70,8 @@ abstract class RedditBase {
   /// The current [Reddit] instance.
   final Reddit reddit;
 
+  Map<String, String> get infoParams => null;
+
   /// The base request format for the current object.
   String get infoPath => _infoPath;
   String _infoPath;
@@ -79,5 +81,5 @@ abstract class RedditBase {
   RedditBase.withPath(this.reddit, String infoPath) : _infoPath = infoPath;
 
   /// Requests the data associated with the current object.
-  Future<dynamic> fetch() async => reddit.get(_infoPath);
+  Future<dynamic> fetch() async => reddit.get(infoPath, params: infoParams);
 }
