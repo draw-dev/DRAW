@@ -67,8 +67,9 @@ class Submission extends SubmissionRef
         VoteableMixin {
   /// The sorting method that this [Submission] will retrieves its comments
   ///
-  ///  Defaults to best
-  String commentSort = 'best';
+  ///  Defaults to [CommentSortType.top]
+  CommentSortType _commentSort = CommentSortType.top;
+  CommentSortType get commentSort => _commentSort;
 
   /// The date and time that this [Submission] was approved.
   ///
@@ -127,8 +128,9 @@ class Submission extends SubmissionRef
   /// Note: some methods of generating [Submission] objects do not populate the
   /// `comments` property, resulting in it being set to `null`. This method can
   /// also be used to populate `comments`.
-  Future<CommentForest> refreshComments({String sort = 'best'}) async {
-    commentSort = sort;
+  Future<CommentForest> refreshComments(
+      {CommentSortType sort = CommentSortType.top}) async {
+    _commentSort = sort;
     final response = await fetch();
     _comments = new CommentForest(this, response[1]['listing']);
     return _comments;

@@ -74,7 +74,7 @@ Future<void> main() async {
         Uri.parse('https://www.youtube.com/watch?v=VqNU_CYVaXg'));
     expect(submission.viewCount, 16);
     expect(submission.visited, isFalse);
-    expect(submission.commentSort, 'best');
+    expect(submission.commentSort, CommentSortType.top);
   });
 
   test('lib/submission/refresh-comments-sanity', () async {
