@@ -65,10 +65,10 @@ class Submission extends SubmissionRef
         ReportableMixin,
         SaveableMixin,
         VoteableMixin {
-  /// The sorting method that this [Submission] will retrieves its comments
+  /// The sorting method that this [Submission] will use when retrieving comments.
   ///
-  ///  Defaults to [CommentSortType.top]
-  CommentSortType _commentSort = CommentSortType.top;
+  ///  Defaults to [CommentSortType.best]
+  CommentSortType _commentSort = CommentSortType.best;
   CommentSortType get commentSort => _commentSort;
 
   /// The date and time that this [Submission] was approved.
@@ -129,7 +129,7 @@ class Submission extends SubmissionRef
   /// `comments` property, resulting in it being set to `null`. This method can
   /// also be used to populate `comments`.
   Future<CommentForest> refreshComments(
-      {CommentSortType sort = CommentSortType.top}) async {
+      {CommentSortType sort = CommentSortType.best}) async {
     _commentSort = sort;
     final response = await fetch();
     _comments = new CommentForest(this, response[1]['listing']);
@@ -495,6 +495,8 @@ String commentSortTypeToString(CommentSortType t) {
       return 'qa';
     case CommentSortType.blank:
       return 'blank';
+    case CommentSortType.best:
+      return "best";
     default:
       throw DRAWInternalError('CommentSortType: $t is not supported.');
   }
@@ -503,6 +505,7 @@ String commentSortTypeToString(CommentSortType t) {
 enum CommentSortType {
   confidence,
   top,
+  best,
   newest,
   controversial,
   old,
