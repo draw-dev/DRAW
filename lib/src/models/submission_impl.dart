@@ -496,7 +496,7 @@ String commentSortTypeToString(CommentSortType t) {
     case CommentSortType.blank:
       return 'blank';
     case CommentSortType.best:
-      return "best";
+      return 'best';
     default:
       throw DRAWInternalError('CommentSortType: $t is not supported.');
   }
