@@ -67,7 +67,7 @@ class Submission extends SubmissionRef
         VoteableMixin {
   /// The sorting method that this [Submission] will use when retrieving comments.
   ///
-  ///  Defaults to [CommentSortType.best]
+  /// Defaults to [CommentSortType.best].
   CommentSortType _commentSort = CommentSortType.best;
   CommentSortType get commentSort => _commentSort;
 
