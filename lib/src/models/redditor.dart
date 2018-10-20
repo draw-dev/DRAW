@@ -19,6 +19,7 @@ import 'package:draw/src/models/comment.dart';
 import 'package:draw/src/models/mixins/messageable.dart';
 import 'package:draw/src/models/multireddit.dart';
 import 'package:draw/src/models/submission.dart';
+import 'package:draw/src/models/subreddit.dart';
 
 /// A fully initialized class representing a particular Reddit user, also
 /// known as a Redditor.
@@ -64,6 +65,12 @@ class Redditor extends RedditorRef with RedditBaseInitializedMixin {
 
   /// The amount of link karma earned by the Redditor.
   int get linkKarma => data['link_karma'];
+
+  /// The list of moderator permissions for the user.
+  ///
+  /// Only populated for moderator related calls for a [Subreddit].
+  List<ModeratorPermission> get moderatorPermissions =>
+      stringsToModeratorPermissions(data['mod_permissions'].cast<String>());
 
   /// Redditor has new Mod Mail.
   bool get newModMailExists => data['new_modmail_exists'];

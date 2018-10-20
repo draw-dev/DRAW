@@ -11,6 +11,7 @@ import 'package:draw/src/models/mixins/user_content_moderation.dart';
 import 'package:draw/src/models/submission_impl.dart';
 import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/subreddit_moderation.dart';
+import 'package:draw/src/util.dart';
 
 void main() {
   test('commentSortTypeToString', () {
@@ -330,6 +331,39 @@ void main() {
     expect(weightingSchemeToString(WeightingScheme.classic), 'classic');
     expect(weightingSchemeToString(WeightingScheme.fresh), 'fresh');
     expect(() => weightingSchemeToString(null),
+        throwsA(TypeMatcher<DRAWInternalError>()));
+  });
+
+  test('moderatorPermissionToString', () {
+    expect(moderatorPermissionToString(ModeratorPermission.all), 'all');
+    expect(moderatorPermissionToString(ModeratorPermission.access), 'access');
+    expect(moderatorPermissionToString(ModeratorPermission.config), 'config');
+    expect(moderatorPermissionToString(ModeratorPermission.flair), 'flair');
+    expect(moderatorPermissionToString(ModeratorPermission.mail), 'mail');
+    expect(moderatorPermissionToString(ModeratorPermission.posts), 'posts');
+    expect(moderatorPermissionToString(ModeratorPermission.wiki), 'wiki');
+    expect(() => moderatorPermissionToString(null),
+        throwsA(TypeMatcher<DRAWInternalError>()));
+  });
+
+  test('modmailStateToString', () {
+    expect(modmailStateToString(ModmailState.all), 'all');
+    expect(modmailStateToString(ModmailState.archived), 'archived');
+    expect(modmailStateToString(ModmailState.highlighted), 'highlighted');
+    expect(modmailStateToString(ModmailState.inprogress), 'inprogress');
+    expect(modmailStateToString(ModmailState.mod), 'mod');
+    expect(modmailStateToString(ModmailState.newmail), 'new');
+    expect(modmailStateToString(ModmailState.notifications), 'notifications');
+    expect(() => modmailStateToString(null),
+        throwsA(TypeMatcher<DRAWInternalError>()));
+  });
+
+  test('modmailSortToString', () {
+    expect(modmailSortToString(ModmailSort.mod), 'mod');
+    expect(modmailSortToString(ModmailSort.recent), 'recent');
+    expect(modmailSortToString(ModmailSort.unread), 'unread');
+    expect(modmailSortToString(ModmailSort.user), 'user');
+    expect(() => modmailSortToString(null),
         throwsA(TypeMatcher<DRAWInternalError>()));
   });
 }
