@@ -10,5 +10,5 @@ dart:
 script:
   - ./tool/travis.sh
   - dart test/test_all.dart
-  - dartfmt -n --set-exit-if-changed .
-  - dartanalyzer --strong --fatal-warnings --fatal-lints lib/ test/
+  - dartfmt -n --set-exit-if-changed lib/ test/
+  - dartanalyzer --fatal-warnings --fatal-lints lib/ test/
