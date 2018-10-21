@@ -20,7 +20,7 @@ if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "dev" ]; then
     --preview-dart-2 \
     test/test_all.dart
   echo "Coverage complete."
-  rm -rf dart-coveralls
+  # rm -rf dart-coveralls
 else
   if [ -z ${COVERALLS_TOKEN+x} ]; then echo "COVERALLS_TOKEN is unset"; fi
   if [ -z ${TRAVIS_DART_VERSION+x} ]; then
