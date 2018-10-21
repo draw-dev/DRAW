@@ -26,6 +26,13 @@ Future<Modmail> subredditModmailHelper(String path,
   return subreddit.modmail;
 }
 
+Future<ModeratorRelationship> subredditModRelationshipHelper(String path,
+    {live: false, sub: 'drawapitesting'}) async {
+  reddit = await createRedditTestInstance(path, live: live);
+  final subreddit = reddit.subreddit(sub);
+  return subreddit.moderator;
+}
+
 Future<void> main() async {
   test('lib/subreddit/subreddit_edited', () async {
     final morbidRealityMod = await subredditModerationHelper(
@@ -599,5 +606,78 @@ Future<void> main() async {
     expect(action.date, DateTime.parse('2018-09-29T19:35:25.916654+00:00'));
     expect(action.id, '37g4f');
     expect(action.author.displayName, 'DRAWApiOfficial');
+  });
+
+  test('lib/subreddit/moderator_relationship_mods', () async {
+    final relationship = await subredditModRelationshipHelper(
+        'test/subreddit/lib_subreddit_moderator_relationship_mods.json');
+    final mods = await relationship().toList();
+    expect(mods.length, 2);
+    expect(mods[0].displayName, 'XtremeCheese');
+    expect(mods[1].displayName, 'DRAWApiOfficial');
+
+    final cheese = await relationship(redditor: 'XtremeCheese').toList();
+    expect(cheese.length, 1);
+    expect(cheese[0].displayName, 'XtremeCheese');
+    expect(cheese[0].moderatorPermissions[0], ModeratorPermission.all);
+  });
+
+  test('lib/subreddit/moderator_relationship_add_invite', () async {
+    final relationship = await subredditModRelationshipHelper(
+        'test/subreddit/lib_subreddit_moderator_relationship_add_invite.json');
+    await relationship
+        .add('Toxicity-Moderator', permissions: [ModeratorPermission.all]);
+    await relationship
+        .invite('Toxicity-Moderator', permissions: [ModeratorPermission.all]);
+    await relationship.updateInvite('Toxicity-Moderator');
+    await relationship.removeInvite('Toxicity-Moderator');
+  });
+
+  test('lib/subreddit/moderator_relationship_leave', () async {
+    final relationship = await subredditModRelationshipHelper(
+        'test/subreddit/lib_subreddit_moderator_relationship_leave.json');
+    var mods = await relationship().toList();
+    bool containsDRAWApiOfficial = false;
+    for (final m in mods) {
+      if (m.displayName == 'DRAWApiOfficial') {
+        containsDRAWApiOfficial = true;
+        break;
+      }
+    }
+    expect(containsDRAWApiOfficial, true);
+    await relationship.leave();
+    containsDRAWApiOfficial = false;
+    mods = await relationship().toList();
+    for (final m in mods) {
+      if (m.displayName == 'DRAWApiOfficial') {
+        containsDRAWApiOfficial = true;
+        break;
+      }
+    }
+    expect(containsDRAWApiOfficial, false);
+  });
+
+  test('lib/subreddit/moderator_relationship_remove', () async {
+    final relationship = await subredditModRelationshipHelper(
+        'test/subreddit/lib_subreddit_moderator_relationship_remove.json');
+    var mods = await relationship().toList();
+    bool containsCheese = false;
+    for (final m in mods) {
+      if (m.displayName == 'XtremeCheese') {
+        containsCheese = true;
+        break;
+      }
+    }
+    expect(containsCheese, true);
+    await relationship.remove('XtremeCheese');
+    containsCheese = false;
+    mods = await relationship().toList();
+    for (final m in mods) {
+      if (m.displayName == 'XtremeCheese') {
+        containsCheese = true;
+        break;
+      }
+    }
+    expect(containsCheese, false);
   });
 }

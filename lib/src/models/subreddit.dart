@@ -74,7 +74,7 @@ class SubredditRef extends RedditBase
   SubredditFilters _filters;
   SubredditFlair _flair;
   SubredditModeration _mod;
-  // ModeratorRelationship _moderator; TODO(bkonyi): implement
+  ModeratorRelationship _moderator;
   Modmail _modmail;
   SubredditRelationship _muted;
 
@@ -113,14 +113,10 @@ class SubredditRef extends RedditBase
     return _mod;
   }
 
-/*
   ModeratorRelationship get moderator {
-    if (_moderator == null) {
-      _moderator = new ModeratorRelationship(this, 'moderator');
-    }
+    _moderator ??= ModeratorRelationship(this, 'moderator');
     return _moderator;
   }
-*/
 
   Modmail get modmail {
     if (_modmail == null) {
@@ -768,7 +764,7 @@ class SubredditRelationship {
 
   Stream<Redditor> call(
       {/* String, Redditor */ redditor, Map<String, String> params}) {
-    final data = (params != null) ? new Map.from(params) : null;
+    final data = (params != null) ? new Map.from(params) : <String, String>{};
     if (redditor != null) {
       data['user'] = _redditorNameHelper(redditor);
     }
@@ -784,11 +780,15 @@ class SubredditRelationship {
   ///
   /// `redditor` can be either an instance of [Redditor] or the name of a
   /// Redditor.
-  Future<void> add(/* String, Redditor */ redditor) async {
+  Future<void> add(/* String, Redditor */ redditor,
+      {Map<String, String> params}) async {
     final data = {
       'name': _redditorNameHelper(redditor),
       'type': relationship,
     };
+    if (params != null) {
+      data.addAll(params);
+    }
     await _subreddit.reddit.post(
         apiPath['friend']
             .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName),
@@ -800,11 +800,15 @@ class SubredditRelationship {
   ///
   /// `redditor` can be either an instance of [Redditor] or the name of a
   /// Redditor.
-  Future<void> remove(/* String, Redditor */ redditor) async {
+  Future<void> remove(/* String, Redditor */ redditor,
+      {Map<String, String> params}) async {
     final data = {
       'name': _redditorNameHelper(redditor),
       'type': relationship,
     };
+    if (params != null) {
+      data.addAll(params);
+    }
     await _subreddit.reddit.post(
         apiPath['unfriend']
             .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName),
@@ -893,14 +897,153 @@ class ContributorRelationship extends SubredditRelationship {
   }
 }
 
-// TODO(bkonyi): implement.
-// Provides methods to interact with a [Subreddit]'s moderators.
-/*class ModeratorRelationship extends SubredditRelationship {
-  ModeratorRelationship(Subreddit subreddit, String relationship)
-      : super(subreddit, relationship) {
-    throw DRAWUnimplementedError();
+enum ModeratorPermission {
+  all,
+  access,
+  config,
+  flair,
+  mail,
+  posts,
+  wiki,
+}
+
+/// Provides methods to interact with a [Subreddit]'s moderators.
+class ModeratorRelationship extends SubredditRelationship {
+  ModeratorRelationship(SubredditRef subreddit, String relationship)
+      : super(subreddit, relationship);
+
+  final _validPermissions =
+      ['access', 'config', 'flair', 'mail', 'posts', 'wiki'].toSet();
+
+  Map<String, String> _handlePermissions(
+          List<ModeratorPermission> permissions) =>
+      <String, String>{
+        'permissions': permissionsString(
+            moderatorPermissionsToStrings(permissions), _validPermissions),
+      };
+
+  /// Returns a [Stream] of [Redditor]s who are moderators.
+  ///
+  /// When `redditor` is provided, the resulting stream will contain at most
+  /// one [Redditor]. This is useful to confirm if a relationship exists, or to
+  /// fetch the metadata associated with a particular relationship.
+  Stream<Redditor> call(
+          {/* String, RedditorRef */ redditor, Map<String, String> params}) =>
+      super.call(redditor: redditor, params: params);
+
+  /// Add or invite `redditor` to be a moderator of the subreddit.
+  ///
+  /// If `permissions` is not provided, the `+all` permission will be used.
+  /// Otherwise, `permissions` should specify the subset of permissions
+  /// to grant. If the empty list is provided, no permissions are granted
+  /// (default).
+  ///
+  /// An invite will be sent unless the user making this call is an admin.
+  Future<void> add(/* RedditorRef, String */ redditor,
+      {List<ModeratorPermission> permissions = const <ModeratorPermission>[],
+      Map<String, String> params}) async {
+    final data = _handlePermissions(permissions);
+    if (params != null) {
+      data.addAll(params);
+    }
+    await super.add(
+      redditor,
+      params: data,
+    );
   }
-}*/
+
+  /// Invite `redditor` to be a moderator of this subreddit.
+  ///   /// `redditor` is either a [RedditorRef] or username.
+  /// If `permissions` is not provided, the `+all` permission will be used.
+  /// Otherwise, `permissions` should specify the subset of permissions
+  /// to grant. If the empty list is provided, no permissions are granted
+  /// (default).
+  Future<void> invite(/* RedditorRef, String */ redditor,
+      {List<ModeratorPermission> permissions =
+          const <ModeratorPermission>[]}) async {
+    final data = <String, String>{
+      'name': _redditorNameHelper(redditor),
+      'type': 'moderator_invite',
+      'api_type': 'json',
+    };
+    data.addAll(_handlePermissions(permissions));
+    return await _subreddit.reddit.post(
+        apiPath['friend']
+            .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName),
+        data);
+  }
+
+  /// Remove the currently authenticated user as moderator.
+  Future<void> leave() async {
+    String fullname;
+    if (_subreddit is Subreddit) {
+      fullname = (_subreddit as Subreddit).fullname;
+    } else {
+      fullname = (await _subreddit.populate()).fullname;
+    }
+    await _subreddit.reddit.post(
+        apiPath['leavemoderator'], <String, String>{'id': fullname},
+        discardResponse: true);
+  }
+
+  /// Remove the moderator invite for `redditor`.
+  ///
+  /// `redditor` is either a [RedditorRef] or username of the user whose invite
+  /// is to be removed.
+  Future<void> removeInvite(/* RedditorRef, String */ redditor) async {
+    final data = <String, String>{
+      'name': _redditorNameHelper(redditor),
+      'type': 'moderator_invite',
+      'api_type': 'json',
+    };
+    return await _subreddit.reddit.post(
+        apiPath['unfriend']
+            .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName),
+        data,
+        discardResponse: true);
+  }
+
+  /// Updated the moderator permissions for `redditor`.
+  ///
+  /// `redditor` is either a [RedditorRef] or username.
+  /// If `permissions` is not provided, the `+all` permission will be used.
+  /// Otherwise, `permissions` should specify the subset of permissions
+  /// to grant. If the empty list is provided, no permissions are granted
+  /// (default).
+  Future<void> update(/* RedditorRef, String */ redditor,
+      {List<ModeratorPermission> permissions =
+          const <ModeratorPermission>[]}) async {
+    final request = apiPath['setpermissions']
+        .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
+    final data = <String, String>{
+      'name': _redditorNameHelper(redditor),
+      'type': 'moderator',
+    };
+    data.addAll(_handlePermissions(permissions));
+    return await _subreddit.reddit.post(request, data);
+  }
+
+  /// Update the moderator invite for `redditor`.
+  ///
+  /// `redditor` is either a [RedditorRef] or username.
+  /// If `permissions` is not provided, the `+all` permission will be used.
+  /// Otherwise, `permissions` should specify the subset of permissions
+  /// to grant. If the empty list is provided, no permissions are granted
+  /// (default).
+  Future<void> updateInvite(/* RedditorRef, String */ redditor,
+      {List<ModeratorPermission> permissions =
+          const <ModeratorPermission>[]}) async {
+    final request = apiPath['setpermissions']
+        .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
+    final data = <String, String>{
+      'name': _redditorNameHelper(redditor),
+      'type': 'moderator_invite',
+      'api_type': 'json',
+    };
+    data.addAll(_handlePermissions(permissions));
+    return await _subreddit.reddit.post(request, data);
+  }
+}
 
 enum ModmailState {
   all,
@@ -912,7 +1055,7 @@ enum ModmailState {
   notifications,
 }
 
-String _modmailStateToString(ModmailState s) {
+String modmailStateToString(ModmailState s) {
   switch (s) {
     case ModmailState.all:
       return 'all';
@@ -940,7 +1083,7 @@ enum ModmailSort {
   user,
 }
 
-String _modmailSortToString(ModmailSort s) {
+String modmailSortToString(ModmailSort s) {
   switch (s) {
     case ModmailSort.mod:
       return 'mod';
@@ -987,7 +1130,7 @@ class Modmail {
       ModmailState state: ModmailState.all}) async {
     final params = {
       'entity': _buildSubredditList(otherSubreddits),
-      'state': _modmailStateToString(state),
+      'state': modmailStateToString(state),
     };
     final response = await _subreddit.reddit
         .post(apiPath['modmail_bulk_read'], params, objectify: false);
@@ -1026,11 +1169,11 @@ class Modmail {
     }
 
     if (sort != null) {
-      params['sort'] = _modmailSortToString(sort);
+      params['sort'] = modmailSortToString(sort);
     }
 
     if (state != null) {
-      params['state'] = _modmailStateToString(state);
+      params['state'] = modmailStateToString(state);
     }
 
     final Map<String, dynamic> response = await _subreddit.reddit

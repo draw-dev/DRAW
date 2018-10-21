@@ -1,5 +1,13 @@
 Change Log
 =================================
+## Version 0.4.5 (2019/10/20)
+* Added `ModeratorRelationship`, a class that allows for management of moderators
+  for a subreddit.
+* Added `moderator` parameter to `Subreddit` that returns an instance of
+  `ModeratorRelationship` for the given subreddit.
+* Added `sort` parameter to `Submission.refreshComments` to allow for different
+  comment sorting methods.
+
 ## Version 0.4.4 (2019/10/06)
 * Added `Modmail`, `ModmailConversation`, `ModmailMessage`, `ModmailAction` and
   `ModmailActionType`, which can be used to perform mod-mail actions.

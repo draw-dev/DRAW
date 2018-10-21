@@ -6,6 +6,9 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/models/subreddit.dart';
+
 /// A set that can only contain up to a max number of elements. If the set is
 /// full and another item is added, the oldest item in the set is removed.
 class BoundedSet<T> {
@@ -123,3 +126,68 @@ String snakeCase(String name, [separator = '_']) => name.replaceAllMapped(
     _snakecaseRegexp,
     (Match match) =>
         (match.start != 0 ? separator : '') + match.group(0).toLowerCase());
+
+String permissionsString(
+    List<String> permissions, Set<String> validPermissions) {
+  final processed = <String>[];
+  if (permissions.isEmpty ||
+      ((permissions.length == 1) && (permissions[0] == 'all'))) {
+    processed.add('+all');
+  } else {
+    //processed.add('-all');
+    final omitted = validPermissions.difference(permissions.toSet());
+    processed.addAll(omitted.map((s) => '-$s').toList());
+    processed.addAll(permissions.map((s) => '+$s').toList());
+  }
+  return processed.join(',');
+}
+
+ModeratorPermission stringToModeratorPermission(String p) {
+  switch (p) {
+    case 'all':
+      return ModeratorPermission.all;
+    case 'access':
+      return ModeratorPermission.access;
+    case 'config':
+      return ModeratorPermission.config;
+    case 'flair':
+      return ModeratorPermission.flair;
+    case 'mail':
+      return ModeratorPermission.mail;
+    case 'posts':
+      return ModeratorPermission.posts;
+    case 'wiki':
+      return ModeratorPermission.wiki;
+    default:
+      throw DRAWInternalError("Unknown moderator permission '$p'");
+  }
+}
+
+List<ModeratorPermission> stringsToModeratorPermissions(
+        List<String> permissions) =>
+    permissions.map((p) => stringToModeratorPermission(p)).toList();
+
+String moderatorPermissionToString(ModeratorPermission p) {
+  switch (p) {
+    case ModeratorPermission.all:
+      return 'all';
+    case ModeratorPermission.access:
+      return 'access';
+    case ModeratorPermission.config:
+      return 'config';
+    case ModeratorPermission.flair:
+      return 'flair';
+    case ModeratorPermission.mail:
+      return 'mail';
+    case ModeratorPermission.posts:
+      return 'posts';
+    case ModeratorPermission.wiki:
+      return 'wiki';
+    default:
+      throw DRAWInternalError("Unknown ModeratorPermission '$p'");
+  }
+}
+
+List<String> moderatorPermissionsToStrings(
+        List<ModeratorPermission> permissions) =>
+    permissions.map((p) => moderatorPermissionToString(p)).toList();

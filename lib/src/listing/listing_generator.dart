@@ -5,8 +5,7 @@
 
 import 'dart:async';
 
-import '../reddit.dart';
-import 'package:draw/src/models/flair.dart';
+import 'package:draw/src/reddit.dart';
 
 /// An abstract static class used to generate [Stream]s of [RedditBase] objects.
 /// This class should not be used directly, as it is used by various methods
@@ -51,7 +50,7 @@ abstract class ListingGenerator {
       }
       var response = await reddit.get(api, params: paramsInternal);
       var newListing;
-      if (response is List<Flair>) {
+      if (response is List) {
         newListing = response;
         exhausted = true;
       } else {
