@@ -5,6 +5,7 @@ os:
   - linux
 
 dart:
+  - stable
   - dev
 
 script:
