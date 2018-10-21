@@ -140,12 +140,11 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
       if (_count == 0) {
         return await _continueComments(update);
       }
-      // TODO(bkonyi): Fix comment sorting.
       assert(_children != null);
       final data = {
         'children': _children.join(','),
         'link_id': initializedSubmission.fullname,
-        'sort': 'best', //(await _submission.property('commentSort')),
+        'sort': commentSortTypeToString(initializedSubmission.commentSort),
         'api_type': 'json',
       };
       _comments = await reddit.post(apiPath['morechildren'], data);
@@ -400,6 +399,7 @@ class CommentRef extends UserContent {
   final String _id;
 
   SubmissionRef get _submission => __submission;
+
   void set _submission(SubmissionRef s) {
     __submission = s;
     if (_replies != null) {
