@@ -10,10 +10,10 @@ if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "dev" ]; then
   cd dart-coveralls
   pub get
   cd ..
-  echo "Running coverage..."
-  dart dart-coveralls/bin/dart_coveralls.dart report \
+  echo "Running coverage..."  
   #dart_coveralls report \
-  #  --retry 2 \
+  dart dart-coveralls/bin/dart_coveralls.dart report \
+    --retry 2 \
     --exclude-test-files \
     --throw-on-error \
     --throw-on-connectivity-error \
