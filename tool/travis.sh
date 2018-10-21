@@ -5,7 +5,7 @@ set -e
 
 # Install dart_coveralls; gather and send coverage data.
 if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "dev" ]; then
-  pub global activate dart_coveralls
+  pub global activate dart_coveralls 4.0.0
   # git clone https://github.com/bkonyi/dart-coveralls.git
   # cd dart-coveralls
   # pub get
