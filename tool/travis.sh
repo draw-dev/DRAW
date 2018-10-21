@@ -1,18 +1,18 @@
 #!/bin/bash
 
 # Fast fail the script on failures.
-set -e
+# set -e
 
 # Install dart_coveralls; gather and send coverage data.
 if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "dev" ]; then
-  #pub global activate dart_coveralls
-  git clone https://github.com/bkonyi/dart-coveralls.git
-  cd dart-coveralls
-  pub get
-  cd ..
-  echo "Running coverage..."  
-  #dart_coveralls report \
-  dart dart-coveralls/bin/dart_coveralls.dart report \
+  pub global activate dart_coveralls
+  #git clone https://github.com/bkonyi/dart-coveralls.git
+  #cd dart-coveralls
+  #pub get
+  #cd ..
+  echo "Running coverage..."
+  #dart dart-coveralls/bin/dart_coveralls.dart report \
+  dart_coveralls report \
     --retry 2 \
     --exclude-test-files \
     --throw-on-error \
