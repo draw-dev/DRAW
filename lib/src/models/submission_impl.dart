@@ -250,10 +250,11 @@ class Submission extends SubmissionRef
     assert(data['preview'].containsKey('images'));
     final raw = data['preview']['images'].cast<Map<String, dynamic>>();
     for (final image in raw) {
-      if (image.containsKey('variants')){
+      if (image.containsKey('variants')) {
         final _variants = image['variants'];
         for (final variant in _variants.keys) {
-          previews.add({variant: SubmissionPreview._fromMap(_variants[variant])});
+          previews
+              .add({variant: SubmissionPreview._fromMap(_variants[variant])});
         }
       }
     }
