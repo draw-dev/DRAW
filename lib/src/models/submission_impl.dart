@@ -237,20 +237,25 @@ class Submission extends SubmissionRef
     return previews;
   }
 
-  /// The variations of images for this [Submission] as a map.
+  /// The variations of images for this [Submission] as a List of Map<String,SubmissionPreview>.
   ///
-  /// Returns an empty Map if the [Submission] does not have any image variations.
-  Map<String, SubmissionPreview> get variants {
-    final previews = Map<String, SubmissionPreview>();
+  ///  eg: [{"gif": [SubmissionPreview]}]
+  ///
+  /// Returns an empty List if the [Submission] does not have any image variations.
+  List<Map<String, SubmissionPreview>> get variants {
+    final previews = List<Map<String, SubmissionPreview>>();
     if (!data.containsKey('preview')) {
       return previews;
     }
     assert(data['preview'].containsKey('images'));
-    assert(data['preview']['images'].containsKey('variants'));
-    final raw =
-        data['preview']['images']['variants'].cast<Map<String, dynamic>>();
-    for (final i in raw.keys) {
-      previews[i] = SubmissionPreview._fromMap(raw[i]);
+    final raw = data['preview']['images'].cast<Map<String, dynamic>>();
+    for (final image in raw) {
+      if (image.containsKey('variants')){
+        final _variants = image['variants'];
+        for (final variant in _variants.keys) {
+          previews.add({variant: SubmissionPreview._fromMap(_variants[variant])});
+        }
+      }
     }
     return previews;
   }
