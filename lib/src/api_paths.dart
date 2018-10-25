@@ -24,6 +24,7 @@ final Map apiPath = {
   'compose': 'api/compose/',
   'contest_mode': 'api/set_contest_mode/',
   'del': 'api/del/',
+  'del_msg': 'api/del_msg',
   'deleteflair': 'r/{subreddit}/api/deleteflair',
   'delete_sr_banner': 'r/{subreddit}/api/delete_sr_banner',
   'delete_sr_header': 'r/{subreddit}/api/delete_sr_header',
