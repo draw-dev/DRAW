@@ -54,5 +54,5 @@ abstract class InboxableMixin implements RedditBaseInitializedMixin {
 
   /// Removes the message from the recipient's view of their inbox.
   Future<void> remove() async =>
-      await reddit.post(apiPath['del_msg'], {'id': fullname});
+      await reddit.post(apiPath['del_msg'], <String, String>{'id': fullname});
 }
