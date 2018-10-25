@@ -237,6 +237,30 @@ class Submission extends SubmissionRef
     return previews;
   }
 
+  /// The variations of images for this [Submission] as a [List<Map<String,SubmissionPreview>>].
+  ///
+  ///  eg: [{"gif": [SubmissionPreview]}]
+  ///
+  /// Returns an empty List if the [Submission] does not have any image variations.
+  List<Map<String, SubmissionPreview>> get variants {
+    final previews = List<Map<String, SubmissionPreview>>();
+    if (!data.containsKey('preview')) {
+      return previews;
+    }
+    assert(data['preview'].containsKey('images'));
+    final raw = data['preview']['images'].cast<Map<String, dynamic>>();
+    for (final image in raw) {
+      if (image.containsKey('variants')) {
+        final _variants = image['variants'];
+        for (final variant in _variants.keys) {
+          previews
+              .add({variant: SubmissionPreview._fromMap(_variants[variant])});
+        }
+      }
+    }
+    return previews;
+  }
+
   /// Is this [Submission] pinned.
   bool get pinned => data['pinned'];
 
@@ -453,7 +477,6 @@ class SubmissionPreview {
   String _id;
 
   SubmissionPreview._fromMap(Map<String, dynamic> map) {
-    print('Preview: $map');
     final sourceMap = map['source'];
     final resolutionsList = map['resolutions'].cast<Map<String, dynamic>>();
     assert(sourceMap != null);
