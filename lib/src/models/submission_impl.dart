@@ -237,7 +237,7 @@ class Submission extends SubmissionRef
     return previews;
   }
 
-  /// The variations of images for this [Submission] as a List of Map<String,SubmissionPreview>.
+  /// The variations of images for this [Submission] as a [List<Map<String,SubmissionPreview>>].
   ///
   ///  eg: [{"gif": [SubmissionPreview]}]
   ///
