@@ -129,6 +129,11 @@ class Objector extends RedditBase {
       return ModmailMessage.parse(reddit, data);
     } else if (data.containsKey('date') && data.containsKey('actionTypeId')) {
       return ModmailAction.parse(reddit, data);
+    } else if (data.containsKey('timestamp') &&
+        data.containsKey('reason') &&
+        data.containsKey('page') &&
+        data.containsKey('id')) {
+      return data;
     } else {
       throw DRAWInternalError('Cannot objectify unsupported'
           ' response:\n$data');

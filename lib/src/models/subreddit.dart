@@ -26,6 +26,7 @@ import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission.dart';
 import 'package:draw/src/models/subreddit_moderation.dart';
 import 'package:draw/src/models/user_content.dart';
+import 'package:draw/src/models/wikipage.dart';
 
 enum SearchSyntax {
   cloudSearch,
@@ -82,7 +83,7 @@ class SubredditRef extends RedditBase
   SubredditStream _stream;
 
   // SubredditStyleSheet _stylesheet; TODO(bkonyi): implement
-  // SubredditWiki _wiki; TODO(bkonyi): implement
+  SubredditWiki _wiki;
 
   int get hashCode => _name.hashCode;
 
@@ -148,6 +149,7 @@ class SubredditRef extends RedditBase
     }
     return _stylesheet;
   }
+*/
 
   SubredditWiki get wiki {
     if (_wiki == null) {
@@ -155,7 +157,6 @@ class SubredditRef extends RedditBase
     }
     return _wiki;
   }
-*/
 
   SubredditRef(Reddit reddit) : super(reddit);
 
@@ -1336,11 +1337,28 @@ class SubredditStream {
   }
 }*/
 
-// TODO(bkonyi): implement
-// Provides a set of wiki functions to a [Subreddit].
-/*class SubredditWiki {
-  final Subreddit _subreddit;
-  SubredditWiki(this._subreddit) {
-    throw DRAWUnimplementedError();
+/// Provides a set of wiki functions to a [Subreddit].
+class SubredditWiki {
+  final SubredditRef _subreddit;
+  final SubredditRelationship banned;
+  final SubredditRelationship contributor;
+  SubredditWiki(this._subreddit)
+      : banned = SubredditRelationship(_subreddit, 'wikibanned'),
+        contributor = SubredditRelationship(_subreddit, 'wikicontributor');
+
+  WikiPage operator [](String page) =>
+      WikiPage(_subreddit.reddit, _subreddit, page.toLowerCase());
+
+  Future<WikiPage> create(String name, String content, {String reason}) async {
+    final newName = name.replaceAll(' ', '_').toLowerCase();
+    final newPage = WikiPage(_subreddit.reddit, _subreddit, newName);
+    await newPage.edit(content, reason: reason);
+    return newPage;
   }
-}*/
+
+  Stream<WikiEdit> revisions() {
+    final url = apiPath['wiki_revisions']
+        .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
+    return revisionGenerator(_subreddit, url);
+  }
+}

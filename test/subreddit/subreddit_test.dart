@@ -370,4 +370,20 @@ Future<void> main() async {
       fail('Should not be any link flair templates left');
     }
   });
+
+  test('lib/subreddit_wiki/create_wiki_page', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_wiki_create_wiki_page.json',
+        live: true);
+    final wiki = reddit.subreddit('drawapitesting').wiki;
+    //final page = await wiki.create('Test page', 'This is a test page!');
+    final page =
+        WikiPage(reddit, reddit.subreddit('drawapitesting'), 'Test page');
+    await page.fetch();
+    print(page);
+    //await page.edit('Test edit');
+    final revisions = await wiki.revisions().toList();
+    print(revisions.length);
+    revisions.forEach((e) => print(e.timestamp));
+  });
 }

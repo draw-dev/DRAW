@@ -37,3 +37,4 @@ export 'package:draw/src/models/subreddit_moderation.dart'
 export 'package:draw/src/models/user_content.dart';
 export 'package:draw/src/models/mixins/voteable.dart';
 export 'package:draw/src/modmail.dart';
+export 'package:draw/src/models/wikipage.dart' hide revisionGenerator;

@@ -22,15 +22,16 @@ abstract class ListingGenerator {
 
   static Stream<T> createBasicGenerator<T>(
           final Reddit reddit, final String path,
-          {Map<String, String> params}) =>
-      generator<T>(reddit, path, limit: getLimit(params), params: params);
+          {Map<String, String> params, bool objectify: true}) =>
+      generator<T>(reddit, path,
+          limit: getLimit(params), params: params, objectify: objectify);
 
   /// An asynchronous iterator method used to make Reddit API calls as defined
   /// by [api] in blocks of size [limit]. The default [limit] is specified by
   /// [defaultRequestLimit]. Returns a [Stream<T>] which can be iterated over
   /// using an asynchronous for-loop.
   static Stream<T> generator<T>(final Reddit reddit, final String api,
-      {int limit, Map<String, String> params}) async* {
+      {int limit, Map<String, String> params, bool objectify: true}) async* {
     final kLimitKey = 'limit';
     final kAfterKey = 'after';
     final nullLimit = 1024;
@@ -48,7 +49,8 @@ abstract class ListingGenerator {
       if (exhausted) {
         return null;
       }
-      var response = await reddit.get(api, params: paramsInternal);
+      var response =
+          await reddit.get(api, params: paramsInternal, objectify: objectify);
       var newListing;
       if (response is List) {
         newListing = response;

@@ -191,7 +191,7 @@ abstract class Authenticator {
     // subreddit) but the redirect doesn't forward the OAuth credentials
     // automatically. We disable redirects here and throw a DRAWRedirectResponse
     // so that we can handle the redirect manually on a case-by-case basis.
-    request.followRedirects = false;
+    request.followRedirects = true;
 
     if (body != null) {
       if (body is Map<String, String>) {
@@ -200,7 +200,7 @@ abstract class Authenticator {
         request.body = body;
       }
     }
-    var responseStream;
+    http.StreamedResponse responseStream;
     try {
       responseStream = await _client.send(request);
     } on oauth2.AuthorizationException catch (e) {
