@@ -169,9 +169,6 @@ class Submission extends SubmissionRef
     return _flair;
   }
 
-  /// The number of times this [Submission] was awarded Reddit Gold.
-  int get gilded => data['gilded'];
-
   /// Is this [Submission] marked as hidden.
   bool get hidden => data['hidden'];
 
