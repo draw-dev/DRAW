@@ -373,17 +373,82 @@ Future<void> main() async {
 
   test('lib/subreddit_wiki/create_wiki_page', () async {
     final reddit = await createRedditTestInstance(
-        'test/subreddit/lib_subreddit_wiki_create_wiki_page.json',
-        live: true);
+        'test/subreddit/lib_subreddit_wiki_create_wiki_page.json');
     final wiki = reddit.subreddit('drawapitesting').wiki;
-    //final page = await wiki.create('Test page', 'This is a test page!');
-    final page =
-        WikiPage(reddit, reddit.subreddit('drawapitesting'), 'Test page');
-    await page.fetch();
-    print(page);
-    //await page.edit('Test edit');
+    final page = await wiki.create('Test wiki page', 'This is a test page!');
+    expect(page.name, 'test_wiki_page');
+    expect(page.contentMarkdown, 'This is a test page!');
+    expect(page.contentHtml.contains('This is a test page!'), true);
+    expect(page.mayRevise, true);
+    expect(page.revisionBy.displayName, 'DRAWApiOfficial');
+    expect(page.revisionDate,
+        DateTime.fromMillisecondsSinceEpoch(1540940785 * 1000, isUtc: true));
+  });
+
+  test('lib/subreddit_wiki/edit_wiki_page', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_wiki_edit_wiki_page.json');
+    final wiki = reddit.subreddit('drawapitesting').wiki;
+    final page = await wiki['test_wiki_page'].populate();
+    expect(page.contentMarkdown, 'This is a test page!');
+    expect(page.revisionBy.displayName, 'DRAWApiOfficial');
+    expect(page.revisionDate,
+        DateTime.fromMillisecondsSinceEpoch(1540895666 * 1000, isUtc: true));
+    await page.edit('This is an edited test page!', reason: 'Test edit');
+    await page.refresh();
+    expect(page.contentMarkdown, 'This is an edited test page!');
+    expect(page.revisionBy.displayName, 'DRAWApiOfficial');
+    expect(page.revisionDate,
+        DateTime.fromMillisecondsSinceEpoch(1540896189 * 1000, isUtc: true));
+  });
+
+  test('lib/subreddit_wiki/wiki_equality', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_wiki_equality.json');
+    final wiki = reddit.subreddit('drawapitesting').wiki;
+    final pageRef = wiki['test_wiki_page'];
+    final page = await pageRef.populate();
+    final pageRef2 = wiki['test_page'];
+    final page2 = await pageRef2.populate();
+    expect(pageRef == page, true);
+    expect(pageRef == pageRef2, false);
+    expect(page == page2, false);
+    expect(page == pageRef2, false);
+  });
+
+  test('lib/subreddit_wiki/wiki_revisions', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_wiki_revisions.json');
+    final wiki = reddit.subreddit('drawapitesting').wiki;
     final revisions = await wiki.revisions().toList();
-    print(revisions.length);
-    revisions.forEach((e) => print(e.timestamp));
+    expect(revisions.length, 5);
+    for (final r in revisions) {
+      expect(r.author.displayName, 'DRAWApiOfficial');
+    }
+    final last = revisions.last;
+    expect(last.page.name, 'test_page');
+    expect(last.reason, null);
+    expect(last.revision, '1445cccc-dbec-11e8-a780-0ef34ad82884');
+    expect(last.timestamp,
+        DateTime.fromMillisecondsSinceEpoch(1540895563 * 1000, isUtc: true));
+    expect(last == last, true);
+    expect(last.toString(), last.data.toString());
+    final lastRevisionPage =
+        await wiki['test_page'].revision(last.revision).populate();
+    expect(lastRevisionPage, last.page);
+    expect(lastRevisionPage.revisionDate, last.timestamp);
+
+    await lastRevisionPage.edit('Edited again!', reason: 'testing');
+    final newRevisions = await wiki.revisions().toList();
+    expect(newRevisions.length, 6);
+    final newRevision = newRevisions.first;
+    expect(newRevision.reason, 'testing');
+    expect(newRevision.revision, '091e41d0-dc5a-11e8-bdfa-0e7c30bc6e32');
+    expect(newRevision.timestamp,
+        DateTime.fromMillisecondsSinceEpoch(1540942789 * 1000, isUtc: true));
+    expect(last == newRevision, false);
+    final newRevisionPage =
+        await wiki['test_page'].revision(newRevision.revision).populate();
+    expect(newRevisionPage.contentMarkdown, 'Edited again!');
   });
 }

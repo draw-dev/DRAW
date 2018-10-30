@@ -1346,16 +1346,27 @@ class SubredditWiki {
       : banned = SubredditRelationship(_subreddit, 'wikibanned'),
         contributor = SubredditRelationship(_subreddit, 'wikicontributor');
 
-  WikiPage operator [](String page) =>
-      WikiPage(_subreddit.reddit, _subreddit, page.toLowerCase());
+  /// Creates a [WikiPageRef] for the wiki page named `page`.
+  WikiPageRef operator [](String page) =>
+      WikiPageRef(_subreddit.reddit, _subreddit, page.toLowerCase());
 
+  /// Creates a new [WikiPage].
+  ///
+  /// `name` is the name of the page. All spaces are replaced with '_' and the
+  /// name is converted to lowercase.
+  ///
+  /// `content` is the initial content of the page.
+  ///
+  /// `reason` is the optional message explaining why the page was created.
   Future<WikiPage> create(String name, String content, {String reason}) async {
     final newName = name.replaceAll(' ', '_').toLowerCase();
-    final newPage = WikiPage(_subreddit.reddit, _subreddit, newName);
+    final newPage = WikiPageRef(_subreddit.reddit, _subreddit, newName);
     await newPage.edit(content, reason: reason);
-    return newPage;
+    return await newPage.populate();
   }
 
+  /// A [Stream] of [WikiEdit] objects, which represent revisions made to this
+  /// wiki.
   Stream<WikiEdit> revisions() {
     final url = apiPath['wiki_revisions']
         .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
