@@ -451,4 +451,26 @@ Future<void> main() async {
         await wiki['test_page'].revision(newRevision.revision).populate();
     expect(newRevisionPage.contentMarkdown, 'Edited again!');
   });
+
+  test('lib/subreddit_wiki/wiki_page_revisions', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_wiki_page_revisions.json');
+    final wikiPage =
+        await reddit.subreddit('drawapitesting').wiki['test_page'].populate();
+    final initial = await wikiPage.revisions().toList();
+    expect(initial.length, 27);
+    for (final edit in initial) {
+      expect(edit.page, wikiPage);
+    }
+    expect(initial.first.timestamp,
+        DateTime.fromMillisecondsSinceEpoch(1540942789 * 1000, isUtc: true));
+    await wikiPage.edit('New content');
+    final after = await wikiPage.revisions().toList();
+    expect(after.length, 28);
+    for (final edit in after) {
+      expect(edit.page, wikiPage);
+    }
+    expect(after.first.timestamp,
+        DateTime.fromMillisecondsSinceEpoch(1540981349 * 1000, isUtc: true));
+  });
 }

@@ -120,7 +120,8 @@ class WikiPageRef extends RedditBase {
   /// wiki page.
   Stream<WikiEdit> revisions() {
     final url = apiPath['wiki_page_revisions']
-        .replaceAll(_kSubredditRegExp, _subreddit.displayName);
+        .replaceAll(_kSubredditRegExp, _subreddit.displayName)
+        .replaceAll(_kPageRegExp, name);
     return _revisionGenerator(_subreddit, url);
   }
 }
@@ -188,3 +189,5 @@ class WikiEdit {
   @override
   String toString() => data.toString();
 }
+
+// TODO(bkonyi): WikiModeration
