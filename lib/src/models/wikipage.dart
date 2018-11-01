@@ -6,6 +6,7 @@
 import 'dart:async';
 
 import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/exceptions.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/listing/listing_generator.dart';
@@ -190,4 +191,94 @@ class WikiEdit {
   String toString() => data.toString();
 }
 
-// TODO(bkonyi): WikiModeration
+// DO NOT REORDER!
+// TODO(bkonyi): test indices.
+/// [WikiPage] permissions for editing and viewing.
+///
+/// [WikiPermissionLevel.useSubredditWikiPermissions]: use the wiki permissions
+/// set by the subreddit.
+///
+/// [WikiPermissionLevel.approvedWikiContributors]: only approved wiki
+/// contributors for a given page may edit.
+///
+/// [WikiPermissionlevel.modsOnly]: only moderators may edit and view this page.
+enum WikiPermissionLevel {
+  useSubredditWikiPermissions,
+  approvedWikiContributors,
+  modsOnly,
+}
+
+class WikiPageSettings {}
+
+// TODO(bkonyi): de-duplicate from subreddit.dart
+String _redditorNameHelper(/* String, RedditorRef */ redditor) {
+  if (redditor is RedditorRef) {
+    return redditor.displayName;
+  } else if (redditor is! String) {
+    throw DRAWArgumentError('Parameter redditor must be either a'
+        'String or Redditor');
+  }
+  return redditor;
+}
+
+/// Provides a set of moderation functions for a [WikiPageRef].
+class WikiPageModeration {
+  static final RegExp _kMethodRegExp = RegExp(r'{method}');
+  final WikiPageRef wikiPage;
+
+  WikiPageModeration._(this.wikiPage);
+
+  Future<void> _addRemoveHelper(String redditor, String method) async {
+    final data = <String, String>{
+      'page': wikiPage.name,
+      'username': redditor,
+    };
+    final url = apiPath['wiki_page_editor']
+        .replaceAll(
+            WikiPageRef._kSubredditRegExp, wikiPage._subreddit.displayName)
+        .replaceAll(_kMethodRegExp, 'add');
+    await wikiPage.reddit.post(url, data);
+  }
+
+  /// Add an editor to this [WikiPageRef].
+  Future<void> add(/* RedditorRef, String */ redditor) async =>
+      _addRemoveHelper(_redditorNameHelper(redditor), 'add');
+
+  /// Remove an editor from this [WikiPageRef].
+  Future<void> remove(/* RedditorRef, String */ redditor) async =>
+      _addRemoveHelper(_redditorNameHelper(redditor), 'del');
+
+  /// The settings for this [WikiPageRef].
+  Future<WikiPageSettings> settings() async {
+    final url = apiPath['wiki_page_settings']
+        .replaceAll(
+            WikiPageRef._kSubredditRegExp, wikiPage._subreddit.displayName)
+        .replaceAll(WikiPageRef._kPageRegExp, wikiPage.name);
+    final data = (await wikiPage.reddit.get(url, objectify: false))['data'];
+    print(data);
+    // TODO(bkonyi)
+    return null;
+  }
+
+  /// Updates the settings for this [WikiPageRef].
+  ///
+  /// `listed` specifies whether this page appears on the page list.
+  /// `permissionLevel` specifies who can edit this page. See
+  /// [WikiPermissionLevel] for details.
+  Future<WikiPageSettings> update(
+      bool listed, WikiPermissionLevel permissionLevel) async {
+    final data = <String, String>{
+      'listed': listed.toString(),
+      'permlevel': permissionLevel.index.toString(),
+    };
+    final url = apiPath['wiki_page_settings']
+        .replaceAll(
+            WikiPageRef._kSubredditRegExp, wikiPage._subreddit.displayName)
+        .replaceAll(WikiPageRef._kPageRegExp, wikiPage.name);
+    final result =
+        (await wikiPage.reddit.post(url, data, objectify: false))['data'];
+    print(result);
+    // TODO(bkonyi)
+    return null;
+  }
+}
