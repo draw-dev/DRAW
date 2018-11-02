@@ -17,7 +17,6 @@ if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "dev" ]; then
     --exclude-test-files \
     --throw-on-error \
     --throw-on-connectivity-error \
-    --preview-dart-2 \
     test/test_all.dart
   echo "Coverage complete."
   rm -rf dart-coveralls
