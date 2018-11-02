@@ -71,7 +71,7 @@ class Reddit {
   User _user;
   bool _readOnly = true;
   bool _initialized = false;
-  final _initializedCompleter = new Completer<bool>();
+  final _initializedCompleter = Completer<bool>();
   Objector _objector;
 
   /// Creates a new read-only [Reddit] instance for installed application types.
@@ -109,7 +109,7 @@ class Reddit {
       Uri authEndpoint,
       Uri configUri,
       String siteName = 'default'}) async {
-    final reddit = new Reddit._untrustedReadOnlyInstance(clientId, deviceId,
+    final reddit = Reddit._untrustedReadOnlyInstance(clientId, deviceId,
         userAgent, tokenEndpoint, authEndpoint, configUri, siteName);
     final initialized = await reddit._initializedCompleter.future;
     if (initialized) {
@@ -150,8 +150,8 @@ class Reddit {
       Uri authEndpoint,
       Uri configUri,
       String siteName = 'default'}) async {
-    final reddit = new Reddit._readOnlyInstance(clientId, clientSecret,
-        userAgent, tokenEndpoint, authEndpoint, configUri, siteName);
+    final reddit = Reddit._readOnlyInstance(clientId, clientSecret, userAgent,
+        tokenEndpoint, authEndpoint, configUri, siteName);
     final initialized = await reddit._initializedCompleter.future;
     if (initialized) {
       return reddit;
@@ -197,7 +197,7 @@ class Reddit {
       Uri authEndpoint,
       Uri configUri,
       String siteName = 'default'}) async {
-    final reddit = new Reddit._scriptInstance(clientId, clientSecret, userAgent,
+    final reddit = Reddit._scriptInstance(clientId, clientSecret, userAgent,
         username, password, tokenEndpoint, authEndpoint, configUri, siteName);
     final initialized = await reddit._initializedCompleter.future;
     if (initialized) {
@@ -243,8 +243,8 @@ class Reddit {
           Uri authEndpoint,
           Uri configUri,
           String siteName = 'default'}) =>
-      new Reddit._webFlowInstance(clientId, clientSecret, userAgent,
-          redirectUri, tokenEndpoint, authEndpoint, configUri, siteName);
+      Reddit._webFlowInstance(clientId, clientSecret, userAgent, redirectUri,
+          tokenEndpoint, authEndpoint, configUri, siteName);
 
   /// Creates a new authenticated [Reddit] instance from cached credentials.
   ///
@@ -293,7 +293,7 @@ class Reddit {
     if (credentialsJson == null) {
       throw DRAWArgumentError('credentialsJson cannot be null.');
     }
-    final reddit = new Reddit._webFlowInstanceRestore(
+    final reddit = Reddit._webFlowInstanceRestore(
         clientId,
         clientSecret,
         userAgent,
@@ -319,7 +319,7 @@ class Reddit {
       Uri configUri,
       String siteName) {
     // Loading passed in values into config file.
-    _config = new DRAWConfigContext(
+    _config = DRAWConfigContext(
         clientId: clientId,
         clientSecret: clientSecret,
         userAgent: userAgent,
@@ -332,7 +332,7 @@ class Reddit {
       throw DRAWAuthenticationError('userAgent cannot be null.');
     }
 
-    final grant = new oauth2.AuthorizationCodeGrant(_config.clientId,
+    final grant = oauth2.AuthorizationCodeGrant(_config.clientId,
         Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
         secret: _config.clientSecret);
     _readOnly = true;
@@ -350,7 +350,7 @@ class Reddit {
       Uri configUri,
       String siteName) {
     // Loading passed in values into config file.
-    _config = new DRAWConfigContext(
+    _config = DRAWConfigContext(
         clientId: clientId,
         clientSecret: '',
         userAgent: userAgent,
@@ -363,7 +363,7 @@ class Reddit {
       throw DRAWAuthenticationError('userAgent cannot be null.');
     }
 
-    final grant = new oauth2.AuthorizationCodeGrant(_config.clientId,
+    final grant = oauth2.AuthorizationCodeGrant(_config.clientId,
         Uri.parse(_config.accessToken), Uri.parse(_config.accessToken),
         secret: null);
 
@@ -384,7 +384,7 @@ class Reddit {
       Uri configUri,
       String siteName) {
     // Loading passed in values into config file.
-    _config = new DRAWConfigContext(
+    _config = DRAWConfigContext(
         clientId: clientId,
         clientSecret: clientSecret,
         userAgent: userAgent,
@@ -405,7 +405,7 @@ class Reddit {
       throw DRAWAuthenticationError('userAgent cannot be null.');
     }
 
-    final grant = new oauth2.AuthorizationCodeGrant(_config.clientId,
+    final grant = oauth2.AuthorizationCodeGrant(_config.clientId,
         Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
         secret: _config.clientSecret);
 
@@ -425,7 +425,7 @@ class Reddit {
       Uri configUri,
       String siteName) {
     // Loading passed in values into config file.
-    _config = new DRAWConfigContext(
+    _config = DRAWConfigContext(
         clientId: clientId,
         clientSecret: clientSecret,
         userAgent: userAgent,
@@ -445,7 +445,7 @@ class Reddit {
       throw DRAWAuthenticationError('userAgent cannot be null.');
     }
 
-    final grant = new oauth2.AuthorizationCodeGrant(_config.clientId,
+    final grant = oauth2.AuthorizationCodeGrant(_config.clientId,
         Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
         secret: _config.clientSecret);
 
@@ -464,7 +464,7 @@ class Reddit {
       Uri configUri,
       String siteName) {
     // Loading passed in values into config file.
-    _config = new DRAWConfigContext(
+    _config = DRAWConfigContext(
         clientId: clientId,
         clientSecret: clientSecret,
         userAgent: userAgent,
@@ -492,7 +492,7 @@ class Reddit {
     if (auth == null) {
       throw DRAWAuthenticationError('auth cannot be null.');
     }
-    _config = new DRAWConfigContext();
+    _config = DRAWConfigContext();
     _initializationCallback(auth);
   }
 
@@ -510,9 +510,9 @@ class Reddit {
     } else if ((id == null) && (url == null)) {
       throw DRAWArgumentError('id and url cannot both be null');
     } else if (id != null) {
-      return new CommentRef.withID(this, id);
+      return CommentRef.withID(this, id);
     }
-    return new CommentRef.withPath(this, (url is Uri) ? url.toString() : url);
+    return CommentRef.withPath(this, (url is Uri) ? url.toString() : url);
   }
 
   /// Creates a lazily initialized [SubmissionRef].
@@ -529,16 +529,15 @@ class Reddit {
     } else if ((id == null) && (url == null)) {
       throw DRAWArgumentError('id and url cannot both be null');
     } else if (id != null) {
-      return new SubmissionRef.withID(this, id);
+      return SubmissionRef.withID(this, id);
     }
-    return new SubmissionRef.withPath(
-        this, (url is Uri) ? url.toString() : url);
+    return SubmissionRef.withPath(this, (url is Uri) ? url.toString() : url);
   }
 
-  RedditorRef redditor(String redditor) => new RedditorRef.name(this, redditor);
+  RedditorRef redditor(String redditor) => RedditorRef.name(this, redditor);
 
   SubredditRef subreddit(String subreddit) =>
-      new SubredditRef.name(this, subreddit);
+      SubredditRef.name(this, subreddit);
 
   Future<dynamic> get(String api,
       {Map<String, String> params,
@@ -548,7 +547,7 @@ class Reddit {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
-    final path = new Uri.https(defaultOAuthApiEndpoint, api);
+    final path = Uri.https(defaultOAuthApiEndpoint, api);
     final response =
         await auth.get(path, params: params, followRedirects: followRedirects);
     return objectify ? _objector.objectify(response) : response;
@@ -560,7 +559,7 @@ class Reddit {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
-    final path = new Uri.https(defaultOAuthApiEndpoint, api);
+    final path = Uri.https(defaultOAuthApiEndpoint, api);
     final response = await auth.post(path, body);
     if (discardResponse) {
       return null;
@@ -574,7 +573,7 @@ class Reddit {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
-    final path = new Uri.https(defaultOAuthApiEndpoint, api);
+    final path = Uri.https(defaultOAuthApiEndpoint, api);
     final response = await auth.put(path, body: body);
     return _objector.objectify(response);
   }
@@ -585,17 +584,17 @@ class Reddit {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
-    final path = new Uri.https(defaultOAuthApiEndpoint, api);
+    final path = Uri.https(defaultOAuthApiEndpoint, api);
     final response = await auth.delete(path, body: body);
     return _objector.objectify(response);
   }
 
   void _initializationCallback(Authenticator auth) {
     _auth = auth;
-    _front = new FrontPage(this);
-    _inbox = new Inbox(this);
-    _objector = new Objector(this);
-    _user = new User(this);
+    _front = FrontPage(this);
+    _inbox = Inbox(this);
+    _objector = Objector(this);
+    _user = User(this);
     _initialized = true;
     _initializedCompleter.complete(true);
   }

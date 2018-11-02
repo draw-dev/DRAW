@@ -153,7 +153,7 @@ class SubredditRef extends RedditBase
 
   SubredditWiki get wiki {
     if (_wiki == null) {
-      _wiki = new SubredditWiki(this);
+      _wiki = SubredditWiki(this);
     }
     return _wiki;
   }

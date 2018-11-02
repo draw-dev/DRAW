@@ -35,11 +35,11 @@ class Objector extends RedditBase {
     if (data.containsKey('name')) {
       // Redditor type.
       //logger.log(Level.FINE, 'parsing Redditor');
-      return new Redditor.parse(reddit, data);
+      return Redditor.parse(reddit, data);
     } else if (data.containsKey('kind') &&
         (data['kind'] == Reddit.defaultCommentKind)) {
       final commentData = data['data'];
-      final comment = new Comment.parse(reddit, commentData);
+      final comment = Comment.parse(reddit, commentData);
       ////logger.log(Level.INFO, 'parsing Comment(id: ${comment.id})');
       ////logger.log(Level.INFO, 'Comment Data: ${DRAWLoggingUtils.jsonify(data)}');
       if (commentData.containsKey('replies') &&
@@ -53,34 +53,34 @@ class Objector extends RedditBase {
         final replies =
             _objectifyList(commentData['replies']['data']['children']);
         //logger.log(Level.INFO, 'Done objectifying list of comments for CommentForest for ${comment.id}');
-        final submission = new SubmissionRef.withID(
+        final submission = SubmissionRef.withID(
             reddit, _removeIDPrefix(commentData['link_id']));
         //logger.log(Level.INFO, 'Parent submission for Comment(id: ${comment.id}): ${_removeIDPrefix(commentData["link_id"])}');
-        final commentForest = new CommentForest(submission, replies);
+        final commentForest = CommentForest(submission, replies);
         setRepliesInternal(comment, commentForest);
       }
       return comment;
     } else if (data.containsKey('kind') &&
         (data['kind'] == Reddit.defaultSubmissionKind)) {
-      return new Submission.parse(reddit, data['data']);
+      return Submission.parse(reddit, data['data']);
     } else if (data.containsKey('kind') &&
         (data['kind'] == Reddit.defaultSubredditKind)) {
-      return new Subreddit.parse(reddit, data);
+      return Subreddit.parse(reddit, data);
     } else if (data.containsKey('kind') &&
         data['kind'] == Reddit.defaultMessageKind) {
-      return new Message.parse(reddit, data['data']);
+      return Message.parse(reddit, data['data']);
     } else if (data.containsKey('kind') && (data['kind'] == 'LabeledMulti')) {
       assert(
           data.containsKey('data'),
           'field "data" is expected in a response'
           'of type "LabeledMulti"');
-      return new Multireddit.parse(reddit, data);
+      return Multireddit.parse(reddit, data);
     } else if (data.containsKey('kind') && (data['kind'] == 'modaction')) {
       return buildModeratorAction(reddit, data['data']);
     } else if (data.containsKey('sr') &&
         data.containsKey('comment_karma') &&
         data.containsKey('link_karma')) {
-      final subreddit = new Subreddit.parse(reddit, data['sr']);
+      final subreddit = Subreddit.parse(reddit, data['sr']);
       final value = {
         'commentKarma': data['comment_karma'],
         'linkKarma': data['link_karma'],
@@ -94,7 +94,7 @@ class Objector extends RedditBase {
     } else if (data.containsKey('rules')) {
       final rules = <Rule>[];
       for (final rawRule in data['rules']) {
-        rules.add(new Rule.parse(rawRule));
+        rules.add(Rule.parse(rawRule));
       }
       return rules;
     } else if (data.containsKey('kind') && (data['kind'] == _testThrowKind)) {
@@ -142,7 +142,7 @@ class Objector extends RedditBase {
 
   List _objectifyList(List listing) {
     //logger.log(Level.FINE, 'objectifying list(len: ${listing.length})');
-    final objectifiedListing = new List(listing.length);
+    final objectifiedListing = List(listing.length);
     for (var i = 0; i < listing.length; ++i) {
       objectifiedListing[i] = objectify(listing[i]);
     }
@@ -186,7 +186,7 @@ class Objector extends RedditBase {
       } else if (kind == 'KarmaList') {
         //logger.log(Level.FINE, 'parsing KarmaList');
         final listing = _objectifyList(data['data']);
-        final karmaMap = new Map<Subreddit, Map<String, int>>();
+        final karmaMap = Map<Subreddit, Map<String, int>>();
         listing.forEach((map) {
           karmaMap.addAll(map);
         });
@@ -199,7 +199,7 @@ class Objector extends RedditBase {
       } else if (kind == 'more') {
         //logger.log(Level.INFO, 'parsing MoreComments');
         //logger.log(Level.INFO, 'Data: ${DRAWLoggingUtils.jsonify(data["data"])}');
-        return new MoreComments.parse(reddit, data['data']);
+        return MoreComments.parse(reddit, data['data']);
       } else {
         //logger.log(Level.INFO, 't2 but not more comments or Redditor');
         return _objectifyDictionary(data);
@@ -209,7 +209,7 @@ class Objector extends RedditBase {
         // Response from Subreddit.submit.
         //logger.log(Level.FINE, 'Subreddit.submit response');
         if (data['json']['data'].containsKey('url')) {
-          return new Submission.parse(reddit, data['json']['data']);
+          return Submission.parse(reddit, data['json']['data']);
         } else if (data['json']['data'].containsKey('things')) {
           return _objectifyList(data['json']['data']['things']);
         } else {
