@@ -6,8 +6,20 @@
 import 'package:draw/src/base_impl.dart';
 
 abstract class UserContentInitialized implements RedditBaseInitializedMixin {
-  /// Has this [UserContent] be given Reddit Gold.
+  /// The number of times this [UserContent] was awarded Reddit Gold.
+  ///
+  /// This property is deprecated. Please use [silver]/[gold]/[platinum]` instead.
+  @deprecated
   int get gilded => data['gilded'];
+
+  /// The amount of silver gilded to this [UserContent].
+  int get silver => data['gildings']['gid_1'];
+
+  /// The amount of gold gilded to this [UserContent].
+  int get gold => data['gildings']['gid_2'];
+
+  /// The amount of platinum gilded to this [UserContent].
+  int get platinum => data['gildings']['gid_3'];
 
   /// A [List] of reports made by moderators.
   ///
