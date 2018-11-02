@@ -28,6 +28,7 @@ class WikiPageRef extends RedditBase {
 
   final String _revision;
   final SubredditRef _subreddit;
+  WikiPageModeration _mod;
 
   String get infoPath => apiPath['wiki_page']
       .replaceAll(_kSubredditRegExp, _subreddit.displayName)
@@ -49,7 +50,14 @@ class WikiPageRef extends RedditBase {
       ((a is WikiPageRef) && (name.toLowerCase() == a.name.toLowerCase()));
 
   @override
-  int get hashCode => name.hashCode;
+  int get hashCode => name.toLowerCase().hashCode;
+
+  /// A helper object which allows for performing moderator actions on
+  /// this wiki page.
+  WikiPageModeration get mod {
+    _mod ??= WikiPageModeration._(this);
+    return _mod;
+  }
 
   /// Promote this [WikiPageRef] into a populated [WikiPage].
   Future<WikiPage> populate() async => await fetch();
@@ -192,7 +200,6 @@ class WikiEdit {
 }
 
 // DO NOT REORDER!
-// TODO(bkonyi): test indices.
 /// [WikiPage] permissions for editing and viewing.
 ///
 /// [WikiPermissionLevel.useSubredditWikiPermissions]: use the wiki permissions
@@ -208,7 +215,51 @@ enum WikiPermissionLevel {
   modsOnly,
 }
 
-class WikiPageSettings {}
+/// Contains the current settings of a [WikiPageRef].
+class WikiPageSettings {
+  Map get data => _data;
+  final WikiPageRef wikiPage;
+  Map _data;
+  final List<Redditor> _editors = <Redditor>[];
+
+  WikiPageSettings._(this.wikiPage, this._data) {
+    _populateEditorsList();
+  }
+
+  void _populateEditorsList() {
+    final rawEditors = data['editors'];
+    for (final e in rawEditors) {
+      _editors.add(Redditor.parse(wikiPage.reddit, e['data']));
+    }
+  }
+
+  /// A list of [Redditor]s who are approved to edit this wiki page.
+  ///
+  /// These [Redditor] objects may be partially populated. Print their `data`
+  /// property to see which fields are populated.
+  List<Redditor> get editors => _editors;
+
+  /// Whether the wiki page is listed and visible for non-moderators.
+  bool get listed => data['listed'];
+
+  /// Who can edit this wiki page.
+  WikiPermissionLevel get permissionLevel =>
+      WikiPermissionLevel.values[data['permlevel']];
+
+  /// Retrieve the most up-to-date settings and update in-place.
+  ///
+  /// Returns a reference to the existing [WikiPageSettings] object.
+  Future<WikiPageSettings> refresh() async {
+    final settings = await wikiPage.mod.settings();
+    _data = settings.data;
+    _editors.clear();
+    _populateEditorsList();
+    return this;
+  }
+
+  @override
+  String toString() => data.toString();
+}
 
 // TODO(bkonyi): de-duplicate from subreddit.dart
 String _redditorNameHelper(/* String, RedditorRef */ redditor) {
@@ -236,8 +287,8 @@ class WikiPageModeration {
     final url = apiPath['wiki_page_editor']
         .replaceAll(
             WikiPageRef._kSubredditRegExp, wikiPage._subreddit.displayName)
-        .replaceAll(_kMethodRegExp, 'add');
-    await wikiPage.reddit.post(url, data);
+        .replaceAll(_kMethodRegExp, method);
+    await wikiPage.reddit.post(url, data, discardResponse: true);
   }
 
   /// Add an editor to this [WikiPageRef].
@@ -255,9 +306,7 @@ class WikiPageModeration {
             WikiPageRef._kSubredditRegExp, wikiPage._subreddit.displayName)
         .replaceAll(WikiPageRef._kPageRegExp, wikiPage.name);
     final data = (await wikiPage.reddit.get(url, objectify: false))['data'];
-    print(data);
-    // TODO(bkonyi)
-    return null;
+    return WikiPageSettings._(wikiPage, data);
   }
 
   /// Updates the settings for this [WikiPageRef].
@@ -265,6 +314,8 @@ class WikiPageModeration {
   /// `listed` specifies whether this page appears on the page list.
   /// `permissionLevel` specifies who can edit this page. See
   /// [WikiPermissionLevel] for details.
+  /// 
+  /// Returns a new [WikiPageSettings] object with the updated settings.
   Future<WikiPageSettings> update(
       bool listed, WikiPermissionLevel permissionLevel) async {
     final data = <String, String>{
@@ -277,8 +328,6 @@ class WikiPageModeration {
         .replaceAll(WikiPageRef._kPageRegExp, wikiPage.name);
     final result =
         (await wikiPage.reddit.post(url, data, objectify: false))['data'];
-    print(result);
-    // TODO(bkonyi)
-    return null;
+    return WikiPageSettings._(wikiPage, result);
   }
 }

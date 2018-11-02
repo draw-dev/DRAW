@@ -473,4 +473,49 @@ Future<void> main() async {
     expect(after.first.timestamp,
         DateTime.fromMillisecondsSinceEpoch(1540981349 * 1000, isUtc: true));
   });
+
+  test('lib/subreddit_wiki/wiki_page_moderation_add_remove', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_wiki_page_moderation_add_remove.json');
+    final wikiPage = reddit.subreddit('drawapitesting').wiki['test_page'];
+    final wikiPageMod = wikiPage.mod;
+
+    final settings = await wikiPageMod.settings();
+    expect(settings.editors.length, 0);
+    await wikiPageMod.add('Toxicity-Moderator');
+    await settings.refresh();
+    expect(settings.editors.length, 1);
+    expect(settings.editors[0].displayName, 'Toxicity-Moderator');
+    await wikiPageMod.remove(reddit.redditor('Toxicity-Moderator'));
+    await settings.refresh();
+    expect(settings.editors.length, 0);
+  });
+
+  test('lib/subreddit_wiki/wiki_page_moderation_settings', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_wiki_page_moderation_settings.json');
+    final wikiPage = reddit.subreddit('drawapitesting').wiki['test_page'];
+    final wikiPageMod = wikiPage.mod;
+    final settings = await wikiPageMod.settings();
+    expect(
+        settings.permissionLevel, WikiPermissionLevel.approvedWikiContributors);
+    expect(settings.listed, true);
+    expect(settings.editors.length, 0);
+
+    final updated =
+        await wikiPageMod.update(false, WikiPermissionLevel.modsOnly);
+    expect(updated.permissionLevel, WikiPermissionLevel.modsOnly);
+    expect(updated.listed, false);
+    expect(updated.editors.length, 0);
+  });
+
+  test('lib/subreddit_wiki/WikiPermissionLevelOrdering', () {
+    expect(WikiPermissionLevel.values.length, 3);
+    expect(WikiPermissionLevel.values[0],
+        WikiPermissionLevel.useSubredditWikiPermissions);
+    expect(WikiPermissionLevel.values[1],
+        WikiPermissionLevel.approvedWikiContributors);
+    expect(WikiPermissionLevel.values[2],
+        WikiPermissionLevel.modsOnly);
+  });
 }
