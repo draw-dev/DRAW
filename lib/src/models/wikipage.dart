@@ -314,7 +314,7 @@ class WikiPageModeration {
   /// `listed` specifies whether this page appears on the page list.
   /// `permissionLevel` specifies who can edit this page. See
   /// [WikiPermissionLevel] for details.
-  /// 
+  ///
   /// Returns a new [WikiPageSettings] object with the updated settings.
   Future<WikiPageSettings> update(
       bool listed, WikiPermissionLevel permissionLevel) async {

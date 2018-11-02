@@ -515,7 +515,6 @@ Future<void> main() async {
         WikiPermissionLevel.useSubredditWikiPermissions);
     expect(WikiPermissionLevel.values[1],
         WikiPermissionLevel.approvedWikiContributors);
-    expect(WikiPermissionLevel.values[2],
-        WikiPermissionLevel.modsOnly);
+    expect(WikiPermissionLevel.values[2], WikiPermissionLevel.modsOnly);
   });
 }
