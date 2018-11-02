@@ -20,14 +20,14 @@ abstract class RedditorListingMixin {
   /// Provides an instance of [SubListing], used to make requests for
   /// [Comment]s.
   SubListing get comments {
-    _comments ??= new SubListing(reddit, path, 'comments/');
+    _comments ??= SubListing(reddit, path, 'comments/');
     return _comments;
   }
 
   /// Provides an instance of [SubListing], used to make requests for
   /// [Submission]s.
   SubListing get submissions {
-    _submissions ??= new SubListing(reddit, path, 'submitted/');
+    _submissions ??= SubListing(reddit, path, 'submitted/');
     return _submissions;
   }
 

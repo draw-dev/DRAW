@@ -18,8 +18,8 @@ class BoundedSet<T> {
 
   BoundedSet(int maxItems)
       : _maxItems = maxItems,
-        _fifo = new List<T>(),
-        _set = new Set<T>();
+        _fifo = List<T>(),
+        _set = Set<T>();
 
   bool contains(T object) {
     return _set.contains(object);
@@ -44,7 +44,7 @@ class ExponentialCounter {
 
   ExponentialCounter(int maxCounter)
       : _maxCounter = maxCounter.toDouble(),
-        _random = new Random();
+        _random = Random();
 
   int counter() {
     // See the following for a description of jitter and why we should use it:
@@ -61,8 +61,8 @@ class ExponentialCounter {
 }
 
 Stream<T> streamGenerator<T>(function, {int itemLimit, int pauseAfter}) async* {
-  final counter = new ExponentialCounter(16);
-  final seen = new BoundedSet<String>(301);
+  final counter = ExponentialCounter(16);
+  final seen = BoundedSet<String>(301);
   var withoutBeforeCounter = 0;
   var responsesWithoutNew = 0;
   var beforeFullname;
@@ -121,7 +121,7 @@ Stream<T> streamGenerator<T>(function, {int itemLimit, int pauseAfter}) async* {
 Map<String, dynamic> snakeCaseMapKeys(Map<String, dynamic> m) =>
     m.map((k, v) => MapEntry(snakeCase(k), v));
 
-final RegExp _snakecaseRegexp = new RegExp("[A-Z]");
+final RegExp _snakecaseRegexp = RegExp("[A-Z]");
 String snakeCase(String name, [separator = '_']) => name.replaceAllMapped(
     _snakecaseRegexp,
     (Match match) =>

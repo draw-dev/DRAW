@@ -18,7 +18,7 @@ abstract class SubredditListingMixin {
   CommentHelper _commentHelper;
   CommentHelper get comments {
     if (_commentHelper == null) {
-      _commentHelper = new CommentHelper(this);
+      _commentHelper = CommentHelper(this);
     }
     return _commentHelper;
   }

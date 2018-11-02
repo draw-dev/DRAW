@@ -12,7 +12,7 @@ abstract class GetterUtils {
     if (time == null) {
       return null;
     }
-    return new DateTime.fromMillisecondsSinceEpoch(time.round() * 1000,
+    return DateTime.fromMillisecondsSinceEpoch(time.round() * 1000,
         isUtc: true);
   }
 

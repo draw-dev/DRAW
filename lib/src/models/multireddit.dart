@@ -160,17 +160,17 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   // static const String _kVisibility = 'visibility';
   // static const String _kWeightingScheme = 'weighting_scheme';
   static const int _redditorNameInPathIndex = 2;
-  static final _subredditRegExp = new RegExp(r'{subreddit}');
-  static final RegExp _userRegExp = new RegExp(r'{user}');
-  static final RegExp _multiredditRegExp = new RegExp(r'{multi}');
+  static final _subredditRegExp = RegExp(r'{subreddit}');
+  static final RegExp _userRegExp = RegExp(r'{user}');
+  static final RegExp _multiredditRegExp = RegExp(r'{multi}');
 
   // TODO(@ckartik): Try to make the data['key_color'] value null.
-  Color get keyColor => new HexColor(data['key_color']);
+  Color get keyColor => HexColor(data['key_color']);
 
   /// When was this [Multireddit] created.
-  DateTime get createdUtc => new DateTime.fromMillisecondsSinceEpoch(
-      data['created_utc'].round() * 1000,
-      isUtc: true);
+  DateTime get createdUtc =>
+      DateTime.fromMillisecondsSinceEpoch(data['created_utc'].round() * 1000,
+          isUtc: true);
 
   /// The [IconName] associated with this multireddit.
   ///
@@ -185,7 +185,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   List<SubredditRef> get subreddits {
     final subredditList = <SubredditRef>[];
     subredditList.addAll(data['subreddits'].map<SubredditRef>(
-        (subreddit) => new SubredditRef.name(reddit, subreddit['name'])));
+        (subreddit) => SubredditRef.name(reddit, subreddit['name'])));
     return subredditList;
   }
 
@@ -226,7 +226,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
       throw DRAWUnimplementedError();
     }
     setData(this, data['data']);
-    _author = new RedditorRef.name(reddit, _getAuthorName(data));
+    _author = RedditorRef.name(reddit, _getAuthorName(data));
   }
 
   static String _getAuthorName(data) {
@@ -247,9 +247,9 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     if (str == null) {
       return null;
     }
-    final splitStrList = str.split(new RegExp(r'(\s|_)+'));
+    final splitStrList = str.split(RegExp(r'(\s|_)+'));
     final strItr = splitStrList.iterator;
-    final strBuffer = new StringBuffer(strItr.toString());
+    final strBuffer = StringBuffer(strItr.toString());
     while (strItr.moveNext()) {
       strBuffer.write(strItr.toString().substring(0, 1).toUpperCase());
       strBuffer.write(strItr.toString().substring(1));
@@ -262,7 +262,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
     if (title == null) {
       return null;
     }
-    final RegExp _invalidRegExp = new RegExp(r'(\s|\W|_)+');
+    final RegExp _invalidRegExp = RegExp(r'(\s|\W|_)+');
     var titleScoped = title.replaceAll(_invalidRegExp, '_').trim();
     if (titleScoped.length > 21) {
       titleScoped = titleScoped.substring(21);

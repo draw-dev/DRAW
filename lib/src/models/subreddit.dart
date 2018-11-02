@@ -55,7 +55,7 @@ class SubredditRef extends RedditBase
         MessageableMixin,
         RisingListingMixin,
         SubredditListingMixin {
-  static final _subredditRegExp = new RegExp(r'{subreddit}');
+  static final _subredditRegExp = RegExp(r'{subreddit}');
 
   static String _generateInfoPath(String name) => apiPath['subreddit_about']
       .replaceAll(SubredditRef._subredditRegExp, name);
@@ -87,29 +87,29 @@ class SubredditRef extends RedditBase
   int get hashCode => _name.hashCode;
 
   SubredditRelationship get banned {
-    _banned ??= new SubredditRelationship(this, 'banned');
+    _banned ??= SubredditRelationship(this, 'banned');
     return _banned;
   }
 
   ContributorRelationship get contributor {
-    _contributor ??= new ContributorRelationship(this, 'contributor');
+    _contributor ??= ContributorRelationship(this, 'contributor');
     return _contributor;
   }
 
   SubredditFilters get filters {
-    _filters ??= new SubredditFilters._(this);
+    _filters ??= SubredditFilters._(this);
     return _filters;
   }
 
   SubredditFlair get flair {
     if (_flair == null) {
-      _flair = new SubredditFlair(this);
+      _flair = SubredditFlair(this);
     }
     return _flair;
   }
 
   SubredditModeration get mod {
-    _mod ??= new SubredditModeration(this);
+    _mod ??= SubredditModeration(this);
     return _mod;
   }
 
@@ -126,17 +126,17 @@ class SubredditRef extends RedditBase
   }
 
   SubredditRelationship get muted {
-    _muted ??= new SubredditRelationship(this, 'muted');
+    _muted ??= SubredditRelationship(this, 'muted');
     return _muted;
   }
 
   SubredditQuarantine get quarantine {
-    _quarantine ??= new SubredditQuarantine._(this);
+    _quarantine ??= SubredditQuarantine._(this);
     return _quarantine;
   }
 
   SubredditStream get stream {
-    _stream ??= new SubredditStream(this);
+    _stream ??= SubredditStream(this);
     return _stream;
   }
 
@@ -177,7 +177,7 @@ class SubredditRef extends RedditBase
           .replaceAll(SubredditRef._subredditRegExp, _name));
     } on DRAWRedirectResponse catch (e) {
       // We expect this request to redirect to our random submission.
-      return new SubmissionRef.withPath(reddit, e.path);
+      return SubmissionRef.withPath(reddit, e.path);
     }
     return null; // Shut the analyzer up.
   }
@@ -200,7 +200,7 @@ class SubredditRef extends RedditBase
       Map<String, String> params}) {
     final timeStr = timeFilterToString(timeFilter);
     final isNotAll = !(_name.toLowerCase() == 'all');
-    final data = (params != null) ? new Map.from(params) : new Map();
+    final data = (params != null) ? Map.from(params) : Map();
     data['q'] = query;
     data['restrict_sr'] = isNotAll.toString();
     data['sort'] = sortToString(sort);
@@ -222,7 +222,7 @@ class SubredditRef extends RedditBase
               .replaceAll(SubredditRef._subredditRegExp, _name),
           params: {'num': number.toString()});
     } on DRAWRedirectResponse catch (e) {
-      return new SubmissionRef.withPath(reddit, e.path);
+      return SubmissionRef.withPath(reddit, e.path);
     }
     return null; // Shut the analyzer up.
   }
@@ -367,8 +367,8 @@ class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
 
 /// Provides functions to interact with the special [Subreddit]'s filters.
 class SubredditFilters {
-  static final RegExp _userRegExp = new RegExp(r'{user}');
-  static final RegExp _specialRegExp = new RegExp(r'{special}');
+  static final RegExp _userRegExp = RegExp(r'{user}');
+  static final RegExp _specialRegExp = RegExp(r'{special}');
   final SubredditRef _subreddit;
 
   SubredditFilters._(this._subreddit) {
@@ -462,7 +462,7 @@ class SubredditFlair {
 
   Stream<Flair> call(
       {/* Redditor, String */ redditor, Map<String, String> params}) {
-    final data = (params != null) ? new Map.from(params) : null;
+    final data = (params != null) ? Map.from(params) : null;
     if (redditor != null) {
       data['user'] = _redditorNameHelper(redditor);
     }
@@ -764,7 +764,7 @@ class SubredditRelationship {
 
   Stream<Redditor> call(
       {/* String, Redditor */ redditor, Map<String, String> params}) {
-    final data = (params != null) ? new Map.from(params) : <String, String>{};
+    final data = (params != null) ? Map.from(params) : <String, String>{};
     if (redditor != null) {
       data['user'] = _redditorNameHelper(redditor);
     }
@@ -858,7 +858,7 @@ class SubredditTraffic {
       {bool isDay = false}) {
     final traffic = <SubredditTraffic>[];
     for (final entry in values) {
-      traffic.add(new SubredditTraffic(entry.cast<int>()));
+      traffic.add(SubredditTraffic(entry.cast<int>()));
     }
     return traffic;
   }
@@ -866,8 +866,7 @@ class SubredditTraffic {
   SubredditTraffic(List<int> rawTraffic, {bool isDay = false})
       : pageviews = rawTraffic[2],
         periodStart =
-            new DateTime.fromMillisecondsSinceEpoch(rawTraffic[0] * 1000)
-                .toUtc(),
+            DateTime.fromMillisecondsSinceEpoch(rawTraffic[0] * 1000).toUtc(),
         subscriptions = (isDay ? rawTraffic[3] : 0),
         uniques = rawTraffic[1];
 

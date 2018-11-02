@@ -29,7 +29,7 @@ import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/user_content.dart';
 import 'package:draw/src/reddit.dart';
 
-final Logger _logger = new Logger('Submission');
+final Logger _logger = Logger('Submission');
 
 Comment getCommentByIdInternal(SubmissionRef s, String id) {
   if (s._commentsById.containsKey(id)) {
@@ -76,7 +76,7 @@ class Submission extends SubmissionRef
   /// Returns `null` if the [Submission] has not been approved.
   DateTime get approvedAt => (data['approved_at_utc'] == null)
       ? null
-      : new DateTime.fromMillisecondsSinceEpoch(
+      : DateTime.fromMillisecondsSinceEpoch(
           data['approved_at_utc'].round() * 1000);
 
   /// Has this [Submission] been approved.
@@ -132,7 +132,7 @@ class Submission extends SubmissionRef
       {CommentSortType sort = CommentSortType.best}) async {
     _commentSort = sort;
     final response = await fetch();
-    _comments = new CommentForest(this, response[1]['listing']);
+    _comments = CommentForest(this, response[1]['listing']);
     return _comments;
   }
 
@@ -323,7 +323,7 @@ class Submission extends SubmissionRef
   bool get visited => data['visited'];
 
   SubmissionModeration get mod {
-    _mod ??= new SubmissionModeration._(this);
+    _mod ??= SubmissionModeration._(this);
     return _mod;
   }
 
@@ -400,10 +400,10 @@ class Submission extends SubmissionRef
 /// A lazily initialized representation of a standard Reddit submission. Can be
 /// promoted to a [Submission].
 class SubmissionRef extends UserContent {
-  static final RegExp _submissionRegExp = new RegExp(r'{id}');
+  static final RegExp _submissionRegExp = RegExp(r'{id}');
   CommentForest _comments;
   String _id;
-  final Map _commentsById = new Map();
+  final Map _commentsById = Map();
 
   SubmissionRef.withPath(Reddit reddit, String path)
       : _id = idFromUrl(path),
@@ -452,8 +452,7 @@ class SubmissionRef extends UserContent {
   Future<Submission> populate() async {
     final response = await fetch();
     final submission = response[0]['listing'][0];
-    submission._comments =
-        new CommentForest(submission, response[1]['listing']);
+    submission._comments = CommentForest(submission, response[1]['listing']);
     return submission;
   }
 }
@@ -535,7 +534,7 @@ enum CommentSortType {
 }
 
 class SubmissionModeration extends Object with UserContentModerationMixin {
-  static final RegExp _subModRegExp = new RegExp(r'{subreddit}');
+  static final RegExp _subModRegExp = RegExp(r'{subreddit}');
 
   Submission get content => _content;
   final Submission _content;

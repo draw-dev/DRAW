@@ -8,7 +8,7 @@ import 'dart:convert';
 import 'package:logging/logging.dart';
 export 'package:logging/logging.dart' show Level, Logger;
 
-const JsonEncoder e = const JsonEncoder.withIndent('  ');
+const JsonEncoder e = JsonEncoder.withIndent('  ');
 
 abstract class DRAWLoggingUtils {
   static void initialize() {

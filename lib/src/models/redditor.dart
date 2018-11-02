@@ -111,9 +111,9 @@ class RedditorRef extends RedditBase
         GildedListingMixin,
         MessageableMixin,
         RedditorListingMixin {
-  static final _subredditRegExp = new RegExp(r'{subreddit}');
-  static final _userRegExp = new RegExp(r'{user}');
-  static final _usernameRegExp = new RegExp(r'{username}');
+  static final _subredditRegExp = RegExp(r'{subreddit}');
+  static final _userRegExp = RegExp(r'{user}');
+  static final _usernameRegExp = RegExp(r'{username}');
 
   /// The Redditor's display name (e.g., spez or XtremeCheese).
   String get displayName => _name;
@@ -156,7 +156,7 @@ class RedditorRef extends RedditBase
       'username': _name,
       'months': months.toString(),
     };
-    final path = new Uri.https(Reddit.defaultOAuthApiEndpoint,
+    final path = Uri.https(Reddit.defaultOAuthApiEndpoint,
         apiPath['gild_user'].replaceAll(_usernameRegExp, _name));
     final result = await reddit.auth.post(path, body);
     if (result is Map) {
@@ -170,15 +170,14 @@ class RedditorRef extends RedditBase
       .cast<Multireddit>();
 
   /// Promotes this [RedditorRef] into a populated [Redditor].
-  Future<Redditor> populate() async =>
-      new Redditor.parse(reddit, await fetch());
+  Future<Redditor> populate() async => Redditor.parse(reddit, await fetch());
 
   // TODO(bkonyi): Add code samples.
   /// Provides a [RedditorStream] for the current [Redditor].
   ///
   /// [RedditorStream] can be used to retrieve new comments and submissions made
   /// by a [Redditor] indefinitely.
-  RedditorStream get stream => new RedditorStream(this);
+  RedditorStream get stream => RedditorStream(this);
 
   /// Unblock the [Redditor].
   Future<void> unblock() async {

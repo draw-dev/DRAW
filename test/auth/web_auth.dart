@@ -51,7 +51,7 @@ Future<void> main() async {
     final modhash = loginResponseMap['json']['data']['modhash'];
 
     // Wait 2 seconds to avoid being rate limited (just in case).
-    await new Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
 
     // Accept permissions.
     try {
@@ -81,7 +81,7 @@ Future<void> main() async {
 
     // The code is in the header of the response, which we've stored in
     // response.txt.
-    final outputHeaderFile = new File(headerFile);
+    final outputHeaderFile = File(headerFile);
     expect(outputHeaderFile.existsSync(), isTrue);
 
     final fileLines = outputHeaderFile.readAsStringSync().split('\n');

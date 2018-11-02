@@ -15,6 +15,5 @@ abstract class GildableMixin {
 
   /// Gild the author of the item.
   Future<void> gild() async => reddit.post(
-      apiPath['gild_thing'].replaceAll(new RegExp(r'{fullname}'), fullname),
-      null);
+      apiPath['gild_thing'].replaceAll(RegExp(r'{fullname}'), fullname), null);
 }
