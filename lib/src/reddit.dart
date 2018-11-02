@@ -540,13 +540,16 @@ class Reddit {
       SubredditRef.name(this, subreddit);
 
   Future<dynamic> get(String api,
-      {Map<String, String> params, bool objectify: true}) async {
+      {Map<String, String> params,
+      bool objectify: true,
+      bool followRedirects: false}) async {
     if (!_initialized) {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
     final path = Uri.https(defaultOAuthApiEndpoint, api);
-    final response = await auth.get(path, params: params);
+    final response =
+        await auth.get(path, params: params, followRedirects: followRedirects);
     return objectify ? _objector.objectify(response) : response;
   }
 

@@ -13,7 +13,7 @@ export 'package:draw/src/frontpage.dart';
 export 'package:draw/src/objector.dart';
 export 'package:draw/src/user.dart';
 export 'package:draw/src/models/comment.dart';
-export 'package:draw/src/models/comment_forest.dart';
+export 'package:draw/src/models/comment_forest.dart' hide setSubmission;
 export 'package:draw/src/models/flair.dart'
     hide flairPositionToString, stringToFlairPosition;
 export 'package:draw/src/models/inbox.dart';
@@ -37,3 +37,4 @@ export 'package:draw/src/models/subreddit_moderation.dart'
 export 'package:draw/src/models/user_content.dart';
 export 'package:draw/src/models/mixins/voteable.dart';
 export 'package:draw/src/modmail.dart';
+export 'package:draw/src/models/wikipage.dart' hide revisionGenerator;

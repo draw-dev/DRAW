@@ -26,6 +26,7 @@ import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission.dart';
 import 'package:draw/src/models/subreddit_moderation.dart';
 import 'package:draw/src/models/user_content.dart';
+import 'package:draw/src/models/wikipage.dart';
 
 enum SearchSyntax {
   cloudSearch,
@@ -82,7 +83,7 @@ class SubredditRef extends RedditBase
   SubredditStream _stream;
 
   // SubredditStyleSheet _stylesheet; TODO(bkonyi): implement
-  // SubredditWiki _wiki; TODO(bkonyi): implement
+  SubredditWiki _wiki;
 
   int get hashCode => _name.hashCode;
 
@@ -148,14 +149,14 @@ class SubredditRef extends RedditBase
     }
     return _stylesheet;
   }
+*/
 
   SubredditWiki get wiki {
     if (_wiki == null) {
-      _wiki = new SubredditWiki(this);
+      _wiki = SubredditWiki(this);
     }
     return _wiki;
   }
-*/
 
   SubredditRef(Reddit reddit) : super(reddit);
 
@@ -1335,11 +1336,39 @@ class SubredditStream {
   }
 }*/
 
-// TODO(bkonyi): implement
-// Provides a set of wiki functions to a [Subreddit].
-/*class SubredditWiki {
-  final Subreddit _subreddit;
-  SubredditWiki(this._subreddit) {
-    throw DRAWUnimplementedError();
+/// Provides a set of wiki functions to a [Subreddit].
+class SubredditWiki {
+  final SubredditRef _subreddit;
+  final SubredditRelationship banned;
+  final SubredditRelationship contributor;
+  SubredditWiki(this._subreddit)
+      : banned = SubredditRelationship(_subreddit, 'wikibanned'),
+        contributor = SubredditRelationship(_subreddit, 'wikicontributor');
+
+  /// Creates a [WikiPageRef] for the wiki page named `page`.
+  WikiPageRef operator [](String page) =>
+      WikiPageRef(_subreddit.reddit, _subreddit, page.toLowerCase());
+
+  /// Creates a new [WikiPage].
+  ///
+  /// `name` is the name of the page. All spaces are replaced with '_' and the
+  /// name is converted to lowercase.
+  ///
+  /// `content` is the initial content of the page.
+  ///
+  /// `reason` is the optional message explaining why the page was created.
+  Future<WikiPage> create(String name, String content, {String reason}) async {
+    final newName = name.replaceAll(' ', '_').toLowerCase();
+    final newPage = WikiPageRef(_subreddit.reddit, _subreddit, newName);
+    await newPage.edit(content, reason: reason);
+    return await newPage.populate();
   }
-}*/
+
+  /// A [Stream] of [WikiEdit] objects, which represent revisions made to this
+  /// wiki.
+  Stream<WikiEdit> revisions() {
+    final url = apiPath['wiki_revisions']
+        .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
+    return revisionGenerator(_subreddit, url);
+  }
+}

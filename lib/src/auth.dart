@@ -136,9 +136,11 @@ abstract class Authenticator {
   /// Make a simple `GET` request.
   ///
   /// [path] is the destination URI that the request will be made to.
-  Future<dynamic> get(Uri path, {Map<String, String> params}) async {
+  Future<dynamic> get(Uri path,
+      {Map<String, String> params, bool followRedirects: false}) async {
     _logger.info('GET: $path params: ${DRAWLoggingUtils.jsonify(params)}');
-    return _request(_kGetRequest, path, params: params);
+    return _request(_kGetRequest, path,
+        params: params, followRedirects: followRedirects);
   }
 
   /// Make a simple `POST` request.
@@ -176,7 +178,8 @@ abstract class Authenticator {
   /// body fields for a POST request.
   Future<dynamic> _request(String type, Uri path,
       {/* Map<String,String>, String */ body,
-      Map<String, String> params}) async {
+      Map<String, String> params,
+      bool followRedirects: false}) async {
     if (_client == null) {
       throw DRAWAuthenticationError(
           'The authenticator does not have a valid token.');
@@ -191,7 +194,7 @@ abstract class Authenticator {
     // subreddit) but the redirect doesn't forward the OAuth credentials
     // automatically. We disable redirects here and throw a DRAWRedirectResponse
     // so that we can handle the redirect manually on a case-by-case basis.
-    request.followRedirects = false;
+    request.followRedirects = followRedirects;
 
     if (body != null) {
       if (body is Map<String, String>) {
@@ -200,7 +203,7 @@ abstract class Authenticator {
         request.body = body;
       }
     }
-    var responseStream;
+    http.StreamedResponse responseStream;
     try {
       responseStream = await _client.send(request);
     } on oauth2.AuthorizationException catch (e) {

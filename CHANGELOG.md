@@ -1,5 +1,22 @@
 Change Log
 =================================
+## Version 0.4.6 (2019/11/02)
+* Added support for handling wiki pages:
+  * Added `SubredditWiki`, which provides a set of wiki related functions to
+    `SubredditRef` and `Subreddit`.
+  * Added `WikiPageRef` and `WikiPage` which represent and allow for
+    modification of wiki pages.
+  * Added `WikiEdit`, a class which represents edits made to a wiki page.
+  * Added `WikiPermissionLevel` enum, which describes all valid permissions
+    available to control editing and viewing of wiki pages.
+  * Added `WikiPageSettings`, a representation of all settings for a wiki page.
+  * Added `WikiPageModeration`, a helper class for updating settings for a wiki
+    page.
+* Added support for new Reddit Silver, Gold, and Platinum.
+
+### Deprecation Notice (Removal in 0.5.0)
+* Marked `gilded` property of `UserContentInitialized` as deprecated.
+
 ## Version 0.4.5 (2019/10/20)
 * Added `ModeratorRelationship`, a class that allows for management of moderators
   for a subreddit.
@@ -12,6 +29,8 @@ Change Log
 * Added `Modmail`, `ModmailConversation`, `ModmailMessage`, `ModmailAction` and
   `ModmailActionType`, which can be used to perform mod-mail actions.
 * Added `vote` getter to `Submission` to be consistent with `Comment`.
+
+### Deprecation Notice (Removal in 0.5.0)
 * Marked `likes` getter in `Submission` as deprecated.
 
 ## Version 0.4.3 (2019/09/23)

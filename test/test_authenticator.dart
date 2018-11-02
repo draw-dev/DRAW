@@ -71,7 +71,8 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<dynamic> get(Uri path, {Map<String, String> params}) async {
+  Future<dynamic> get(Uri path,
+      {Map<String, String> params, bool followRedirects: false}) async {
     const redirectResponseStr = 'DRAWRedirectResponse';
     var result;
     if (isRecording) {
@@ -83,7 +84,8 @@ class TestAuthenticator extends Authenticator {
       }
     } else {
       try {
-        result = await _recordAuth.get(path, params: params);
+        result = await _recordAuth.get(path,
+            params: params, followRedirects: followRedirects);
       } on DRAWRedirectResponse catch (e) {
         _recorder.given([path.toString(), params.toString()]).reply(
             [redirectResponseStr, e.path]).once();
