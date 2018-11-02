@@ -64,11 +64,11 @@ class DRAWConfigContext {
   /// The default Object Mapping key for [Subreddit].
   static const String kSubredditKind = 't5';
 
-  static const Map<String, List<String>> fieldMap = const {
-    kShortUrl: const [kShortUrl],
-    kCheckForUpdates: const [kCheckForUpdates],
-    kKind: const [kComment, kMessage, kRedditor, kSubmission, kSubreddit],
-    kOptionalField: const [
+  static const Map<String, List<String>> fieldMap = {
+    kShortUrl: [kShortUrl],
+    kCheckForUpdates: [kCheckForUpdates],
+    kKind: [kComment, kMessage, kRedditor, kSubmission, kSubreddit],
+    kOptionalField: [
       kClientId,
       kClientSecret,
       kHttpProxy,
@@ -79,17 +79,17 @@ class DRAWConfigContext {
       kUserAgent,
       kUsername,
     ],
-    kOptionalWithDefaultValues: const [
+    kOptionalWithDefaultValues: [
       kAuthorize,
       kAccessToken,
       kRevokeToken,
     ],
-    kRequiredField: const [kOauthUrl, kRedditUrl]
+    kRequiredField: [kOauthUrl, kRedditUrl]
   };
 
   Config _customConfig;
 
-  final Map<String, String> _kind = new Map<String, String>();
+  final Map<String, String> _kind = Map<String, String>();
 
   bool _checkForUpdates;
 
@@ -183,13 +183,13 @@ class DRAWConfigContext {
 
     // TODO(bkonyi): Issue #55 - support draw.ini configs on Fuchsia.
     if (!Platform.isFuchsia) {
-      final configFileReader = new ConfigFileReader(_configUrl);
+      final configFileReader = ConfigFileReader(_configUrl);
 
       // Load the first file found in order of path preference.
       final primaryFile = configFileReader.loadCorrectFile();
       if (primaryFile != null) {
         try {
-          _customConfig = new Config.fromStrings(primaryFile.readAsLinesSync());
+          _customConfig = Config.fromStrings(primaryFile.readAsLinesSync());
         } catch (exception) {
           throw DRAWClientError('Could not parse configuration file.');
         }
@@ -197,7 +197,7 @@ class DRAWConfigContext {
     }
 
     // Create an empty config if we can't find the config or we're on Fuchsia.
-    _customConfig ??= new Config();
+    _customConfig ??= Config();
 
     // Load values found in the ini file, into the object fields.
     fieldMap.forEach((key, value) => _fieldInitializer(key, value));

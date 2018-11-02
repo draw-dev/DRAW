@@ -29,7 +29,7 @@ class CommentForest {
   List get comments => _comments;
 
   CommentForest(SubmissionRef submission, [List comments])
-      : _comments = new List(),
+      : _comments = List(),
         _submission = submission {
     if (comments != null) {
       _comments.addAll(comments);
@@ -76,7 +76,7 @@ class CommentForest {
   /// Will return the comments in the following order: [1, 5, 2, 4, 3].
   List toList() {
     final comments = [];
-    final queue = new Queue.from(_comments);
+    final queue = Queue.from(_comments);
     while (queue.isNotEmpty) {
       final comment = queue.removeFirst();
       comments.add(comment);
@@ -136,8 +136,8 @@ class CommentForest {
     final int Function(MoreComments, MoreComments) comparator = (a, b) {
       return a.count.compareTo(b.count);
     };
-    final moreComments = new HeapPriorityQueue<MoreComments>(comparator);
-    final queue = new Queue<List>();
+    final moreComments = HeapPriorityQueue<MoreComments>(comparator);
+    final queue = Queue<List>();
 
     for (final rootComment in currentRoot) {
       queue.add([_kNoParent, rootComment]);

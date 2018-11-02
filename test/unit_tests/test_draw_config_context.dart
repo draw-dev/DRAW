@@ -93,7 +93,7 @@ void main() {
       final expectedTruthValue = false;
       final falseValues = [false, 'False', 'other', 'anything', '0', 0];
       for (var value in falseValues) {
-        final config = new DRAWConfigContext(checkForUpdates: value);
+        final config = DRAWConfigContext(checkForUpdates: value);
         expect(config.checkForUpdates, expectedTruthValue);
       }
     });
@@ -102,7 +102,7 @@ void main() {
       final expectedTruthValue = true;
       final trueValues = [true, '1', 'true', 'YES', 'on'];
       for (var value in trueValues) {
-        final config = new DRAWConfigContext(checkForUpdates: value);
+        final config = DRAWConfigContext(checkForUpdates: value);
         assert(
             config.checkForUpdates == expectedTruthValue, "failed on $value");
       }

@@ -24,20 +24,20 @@ class ConfigFileReader {
   /// Loads file from [_localConfigPath] or [_userConfigPath].
   File loadCorrectFile() {
     if (_configUrl != null) {
-      final primaryFile = new File(_configUrl);
+      final primaryFile = File(_configUrl);
       if (primaryFile.existsSync()) {
         return primaryFile;
       }
     }
     // Check if file exists locally.
-    var primaryFile = new File(_localConfigPath.toFilePath());
+    var primaryFile = File(_localConfigPath.toFilePath());
     if (primaryFile.existsSync()) {
       _configUrl = _localConfigPath.toString();
       return primaryFile;
     }
 
     // Check if file exists in user directory.
-    primaryFile = new File(_userConfigPath.toFilePath());
+    primaryFile = File(_userConfigPath.toFilePath());
     if (primaryFile.existsSync()) {
       _configUrl = _userConfigPath.toString();
       return primaryFile;
@@ -68,7 +68,7 @@ class ConfigFileReader {
     if (osConfigPath == null) {
       // Sets osConfigPath to the corresponding root path
       // based on the os.
-      final path.Context osDir = new path.Context();
+      final path.Context osDir = path.Context();
       final cwd = osDir.current;
       osConfigPath = osDir.rootPrefix(cwd);
     }
@@ -77,7 +77,7 @@ class ConfigFileReader {
 
   /// Returns path to local configuration file.
   Uri _getLocalConfigPath() {
-    final path.Context osDir = new path.Context();
+    final path.Context osDir = path.Context();
     final cwd = osDir.current;
     return path.toUri(path.join(cwd, kFileName));
   }

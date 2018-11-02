@@ -57,7 +57,7 @@ abstract class RedditBaseInitializedMixin {
   @override
   String toString() {
     if (_data != null) {
-      final encoder = new JsonEncoder.withIndent('  ');
+      final encoder = JsonEncoder.withIndent('  ');
       return encoder.convert(_data);
     }
     return 'null';

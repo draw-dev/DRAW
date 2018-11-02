@@ -83,7 +83,7 @@ abstract class BaseListingMixin {
       if (this is RedditorRef) {
         arg = 'overview';
       }
-      _params ??= new Map<String, String>();
+      _params ??= Map<String, String>();
       _params['sort'] = sort;
       return ListingGenerator.generator<UserContent>(reddit, path + arg,
           limit: ListingGenerator.getLimit(params), params: _params);
@@ -97,7 +97,7 @@ abstract class BaseListingMixin {
     if (timeFilter == null) {
       throw DRAWArgumentError('Argument "timeFilter" cannot be null');
     }
-    final _params = params ?? new Map();
+    final _params = params ?? Map();
     _params['t'] = timeFilterToString(timeFilter);
     return _buildGenerator(_params, sort);
   }

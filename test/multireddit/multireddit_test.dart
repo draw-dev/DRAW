@@ -64,7 +64,7 @@ Future<void> main() async {
         'path': '/user/MyFifthOne/m/adventure/',
       }
     };
-    final multireddit = new Multireddit.parse(reddit, data);
+    final multireddit = Multireddit.parse(reddit, data);
     final newMulti = await multireddit.copy('test-copy-adventure-2');
     expect(newMulti.displayName, 'test_copy_adventure_2');
     expect(newMulti.subreddits, multireddit.subreddits);
@@ -97,7 +97,7 @@ Future<void> main() async {
     // Testing using getters.
     expect(multi.author.displayName, (await reddit.user.me()).displayName);
     expect(multi.over18, isFalse);
-    expect(multi.keyColor, new HexColor('#cee3f8'));
+    expect(multi.keyColor, HexColor('#cee3f8'));
     expect(multi.visibility, Visibility.public);
     expect(multi.weightingScheme, WeightingScheme.classic);
     expect(multi.iconName, isNull);

@@ -21,11 +21,11 @@ Future<Reddit> createRedditTestInstance(String path, {bool live: false}) async {
         password: kPassword,
         clientId: kScriptClientID,
         clientSecret: kScriptClientSecret);
-    testAuth = new TestAuthenticator(path, recordAuth: tempReddit.auth);
+    testAuth = TestAuthenticator(path, recordAuth: tempReddit.auth);
   } else {
-    testAuth = new TestAuthenticator(path);
+    testAuth = TestAuthenticator(path);
   }
-  return new Reddit.fromAuthenticator(testAuth);
+  return Reddit.fromAuthenticator(testAuth);
 }
 
 Future<void> writeRecording(Reddit reddit) async {

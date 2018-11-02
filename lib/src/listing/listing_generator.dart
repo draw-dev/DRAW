@@ -35,8 +35,8 @@ abstract class ListingGenerator {
     final kAfterKey = 'after';
     final nullLimit = 1024;
     final paramsInternal = (params == null)
-        ? new Map<String, String>()
-        : new Map<String, String>.from(params);
+        ? Map<String, String>()
+        : Map<String, String>.from(params);
     final _limit = limit ?? nullLimit;
     paramsInternal[kLimitKey] = _limit.toString();
     int yielded = 0;

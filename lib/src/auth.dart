@@ -30,7 +30,7 @@ const String _kTokenTypeHintKey = 'token_type_hint';
 const String _kUserAgentKey = 'user-agent';
 const String _kUsernameKey = 'username';
 
-final Logger _logger = new Logger('Authenticator');
+final Logger _logger = Logger('Authenticator');
 
 /// The [Authenticator] class provides an interface to interact with the Reddit API
 /// using OAuth2. An [Authenticator] is responsible for keeping track of OAuth2
@@ -49,10 +49,10 @@ abstract class Authenticator {
   Authenticator.restore(
       DRAWConfigContext config, oauth2.Credentials credentials)
       : _config = config,
-        _client = new oauth2.Client(credentials,
+        _client = oauth2.Client(credentials,
             identifier: config.clientId,
             secret: config.clientSecret,
-            httpClient: new http.Client());
+            httpClient: http.Client());
 
   /// Not implemented for [Authenticator]s other than [WebAuthenticator].
   Future<void> authorize(String code) async {
@@ -81,7 +81,7 @@ abstract class Authenticator {
     if (credentials == null) {
       return;
     }
-    final tokens = new List<Map>();
+    final tokens = List<Map>();
     final accessToken = {
       _kTokenKey: credentials.accessToken,
       _kTokenTypeHintKey: 'access_token',
@@ -96,7 +96,7 @@ abstract class Authenticator {
       tokens.add(refreshToken);
     }
     for (final token in tokens) {
-      final revokeAccess = new Map<String, String>();
+      final revokeAccess = Map<String, String>();
       revokeAccess[_kTokenKey] = token[_kTokenKey];
       revokeAccess[_kTokenTypeHintKey] = token[_kTokenTypeHintKey];
 
@@ -110,10 +110,10 @@ abstract class Authenticator {
         final userInfo = '$clientId:$clientSecret';
         path = path.replace(userInfo: userInfo);
       }
-      final headers = new Map<String, String>();
+      final headers = Map<String, String>();
       headers[_kUserAgentKey] = _config.userAgent;
 
-      final httpClient = new http.Client();
+      final httpClient = http.Client();
 
       // Request the token from the server.
       final response =
@@ -185,7 +185,7 @@ abstract class Authenticator {
       await refresh();
     }
     final finalPath = path.replace(queryParameters: params);
-    final request = new http.Request(type, finalPath);
+    final request = http.Request(type, finalPath);
 
     // Some API requests initiate a redirect (i.e., random submission from a
     // subreddit) but the redirect doesn't forward the OAuth credentials
@@ -235,9 +235,9 @@ abstract class Authenticator {
       userInfo = '$clientId:$clientSecret';
     }
 
-    final httpClient = new http.Client();
-    final start = new DateTime.now();
-    final headers = new Map<String, String>();
+    final httpClient = http.Client();
+    final start = DateTime.now();
+    final headers = Map<String, String>();
     headers[_kUserAgentKey] = _config.userAgent;
 
     // Request the token from the server.
@@ -257,7 +257,7 @@ abstract class Authenticator {
         response, _grant.tokenEndpoint, start, ['*'], ',');
 
     // Generate the OAuth2 client that will be used to query Reddit servers.
-    _client = new oauth2.Client(credentials,
+    _client = oauth2.Client(credentials,
         identifier: clientId, secret: clientSecret, httpClient: httpClient);
   }
 
@@ -272,9 +272,9 @@ abstract class Authenticator {
     // Retrieve the client ID and secret.
     final clientId = _grant.identifier;
 
-    final httpClient = new http.Client();
-    final start = new DateTime.now();
-    final headers = new Map<String, String>();
+    final httpClient = http.Client();
+    final start = DateTime.now();
+    final headers = Map<String, String>();
     headers[_kUserAgentKey] = _config.userAgent;
     headers[_kAuthorizationKey] =
         'Basic ${base64Encode((clientId + ":").codeUnits)})';
@@ -294,7 +294,7 @@ abstract class Authenticator {
         response, _grant.tokenEndpoint, start, ['*'], ',');
 
     // Generate the OAuth2 client that will be used to query Reddit servers.
-    _client = new oauth2.Client(credentials,
+    _client = oauth2.Client(credentials,
         identifier: clientId, httpClient: httpClient);
   }
 
@@ -332,7 +332,7 @@ class ScriptAuthenticator extends Authenticator {
   static Future<ScriptAuthenticator> create(
       DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant) async {
     final ScriptAuthenticator authenticator =
-        new ScriptAuthenticator._(config, grant);
+        ScriptAuthenticator._(config, grant);
     await authenticator._authenticationFlow();
     return authenticator;
   }
@@ -342,7 +342,7 @@ class ScriptAuthenticator extends Authenticator {
   /// call [_requestToken] to authenticate.
   @override
   Future<void> _authenticationFlow() async {
-    final accountInfo = new Map<String, String>();
+    final accountInfo = Map<String, String>();
     accountInfo[_kUsernameKey] = _config.username;
     accountInfo[_kPasswordKey] = _config.password;
     accountInfo[_kGrantTypeKey] = 'password';
@@ -374,7 +374,7 @@ class ReadOnlyAuthenticator extends Authenticator {
   static Future<ReadOnlyAuthenticator> create(
       DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant) async {
     final ReadOnlyAuthenticator authenticator =
-        new ReadOnlyAuthenticator._(config, grant, false, null);
+        ReadOnlyAuthenticator._(config, grant, false, null);
     await authenticator._authenticationFlow();
     return authenticator;
   }
@@ -382,7 +382,7 @@ class ReadOnlyAuthenticator extends Authenticator {
   static Future<ReadOnlyAuthenticator> createUntrusted(DRAWConfigContext config,
       oauth2.AuthorizationCodeGrant grant, String deviceId) async {
     final ReadOnlyAuthenticator authenticator =
-        new ReadOnlyAuthenticator._(config, grant, true, deviceId);
+        ReadOnlyAuthenticator._(config, grant, true, deviceId);
     await authenticator._authenticationFlow();
     return authenticator;
   }
@@ -392,7 +392,7 @@ class ReadOnlyAuthenticator extends Authenticator {
   /// call [_requestToken] to authenticate.
   @override
   Future<void> _authenticationFlow() async {
-    final accountInfo = new Map<String, String>();
+    final accountInfo = Map<String, String>();
     if (_applicationOnlyOAuth) {
       accountInfo[_kGrantTypeKey] =
           'https://oauth.reddit.com/grants/installed_client';
@@ -426,15 +426,15 @@ class WebAuthenticator extends Authenticator {
   WebAuthenticator._restore(DRAWConfigContext config, String credentialsJson)
       : _redirect =
             (config.redirectUrl != null) ? Uri.parse(config.redirectUrl) : null,
-        super.restore(config, new oauth2.Credentials.fromJson(credentialsJson));
+        super.restore(config, oauth2.Credentials.fromJson(credentialsJson));
 
   static WebAuthenticator create(
           DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant) =>
-      new WebAuthenticator._(config, grant);
+      WebAuthenticator._(config, grant);
 
   static WebAuthenticator restore(
           DRAWConfigContext config, String credentialsJson) =>
-      new WebAuthenticator._restore(config, credentialsJson);
+      WebAuthenticator._restore(config, credentialsJson);
 
   /// Generates the authentication URL used for Reddit user verification in a
   /// browser.
@@ -465,7 +465,7 @@ class WebAuthenticator extends Authenticator {
     // getAuthorizationUrl returns a Uri which is missing the duration field, so
     // we need to add it here.
     final queryParameters =
-        new Map<String, dynamic>.from(redditAuthUri.queryParameters);
+        Map<String, dynamic>.from(redditAuthUri.queryParameters);
     queryParameters[_kDurationKey] = duration;
     redditAuthUri = redditAuthUri.replace(queryParameters: queryParameters);
     if (compactLogin) {

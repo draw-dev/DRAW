@@ -211,7 +211,7 @@ Future<void> main() async {
     expect(october.uniques, equals(3));
     expect(october.pageviews, equals(17));
     expect(october.subscriptions, equals(0));
-    expect(october.periodStart, equals(new DateTime.utc(2017, 10)));
+    expect(october.periodStart, equals(DateTime.utc(2017, 10)));
   });
 
   test('lib/subreddit_flair/call', () async {
