@@ -49,11 +49,11 @@ Future<void> main() async {
 
     var output = "";
     await runZoned(printer, zoneSpecification:
-        new ZoneSpecification(print: (self, parent, zone, message) {
+        ZoneSpecification(print: (self, parent, zone, message) {
       output += message + '\n';
     }));
     final actual =
-        new File('test/comment/continue_test_expected.out').readAsStringSync();
+        File('test/comment/continue_test_expected.out').readAsStringSync();
     expect(output, actual);
   });
 
@@ -71,13 +71,12 @@ Future<void> main() async {
     var output = "";
     var count = 0;
     await runZoned(printer, zoneSpecification:
-        new ZoneSpecification(print: (self, parent, zone, message) {
+        ZoneSpecification(print: (self, parent, zone, message) {
       count++;
       output += "$count" + message + '\n';
     }));
-    final actual =
-        new File('test/comment/more_comment_expand_test_expected.out')
-            .readAsStringSync();
+    final actual = File('test/comment/more_comment_expand_test_expected.out')
+        .readAsStringSync();
     expect(output, actual);
   });
 
@@ -94,12 +93,12 @@ Future<void> main() async {
     var output = "";
     var count = 0;
     await runZoned(printer, zoneSpecification:
-        new ZoneSpecification(print: (self, parent, zone, message) {
+        ZoneSpecification(print: (self, parent, zone, message) {
       count++;
       output += "$count" + message + '\n';
     }));
-    final actual = new File('test/comment/tons_of_comments_expected.out')
-        .readAsStringSync();
+    final actual =
+        File('test/comment/tons_of_comments_expected.out').readAsStringSync();
     expect(output, equals(actual));
   });
 
@@ -138,10 +137,8 @@ Future<void> main() async {
     expect(comment.canModPost, isTrue);
     expect(comment.collapsed, isFalse);
     expect(comment.collapsedReason, isNull);
-    expect(
-        comment.createdUtc,
-        new DateTime.fromMillisecondsSinceEpoch(1510703692 * 1000,
-            isUtc: true));
+    expect(comment.createdUtc,
+        DateTime.fromMillisecondsSinceEpoch(1510703692 * 1000, isUtc: true));
     expect(comment.depth, 0);
     expect(comment.downvotes, 0);
     expect(comment.edited, isFalse);

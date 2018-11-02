@@ -366,7 +366,7 @@ Future<void> main() async {
         'test/subreddit/subreddit_moderation_settings.json');
 
     final settings = await morbidRealityMod.settings();
-    final settingsCopy = new SubredditSettings.copy(settings);
+    final settingsCopy = SubredditSettings.copy(settings);
     expect(settings.allowPostCrossposts, settingsCopy.allowPostCrossposts);
     expect(settings.defaultSet, settingsCopy.defaultSet);
     expect(settings.description, settingsCopy.description);

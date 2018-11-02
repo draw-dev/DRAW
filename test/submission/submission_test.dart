@@ -158,7 +158,7 @@ Future<void> main() async {
   test('lib/submission/reply', () async {
     final reddit = await createRedditTestInstance(
         'test/submission/lib_submission_reply.json');
-    final submission = await (new SubmissionRef.withPath(reddit,
+    final submission = await (SubmissionRef.withPath(reddit,
             r'https://www.reddit.com/r/drawapitesting/comments/7x6ew7/draw_using_dart_to_moderate_reddit_comments/'))
         .populate();
     await submission.reply('Woohoo!');

@@ -319,7 +319,7 @@ class SubredditSettings {
   final SubredditRef subreddit;
 
   SubredditSettings.copy(SubredditSettings original)
-      : _data = new Map.from(original._data),
+      : _data = Map.from(original._data),
         subreddit = original.subreddit;
 
   SubredditSettings._(this.subreddit, this._data);
@@ -435,7 +435,7 @@ class SubredditSettings {
   @override
   String toString() {
     if (_data != null) {
-      final encoder = new JsonEncoder.withIndent('  ');
+      final encoder = JsonEncoder.withIndent('  ');
       return encoder.convert(_data);
     }
     return 'null';
@@ -448,7 +448,7 @@ enum SubredditModerationContentTypeFilter {
 }
 
 ModeratorAction buildModeratorAction(Reddit reddit, Map data) =>
-    new ModeratorAction._(reddit, data);
+    ModeratorAction._(reddit, data);
 
 /// Represents an action taken by a moderator.
 class ModeratorAction {
@@ -465,7 +465,7 @@ class ModeratorAction {
   @override
   String toString() {
     if (data != null) {
-      final encoder = new JsonEncoder.withIndent('  ');
+      final encoder = JsonEncoder.withIndent('  ');
       return encoder.convert(data);
     }
     return 'null';
@@ -474,7 +474,7 @@ class ModeratorAction {
 
 /// Provides a set of moderation functions to a [Subreddit].
 class SubredditModeration {
-  static final _subredditRegExp = new RegExp(r'{subreddit}');
+  static final _subredditRegExp = RegExp(r'{subreddit}');
   final SubredditRef _subreddit;
   SubredditModeration(this._subreddit);
 
@@ -580,7 +580,7 @@ class SubredditModeration {
   Future<SubredditSettings> settings() async {
     final data = (await _subreddit.reddit
         .get(_formatApiPath('subreddit_settings'), objectify: false))['data'];
-    return new SubredditSettings._(_subreddit, data);
+    return SubredditSettings._(_subreddit, data);
   }
 
   /// Returns a [Stream<UserContent>] of [Comment]s and [Submission]s which
@@ -610,7 +610,7 @@ class SubredditModeration {
     if (updated == null) {
       throw DRAWArgumentError("Field 'updated' cannot be null.");
     }
-    final data = new Map<String, dynamic>.from(updated._data);
+    final data = Map<String, dynamic>.from(updated._data);
     final remap = <String, String>{
       'allow_top': 'default_set',
       'lang': 'language',

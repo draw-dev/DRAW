@@ -19,7 +19,7 @@ import 'package:draw/src/exceptions.dart';
 class TestAuthenticator extends Authenticator {
   final String _recordingPath;
   final Authenticator _recordAuth;
-  final _recorder = new Recorder<List, dynamic>();
+  final _recorder = Recorder<List, dynamic>();
   bool get isRecording => (_recordAuth == null);
   Recording _recording;
 
@@ -33,12 +33,12 @@ class TestAuthenticator extends Authenticator {
   TestAuthenticator(String recordingPath, {Authenticator recordAuth})
       : _recordingPath = recordingPath,
         _recordAuth = recordAuth,
-        super(new DRAWConfigContext(), null) {
+        super(DRAWConfigContext(), null) {
     if (isRecording) {
-      final rawRecording = new File(recordingPath).readAsStringSync();
+      final rawRecording = File(recordingPath).readAsStringSync();
       final recording = json.decode(rawRecording).cast<Map<String, dynamic>>();
 
-      _recording = new Recording.fromJson(recording,
+      _recording = Recording.fromJson(recording,
           toRequest: (q) => q,
           toResponse: (r) => r,
           requestEquality: const ListEquality());
@@ -157,7 +157,7 @@ class TestAuthenticator extends Authenticator {
   /// does nothing and returns null.
   Future<File> writeRecording() {
     if (!isRecording) {
-      return (new File(_recordingPath)).writeAsString(json
+      return (File(_recordingPath)).writeAsString(json
           .encode(_recorder.toRecording().toJsonEncodable(
               encodeRequest: (q) => q, encodeResponse: (r) => r))
           .toString());

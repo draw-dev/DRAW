@@ -53,7 +53,7 @@ void setRepliesInternal(commentLike, CommentForest comments) {
 /// Represents comments which have been collapsed under a 'load more comments'
 /// or 'continue this thread' section.
 class MoreComments extends RedditBase with RedditBaseInitializedMixin {
-  static final RegExp _submissionRegExp = new RegExp(r'{id}');
+  static final RegExp _submissionRegExp = RegExp(r'{id}');
   List _comments;
   List<String> _children;
   int _count;
@@ -88,7 +88,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   bool operator <(other) => (count > other.count);
 
   String toString() {
-    final buffer = new StringBuffer();
+    final buffer = StringBuffer();
     buffer.write('<MoreComments count=${_children.length}, children=');
     if (_children.length > 4) {
       final _tmp = _children.sublist(0, 4);
@@ -325,7 +325,7 @@ class Comment extends CommentRef
     // Check if the comment already exists.
     CommentRef parent = getCommentByIdInternal(_submission, parentId);
     if (parent == null) {
-      parent = new CommentRef.withID(reddit, parentId.split('_')[1]);
+      parent = CommentRef.withID(reddit, parentId.split('_')[1]);
       parent._submission = _submission;
     }
     return parent;
@@ -361,7 +361,7 @@ class Comment extends CommentRef
     };
     // TODO(bkonyi): clean-up this so it's objectified in a nicer way?
     final commentList = (await reddit.get(path, params: params))[1]['listing'];
-    final queue = new Queue.from(commentList);
+    final queue = Queue.from(commentList);
     var comment;
     while (queue.isNotEmpty && ((comment == null) || (comment._id != _id))) {
       comment = queue.removeFirst();
@@ -407,7 +407,7 @@ class CommentRef extends UserContent {
     }
   }
 
-  static final RegExp _commentRegExp = new RegExp(r'{id}');
+  static final RegExp _commentRegExp = RegExp(r'{id}');
 
   CommentRef.withID(Reddit reddit, this._id)
       : super.withPath(reddit, _infoPath(_id));
