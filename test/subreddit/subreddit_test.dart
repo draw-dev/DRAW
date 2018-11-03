@@ -491,6 +491,18 @@ Future<void> main() async {
     expect(settings.editors.length, 0);
   });
 
+  test('lib/subreddit_wiki/wiki_page_moderation_invalid_add_remove', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_wiki_page_moderation_invalid_add_remove.json');
+    final wikiPage = reddit.subreddit('drawapitesting').wiki['test_page'];
+    final wikiPageMod = wikiPage.mod;
+
+    expect(() async => await wikiPageMod.add('DrAwApIoFfIcIaL2'),
+        throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
+    expect(() async => await wikiPageMod.remove('DrAwApIoFfIcIaL2'),
+        throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
+  });
+
   test('lib/subreddit_wiki/wiki_page_moderation_settings', () async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_wiki_page_moderation_settings.json');

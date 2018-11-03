@@ -58,3 +58,25 @@ class DRAWGildingException implements Exception {
 class DRAWUnimplementedError extends UnimplementedError {
   DRAWUnimplementedError([String message]) : super(message);
 }
+
+class DRAWNotFoundException implements Exception {
+  final String reason;
+  final String message;
+  DRAWNotFoundException(this.reason, this.message);
+  String toString() =>
+      'DRAWNotFoundException(Reason: "$reason", Message: "$message")';
+}
+
+class DRAWInvalidRedditorException implements Exception {
+  final String redditorName;
+  DRAWInvalidRedditorException(this.redditorName);
+  String toString() =>
+      'DRAWInvalidRedditorException: "$redditorName" is not a valid redditor.';
+}
+
+class DRAWUnknownResponseException implements Exception {
+  final int status;
+  final String message;
+  DRAWUnknownResponseException(this.status, this.message);
+  String toString() => 'DRAWUnknownResponse: $message (status: $status)';
+}
