@@ -14,6 +14,9 @@ import 'package:draw/src/auth.dart';
 import 'package:draw/src/draw_config_context.dart';
 import 'package:draw/src/exceptions.dart';
 
+const redirectResponseStr = 'DRAWRedirectResponse';
+const notFoundExceptionStr = 'DRAWNotFoundException';
+
 /// A drop-in replacement for [Authenticator], used for recording and replaying
 /// Reddit API interactions, used primarily for testing.
 class TestAuthenticator extends Authenticator {
@@ -73,14 +76,20 @@ class TestAuthenticator extends Authenticator {
   @override
   Future<dynamic> get(Uri path,
       {Map<String, String> params, bool followRedirects: false}) async {
-    const redirectResponseStr = 'DRAWRedirectResponse';
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), params.toString()]);
       if ((result is List) &&
-          result.isNotEmpty &&
-          (result[0] == redirectResponseStr)) {
-        throw DRAWRedirectResponse(result[1], null);
+          result.isNotEmpty) {
+        final type = result[0];
+        switch(type) {
+          case redirectResponseStr:
+            throw DRAWRedirectResponse(result[1], null);
+          case notFoundExceptionStr:
+            throw DRAWNotFoundException(result[1], result[2]);
+          default:
+            throw DRAWInternalError('Could not determine exception type: $type');
+        }
       }
     } else {
       try {
@@ -89,6 +98,10 @@ class TestAuthenticator extends Authenticator {
       } on DRAWRedirectResponse catch (e) {
         _recorder.given([path.toString(), params.toString()]).reply(
             [redirectResponseStr, e.path]).once();
+        throw e;
+      } on DRAWNotFoundException catch (e) {
+        _recorder.given([path.toString(), params.toString()]).reply(
+            [notFoundExceptionStr, e.reason, e.message]).once();
         throw e;
       }
       _recorder
@@ -104,8 +117,19 @@ class TestAuthenticator extends Authenticator {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);
+      if ((result is List) &&
+          result.isNotEmpty &&
+          (result[0] == notFoundExceptionStr)) {
+        throw DRAWNotFoundException(result[1], result[2]);
+      }
     } else {
-      result = await _recordAuth.post(path, body);
+      try {
+        result = await _recordAuth.post(path, body);
+      } on DRAWNotFoundException catch (e) {
+        _recorder.given([path.toString(), body.toString()]).reply(
+            [notFoundExceptionStr, e.reason, e.message]).once();
+        throw e;
+      }
       _recorder
           .given([path.toString(), body.toString()])
           .reply(_copyResponse(result))

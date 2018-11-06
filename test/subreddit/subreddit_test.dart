@@ -385,6 +385,14 @@ Future<void> main() async {
         DateTime.fromMillisecondsSinceEpoch(1540940785 * 1000, isUtc: true));
   });
 
+  test('lib/subreddit_wiki/invalid_wiki_page', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_wiki_invalid_wiki_page.json');
+    final wiki = reddit.subreddit('drawapitesting').wiki;
+    await expectLater(() async => await wiki['invalid'].populate(),
+        throwsA(TypeMatcher<DRAWNotFoundException>()));
+  });
+
   test('lib/subreddit_wiki/edit_wiki_page', () async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_wiki_edit_wiki_page.json');
@@ -497,9 +505,9 @@ Future<void> main() async {
     final wikiPage = reddit.subreddit('drawapitesting').wiki['test_page'];
     final wikiPageMod = wikiPage.mod;
 
-    expect(() async => await wikiPageMod.add('DrAwApIoFfIcIaL2'),
+    await expectLater(() async => await wikiPageMod.add('DrAwApIoFfIcIaL2'),
         throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
-    expect(() async => await wikiPageMod.remove('DrAwApIoFfIcIaL2'),
+    await expectLater(() async => await wikiPageMod.remove('DrAwApIoFfIcIaL2'),
         throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
   });
 
