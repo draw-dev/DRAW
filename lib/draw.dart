@@ -17,6 +17,7 @@ export 'package:draw/src/models/comment_forest.dart' hide setSubmission;
 export 'package:draw/src/models/flair.dart'
     hide flairPositionToString, stringToFlairPosition;
 export 'package:draw/src/models/inbox.dart';
+export 'package:draw/src/listing/mixins/base.dart' show Sort, TimeFilter;
 export 'package:draw/src/models/mixins/user_content_moderation.dart'
     show DistinctionType;
 export 'package:draw/src/models/message.dart';
