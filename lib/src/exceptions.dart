@@ -67,11 +67,32 @@ class DRAWNotFoundException implements Exception {
       'DRAWNotFoundException(Reason: "$reason", Message: "$message")';
 }
 
+class DRAWInvalidCommentException implements Exception {
+  final String commentId;
+  DRAWInvalidCommentException(this.commentId);
+  String toString() =>
+      'DRAWInvalidCommentException: "$commentId" is not a valid comment ID.';
+}
+
 class DRAWInvalidRedditorException implements Exception {
   final String redditorName;
   DRAWInvalidRedditorException(this.redditorName);
   String toString() =>
       'DRAWInvalidRedditorException: "$redditorName" is not a valid redditor.';
+}
+
+class DRAWInvalidSubmissionException implements Exception {
+  final String submissionId;
+  DRAWInvalidSubmissionException(this.submissionId);
+  String toString() =>
+      'DRAWInvalidSubmissionException: "$submissionId" is not a valid submission ID.';
+}
+
+class DRAWInvalidSubredditException implements Exception {
+  final String subredditName;
+  DRAWInvalidSubredditException(this.subredditName);
+  String toString() =>
+      'DRAWInvalidSubredditException: "$subredditName" is not a valid subreddit.';
 }
 
 class DRAWUnknownResponseException implements Exception {

@@ -220,12 +220,11 @@ abstract class Authenticator {
     final response = await responseStream.stream.bytesToString();
     if (response.isEmpty) return null;
     final parsed = json.decode(response);
-    if ((parsed is Map) && parsed.containsKey(_kErrorKey)) {
-      _throwAuthenticationError(parsed);
-    }
-
     if ((parsed is Map) && responseStream.statusCode >= 400) {
       parseAndThrowError(responseStream.statusCode, parsed);
+    }
+    if ((parsed is Map) && parsed.containsKey(_kErrorKey)) {
+      _throwAuthenticationError(parsed);
     }
     _logger.finest('RESPONSE: ${DRAWLoggingUtils.jsonify(parsed)}');
     return parsed;

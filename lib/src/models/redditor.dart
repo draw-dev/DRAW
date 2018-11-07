@@ -170,7 +170,13 @@ class RedditorRef extends RedditBase
       .cast<Multireddit>();
 
   /// Promotes this [RedditorRef] into a populated [Redditor].
-  Future<Redditor> populate() async => Redditor.parse(reddit, await fetch());
+  Future<Redditor> populate() async {
+    try {
+      return Redditor.parse(reddit, await fetch());
+    } on DRAWNotFoundException catch(e) {
+      throw DRAWInvalidRedditorException(displayName);    
+    }
+  }
 
   // TODO(bkonyi): Add code samples.
   /// Provides a [RedditorStream] for the current [Redditor].

@@ -450,7 +450,11 @@ class CommentRef extends UserContent {
     };
     // Gets some general info about the comment.
     final result = await reddit.get(apiPath['info'], params: params);
-    final comment = result['listing'][0];
+    final List listing = result['listing'];
+    if (listing.length == 0) {
+      throw DRAWInvalidCommentException(_id);
+    }
+    final comment = listing[0];
 
     // The returned comment isn't fully populated, so refresh it here to
     // grab replies, etc.

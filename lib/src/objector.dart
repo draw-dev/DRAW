@@ -160,8 +160,6 @@ class Objector extends RedditBase {
     if (data == null) {
       return null;
     }
-    print('\n\n\n');
-    print(data);
     if (data is List) {
       return _objectifyList(data);
     } else if (data is! Map) {

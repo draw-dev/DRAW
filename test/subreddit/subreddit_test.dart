@@ -13,6 +13,14 @@ import '../test_utils.dart';
 // ignore_for_file: unused_local_variable
 
 Future<void> main() async {
+  test('lib/subreddit/invalid', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_invalid.json');
+    await expectLater(
+        () async => await reddit.subreddit('drawapitesting2').populate(),
+        throwsA(TypeMatcher<DRAWInvalidSubredditException>()));
+  });
+
   test('lib/subreddit/banned', () async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_banned.json');

@@ -79,16 +79,18 @@ class TestAuthenticator extends Authenticator {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), params.toString()]);
-      if ((result is List) &&
-          result.isNotEmpty) {
+      if ((result is List) && result.isNotEmpty) {
         final type = result[0];
-        switch(type) {
-          case redirectResponseStr:
-            throw DRAWRedirectResponse(result[1], null);
-          case notFoundExceptionStr:
-            throw DRAWNotFoundException(result[1], result[2]);
-          default:
-            throw DRAWInternalError('Could not determine exception type: $type');
+        if (type is String) {
+          switch (type) {
+            case redirectResponseStr:
+              throw DRAWRedirectResponse(result[1], null);
+            case notFoundExceptionStr:
+              throw DRAWNotFoundException(result[1], result[2]);
+            default:
+              throw DRAWInternalError(
+                  'Could not determine exception type: $type');
+          }
         }
       }
     } else {

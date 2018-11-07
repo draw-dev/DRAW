@@ -11,6 +11,14 @@ import 'package:draw/draw.dart';
 import '../test_utils.dart';
 
 Future<void> main() async {
+  test('lib/redditor/invalid_redditor', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_invalid.json');
+    await expectLater(
+        () async => await reddit.redditor('drawapiofficial2').populate(),
+        throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
+  });
+
   test('lib/redditor/properties', () async {
     final reddit = await createRedditTestInstance(
         'test/redditor/lib_redditor_properties.json');

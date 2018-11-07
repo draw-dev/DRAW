@@ -64,6 +64,16 @@ class SubredditRef extends RedditBase
   /// Promotes this [SubredditRef] into a populated [Subreddit].
   Future<Subreddit> populate() async => await fetch();
 
+  @override
+  Future<dynamic> fetch() async {
+    try {
+      return await reddit.get(infoPath,
+          params: infoParams, followRedirects: false);
+    } on DRAWRedirectResponse catch (e) {
+      throw DRAWInvalidSubredditException(displayName);
+    }
+  }
+
   String get displayName => _name;
   String _name;
 

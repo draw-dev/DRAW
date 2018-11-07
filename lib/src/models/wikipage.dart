@@ -289,7 +289,7 @@ class WikiPageModeration {
             WikiPageRef._kSubredditRegExp, wikiPage._subreddit.displayName)
         .replaceAll(_kMethodRegExp, method);
     try {
-      await wikiPage.reddit.post(url, data);
+      await wikiPage.reddit.post(url, data, objectify: false);
     } on DRAWNotFoundException catch(e) {
       throw DRAWInvalidRedditorException(redditor);
     }
