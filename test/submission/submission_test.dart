@@ -18,7 +18,8 @@ Future<void> main() async {
   test('lib/submission/invalid', () async {
     final reddit = await createRedditTestInstance(
         'test/submission/lib_submission_invalid.json');
-    await expectLater(() async => await reddit.submission(id: 'abcdef').populate(),
+    await expectLater(
+        () async => await reddit.submission(id: 'abcdef').populate(),
         throwsA(TypeMatcher<DRAWInvalidSubmissionException>()));
   });
 

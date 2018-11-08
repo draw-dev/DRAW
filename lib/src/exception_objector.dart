@@ -5,11 +5,13 @@
 
 import 'package:draw/src/exceptions.dart';
 
-const int HTTP_NOT_FOUND = 404;
+const int kHttpBadRequest = 400;
+const int kHttpNotFound = 404;
 
 void parseAndThrowError(int status, Map<String, dynamic> response) {
-  switch(status) {
-    case HTTP_NOT_FOUND:
+  switch (status) {
+    case kHttpBadRequest:
+    case kHttpNotFound:
       throw DRAWNotFoundException(response['reason'], response['message']);
     default:
       throw DRAWUnknownResponseException(status, response.toString());

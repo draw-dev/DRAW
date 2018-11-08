@@ -451,11 +451,11 @@ class SubmissionRef extends UserContent {
   /// Promotes this [SubmissionRef] into a populated [Submission].
   Future<Submission> populate() async {
     try {
-    final response = await fetch();
-    final submission = response[0]['listing'][0];
-    submission._comments = CommentForest(submission, response[1]['listing']);
-    return submission;
-    } on DRAWNotFoundException catch(e) {
+      final response = await fetch();
+      final submission = response[0]['listing'][0];
+      submission._comments = CommentForest(submission, response[1]['listing']);
+      return submission;
+    } on DRAWNotFoundException catch (e) {
       throw DRAWInvalidSubmissionException(_id);
     }
   }

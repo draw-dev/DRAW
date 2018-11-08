@@ -73,38 +73,50 @@ class TestAuthenticator extends Authenticator {
     return json.decode(json.encode(response));
   }
 
+  void _throwOnError(dynamic result) {
+    if ((result is List) && result.isNotEmpty) {
+      final type = result[0];
+      if (type is String) {
+        switch (type) {
+          case redirectResponseStr:
+            throw DRAWRedirectResponse(result[1], null);
+          case notFoundExceptionStr:
+            throw DRAWNotFoundException(result[1], result[2]);
+          default:
+            throw DRAWInternalError(
+                'Could not determine exception type: $type');
+        }
+      }
+    }
+  }
+
+  void _recordException(Uri path, params, Exception e) {
+    if (e is DRAWRedirectResponse) {
+      _recorder.given([path.toString(), params.toString()]).reply(
+          [redirectResponseStr, e.path]).once();
+    } else if (e is DRAWNotFoundException) {
+      _recorder.given([path.toString(), params.toString()]).reply(
+          [notFoundExceptionStr, e.reason, e.message]).once();
+    } else {
+      throw DRAWInternalError('Unexpected exception type');
+    }
+    throw e;
+  }
+
   @override
   Future<dynamic> get(Uri path,
       {Map<String, String> params, bool followRedirects: false}) async {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), params.toString()]);
-      if ((result is List) && result.isNotEmpty) {
-        final type = result[0];
-        if (type is String) {
-          switch (type) {
-            case redirectResponseStr:
-              throw DRAWRedirectResponse(result[1], null);
-            case notFoundExceptionStr:
-              throw DRAWNotFoundException(result[1], result[2]);
-            default:
-              throw DRAWInternalError(
-                  'Could not determine exception type: $type');
-          }
-        }
-      }
+      _throwOnError(result);
     } else {
       try {
         result = await _recordAuth.get(path,
             params: params, followRedirects: followRedirects);
-      } on DRAWRedirectResponse catch (e) {
-        _recorder.given([path.toString(), params.toString()]).reply(
-            [redirectResponseStr, e.path]).once();
-        throw e;
-      } on DRAWNotFoundException catch (e) {
-        _recorder.given([path.toString(), params.toString()]).reply(
-            [notFoundExceptionStr, e.reason, e.message]).once();
-        throw e;
+      } catch (e) {
+        // Throws.
+        _recordException(path, params, e);
       }
       _recorder
           .given([path.toString(), params.toString()])
@@ -119,18 +131,13 @@ class TestAuthenticator extends Authenticator {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);
-      if ((result is List) &&
-          result.isNotEmpty &&
-          (result[0] == notFoundExceptionStr)) {
-        throw DRAWNotFoundException(result[1], result[2]);
-      }
+      _throwOnError(result);
     } else {
       try {
         result = await _recordAuth.post(path, body);
-      } on DRAWNotFoundException catch (e) {
-        _recorder.given([path.toString(), body.toString()]).reply(
-            [notFoundExceptionStr, e.reason, e.message]).once();
-        throw e;
+      } catch (e) {
+        // Throws.
+        _recordException(path, body, e);
       }
       _recorder
           .given([path.toString(), body.toString()])
@@ -146,8 +153,14 @@ class TestAuthenticator extends Authenticator {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);
+      _throwOnError(result);
     } else {
-      result = await _recordAuth.put(path, body: body);
+      try {
+        result = await _recordAuth.put(path, body: body);
+      } catch (e) {
+        // Throws.
+        _recordException(path, body, e);
+      }
       _recorder
           .given([path.toString(), body.toString()])
           .reply(_copyResponse(result))
@@ -162,8 +175,14 @@ class TestAuthenticator extends Authenticator {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);
+      _throwOnError(result);
     } else {
-      result = await _recordAuth.delete(path, body: body);
+      try {
+        result = await _recordAuth.delete(path, body: body);
+      } catch (e) {
+        // Throws.
+        _recordException(path, body, e);
+      }
       _recorder
           .given([path.toString(), body.toString()])
           .reply(_copyResponse(result) ?? '')

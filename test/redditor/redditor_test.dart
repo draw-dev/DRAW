@@ -61,6 +61,22 @@ Future<void> main() async {
     expect(noFriends.length, equals(0));
   });
 
+  test('lib/redditor/bad_friend', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_bad_friend.json');
+    final badFriend = reddit.redditor('drawapiofficial2');
+    await expectLater(() async => await badFriend.friend(),
+        throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
+  });
+
+  test('lib/redditor/bad_gild', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_bad_gild.json');
+    final badFriend = reddit.redditor('drawapiofficial2');
+    await expectLater(() async => await badFriend.gild(),
+        throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
+  });
+
   test('lib/redditor/unblock', () async {
     final reddit = await createRedditTestInstance(
         'test/redditor/lib_redditor_unblock.json');
