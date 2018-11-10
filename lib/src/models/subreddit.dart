@@ -61,18 +61,28 @@ class SubredditRef extends RedditBase
   static String _generateInfoPath(String name) => apiPath['subreddit_about']
       .replaceAll(SubredditRef._subredditRegExp, name);
 
+  Future _throwOnInvalidSubreddit(Function f,
+      [bool allowRedirects = true]) async {
+    try {
+      return await f();
+    } on DRAWNotFoundException catch (e) {
+      throw DRAWInvalidSubredditException(displayName);
+    } on DRAWRedirectResponse catch (e) {
+      if (allowRedirects) {
+        rethrow;
+      }
+      throw DRAWInvalidSubredditException(displayName);
+    }
+  }
+
   /// Promotes this [SubredditRef] into a populated [Subreddit].
   Future<Subreddit> populate() async => await fetch();
 
   @override
-  Future<dynamic> fetch() async {
-    try {
-      return await reddit.get(infoPath,
-          params: infoParams, followRedirects: false);
-    } on DRAWRedirectResponse catch (e) {
-      throw DRAWInvalidSubredditException(displayName);
-    }
-  }
+  Future<dynamic> fetch() async => await _throwOnInvalidSubreddit(
+      () async => await reddit.get(infoPath,
+          params: infoParams, followRedirects: false),
+      false);
 
   String get displayName => _name;
   String _name;
@@ -184,8 +194,9 @@ class SubredditRef extends RedditBase
   /// Returns a random submission from the [Subreddit].
   Future<SubmissionRef> random() async {
     try {
-      await reddit.get(apiPath['subreddit_random']
-          .replaceAll(SubredditRef._subredditRegExp, _name));
+      await _throwOnInvalidSubreddit(() async => await reddit.get(
+          apiPath['subreddit_random']
+              .replaceAll(SubredditRef._subredditRegExp, _name)));
     } on DRAWRedirectResponse catch (e) {
       // We expect this request to redirect to our random submission.
       return SubmissionRef.withPath(reddit, e.path);
@@ -194,8 +205,9 @@ class SubredditRef extends RedditBase
   }
 
   /// Return the rules for the subreddit.
-  Future<List<Rule>> rules() async => (await reddit.get(
-          apiPath['rules'].replaceAll(SubredditRef._subredditRegExp, _name)))
+  Future<List<Rule>> rules() async => (await _throwOnInvalidSubreddit(
+          () async => await reddit.get(apiPath['rules']
+              .replaceAll(SubredditRef._subredditRegExp, _name))))
       .cast<Rule>();
 
   /// Returns a [Stream] of [UserContent] that match [query].
@@ -228,10 +240,10 @@ class SubredditRef extends RedditBase
   /// corresponds to the top sticky, 2 the second, etc.
   Future<SubmissionRef> sticky({int number = 1}) async {
     try {
-      await reddit.get(
+      await _throwOnInvalidSubreddit(() async => await reddit.get(
           apiPath['about_sticky']
               .replaceAll(SubredditRef._subredditRegExp, _name),
-          params: {'num': number.toString()});
+          params: {'num': number.toString()}));
     } on DRAWRedirectResponse catch (e) {
       return SubmissionRef.withPath(reddit, e.path);
     }
@@ -290,29 +302,31 @@ class SubredditRef extends RedditBase
       data['kind'] = 'link';
       data['url'] = url;
     }
-    return (await reddit.post(apiPath['submit'], data)) as Submission;
+    return await _throwOnInvalidSubreddit(
+        () async => await reddit.post(apiPath['submit'], data)) as Submission;
   }
 
   /// Subscribes to the subreddit.
   ///
   /// When [otherSubreddits] is provided, the provided subreddits will also be
   /// subscribed to.
-  Future<void> subscribe({List<SubredditRef> otherSubreddits}) {
+  Future<void> subscribe({List<SubredditRef> otherSubreddits}) async {
     final data = {
       'action': 'sub',
       'skip_initial_defaults': 'true',
       'sr_name': _subredditList(this, otherSubreddits),
     };
-    reddit.post(apiPath['subscribe'], data, discardResponse: true);
-    return null; // Shut the analyzer up.
+    await _throwOnInvalidSubreddit(() async =>
+        await reddit.post(apiPath['subscribe'], data, discardResponse: true));
   }
 
   /// Returns a dictionary of the [Subreddit]'s traffic statistics.
   ///
   /// Raises an error when the traffic statistics aren't available to the
   /// authenticated user (i.e., not a moderator of the subreddit).
-  Future<Map> traffic() async => (await reddit.get(apiPath['about_traffic']
-      .replaceAll(SubredditRef._subredditRegExp, _name))) as Map;
+  Future<Map> traffic() async => await _throwOnInvalidSubreddit(() async =>
+      await reddit.get(apiPath['about_traffic']
+          .replaceAll(SubredditRef._subredditRegExp, _name))) as Map;
 
   /// Unsubscribes from the subreddit.
   ///
@@ -323,7 +337,8 @@ class SubredditRef extends RedditBase
       'action': 'unsub',
       'sr_name': _subredditList(this, otherSubreddits),
     };
-    await reddit.post(apiPath['subscribe'], data, discardResponse: true);
+    await _throwOnInvalidSubreddit(() async =>
+        await reddit.post(apiPath['subscribe'], data, discardResponse: true));
   }
 
   static String _subredditList(SubredditRef subreddit,

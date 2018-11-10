@@ -153,7 +153,8 @@ class RedditorRef extends RedditBase
   /// Friend fields include those such as [note]. Other fields may not be
   /// completely initialized.
   Future<Redditor> friendInfo() async =>
-      reddit.get(apiPath['friend_v1'].replaceAll(_userRegExp, _name));
+      await _throwOnInvalidRedditor(() async => await reddit
+          .get(apiPath['friend_v1'].replaceAll(_userRegExp, _name)));
 
   /// Gives Reddit Gold to the [Redditor]. [months] is the number of months of
   /// Reddit Gold to be given to the [Redditor].

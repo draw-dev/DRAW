@@ -69,6 +69,22 @@ Future<void> main() async {
         throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
   });
 
+  test('lib/redditor/bad_unfriend', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_bad_unfriend.json');
+    final badFriend = reddit.redditor('drawapiofficial2');
+    await expectLater(() async => await badFriend.unfriend(),
+        throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
+  });
+
+  test('lib/redditor/bad_friend_info', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_bad_friend_info.json');
+    final badFriend = reddit.redditor('drawapiofficial2');
+    await expectLater(() async => await badFriend.friendInfo(),
+        throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
+  });
+
   test('lib/redditor/bad_gild', () async {
     final reddit = await createRedditTestInstance(
         'test/redditor/lib_redditor_bad_gild.json');
@@ -90,6 +106,14 @@ Future<void> main() async {
 
     blockedUsers = await reddit.user.blocked();
     expect(blockedUsers.length, equals(0));
+  });
+
+  test('lib/redditor/invalid_unblock', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_invalid_unblock.json');
+    await expectLater(
+        () async => await reddit.redditor('drawapiofficial2').unblock(),
+        throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
   });
 
   // Note: tests for controversial, hot, newest, and top all use the same
@@ -215,6 +239,14 @@ Future<void> main() async {
     expect(multis.length, 7);
     expect(multis[0].displayName, 'all');
     expect(multis[0].subreddits.length, 0);
+  });
+
+  test('lib/redditor/multireddits_bad_redditor', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_multireddits_bad_redditor.json');
+    await expectLater(
+        () async => await reddit.redditor('drawapiofficial2').multireddits(),
+        throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
   });
 
   test('lib/redditor/downvoted', () async {
