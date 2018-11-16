@@ -216,11 +216,23 @@ class Objector extends RedditBase {
           throw DRAWInternalError('Invalid json response: $data');
         }
       } else if (data['json'].containsKey('errors')) {
+        const kSubredditNoExist = 'SUBREDDIT_NOEXIST';
+        const kUserDoesntExist = 'USER_DOESNT_EXIST';
+
         final errors = data['json']['errors'];
         //logger.log(Level.SEVERE, 'Error response: $errors');
         if (errors is List && errors.isNotEmpty) {
-          // TODO(bkonyi): make an actual exception for this.
-          throw DRAWUnimplementedError('Error response: $errors');
+          final error = errors[0][0];
+          final field = errors[0].last;
+          switch (error) {
+            case kSubredditNoExist:
+              throw DRAWInvalidSubredditException(field);
+            case kUserDoesntExist:
+              throw DRAWInvalidRedditorException(field);
+            default:
+              // TODO(bkonyi): make an actual exception for this.
+              throw DRAWUnimplementedError('Error response: $errors');
+          }
         }
         return null;
       } else {
