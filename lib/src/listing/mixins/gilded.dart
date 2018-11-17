@@ -11,7 +11,7 @@ import 'package:draw/src/reddit.dart';
 
 /// A mixin which contains the functionality required to get a [Stream] of
 /// gilded content.
-abstract class GildedListingMixin {
+mixin GildedListingMixin {
   Reddit get reddit;
   String get path;
 

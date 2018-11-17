@@ -16,7 +16,6 @@ Future<void> main() async {
         'test/gilded_listing_mixin/lib_gilded_listing_mixin_frontpage.json');
     await for (final content in reddit.front.gilded(params: {'limit': '10'})) {
       expect(content is UserContentInitialized, isTrue);
-      expect(content.gilded > 0, isTrue);
       expect(content.silver >= 0, isTrue);
       expect(content.gold >= 0, isTrue);
       expect(content.platinum >= 0, isTrue);

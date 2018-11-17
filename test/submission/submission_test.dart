@@ -37,7 +37,6 @@ Future<void> main() async {
     expect(submission.domain, 'youtube.com');
     expect(submission.downvotes, 0);
     expect(submission.edited, isFalse);
-    expect(submission.gilded, 0);
     expect(submission.hidden, isFalse);
     expect(submission.hideScore, isFalse);
     expect(submission.ignoreReports, isFalse);
@@ -45,7 +44,6 @@ Future<void> main() async {
     expect(submission.isRedditMediaDomain, isFalse);
     expect(submission.isSelf, isFalse);
     expect(submission.isVideo, isFalse);
-    expect(submission.likes, isTrue);
     expect(submission.vote, VoteState.upvoted);
     expect(submission.locked, isFalse);
     expect(submission.numComments, 2);

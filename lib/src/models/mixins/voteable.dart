@@ -16,7 +16,7 @@ enum VoteState {
 }
 
 /// A mixin which provides voting functionality for [Comment] and [Submission].
-abstract class VoteableMixin implements RedditBaseInitializedMixin {
+mixin VoteableMixin implements RedditBaseInitializedMixin {
   Reddit get reddit;
   String get fullname;
 

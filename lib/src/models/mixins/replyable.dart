@@ -10,7 +10,7 @@ import '../../reddit.dart';
 import '../comment.dart';
 
 /// A mixin for RedditBase classes that can be replied to.
-abstract class ReplyableMixin {
+mixin ReplyableMixin {
   Reddit get reddit;
   String get fullname;
 

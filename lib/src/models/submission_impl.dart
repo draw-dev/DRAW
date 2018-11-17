@@ -192,15 +192,6 @@ class Submission extends SubmissionRef
   /// Is this [Submission] a video.
   bool get isVideo => data['is_video'];
 
-  /// Has the currently authenticated [User] voted on this [Submission].
-  ///
-  /// Returns `true` if the submission is upvoted, `false` if it is downvoted,
-  /// and `null` otherwise.
-  ///
-  /// This property is deprecated. Please use `vote` instead.
-  @deprecated
-  bool get likes => data['likes'];
-
   /// Text of the flair set for this [Submission].
   ///
   /// May return `null` if the submission has no flair.

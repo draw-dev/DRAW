@@ -1,5 +1,16 @@
 Change Log
 =================================
+## Version 0.5.0 (Unreleased)
+
+*Dart SDK 2.1 or newer is now required to use DRAW.*
+
+### Breaking changes:
+* All mixin classes have been updated to use the new `mixin` keyword.
+* Removed the following deprecated fields:
+  * `likes` property in `Submission`.
+  * `gilded` property in `UserContentInitialized`.
+
+
 ## Version 0.4.6 (2019/11/02)
 * Added support for handling wiki pages:
   * Added `SubredditWiki`, which provides a set of wiki related functions to

@@ -32,7 +32,7 @@ String distinctionTypeToString(DistinctionType type) {
 }
 
 /// Provides moderation methods for [Comment]s and [Submission]s.
-abstract class UserContentModerationMixin {
+mixin UserContentModerationMixin {
   dynamic get content;
 
   /// Approve a [Comment] or [Submission].
