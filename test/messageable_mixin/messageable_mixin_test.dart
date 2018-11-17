@@ -40,7 +40,7 @@ Future<void> main() async {
             fromSubreddit: subreddit),
         throwsA(TypeMatcher<DRAWInvalidSubredditException>()));
   });
-
+  
   test('lib/messageable_mixin/invalid_redditor', () async {
     final reddit = await createRedditTestInstance(
         'test/messageable_mixin/invalid_redditor.json');
@@ -52,4 +52,5 @@ Future<void> main() async {
             fromSubreddit: subreddit),
         throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
   });
+
 }
