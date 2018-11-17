@@ -41,7 +41,7 @@ abstract class MessageableMixin {
 
     try {
       await reddit.post(apiPath['compose'], data);
-    } on DRAWInvalidSubredditException catch(e) {
+    } on DRAWInvalidSubredditException catch (e) {
       String name;
       if (e.subredditName == 'from_sr') {
         name = fromSubreddit.displayName;
@@ -49,7 +49,7 @@ abstract class MessageableMixin {
         name = displayName;
       }
       throw DRAWInvalidSubredditException(name);
-    } on DRAWInvalidRedditorException catch(e) {
+    } on DRAWInvalidRedditorException catch (e) {
       throw DRAWInvalidRedditorException(displayName);
     }
   }
