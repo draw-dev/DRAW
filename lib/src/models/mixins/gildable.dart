@@ -9,7 +9,7 @@ import '../../api_paths.dart';
 import '../../reddit.dart';
 
 /// Interface for classes that can be gilded.
-abstract class GildableMixin {
+mixin GildableMixin {
   Reddit get reddit;
   String get fullname;
 

@@ -12,7 +12,7 @@ import '../../models/subreddit.dart';
 import '../../reddit.dart';
 import 'gilded.dart';
 
-abstract class SubredditListingMixin {
+mixin SubredditListingMixin {
   Reddit get reddit;
   String get path;
   CommentHelper _commentHelper;

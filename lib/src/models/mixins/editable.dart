@@ -11,7 +11,7 @@ import '../../reddit.dart';
 import '../user_content.dart';
 
 /// Interface for classes that can be edited and deleted.
-abstract class EditableMixin implements RedditBaseInitializedMixin {
+mixin EditableMixin implements RedditBaseInitializedMixin {
   Reddit get reddit;
   String get fullname;
 

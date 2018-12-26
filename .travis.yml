@@ -6,7 +6,7 @@ os:
 
 dart:
   - stable
-  - dev
+#  - dev
 
 script:
   - ./tool/travis.sh

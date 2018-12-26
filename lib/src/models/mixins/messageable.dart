@@ -12,7 +12,7 @@ import 'package:draw/src/models/subreddit.dart';
 
 /// A mixin containing functionality to send messages to other [Redditor]s or
 /// [Subreddit] moderators.
-abstract class MessageableMixin {
+mixin MessageableMixin {
   Reddit get reddit;
   String get displayName;
 
