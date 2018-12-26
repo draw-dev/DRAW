@@ -245,15 +245,6 @@ class Comment extends CommentRef
   /// Did the currently authenticated [User] post this [Comment].
   bool get isSubmitter => data['is_submitter'];
 
-  /// Has the currently authenticated [User] voted on this [Comment].
-  ///
-  /// Returns `true` if the comment is upvoted, `false` if it is downvoted,
-  /// and `null` otherwise.
-  ///
-  /// This property is deprecated. Please use `vote` instead.
-  @deprecated
-  bool get likes => data['likes'];
-
   /// The id of the [Submission] link.
   ///
   /// Takes the form of `t3_7czz1q`.

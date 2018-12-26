@@ -9,7 +9,7 @@ import '../../api_paths.dart';
 import '../../reddit.dart';
 
 /// Interface for ReddieBase classes that can be reported.
-abstract class ReportableMixin {
+mixin ReportableMixin {
   Reddit get reddit;
   String get fullname;
 

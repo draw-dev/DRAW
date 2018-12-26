@@ -9,7 +9,7 @@ import '../listing_generator.dart';
 import '../../reddit.dart';
 import '../../models/user_content.dart';
 
-abstract class RisingListingMixin {
+mixin RisingListingMixin {
   Reddit get reddit;
   String get path;
 

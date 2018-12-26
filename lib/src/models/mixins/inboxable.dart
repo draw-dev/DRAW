@@ -10,7 +10,7 @@ import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/reddit.dart';
 
 /// A mixin containing inbox functionality.
-abstract class InboxableMixin implements RedditBaseInitializedMixin {
+mixin InboxableMixin implements RedditBaseInitializedMixin {
   String get fullname;
   Reddit get reddit;
 

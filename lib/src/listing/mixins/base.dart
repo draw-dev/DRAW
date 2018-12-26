@@ -72,7 +72,7 @@ String sortToString(Sort sort) {
 
 /// A mixin with common listing functionality, including [ListingGenerator]
 /// creation and standard listing requests by [Sort] type.
-abstract class BaseListingMixin {
+mixin BaseListingMixin {
   Reddit get reddit;
   String get path;
 
