@@ -457,6 +457,7 @@ class CommentRef extends UserContent {
   CommentForest get replies => _replies;
 }
 
+/// Provides a set of moderation functions for a [Comment].
 class CommentModeration extends Object with UserContentModerationMixin {
   Comment get content => _content;
   final Comment _content;

@@ -1272,6 +1272,7 @@ class Modmail {
   }
 }
 
+/// A representation of the number of unread Modmail conversations by state.
 class ModmailUnreadStatistics {
   Map<String, int> _data;
   ModmailUnreadStatistics._(this._data);

@@ -6,6 +6,7 @@
 import 'dart:async';
 
 import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
 import 'package:draw/src/models/comment.dart';
 
@@ -33,7 +34,7 @@ String distinctionTypeToString(DistinctionType type) {
 
 /// Provides moderation methods for [Comment]s and [Submission]s.
 mixin UserContentModerationMixin {
-  dynamic get content;
+  RedditBaseInitializedMixin get content;
 
   /// Approve a [Comment] or [Submission].
   ///
@@ -61,7 +62,7 @@ mixin UserContentModerationMixin {
       'id': content.fullname,
       'api_type': 'json'
     };
-    if (sticky && (content is Comment) && content.isRoot) {
+    if (sticky && (content is Comment) && (content as Comment).isRoot) {
       data['sticky'] = 'true';
     }
     return content.reddit.post(apiPath['distinguish'], data);

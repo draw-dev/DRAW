@@ -17,6 +17,8 @@ import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/util.dart';
 
+/// A lazily initialized class which represents a Modmail conversation. Can be
+/// promoted to a [ModmailConversation].
 class ModmailConversationRef extends RedditBase {
   static final _kIdRegExp = RegExp(r'{id}');
 
@@ -37,7 +39,7 @@ class ModmailConversationRef extends RedditBase {
       };
 
   /// Promotes this [ModmailConversationRef] into a populated
-  /// [ModmailCOnversation].
+  /// [ModmailConversation].
   Future<ModmailConversation> populate() async =>
       ModmailConversation(reddit, data: await fetch());
 
@@ -55,6 +57,7 @@ class ModmailConversationRef extends RedditBase {
         super(reddit);
 }
 
+/// A fully initialized class which represents a Modmail conversation.
 class ModmailConversation extends ModmailConversationRef
     with RedditBaseInitializedMixin {
   static final _kIdRegExp = RegExp(r'{id}');

@@ -5,11 +5,12 @@
 
 import 'dart:async';
 
-import '../../api_paths.dart';
-import '../../reddit.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base_impl.dart';
+import 'package:draw/src/reddit.dart';
 
 /// Interface for ReddieBase classes that can be reported.
-mixin ReportableMixin {
+mixin ReportableMixin implements RedditBaseInitializedMixin {
   Reddit get reddit;
   String get fullname;
 

@@ -314,6 +314,10 @@ ModeratorActionType stringToModeratorActionType(String s) {
   }
 }
 
+/// A structure which represents the settings of a [Subreddit].
+///
+/// Any [Subreddit] settings changed here will not be applied unless
+/// [SubredditModeration.update] is called with the updated [SubredditSettings].
 class SubredditSettings {
   final Map _data;
   final SubredditRef subreddit;

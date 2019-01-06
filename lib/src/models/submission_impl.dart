@@ -480,6 +480,7 @@ class SubmissionPreview {
   }
 }
 
+/// A representation of the properties of a [Submission]'s preview image.
 class PreviewImage {
   final Uri url;
   final int width;
@@ -528,6 +529,7 @@ enum CommentSortType {
   blank
 }
 
+/// Provides a set of moderation functions for a [Submisson].
 class SubmissionModeration extends Object with UserContentModerationMixin {
   static final RegExp _subModRegExp = RegExp(r'{subreddit}');
 
