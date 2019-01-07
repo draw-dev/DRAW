@@ -1,0 +1,1 @@
+[{"always":false,"request":["https://oauth.reddit.com/api/info/","{id: t1_abc123}"],"response":{"kind":"Listing","data":{"modhash":null,"dist":0,"children":[],"after":null,"before":null}}}]

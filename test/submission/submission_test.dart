@@ -15,6 +15,14 @@ Future<void> main() async {
     return subreddit.newest().map<Submission>((u) => u as Submission);
   }
 
+  test('lib/submission/invalid', () async {
+    final reddit = await createRedditTestInstance(
+        'test/submission/lib_submission_invalid.json');
+    await expectLater(
+        () async => await reddit.submission(id: 'abcdef').populate(),
+        throwsA(TypeMatcher<DRAWInvalidSubmissionException>()));
+  });
+
   test('lib/submission/properties-sanity', () async {
     final reddit = await createRedditTestInstance(
         'test/submission/lib_submission_properties.json');

@@ -133,18 +133,28 @@ class RedditorRef extends RedditBase
   static String _generateInfoPath(String name) =>
       apiPath['user_about'].replaceAll(_userRegExp, name);
 
+  Future _throwOnInvalidRedditor(Function f) async {
+    try {
+      return await f();
+    } on DRAWNotFoundException catch (_) {
+      throw DRAWInvalidRedditorException(displayName);
+    }
+  }
+
   /// Adds the [Redditor] as a friend. [note] is an optional string that is
   /// associated with the friend entry. Providing [note] requires Reddit Gold.
   Future<void> friend({String note = ''}) async =>
-      reddit.put(apiPath['friend_v1'].replaceAll(_userRegExp, _name),
-          body: json.encode({'note': note}));
+      _throwOnInvalidRedditor(() async => await reddit.put(
+          apiPath['friend_v1'].replaceAll(_userRegExp, _name),
+          body: json.encode({'note': note})));
 
   /// Returns a [Redditor] object with friend information populated.
   ///
   /// Friend fields include those such as [note]. Other fields may not be
   /// completely initialized.
   Future<Redditor> friendInfo() async =>
-      reddit.get(apiPath['friend_v1'].replaceAll(_userRegExp, _name));
+      await _throwOnInvalidRedditor(() async => await reddit
+          .get(apiPath['friend_v1'].replaceAll(_userRegExp, _name)));
 
   /// Gives Reddit Gold to the [Redditor]. [months] is the number of months of
   /// Reddit Gold to be given to the [Redditor].
@@ -158,19 +168,22 @@ class RedditorRef extends RedditBase
     };
     final path = Uri.https(Reddit.defaultOAuthApiEndpoint,
         apiPath['gild_user'].replaceAll(_usernameRegExp, _name));
-    final result = await reddit.auth.post(path, body);
+    final result = await _throwOnInvalidRedditor(
+        () async => await reddit.auth.post(path, body));
     if (result is Map) {
       throw DRAWGildingException(result.cast<String, String>());
     }
   }
 
   /// Returns a [List] of the [Redditor]'s public [Multireddit]'s.
-  Future<List<Multireddit>> multireddits() async => (await reddit
-          .get(apiPath['multireddit_user'].replaceAll(_userRegExp, _name)))
-      .cast<Multireddit>();
+  Future<List<Multireddit>> multireddits() async =>
+      (await _throwOnInvalidRedditor(() async => await reddit
+              .get(apiPath['multireddit_user'].replaceAll(_userRegExp, _name))))
+          .cast<Multireddit>();
 
   /// Promotes this [RedditorRef] into a populated [Redditor].
-  Future<Redditor> populate() async => Redditor.parse(reddit, await fetch());
+  Future<Redditor> populate() async => (await _throwOnInvalidRedditor(
+      () async => Redditor.parse(reddit, await fetch()))) as Redditor;
 
   // TODO(bkonyi): Add code samples.
   /// Provides a [RedditorStream] for the current [Redditor].
@@ -187,15 +200,15 @@ class RedditorRef extends RedditBase
       'name': displayName,
       'type': 'enemy',
     };
-    await reddit.post(
+    await _throwOnInvalidRedditor(() async => await reddit.post(
         apiPath['unfriend'].replaceAll(RedditorRef._subredditRegExp, 'all'),
         data,
-        discardResponse: true);
+        discardResponse: true));
   }
 
   /// Unfriend the [Redditor].
-  Future<void> unfriend() async =>
-      reddit.delete(apiPath['friend_v1'].replaceAll(_userRegExp, _name));
+  Future<void> unfriend() async => await _throwOnInvalidRedditor(() async =>
+      await reddit.delete(apiPath['friend_v1'].replaceAll(_userRegExp, _name)));
 }
 
 /// Provides [Comment] and [Submission] streams for a particular [Redditor].

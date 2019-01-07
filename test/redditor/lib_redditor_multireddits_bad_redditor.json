@@ -1,0 +1,1 @@
+[{"always":false,"request":["https://oauth.reddit.com/api/multi/user/drawapiofficial2/","null"],"response":["DRAWNotFoundException","USER_DOESNT_EXIST","Bad Request"]}]

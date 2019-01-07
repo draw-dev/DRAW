@@ -6,10 +6,11 @@
 import 'dart:async';
 
 import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/reddit.dart';
 
-/// Mixin for ReddieBase classes that can be saved.
-mixin SaveableMixin {
+/// Mixin for RedditBase classes that can be saved.
+mixin SaveableMixin implements RedditBaseInitializedMixin {
   Reddit get reddit;
   String get fullname;
 

@@ -10,9 +10,10 @@ import 'package:http/http.dart' as http;
 import 'package:oauth2/oauth2.dart' as oauth2;
 import "package:oauth2/src/handle_access_token_response.dart";
 
-import 'draw_config_context.dart';
-import 'logging.dart';
-import 'exceptions.dart';
+import 'package:draw/src/draw_config_context.dart';
+import 'package:draw/src/exception_objector.dart';
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/logging.dart';
 
 const String _kDeleteRequest = 'DELETE';
 const String _kGetRequest = 'GET';
@@ -219,6 +220,9 @@ abstract class Authenticator {
     final response = await responseStream.stream.bytesToString();
     if (response.isEmpty) return null;
     final parsed = json.decode(response);
+    if ((parsed is Map) && responseStream.statusCode >= 400) {
+      parseAndThrowError(responseStream.statusCode, parsed);
+    }
     if ((parsed is Map) && parsed.containsKey(_kErrorKey)) {
       _throwAuthenticationError(parsed);
     }

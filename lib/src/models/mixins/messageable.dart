@@ -5,9 +5,10 @@
 
 import 'dart:async';
 
-import '../../api_paths.dart';
-import '../../reddit.dart';
-import '../subreddit.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/reddit.dart';
+import 'package:draw/src/models/subreddit.dart';
 
 /// A mixin containing functionality to send messages to other [Redditor]s or
 /// [Subreddit] moderators.
@@ -21,8 +22,9 @@ mixin MessageableMixin {
   /// message, and [fromSubreddit] is a [Subreddit] that the message should be
   /// sent from. [fromSubreddit] must be a subreddit that the current user is a
   /// moderator of and has permissions to send mail on behalf of the subreddit.
+  // TODO(bkonyi): error handling
   Future<void> message(String subject, String message,
-      {SubredditRef fromSubreddit}) {
+      {SubredditRef fromSubreddit}) async {
     var messagePrefix = '';
     if (this is Subreddit) {
       messagePrefix = '#';
@@ -31,11 +33,25 @@ mixin MessageableMixin {
       'subject': subject,
       'text': message,
       'to': messagePrefix + displayName,
+      'api_type': 'json',
     };
 
     if (fromSubreddit != null) {
       data['from_sr'] = fromSubreddit.displayName;
     }
-    return reddit.post(apiPath['compose'], data, discardResponse: true);
+
+    try {
+      await reddit.post(apiPath['compose'], data);
+    } on DRAWInvalidSubredditException catch (e) {
+      String name;
+      if (e.subredditName == 'from_sr') {
+        name = fromSubreddit.displayName;
+      } else {
+        name = displayName;
+      }
+      throw DRAWInvalidSubredditException(name);
+    } on DRAWInvalidRedditorException catch (e) {
+      throw DRAWInvalidRedditorException(displayName);
+    }
   }
 }

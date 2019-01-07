@@ -45,6 +45,7 @@ class _FlairBase {
   String toString() => JsonEncoder.withIndent('   ').convert(_data);
 }
 
+/// A simple representation of a template for Reddit flair.
 class FlairTemplate extends _FlairBase {
   String get flairTemplateId => _data['flair_template_id'];
   bool get flairTextEditable => _data['flair_text_editable'];
@@ -62,6 +63,7 @@ class FlairTemplate extends _FlairBase {
         super.parse(data);
 }
 
+/// A simple representation of Reddit flair.
 class Flair extends _FlairBase {
   final RedditorRef user;
 

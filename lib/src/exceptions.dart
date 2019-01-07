@@ -58,3 +58,54 @@ class DRAWGildingException implements Exception {
 class DRAWUnimplementedError extends UnimplementedError {
   DRAWUnimplementedError([String message]) : super(message);
 }
+
+/// Thrown when a Reddit object could not be found.
+class DRAWNotFoundException implements Exception {
+  final String reason;
+  final String message;
+  DRAWNotFoundException(this.reason, this.message);
+  String toString() =>
+      'DRAWNotFoundException(Reason: "$reason", Message: "$message")';
+}
+
+/// Thrown when a request is made with an invalid comment ID.
+class DRAWInvalidCommentException implements Exception {
+  final String commentId;
+  DRAWInvalidCommentException(this.commentId);
+  String toString() =>
+      'DRAWInvalidCommentException: "$commentId" is not a valid comment ID.';
+}
+
+/// Thrown when a request is made with an invalid Redditor name.
+class DRAWInvalidRedditorException implements Exception {
+  final String redditorName;
+  DRAWInvalidRedditorException(this.redditorName);
+  String toString() =>
+      'DRAWInvalidRedditorException: "$redditorName" is not a valid redditor.';
+}
+
+/// Thrown when a request is made with an invalid submission ID.
+class DRAWInvalidSubmissionException implements Exception {
+  final String submissionId;
+  DRAWInvalidSubmissionException(this.submissionId);
+  String toString() =>
+      'DRAWInvalidSubmissionException: "$submissionId" is not a valid submission ID.';
+}
+
+/// Thrown when a request is made with an invalid Subreddit name.
+class DRAWInvalidSubredditException implements Exception {
+  final String subredditName;
+  DRAWInvalidSubredditException(this.subredditName);
+  String toString() =>
+      'DRAWInvalidSubredditException: "$subredditName" is not a valid subreddit.';
+}
+
+/// Thrown due to an unexpected response from Reddit. If you're not adding
+/// functionality to DRAW you should never see this. Otherwise, please file a
+/// bug at github.com/draw-dev/DRAW/issues.
+class DRAWUnknownResponseException implements Exception {
+  final int status;
+  final String message;
+  DRAWUnknownResponseException(this.status, this.message);
+  String toString() => 'DRAWUnknownResponse: $message (status: $status)';
+}

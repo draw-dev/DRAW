@@ -5,6 +5,8 @@
 
 import 'dart:async';
 
+import 'package:draw/draw.dart';
+
 import 'package:test/test.dart';
 import '../test_utils.dart';
 
@@ -25,5 +27,29 @@ Future<void> main() async {
     final subreddit = reddit.subreddit('drawapitesting');
     await receiver.message('Test message', 'Hello Toxicity-Moderator!',
         fromSubreddit: subreddit);
+  });
+
+  test('lib/messageable_mixin/invalid_subreddit', () async {
+    final reddit = await createRedditTestInstance(
+        'test/messageable_mixin/invalid_subreddit.json');
+    final receiver = reddit.redditor('Toxicity-Moderator');
+    final subreddit = reddit.subreddit('drawapitesting2');
+    await expectLater(
+        () async => await receiver.message(
+            'Test message', 'Hello Toxicity-Moderator!',
+            fromSubreddit: subreddit),
+        throwsA(TypeMatcher<DRAWInvalidSubredditException>()));
+  });
+
+  test('lib/messageable_mixin/invalid_redditor', () async {
+    final reddit = await createRedditTestInstance(
+        'test/messageable_mixin/invalid_redditor.json');
+    final receiver = reddit.redditor('Toxicity-Moderator2');
+    final subreddit = reddit.subreddit('drawapitesting');
+    await expectLater(
+        () async => await receiver.message(
+            'Test message', 'Hello Toxicity-Moderator!',
+            fromSubreddit: subreddit),
+        throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
   });
 }

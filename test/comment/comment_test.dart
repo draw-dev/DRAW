@@ -38,6 +38,14 @@ void submissionChecker(rootSubmission, comments) {
 }
 
 Future<void> main() async {
+  test('lib/comment/invalid_comment_test', () async {
+    final reddit =
+        await createRedditTestInstance('test/comment/invalid_test.json');
+    await expectLater(
+        () async => await CommentRef.withID(reddit, 'abc123').populate(),
+        throwsA(TypeMatcher<DRAWInvalidCommentException>()));
+  });
+
   test('lib/comment/continue_test', () async {
     final reddit =
         await createRedditTestInstance('test/comment/continue_test.json');

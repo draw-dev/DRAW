@@ -10,7 +10,7 @@ import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/reddit.dart';
 
 /// Interface for classes that can optionally receive inbox replies.
-mixin InboxToggleableMixin implements RedditBase {
+mixin InboxToggleableMixin implements RedditBaseInitializedMixin {
   Reddit get reddit;
   String get fullname;
 

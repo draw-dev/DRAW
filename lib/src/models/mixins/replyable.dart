@@ -5,12 +5,13 @@
 
 import 'dart:async';
 
-import '../../api_paths.dart';
-import '../../reddit.dart';
-import '../comment.dart';
+import 'package:draw/src/api_paths.dart';
+import 'package:draw/src/base_impl.dart';
+import 'package:draw/src/models/comment.dart';
+import 'package:draw/src/reddit.dart';
 
 /// A mixin for RedditBase classes that can be replied to.
-mixin ReplyableMixin {
+mixin ReplyableMixin implements RedditBaseInitializedMixin {
   Reddit get reddit;
   String get fullname;
 

@@ -288,7 +288,11 @@ class WikiPageModeration {
         .replaceAll(
             WikiPageRef._kSubredditRegExp, wikiPage._subreddit.displayName)
         .replaceAll(_kMethodRegExp, method);
-    await wikiPage.reddit.post(url, data, discardResponse: true);
+    try {
+      await wikiPage.reddit.post(url, data, objectify: false);
+    } on DRAWNotFoundException catch (e) {
+      throw DRAWInvalidRedditorException(redditor);
+    }
   }
 
   /// Add an editor to this [WikiPageRef].

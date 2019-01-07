@@ -13,6 +13,14 @@ import '../test_utils.dart';
 // ignore_for_file: unused_local_variable
 
 Future<void> main() async {
+  test('lib/subreddit/invalid', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_invalid.json');
+    await expectLater(
+        () async => await reddit.subreddit('drawapitesting2').populate(),
+        throwsA(TypeMatcher<DRAWInvalidSubredditException>()));
+  });
+
   test('lib/subreddit/banned', () async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_banned.json');
@@ -385,6 +393,14 @@ Future<void> main() async {
         DateTime.fromMillisecondsSinceEpoch(1540940785 * 1000, isUtc: true));
   });
 
+  test('lib/subreddit_wiki/invalid_wiki_page', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_wiki_invalid_wiki_page.json');
+    final wiki = reddit.subreddit('drawapitesting').wiki;
+    await expectLater(() async => await wiki['invalid'].populate(),
+        throwsA(TypeMatcher<DRAWNotFoundException>()));
+  });
+
   test('lib/subreddit_wiki/edit_wiki_page', () async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_wiki_edit_wiki_page.json');
@@ -489,6 +505,18 @@ Future<void> main() async {
     await wikiPageMod.remove(reddit.redditor('Toxicity-Moderator'));
     await settings.refresh();
     expect(settings.editors.length, 0);
+  });
+
+  test('lib/subreddit_wiki/wiki_page_moderation_invalid_add_remove', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_wiki_page_moderation_invalid_add_remove.json');
+    final wikiPage = reddit.subreddit('drawapitesting').wiki['test_page'];
+    final wikiPageMod = wikiPage.mod;
+
+    await expectLater(() async => await wikiPageMod.add('DrAwApIoFfIcIaL2'),
+        throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
+    await expectLater(() async => await wikiPageMod.remove('DrAwApIoFfIcIaL2'),
+        throwsA(TypeMatcher<DRAWInvalidRedditorException>()));
   });
 
   test('lib/subreddit_wiki/wiki_page_moderation_settings', () async {
