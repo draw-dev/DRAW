@@ -1,1 +1,20 @@
-[{"always":false,"request":["https://oauth.reddit.com/api/compose/","{subject: Test message, text: Hello Toxicity-Moderator!, to: Toxicity-Moderator2, api_type: json, from_sr: drawapitesting}"],"response":{"json":{"errors":[["USER_DOESNT_EXIST","that user doesn't exist","to"]]}}}]
+[
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/api/compose/",
+      "{subject: Test message, text: Hello Toxicity-Moderator!, to: Toxicity-Moderator2, api_type: json, from_sr: drawapitesting}"
+    ],
+    "response": {
+      "json": {
+        "errors": [
+          [
+            "USER_DOESNT_EXIST",
+            "that user doesn't exist",
+            "to"
+          ]
+        ]
+      }
+    }
+  }
+]

@@ -1,1 +1,22 @@
-[{"always":false,"request":["https://oauth.reddit.com/api/mod/conversations/subreddits","null"],"response":{"subreddits":{"t5_3mqw1":{"display_name":"drawapitesting","name":"drawapitesting","lastUpdated":"2018-09-30T23:00:15.552509+00:00","keyColor":"#24a0ed","subscribers":2,"id":"t5_3mqw1","icon":""}}}}]
+[
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/api/mod/conversations/subreddits",
+      "null"
+    ],
+    "response": {
+      "subreddits": {
+        "t5_3mqw1": {
+          "display_name": "drawapitesting",
+          "name": "drawapitesting",
+          "lastUpdated": "2018-09-30T23:00:15.552509+00:00",
+          "keyColor": "#24a0ed",
+          "subscribers": 2,
+          "id": "t5_3mqw1",
+          "icon": ""
+        }
+      }
+    }
+  }
+]

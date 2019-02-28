@@ -1,1 +1,20 @@
-[{"always":false,"request":["https://oauth.reddit.com/api/compose/","{subject: Test message, text: Hello Toxicity-Moderator!, to: Toxicity-Moderator, api_type: json, from_sr: drawapitesting2}"],"response":{"json":{"errors":[["SUBREDDIT_NOEXIST","that subreddit doesn't exist","from_sr"]]}}}]
+[
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/api/compose/",
+      "{subject: Test message, text: Hello Toxicity-Moderator!, to: Toxicity-Moderator, api_type: json, from_sr: drawapitesting2}"
+    ],
+    "response": {
+      "json": {
+        "errors": [
+          [
+            "SUBREDDIT_NOEXIST",
+            "that subreddit doesn't exist",
+            "from_sr"
+          ]
+        ]
+      }
+    }
+  }
+]

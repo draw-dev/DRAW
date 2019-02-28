@@ -1,1 +1,13 @@
-[{"always":true,"request":["https://oauth.reddit.com/api/v1/me/karma","null"],"response":{"kind":"KarmaList","data":[]}}]
+[
+  {
+    "always": true,
+    "request": [
+      "https://oauth.reddit.com/api/v1/me/karma",
+      "null"
+    ],
+    "response": {
+      "kind": "KarmaList",
+      "data": []
+    }
+  }
+]

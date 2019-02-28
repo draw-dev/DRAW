@@ -1,1 +1,69 @@
-[{"always":false,"request":["https://oauth.reddit.com/api/mod/conversations/","{body: Hello Reddit!, isAuthorHidden: true, srName: drawapitesting, subject: Test Message!, to: DRAWApiOfficial}"],"response":{"conversation":{"isAuto":false,"objIds":[{"id":"8ghgw","key":"messages"}],"isRepliable":true,"lastUserUpdate":null,"isInternal":true,"lastModUpdate":"2018-10-05T02:09:46.607780+00:00","lastUpdated":"2018-10-05T02:09:46.607780+00:00","authors":[{"isMod":true,"isAdmin":false,"name":"DRAWApiOfficial","isOp":true,"isParticipant":false,"isHidden":true,"id":20270258340,"isDeleted":false}],"owner":{"displayName":"drawapitesting","type":"subreddit","id":"t5_3mqw1"},"id":"5959g","isHighlighted":false,"subject":"Test Message!","participant":{},"state":0,"lastUnread":null,"numMessages":1},"messages":{"8ghgw":{"body":"<!-- SC_OFF --><div class=\"md\"><p>Hello Reddit!</p>\n</div><!-- SC_ON -->","author":{"isMod":true,"isAdmin":false,"name":"DRAWApiOfficial","isOp":true,"isParticipant":false,"isHidden":true,"id":20270258340,"isDeleted":false},"isInternal":true,"date":"2018-10-05T02:09:46.607780+00:00","bodyMarkdown":"Hello Reddit!","id":"8ghgw"}},"modActions":{}}}]
+[
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/api/mod/conversations/",
+      "{body: Hello Reddit!, isAuthorHidden: true, srName: drawapitesting, subject: Test Message!, to: DRAWApiOfficial}"
+    ],
+    "response": {
+      "conversation": {
+        "isAuto": false,
+        "objIds": [
+          {
+            "id": "8ghgw",
+            "key": "messages"
+          }
+        ],
+        "isRepliable": true,
+        "lastUserUpdate": null,
+        "isInternal": true,
+        "lastModUpdate": "2018-10-05T02:09:46.607780+00:00",
+        "lastUpdated": "2018-10-05T02:09:46.607780+00:00",
+        "authors": [
+          {
+            "isMod": true,
+            "isAdmin": false,
+            "name": "DRAWApiOfficial",
+            "isOp": true,
+            "isParticipant": false,
+            "isHidden": true,
+            "id": 20270258340,
+            "isDeleted": false
+          }
+        ],
+        "owner": {
+          "displayName": "drawapitesting",
+          "type": "subreddit",
+          "id": "t5_3mqw1"
+        },
+        "id": "5959g",
+        "isHighlighted": false,
+        "subject": "Test Message!",
+        "participant": {},
+        "state": 0,
+        "lastUnread": null,
+        "numMessages": 1
+      },
+      "messages": {
+        "8ghgw": {
+          "body": "<!-- SC_OFF --><div class=\"md\"><p>Hello Reddit!</p>\n</div><!-- SC_ON -->",
+          "author": {
+            "isMod": true,
+            "isAdmin": false,
+            "name": "DRAWApiOfficial",
+            "isOp": true,
+            "isParticipant": false,
+            "isHidden": true,
+            "id": 20270258340,
+            "isDeleted": false
+          },
+          "isInternal": true,
+          "date": "2018-10-05T02:09:46.607780+00:00",
+          "bodyMarkdown": "Hello Reddit!",
+          "id": "8ghgw"
+        }
+      },
+      "modActions": {}
+    }
+  }
+]
