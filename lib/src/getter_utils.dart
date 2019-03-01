@@ -28,4 +28,6 @@ abstract class GetterUtils {
 
   static SubredditRef subredditRefOrNull(Reddit reddit, String subreddit) =>
       (subreddit == null) ? null : reddit.subreddit(subreddit);
+
+  static Uri uriOrNull(String uri) => (uri == null) ? null : Uri.parse(uri);
 }
