@@ -222,6 +222,99 @@ Future<void> main() async {
     expect(october.periodStart, equals(DateTime.utc(2017, 10)));
   });
 
+  test('lib/subreddit_stylesheet/call', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_stylesheet_call.json');
+    final subreddit = await reddit.subreddit('drawapitesting').populate();
+    final stylesheetHelper = subreddit.stylesheet;
+    final stylesheet = await stylesheetHelper();
+    expect(stylesheet, TypeMatcher<StyleSheet>());
+    expect(stylesheet.stylesheet,
+        '.flair-redandblue { color: blue; background: red; }');
+    expect(stylesheet.toString(), stylesheet.stylesheet);
+    expect(stylesheet.images?.length, 1);
+
+    final dartLogo = stylesheet.images.first;
+    expect(
+        dartLogo.url,
+        Uri.parse(
+            'https://a.thumbs.redditmedia.com/firXjrOhN2odPDDkXWwvtIM1BttrTiZbPobp0MqO6b4.png'));
+    expect(dartLogo.link, 'url(%%dart-logo-400x400%%)');
+    expect(dartLogo.name, 'dart-logo-400x400');
+    expect(dartLogo.toString(), dartLogo.name);
+  });
+
+  test('lib/subreddit_stylesheet/delete_header', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_stylesheet_delete_header.json');
+    final subreddit = await reddit.subreddit('drawapitesting').populate();
+    expect(
+        subreddit.headerImage,
+        Uri.parse(
+            'https://b.thumbs.redditmedia.com/cXqC_cP8q0_exlq0HyaeW607ZIEU0o7yOSHnLnPUv-k.png'));
+    final stylesheet = subreddit.stylesheet;
+    await stylesheet.deleteHeader();
+    await subreddit.refresh();
+    expect(subreddit.headerImage, null);
+  });
+
+  test('lib/subreddit_stylesheet/delete_image', () async {
+    const kImageName = 'dart-logo-400x400';
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_stylesheet_delete_image.json');
+    final subreddit = await reddit.subreddit('drawapitesting').populate();
+    final stylesheet = subreddit.stylesheet;
+    var images = (await stylesheet()).images;
+    expect(images.length, 1);
+    expect(images.first.name, kImageName);
+    await stylesheet.deleteImage(kImageName);
+
+    images = (await stylesheet()).images;
+    expect(images.length, 0);
+  });
+
+  test('lib/subreddit_stylesheet/delete_mobile_header', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_stylesheet_delete_mobile_header.json');
+    final subreddit = await reddit.subreddit('drawapitesting').populate();
+    expect(
+        subreddit.mobileHeaderImage,
+        Uri.parse(
+            'https://b.thumbs.redditmedia.com/cXqC_cP8q0_exlq0HyaeW607ZIEU0o7yOSHnLnPUv-k.png'));
+    final stylesheet = subreddit.stylesheet;
+    await stylesheet.deleteMobileHeader();
+    await subreddit.refresh();
+    expect(subreddit.mobileHeaderImage, null);
+  });
+
+  test('lib/subreddit_stylesheet/delete_mobile_icon', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_stylesheet_delete_mobile_icon.json');
+    final subreddit = await reddit.subreddit('drawapitesting').populate();
+    final stylesheet = subreddit.stylesheet;
+    expect(
+        subreddit.iconImage,
+        Uri.parse(
+            'https://a.thumbs.redditmedia.com/4N-5XL7FZ6sA0WS7UpbdS1OSw9sGYHmNiIQ8SlFJ8b0.png'));
+    await stylesheet.deleteMobileIcon();
+    await subreddit.refresh();
+    expect(subreddit.iconImage, null);
+  });
+
+  test('lib/subreddit_stylesheet/update', () async {
+    const kNewStyle = '.flair-blueandred { color: red; background: blue; }';
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_stylesheet_update.json');
+    final subreddit = await reddit.subreddit('drawapitesting').populate();
+    final stylesheetHelper = subreddit.stylesheet;
+    var stylesheet = await stylesheetHelper();
+    expect(stylesheet.stylesheet,
+        '.flair-redandblue { color: blue; background: red; }');
+    await stylesheetHelper.update(kNewStyle, reason: 'Test');
+    stylesheet = await stylesheetHelper();
+    expect(stylesheet.stylesheet, kNewStyle);
+  });
+
   test('lib/subreddit_flair/call', () async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_flair_call.json');

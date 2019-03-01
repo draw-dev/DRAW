@@ -15,6 +15,7 @@ import 'package:draw/src/listing/mixins/base.dart';
 import 'package:draw/src/listing/mixins/gilded.dart';
 import 'package:draw/src/listing/mixins/rising.dart';
 import 'package:draw/src/listing/mixins/subreddit.dart';
+import 'package:draw/src/getter_utils.dart';
 import 'package:draw/src/modmail.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/util.dart';
@@ -102,7 +103,7 @@ class SubredditRef extends RedditBase
   SubredditQuarantine _quarantine;
   SubredditStream _stream;
 
-  // SubredditStyleSheet _stylesheet; TODO(bkonyi): implement
+  SubredditStyleSheet _stylesheet;
   SubredditWiki _wiki;
 
   int get hashCode => _name.hashCode;
@@ -161,15 +162,12 @@ class SubredditRef extends RedditBase
     return _stream;
   }
 
-// TODO(bkonyi): implement
-/*
   SubredditStyleSheet get stylesheet {
     if (_stylesheet == null) {
       _stylesheet = new SubredditStyleSheet(this);
     }
     return _stylesheet;
   }
-*/
 
   SubredditWiki get wiki {
     if (_wiki == null) {
@@ -358,12 +356,22 @@ class SubredditRef extends RedditBase
 /// A class representing a particular Reddit community, also known as a
 /// Subreddit.
 class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
+
+  /// The URL for the [Subreddit]'s header image, if it exists.
+  Uri get headerImage => GetterUtils.uriOrNull(data['header_img']);
+
+  /// The URL for the [Subreddit]'s icon, if it exists.
+  Uri get iconImage => GetterUtils.uriOrNull(data['icon_img']);
+
   /// Whether the currently authenticated Redditor is banned from the [Subreddit].
   bool get isBanned => data['user_is_banned'];
 
   /// Whether the currently authenticated Redditor is an approved submitter for
   /// the [Subreddit].
   bool get isContributor => data['user_is_contributor'];
+
+  /// The URL for the [Subreddit]'s mobile header image, if it exists.
+  Uri get mobileHeaderImage => GetterUtils.uriOrNull(data['banner_img']);
 
   /// The title of the [Subreddit].
   ///
@@ -372,6 +380,13 @@ class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
 
   Subreddit._(Reddit reddit) : super(reddit);
 
+  @override
+  Future<dynamic> refresh() async {
+    final refreshed = await populate();
+    setData(this, refreshed.data);
+    return this;
+  }
+
   Subreddit._fromSubreddit(Subreddit subreddit) : super(subreddit.reddit) {
     setData(this, subreddit.data);
     _name = subreddit._name;
@@ -379,7 +394,9 @@ class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
         apiPath['subreddit'].replaceAll(SubredditRef._subredditRegExp, _name);
   }
 
-  Subreddit.parse(Reddit reddit, Map data) : super(reddit) {
+  Subreddit.parse(Reddit reddit, Map data)
+        // TODO(bkonyi): fix info path not being set properly for Subreddit.
+      : super.name(reddit, data['data']['display_name']) {
     if (!data['data'].containsKey('name')) {
       // TODO(bkonyi) throw invalid object exception.
       throw DRAWUnimplementedError();
@@ -1353,14 +1370,170 @@ class SubredditStream {
           itemLimit: limit, pauseAfter: pauseAfter);
 }
 
-// TODO(bkonyi): implement
-// Provides a set of stylesheet functions to a [Subreddit].
-/*class SubredditStyleSheet {
+/// Represents stylesheet information for a [Subreddit].
+class StyleSheet {
+  /// The CSS for the [Subreddit].
+  final String stylesheet;
+
+  /// A list of images associated with the [Subreddit].
+  final List<StyleSheetImage> images;
+
+  StyleSheet(this.stylesheet, [this.images = const []]);
+
+  @override
+  String toString() => stylesheet;
+}
+
+/// A representation of an image associated with a [Subreddit]'s [StyleSheet].
+class StyleSheetImage {
+  /// The URL for the image.
+  final Uri url;
+
+  /// The CSS link for the image.
+  final String link;
+
+  /// The original name of the image.
+  final String name;
+
+  StyleSheetImage(this.url, this.link, this.name);
+
+  @override
+  String toString() => name;
+}
+
+/// Provides a set of stylesheet functions to a [Subreddit].
+class SubredditStyleSheet {
+  // TODO(bkonyi): implement _uploadImage
+  // static const String _kJpegHeader = '\xff\xd8\xff';
+  // static const String _kUploadType = 'upload_type';
   final Subreddit _subreddit;
-  SubredditStyleSheet(this._subreddit) {
-    throw DRAWUnimplementedError();
+  SubredditStyleSheet(this._subreddit);
+
+  /// Return the stylesheet for the [Subreddit].
+  Future<StyleSheet> call() async {
+    final uri = apiPath['about_stylesheet']
+        .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
+    return await _subreddit.reddit.get(uri);
   }
-}*/
+
+// TODO(bkonyi): uploading files requires some pretty large changes to the
+// authenticator implementation. Will do later.
+/*
+  Future _uploadImage(Uri imagePath, Map<String, dynamic> data) async {
+    const kImgType = 'img_type';
+    final image = File.fromUri(imagePath);
+    if (!await image.exists()) {
+      // TODO(bkonyi): throw
+    }
+    final imageRAF = await image.open();
+    if (await imageRAF.length() < _kJpegHeader.length) {
+      // TODO(bkonyi): throw
+    }
+    final header = (await imageRAF.read(_kJpegHeader.length));
+    data[kImgType] = (header == _kJpegHeader.codeUnits) ? 'jpg' : 'png';
+
+    final uri = apiPath['upload_image']
+        .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
+    //final response =_subreddit.reddit.post(uri, data, )
+  }
+*/
+
+  /// Remove the current header image for the [Subreddit].
+  Future<void> deleteHeader() async {
+    final uri = apiPath['delete_sr_header']
+        .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
+    await _subreddit.reddit.post(uri, {
+      'api_type': 'json',
+    });
+  }
+
+  /// Remove the named image from the [Subreddit].
+  Future<void> deleteImage(String name) async {
+    const kImgName = 'img_name';
+    final uri = apiPath['delete_sr_image']
+        .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
+    await _subreddit.reddit
+        .post(uri, <String, String>{'api_type': 'json', kImgName: name});
+  }
+
+  /// Remove the current mobile header image for the [Subreddit].
+  Future<void> deleteMobileHeader() async {
+    final uri = apiPath['delete_sr_banner']
+        .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
+    await _subreddit.reddit.post(uri, {
+      'api_type': 'json',
+    });
+  }
+
+  /// Remove the current mobile icon for the [Subreddit].
+  Future<void> deleteMobileIcon() async {
+    final uri = apiPath['delete_sr_icon']
+        .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
+    await _subreddit.reddit.post(uri, {
+      'api_type': 'json',
+    });
+  }
+
+  /// Update the stylesheet for the [Subreddit].
+  ///
+  /// `stylesheet` is the CSS for the new stylesheet.
+  Future<void> update(String stylesheet, {String reason}) async {
+    final uri = apiPath['subreddit_stylesheet']
+        .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
+
+    final data = <String, String>{
+      'api_type': 'json',
+      'op': 'save',
+      'reason': reason,
+      'stylesheet_contents': stylesheet,
+    };
+
+    return await _subreddit.reddit.post(uri, data);
+  }
+
+  // TODO(bkonyi): implement _uploadImage
+  // Upload an image to the [Subreddit].
+  //
+  // `name` is the name to be used for the image. If an image already exists
+  // with this name, it will be replaced.
+  //
+  // `imagePath` is the path to a JPEG or PNG image. This path must be local
+  // and accessible from disk.
+  /*
+  Future upload(String name, Uri imagePath) async =>
+      await _uploadImage(imagePath, <String, String>{
+        'name': name,
+        _kUploadType: 'img',
+      });
+  */
+
+  // TODO(bkonyi): implement _uploadImage
+  // Upload an image to be used as the header image for the [Subreddit].
+  /*
+  Future uploadHeader(Uri imagePath) async =>
+      await _uploadImage(imagePath, <String, String>{
+        _kUploadType: 'header',
+      });
+  */
+
+  // TODO(bkonyi): implement _uploadImage
+  // Upload an image to be used as the mobile header image for the [Subreddit].
+  /*
+  Future uploadMobileHeader(Uri imagePath) async =>
+      await _uploadImage(imagePath, <String, String>{
+        _kUploadType: 'banner',
+      });
+  */
+
+  // TODO(bkonyi): implement _uploadImage
+  // Upload an image to be used as the mobile icon image for the [Subreddit].
+  /*
+  Future uploadMobileIcon(Uri imagePath) async =>
+      await _uploadImage(imagePath, <String, String>{
+        _kUploadType: 'icon',
+      });
+  */
+}
 
 /// Provides a set of wiki functions to a [Subreddit].
 class SubredditWiki {

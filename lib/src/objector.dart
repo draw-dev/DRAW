@@ -32,6 +32,7 @@ class Objector extends RedditBase {
 
   dynamic _objectifyDictionary(Map data) {
     //logger.log(Level.INFO, '_objectifyDictionary');
+    // TODO(bkonyi): collapse most of the 'kind' checks.
     if (data.containsKey('name')) {
       // Redditor type.
       //logger.log(Level.FINE, 'parsing Redditor');
@@ -69,6 +70,17 @@ class Objector extends RedditBase {
     } else if (data.containsKey('kind') &&
         data['kind'] == Reddit.defaultMessageKind) {
       return Message.parse(reddit, data['data']);
+    } else if (data.containsKey('kind') && data['kind'] == 'stylesheet') {
+      final stylesheetData = data['data'];
+      final stylesheet = stylesheetData['stylesheet'];
+      final images = <StyleSheetImage>[];
+      if (stylesheetData.containsKey('images')) {
+        final rawImages = stylesheetData['images'];
+        for (final i in rawImages) {
+          images.add(StyleSheetImage(Uri.parse(i['url']), i['link'], i['name']));
+        }
+      }
+      return StyleSheet(stylesheet, images);
     } else if (data.containsKey('kind') && (data['kind'] == 'LabeledMulti')) {
       assert(
           data.containsKey('data'),
