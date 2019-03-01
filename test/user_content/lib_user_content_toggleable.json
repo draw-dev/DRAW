@@ -1,1 +1,36 @@
-[{"always":false,"request":["https://oauth.reddit.com/api/submit/","{api_type: json, sr: drawapitesting, resubmit: true, sendreplies: true, title: Editable submission, nsfw: false, spoiler: false, kind: self, text: Testing!}"],"response":{"json":{"errors":[],"data":{"url":"https://www.reddit.com/r/drawapitesting/comments/9f9j7y/editable_submission/","drafts_count":0,"id":"9f9j7y","name":"t3_9f9j7y"}}}},{"always":false,"request":["https://oauth.reddit.com/api/sendreplies/","{id: t3_9f9j7y, state: false}"],"response":{}},{"always":false,"request":["https://oauth.reddit.com/api/sendreplies/","{id: t3_9f9j7y, state: true}"],"response":{}}]
+[
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/api/submit/",
+      "{api_type: json, sr: drawapitesting, resubmit: true, sendreplies: true, title: Editable submission, nsfw: false, spoiler: false, kind: self, text: Testing!}"
+    ],
+    "response": {
+      "json": {
+        "errors": [],
+        "data": {
+          "url": "https://www.reddit.com/r/drawapitesting/comments/9f9j7y/editable_submission/",
+          "drafts_count": 0,
+          "id": "9f9j7y",
+          "name": "t3_9f9j7y"
+        }
+      }
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/api/sendreplies/",
+      "{id: t3_9f9j7y, state: false}"
+    ],
+    "response": {}
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/api/sendreplies/",
+      "{id: t3_9f9j7y, state: true}"
+    ],
+    "response": {}
+  }
+]

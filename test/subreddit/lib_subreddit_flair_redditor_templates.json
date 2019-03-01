@@ -1,1 +1,133 @@
-[{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flairtemplate/","{api_type: json, css_class: , flair_type: USER_FLAIR, text: Foobazbar, text_editable: true}"],"response":{"json":{"errors":[]}}},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flairtemplate/","{api_type: json, css_class: , flair_type: USER_FLAIR, text: Foobarz, text_editable: false}"],"response":{"json":{"errors":[]}}},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flairselector/","{}"],"response":{"current":{"flair_css_class":null,"flair_template_id":null,"flair_text":null,"flair_position":"right"},"choices":[{"flair_css_class":"","flair_template_id":"279096fc-b3c6-11e8-be4c-0eb4305c796a","flair_text_editable":true,"flair_position":"right","flair_text":"Foobazbar"},{"flair_css_class":"","flair_template_id":"27b23cf8-b3c6-11e8-9e40-0ea414e16e42","flair_text_editable":true,"flair_position":"right","flair_text":"Foobarz"}]}},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/deleteflairtemplate/","{api_type: json, flair_template_id: 279096fc-b3c6-11e8-be4c-0eb4305c796a}"],"response":{"json":{"errors":[]}}},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flairselector/","{}"],"response":{"current":{"flair_css_class":null,"flair_template_id":null,"flair_text":null,"flair_position":"right"},"choices":[{"flair_css_class":"","flair_template_id":"27b23cf8-b3c6-11e8-9e40-0ea414e16e42","flair_text_editable":true,"flair_position":"right","flair_text":"Foobarz"}]}},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flairtemplate/","{api_type: json, css_class: , flair_template_id: 27b23cf8-b3c6-11e8-9e40-0ea414e16e42, text: Foo, text_editable: false}"],"response":{"json":{"errors":[]}}},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/clearflairtemplates/","{api_type: json, flair_type: USER_FLAIR}"],"response":{"json":{"errors":[]}}},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flairselector/","{}"],"response":{"current":{"flair_css_class":null,"flair_template_id":null,"flair_text":null,"flair_position":"right"},"choices":[]}}]
+[
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flairtemplate/",
+      "{api_type: json, css_class: , flair_type: USER_FLAIR, text: Foobazbar, text_editable: true}"
+    ],
+    "response": {
+      "json": {
+        "errors": []
+      }
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flairtemplate/",
+      "{api_type: json, css_class: , flair_type: USER_FLAIR, text: Foobarz, text_editable: false}"
+    ],
+    "response": {
+      "json": {
+        "errors": []
+      }
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flairselector/",
+      "{}"
+    ],
+    "response": {
+      "current": {
+        "flair_css_class": null,
+        "flair_template_id": null,
+        "flair_text": null,
+        "flair_position": "right"
+      },
+      "choices": [
+        {
+          "flair_css_class": "",
+          "flair_template_id": "279096fc-b3c6-11e8-be4c-0eb4305c796a",
+          "flair_text_editable": true,
+          "flair_position": "right",
+          "flair_text": "Foobazbar"
+        },
+        {
+          "flair_css_class": "",
+          "flair_template_id": "27b23cf8-b3c6-11e8-9e40-0ea414e16e42",
+          "flair_text_editable": true,
+          "flair_position": "right",
+          "flair_text": "Foobarz"
+        }
+      ]
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/deleteflairtemplate/",
+      "{api_type: json, flair_template_id: 279096fc-b3c6-11e8-be4c-0eb4305c796a}"
+    ],
+    "response": {
+      "json": {
+        "errors": []
+      }
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flairselector/",
+      "{}"
+    ],
+    "response": {
+      "current": {
+        "flair_css_class": null,
+        "flair_template_id": null,
+        "flair_text": null,
+        "flair_position": "right"
+      },
+      "choices": [
+        {
+          "flair_css_class": "",
+          "flair_template_id": "27b23cf8-b3c6-11e8-9e40-0ea414e16e42",
+          "flair_text_editable": true,
+          "flair_position": "right",
+          "flair_text": "Foobarz"
+        }
+      ]
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flairtemplate/",
+      "{api_type: json, css_class: , flair_template_id: 27b23cf8-b3c6-11e8-9e40-0ea414e16e42, text: Foo, text_editable: false}"
+    ],
+    "response": {
+      "json": {
+        "errors": []
+      }
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/clearflairtemplates/",
+      "{api_type: json, flair_type: USER_FLAIR}"
+    ],
+    "response": {
+      "json": {
+        "errors": []
+      }
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flairselector/",
+      "{}"
+    ],
+    "response": {
+      "current": {
+        "flair_css_class": null,
+        "flair_template_id": null,
+        "flair_text": null,
+        "flair_position": "right"
+      },
+      "choices": []
+    }
+  }
+]

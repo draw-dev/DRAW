@@ -1,1 +1,14 @@
-[{"always":false,"request":["https://oauth.reddit.com/api/v1/me/friends/drawapiofficial2","{\"note\":\"\"}"],"response":["DRAWNotFoundException","USER_DOESNT_EXIST","Bad Request"]}]
+[
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/api/v1/me/friends/drawapiofficial2",
+      "{\"note\":\"\"}"
+    ],
+    "response": [
+      "DRAWNotFoundException",
+      "USER_DOESNT_EXIST",
+      "Bad Request"
+    ]
+  }
+]

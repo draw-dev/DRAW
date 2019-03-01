@@ -1,1 +1,59 @@
-[{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flairlist/","{limit: 1024}"],"response":{"users":[{"flair_css_class":"","user":"DRAWApiOfficial","flair_text":"Test Flair"}]}},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flairlist/","{limit: 1024}"],"response":{"users":[{"flair_css_class":"","user":"DRAWApiOfficial","flair_text":"Test Flair"}]}},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flaircsv/","{flair_csv: \"DRAWApiOfficial\",\"\",\"\"}"],"response":[{"status":"removed flair for user DRAWApiOfficial","errors":{},"ok":true,"warnings":{}}]},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flairlist/","{limit: 1024}"],"response":{"users":[]}}]
+[
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flairlist/",
+      "{limit: 1024}"
+    ],
+    "response": {
+      "users": [
+        {
+          "flair_css_class": "",
+          "user": "DRAWApiOfficial",
+          "flair_text": "Test Flair"
+        }
+      ]
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flairlist/",
+      "{limit: 1024}"
+    ],
+    "response": {
+      "users": [
+        {
+          "flair_css_class": "",
+          "user": "DRAWApiOfficial",
+          "flair_text": "Test Flair"
+        }
+      ]
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flaircsv/",
+      "{flair_csv: \"DRAWApiOfficial\",\"\",\"\"}"
+    ],
+    "response": [
+      {
+        "status": "removed flair for user DRAWApiOfficial",
+        "errors": {},
+        "ok": true,
+        "warnings": {}
+      }
+    ]
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flairlist/",
+      "{limit: 1024}"
+    ],
+    "response": {
+      "users": []
+    }
+  }
+]

@@ -1,1 +1,622 @@
-[{"always":false,"request":["https://oauth.reddit.com/api/v1/me","null"],"response":{"is_employee":false,"seen_layout_switch":true,"has_visited_new_profile":false,"pref_no_profanity":true,"is_suspended":false,"pref_geopopular":null,"seen_redesign_modal":true,"pref_show_trending":true,"subreddit":null,"is_sponsor":false,"gold_expiration":null,"id":"9b8dzfo","features":{"search_public_traffic":true,"ad_moderation":true,"oc_discovery":true,"mweb_xpromo_modal_listing_click_daily_dismissible_link":true,"whitelisted_pms":true,"email_verification":{"owner":"growth","variant":"variant_3","experiment_id":1038},"legacy_search_pref":true,"live_orangereds":true,"activity_service_write":true,"do_not_track":true,"outbound_clicktracking":true,"ios_profile_edit":true,"screenview_events":true,"native_ad_server":true,"logistic_regression_v8":{"owner":"relevance","variant":"personormalization_b2","experiment_id":392},"mweb_xpromo_interstitial_comments_android":true,"post_embed":true,"hover_user_ui_holdout":{"owner":"voices","variant":"holdout","experiment_id":223},"mweb_xpromo_modal_listing_click_daily_dismissible_android":true,"activity_service_read":true,"live_happening_now":true,"ads_auto_extend":true,"show_user_sr_name":true,"block_user_by_report":true,"orangereds_as_emails":true,"programmatic_ads":true,"chat_menu_notification":true,"redesign_optin_banner":true,"android_promoted_posts":true,"geopopular":true,"geopopular_se_holdout":{"owner":"relevance","variant":"control_2","experiment_id":224},"subreddit_rules":true,"user_otp":true,"new_overview":true,"chat_group_rollout":true,"redesign_beta":true,"adblock_test":true,"loadtest_sendbird_me":true,"email_digest_header_prefix":{"owner":"growth","variant":"control_2","experiment_id":362},"show_amp_link":true,"listing_service_rampup":true,"default_srs_holdout":{"owner":"relevance","variant":"control_2","experiment_id":171},"upgrade_cookies":true,"interest_targeting":true,"ads_auction":true,"scaled_inference":{"owner":"growth","variant":"control_1","experiment_id":352},"mweb_xpromo_modal_listing_click_daily_dismissible_ios":true,"mweb_xpromo_ad_feed_android":{"owner":"channels","variant":"control_2","experiment_id":195},"expando_events":true,"force_https":true,"inbox_push":true,"oc_checkboxes":true,"post_to_profile_beta":true,"crossposting_ga":true,"https_redirect":true,"pause_ads":true,"top_content_email_digest":{"owner":"growth","variant":"variant_1","experiment_id":1039},"top_content_email_digest_v2":{"owner":"growth","variant":"control_2","experiment_id":363},"original_content":true,"profile_redesign_posts":true,"mobile_native_banner":true,"recently_consumed_holdout":{"owner":"relevance","variant":"control_1","experiment_id":391},"mobile_ad_image":true,"profile_redesign":true,"adserver_reporting":true,"chat_rollout":true,"chat":true,"mobile_web_targeting":true,"rte_video":true,"users_listing":true,"personalization_prefs":true,"onboarding_splash2":true,"ads_auto_refund":true,"crossposting_recent":true,"heartbeat_events":true,"eu_cookie_policy":true,"oc_discovery_filtering":true,"oc_creation":true,"new_loggedin_cache_policy":true,"geopopular_us_holdout":{"owner":"relevance","variant":"control_2","experiment_id":215},"give_hsts_grants":true,"ios_promoted_posts":true,"mweb_xpromo_interstitial_comments_ios":true,"moat_tracking":true,"drafts":true,"profile_redesign_comments":true,"geopopular_au_holdout":{"owner":"relevance","variant":"control_2","experiment_id":206},"scroll_events":true},"verified":false,"new_modmail_exists":true,"pref_autoplay":true,"num_friends":0,"over_18":true,"is_gold":false,"is_mod":true,"suspension_expiration_utc":null,"has_verified_email":true,"pref_video_autoplay":true,"in_chat":true,"in_redesign_beta":true,"icon_img":"https://www.redditstatic.com/avatars/avatar_default_01_D4E815.png","has_mod_mail":false,"pref_nightmode":false,"oauth_client_id":"4tZepK6er4q3Kg","hide_from_robots":false,"link_karma":1,"inbox_count":9,"pref_top_karma_subreddits":null,"has_mail":true,"pref_show_snoovatar":false,"name":"DRAWApiOfficial","pref_clickgadget":5,"created":1501830779.0,"gold_creddits":0,"created_utc":1501801979.0,"in_beta":true,"comment_karma":0,"has_subscribed":true,"seen_subreddit_chat_ftux":false}},{"always":false,"request":["https://oauth.reddit.com/api/multi/user/DRAWApiOfficial/","null"],"response":[{"kind":"LabeledMulti","data":{"can_edit":true,"display_name":"all","name":"all","description_html":"","created":1520663830.0,"copied_from":null,"icon_url":null,"subreddits":[],"created_utc":1520635030.0,"visibility":"private","icon_name":"","over_18":false,"weighting_scheme":"classic","path":"/user/DRAWApiOfficial/m/all/","key_color":"#cee3f8","description_md":""}},{"kind":"LabeledMulti","data":{"can_edit":true,"display_name":"copied_multi","name":"copied_multi","description_html":"&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;A multireddit devoted to adventure outdoors&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/conscendo/m/adventure\"&gt;/user/conscendo/m/adventure&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/MyFifthOne/m/adventure/\"&gt;/user/MyFifthOne/m/adventure/&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/DRAWApiOfficial/m/wow/\"&gt;/user/DRAWApiOfficial/m/wow/&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;","created":1379474187.0,"copied_from":"/user/DRAWApiOfficial/m/wow/","icon_url":null,"subreddits":[{"name":"camping"},{"name":"uwaterloo"},{"name":"Yosemite"}],"created_utc":1379445387.0,"visibility":"private","icon_name":"","over_18":false,"weighting_scheme":"classic","path":"/user/DRAWApiOfficial/m/copied_multi/","key_color":"#cee3f8","description_md":"A multireddit devoted to adventure outdoors\n\ncopied from [/user/conscendo/m/adventure](/user/conscendo/m/adventure)\n\ncopied from [/user/MyFifthOne/m/adventure/](/user/MyFifthOne/m/adventure/)\n\ncopied from [/user/DRAWApiOfficial/m/wow/](/user/DRAWApiOfficial/m/wow/)"}},{"kind":"LabeledMulti","data":{"can_edit":true,"display_name":"copiedmultireddit","name":"copiedmultireddit","description_html":"&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;A multireddit devoted to adventure outdoors&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/conscendo/m/adventure\"&gt;/user/conscendo/m/adventure&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/MyFifthOne/m/adventure/\"&gt;/user/MyFifthOne/m/adventure/&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/DRAWApiOfficial/m/wow/\"&gt;/user/DRAWApiOfficial/m/wow/&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/DRAWApiOfficial/m/copied_multi/\"&gt;/user/DRAWApiOfficial/m/copied_multi/&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;","created":1379474187.0,"copied_from":"/user/DRAWApiOfficial/m/copied_multi/","icon_url":null,"subreddits":[{"name":"camping"},{"name":"uwaterloo"},{"name":"Yosemite"}],"created_utc":1379445387.0,"visibility":"private","icon_name":"","over_18":false,"weighting_scheme":"classic","path":"/user/DRAWApiOfficial/m/copiedmultireddit/","key_color":"#cee3f8","description_md":"A multireddit devoted to adventure outdoors\n\ncopied from [/user/conscendo/m/adventure](/user/conscendo/m/adventure)\n\ncopied from [/user/MyFifthOne/m/adventure/](/user/MyFifthOne/m/adventure/)\n\ncopied from [/user/DRAWApiOfficial/m/wow/](/user/DRAWApiOfficial/m/wow/)\n\ncopied from [/user/DRAWApiOfficial/m/copied_multi/](/user/DRAWApiOfficial/m/copied_multi/)"}},{"kind":"LabeledMulti","data":{"can_edit":true,"display_name":"copyofmultireddit","name":"copyofmultireddit","description_html":"&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;A multireddit devoted to adventure outdoors&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/conscendo/m/adventure\"&gt;/user/conscendo/m/adventure&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/MyFifthOne/m/adventure/\"&gt;/user/MyFifthOne/m/adventure/&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/DRAWApiOfficial/m/wow/\"&gt;/user/DRAWApiOfficial/m/wow/&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/DRAWApiOfficial/m/copied_multi/\"&gt;/user/DRAWApiOfficial/m/copied_multi/&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;","created":1379474187.0,"copied_from":"/user/DRAWApiOfficial/m/copied_multi/","icon_url":null,"subreddits":[{"name":"camping"},{"name":"uwaterloo"},{"name":"Yosemite"}],"created_utc":1379445387.0,"visibility":"private","icon_name":"","over_18":false,"weighting_scheme":"classic","path":"/user/DRAWApiOfficial/m/copyofmultireddit/","key_color":"#cee3f8","description_md":"A multireddit devoted to adventure outdoors\n\ncopied from [/user/conscendo/m/adventure](/user/conscendo/m/adventure)\n\ncopied from [/user/MyFifthOne/m/adventure/](/user/MyFifthOne/m/adventure/)\n\ncopied from [/user/DRAWApiOfficial/m/wow/](/user/DRAWApiOfficial/m/wow/)\n\ncopied from [/user/DRAWApiOfficial/m/copied_multi/](/user/DRAWApiOfficial/m/copied_multi/)"}},{"kind":"LabeledMulti","data":{"can_edit":true,"display_name":"wow","name":"wow","description_html":"&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;A multireddit devoted to adventure outdoors&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/conscendo/m/adventure\"&gt;/user/conscendo/m/adventure&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/MyFifthOne/m/adventure/\"&gt;/user/MyFifthOne/m/adventure/&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;","created":1379474187.0,"copied_from":"/user/MyFifthOne/m/adventure/","icon_url":null,"subreddits":[{"name":"camping"},{"name":"uwaterloo"},{"name":"Yosemite"}],"created_utc":1379445387.0,"visibility":"private","icon_name":"","over_18":false,"weighting_scheme":"classic","path":"/user/DRAWApiOfficial/m/wow/","key_color":"#cee3f8","description_md":"A multireddit devoted to adventure outdoors\n\ncopied from [/user/conscendo/m/adventure](/user/conscendo/m/adventure)\n\ncopied from [/user/MyFifthOne/m/adventure/](/user/MyFifthOne/m/adventure/)"}},{"kind":"LabeledMulti","data":{"can_edit":true,"display_name":"wow2","name":"wow2","description_html":"&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;A multireddit devoted to adventure outdoors&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/conscendo/m/adventure\"&gt;/user/conscendo/m/adventure&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/MyFifthOne/m/adventure/\"&gt;/user/MyFifthOne/m/adventure/&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;","created":1379474187.0,"copied_from":"/user/MyFifthOne/m/adventure/","icon_url":null,"subreddits":[{"name":"solotravel"},{"name":"Fishing"},{"name":"geocaching"},{"name":"Yosemite"},{"name":"CampingandHiking"},{"name":"whitewater"},{"name":"remoteplaces"},{"name":"Adirondacks"},{"name":"caving"},{"name":"travelphotos"},{"name":"canyoneering"},{"name":"Backcountry"},{"name":"Bushcraft"},{"name":"Kayaking"},{"name":"scuba"},{"name":"bouldering"},{"name":"CampingGear"},{"name":"urbanexploration"},{"name":"WWOOF"},{"name":"adventures"},{"name":"climbing"},{"name":"Mountaineering"},{"name":"sailing"},{"name":"hiking"},{"name":"iceclimbing"},{"name":"tradclimbing"},{"name":"backpacking"},{"name":"trailmeals"},{"name":"Climbingvids"},{"name":"camping"},{"name":"climbharder"},{"name":"skiing"},{"name":"Outdoors"},{"name":"alpinism"},{"name":"PacificCrestTrail"},{"name":"Ultralight"},{"name":"Hammocks"},{"name":"AppalachianTrail"}],"created_utc":1379445387.0,"visibility":"private","icon_name":"","over_18":false,"weighting_scheme":"classic","path":"/user/DRAWApiOfficial/m/wow2/","key_color":"#cee3f8","description_md":"A multireddit devoted to adventure outdoors\n\ncopied from [/user/conscendo/m/adventure](/user/conscendo/m/adventure)\n\ncopied from [/user/MyFifthOne/m/adventure/](/user/MyFifthOne/m/adventure/)"}},{"kind":"LabeledMulti","data":{"can_edit":true,"display_name":"wow3","name":"wow3","description_html":"&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;A multireddit devoted to adventure outdoors&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/conscendo/m/adventure\"&gt;/user/conscendo/m/adventure&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/MyFifthOne/m/adventure/\"&gt;/user/MyFifthOne/m/adventure/&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;","created":1379474187.0,"copied_from":"/user/MyFifthOne/m/adventure/","icon_url":null,"subreddits":[{"name":"solotravel"},{"name":"Fishing"},{"name":"geocaching"},{"name":"Yosemite"},{"name":"CampingandHiking"},{"name":"whitewater"},{"name":"remoteplaces"},{"name":"Adirondacks"},{"name":"caving"},{"name":"travelphotos"},{"name":"canyoneering"},{"name":"Backcountry"},{"name":"Bushcraft"},{"name":"Kayaking"},{"name":"scuba"},{"name":"bouldering"},{"name":"CampingGear"},{"name":"urbanexploration"},{"name":"WWOOF"},{"name":"adventures"},{"name":"climbing"},{"name":"Mountaineering"},{"name":"sailing"},{"name":"hiking"},{"name":"iceclimbing"},{"name":"tradclimbing"},{"name":"backpacking"},{"name":"trailmeals"},{"name":"Climbingvids"},{"name":"camping"},{"name":"climbharder"},{"name":"skiing"},{"name":"Outdoors"},{"name":"alpinism"},{"name":"PacificCrestTrail"},{"name":"Ultralight"},{"name":"Hammocks"},{"name":"AppalachianTrail"}],"created_utc":1379445387.0,"visibility":"private","icon_name":"","over_18":false,"weighting_scheme":"classic","path":"/user/DRAWApiOfficial/m/wow3/","key_color":"#cee3f8","description_md":"A multireddit devoted to adventure outdoors\n\ncopied from [/user/conscendo/m/adventure](/user/conscendo/m/adventure)\n\ncopied from [/user/MyFifthOne/m/adventure/](/user/MyFifthOne/m/adventure/)"}}]}]
+[
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/api/v1/me",
+      "null"
+    ],
+    "response": {
+      "is_employee": false,
+      "seen_layout_switch": true,
+      "has_visited_new_profile": false,
+      "pref_no_profanity": true,
+      "is_suspended": false,
+      "pref_geopopular": null,
+      "seen_redesign_modal": true,
+      "pref_show_trending": true,
+      "subreddit": null,
+      "is_sponsor": false,
+      "gold_expiration": null,
+      "id": "9b8dzfo",
+      "features": {
+        "search_public_traffic": true,
+        "ad_moderation": true,
+        "oc_discovery": true,
+        "mweb_xpromo_modal_listing_click_daily_dismissible_link": true,
+        "whitelisted_pms": true,
+        "email_verification": {
+          "owner": "growth",
+          "variant": "variant_3",
+          "experiment_id": 1038
+        },
+        "legacy_search_pref": true,
+        "live_orangereds": true,
+        "activity_service_write": true,
+        "do_not_track": true,
+        "outbound_clicktracking": true,
+        "ios_profile_edit": true,
+        "screenview_events": true,
+        "native_ad_server": true,
+        "logistic_regression_v8": {
+          "owner": "relevance",
+          "variant": "personormalization_b2",
+          "experiment_id": 392
+        },
+        "mweb_xpromo_interstitial_comments_android": true,
+        "post_embed": true,
+        "hover_user_ui_holdout": {
+          "owner": "voices",
+          "variant": "holdout",
+          "experiment_id": 223
+        },
+        "mweb_xpromo_modal_listing_click_daily_dismissible_android": true,
+        "activity_service_read": true,
+        "live_happening_now": true,
+        "ads_auto_extend": true,
+        "show_user_sr_name": true,
+        "block_user_by_report": true,
+        "orangereds_as_emails": true,
+        "programmatic_ads": true,
+        "chat_menu_notification": true,
+        "redesign_optin_banner": true,
+        "android_promoted_posts": true,
+        "geopopular": true,
+        "geopopular_se_holdout": {
+          "owner": "relevance",
+          "variant": "control_2",
+          "experiment_id": 224
+        },
+        "subreddit_rules": true,
+        "user_otp": true,
+        "new_overview": true,
+        "chat_group_rollout": true,
+        "redesign_beta": true,
+        "adblock_test": true,
+        "loadtest_sendbird_me": true,
+        "email_digest_header_prefix": {
+          "owner": "growth",
+          "variant": "control_2",
+          "experiment_id": 362
+        },
+        "show_amp_link": true,
+        "listing_service_rampup": true,
+        "default_srs_holdout": {
+          "owner": "relevance",
+          "variant": "control_2",
+          "experiment_id": 171
+        },
+        "upgrade_cookies": true,
+        "interest_targeting": true,
+        "ads_auction": true,
+        "scaled_inference": {
+          "owner": "growth",
+          "variant": "control_1",
+          "experiment_id": 352
+        },
+        "mweb_xpromo_modal_listing_click_daily_dismissible_ios": true,
+        "mweb_xpromo_ad_feed_android": {
+          "owner": "channels",
+          "variant": "control_2",
+          "experiment_id": 195
+        },
+        "expando_events": true,
+        "force_https": true,
+        "inbox_push": true,
+        "oc_checkboxes": true,
+        "post_to_profile_beta": true,
+        "crossposting_ga": true,
+        "https_redirect": true,
+        "pause_ads": true,
+        "top_content_email_digest": {
+          "owner": "growth",
+          "variant": "variant_1",
+          "experiment_id": 1039
+        },
+        "top_content_email_digest_v2": {
+          "owner": "growth",
+          "variant": "control_2",
+          "experiment_id": 363
+        },
+        "original_content": true,
+        "profile_redesign_posts": true,
+        "mobile_native_banner": true,
+        "recently_consumed_holdout": {
+          "owner": "relevance",
+          "variant": "control_1",
+          "experiment_id": 391
+        },
+        "mobile_ad_image": true,
+        "profile_redesign": true,
+        "adserver_reporting": true,
+        "chat_rollout": true,
+        "chat": true,
+        "mobile_web_targeting": true,
+        "rte_video": true,
+        "users_listing": true,
+        "personalization_prefs": true,
+        "onboarding_splash2": true,
+        "ads_auto_refund": true,
+        "crossposting_recent": true,
+        "heartbeat_events": true,
+        "eu_cookie_policy": true,
+        "oc_discovery_filtering": true,
+        "oc_creation": true,
+        "new_loggedin_cache_policy": true,
+        "geopopular_us_holdout": {
+          "owner": "relevance",
+          "variant": "control_2",
+          "experiment_id": 215
+        },
+        "give_hsts_grants": true,
+        "ios_promoted_posts": true,
+        "mweb_xpromo_interstitial_comments_ios": true,
+        "moat_tracking": true,
+        "drafts": true,
+        "profile_redesign_comments": true,
+        "geopopular_au_holdout": {
+          "owner": "relevance",
+          "variant": "control_2",
+          "experiment_id": 206
+        },
+        "scroll_events": true
+      },
+      "verified": false,
+      "new_modmail_exists": true,
+      "pref_autoplay": true,
+      "num_friends": 0,
+      "over_18": true,
+      "is_gold": false,
+      "is_mod": true,
+      "suspension_expiration_utc": null,
+      "has_verified_email": true,
+      "pref_video_autoplay": true,
+      "in_chat": true,
+      "in_redesign_beta": true,
+      "icon_img": "https://www.redditstatic.com/avatars/avatar_default_01_D4E815.png",
+      "has_mod_mail": false,
+      "pref_nightmode": false,
+      "oauth_client_id": "4tZepK6er4q3Kg",
+      "hide_from_robots": false,
+      "link_karma": 1,
+      "inbox_count": 9,
+      "pref_top_karma_subreddits": null,
+      "has_mail": true,
+      "pref_show_snoovatar": false,
+      "name": "DRAWApiOfficial",
+      "pref_clickgadget": 5,
+      "created": 1501830779.0,
+      "gold_creddits": 0,
+      "created_utc": 1501801979.0,
+      "in_beta": true,
+      "comment_karma": 0,
+      "has_subscribed": true,
+      "seen_subreddit_chat_ftux": false
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/api/multi/user/DRAWApiOfficial/",
+      "null"
+    ],
+    "response": [
+      {
+        "kind": "LabeledMulti",
+        "data": {
+          "can_edit": true,
+          "display_name": "all",
+          "name": "all",
+          "description_html": "",
+          "created": 1520663830.0,
+          "copied_from": null,
+          "icon_url": null,
+          "subreddits": [],
+          "created_utc": 1520635030.0,
+          "visibility": "private",
+          "icon_name": "",
+          "over_18": false,
+          "weighting_scheme": "classic",
+          "path": "/user/DRAWApiOfficial/m/all/",
+          "key_color": "#cee3f8",
+          "description_md": ""
+        }
+      },
+      {
+        "kind": "LabeledMulti",
+        "data": {
+          "can_edit": true,
+          "display_name": "copied_multi",
+          "name": "copied_multi",
+          "description_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;A multireddit devoted to adventure outdoors&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/conscendo/m/adventure\"&gt;/user/conscendo/m/adventure&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/MyFifthOne/m/adventure/\"&gt;/user/MyFifthOne/m/adventure/&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/DRAWApiOfficial/m/wow/\"&gt;/user/DRAWApiOfficial/m/wow/&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "created": 1379474187.0,
+          "copied_from": "/user/DRAWApiOfficial/m/wow/",
+          "icon_url": null,
+          "subreddits": [
+            {
+              "name": "camping"
+            },
+            {
+              "name": "uwaterloo"
+            },
+            {
+              "name": "Yosemite"
+            }
+          ],
+          "created_utc": 1379445387.0,
+          "visibility": "private",
+          "icon_name": "",
+          "over_18": false,
+          "weighting_scheme": "classic",
+          "path": "/user/DRAWApiOfficial/m/copied_multi/",
+          "key_color": "#cee3f8",
+          "description_md": "A multireddit devoted to adventure outdoors\n\ncopied from [/user/conscendo/m/adventure](/user/conscendo/m/adventure)\n\ncopied from [/user/MyFifthOne/m/adventure/](/user/MyFifthOne/m/adventure/)\n\ncopied from [/user/DRAWApiOfficial/m/wow/](/user/DRAWApiOfficial/m/wow/)"
+        }
+      },
+      {
+        "kind": "LabeledMulti",
+        "data": {
+          "can_edit": true,
+          "display_name": "copiedmultireddit",
+          "name": "copiedmultireddit",
+          "description_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;A multireddit devoted to adventure outdoors&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/conscendo/m/adventure\"&gt;/user/conscendo/m/adventure&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/MyFifthOne/m/adventure/\"&gt;/user/MyFifthOne/m/adventure/&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/DRAWApiOfficial/m/wow/\"&gt;/user/DRAWApiOfficial/m/wow/&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/DRAWApiOfficial/m/copied_multi/\"&gt;/user/DRAWApiOfficial/m/copied_multi/&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "created": 1379474187.0,
+          "copied_from": "/user/DRAWApiOfficial/m/copied_multi/",
+          "icon_url": null,
+          "subreddits": [
+            {
+              "name": "camping"
+            },
+            {
+              "name": "uwaterloo"
+            },
+            {
+              "name": "Yosemite"
+            }
+          ],
+          "created_utc": 1379445387.0,
+          "visibility": "private",
+          "icon_name": "",
+          "over_18": false,
+          "weighting_scheme": "classic",
+          "path": "/user/DRAWApiOfficial/m/copiedmultireddit/",
+          "key_color": "#cee3f8",
+          "description_md": "A multireddit devoted to adventure outdoors\n\ncopied from [/user/conscendo/m/adventure](/user/conscendo/m/adventure)\n\ncopied from [/user/MyFifthOne/m/adventure/](/user/MyFifthOne/m/adventure/)\n\ncopied from [/user/DRAWApiOfficial/m/wow/](/user/DRAWApiOfficial/m/wow/)\n\ncopied from [/user/DRAWApiOfficial/m/copied_multi/](/user/DRAWApiOfficial/m/copied_multi/)"
+        }
+      },
+      {
+        "kind": "LabeledMulti",
+        "data": {
+          "can_edit": true,
+          "display_name": "copyofmultireddit",
+          "name": "copyofmultireddit",
+          "description_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;A multireddit devoted to adventure outdoors&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/conscendo/m/adventure\"&gt;/user/conscendo/m/adventure&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/MyFifthOne/m/adventure/\"&gt;/user/MyFifthOne/m/adventure/&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/DRAWApiOfficial/m/wow/\"&gt;/user/DRAWApiOfficial/m/wow/&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/DRAWApiOfficial/m/copied_multi/\"&gt;/user/DRAWApiOfficial/m/copied_multi/&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "created": 1379474187.0,
+          "copied_from": "/user/DRAWApiOfficial/m/copied_multi/",
+          "icon_url": null,
+          "subreddits": [
+            {
+              "name": "camping"
+            },
+            {
+              "name": "uwaterloo"
+            },
+            {
+              "name": "Yosemite"
+            }
+          ],
+          "created_utc": 1379445387.0,
+          "visibility": "private",
+          "icon_name": "",
+          "over_18": false,
+          "weighting_scheme": "classic",
+          "path": "/user/DRAWApiOfficial/m/copyofmultireddit/",
+          "key_color": "#cee3f8",
+          "description_md": "A multireddit devoted to adventure outdoors\n\ncopied from [/user/conscendo/m/adventure](/user/conscendo/m/adventure)\n\ncopied from [/user/MyFifthOne/m/adventure/](/user/MyFifthOne/m/adventure/)\n\ncopied from [/user/DRAWApiOfficial/m/wow/](/user/DRAWApiOfficial/m/wow/)\n\ncopied from [/user/DRAWApiOfficial/m/copied_multi/](/user/DRAWApiOfficial/m/copied_multi/)"
+        }
+      },
+      {
+        "kind": "LabeledMulti",
+        "data": {
+          "can_edit": true,
+          "display_name": "wow",
+          "name": "wow",
+          "description_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;A multireddit devoted to adventure outdoors&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/conscendo/m/adventure\"&gt;/user/conscendo/m/adventure&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/MyFifthOne/m/adventure/\"&gt;/user/MyFifthOne/m/adventure/&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "created": 1379474187.0,
+          "copied_from": "/user/MyFifthOne/m/adventure/",
+          "icon_url": null,
+          "subreddits": [
+            {
+              "name": "camping"
+            },
+            {
+              "name": "uwaterloo"
+            },
+            {
+              "name": "Yosemite"
+            }
+          ],
+          "created_utc": 1379445387.0,
+          "visibility": "private",
+          "icon_name": "",
+          "over_18": false,
+          "weighting_scheme": "classic",
+          "path": "/user/DRAWApiOfficial/m/wow/",
+          "key_color": "#cee3f8",
+          "description_md": "A multireddit devoted to adventure outdoors\n\ncopied from [/user/conscendo/m/adventure](/user/conscendo/m/adventure)\n\ncopied from [/user/MyFifthOne/m/adventure/](/user/MyFifthOne/m/adventure/)"
+        }
+      },
+      {
+        "kind": "LabeledMulti",
+        "data": {
+          "can_edit": true,
+          "display_name": "wow2",
+          "name": "wow2",
+          "description_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;A multireddit devoted to adventure outdoors&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/conscendo/m/adventure\"&gt;/user/conscendo/m/adventure&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/MyFifthOne/m/adventure/\"&gt;/user/MyFifthOne/m/adventure/&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "created": 1379474187.0,
+          "copied_from": "/user/MyFifthOne/m/adventure/",
+          "icon_url": null,
+          "subreddits": [
+            {
+              "name": "solotravel"
+            },
+            {
+              "name": "Fishing"
+            },
+            {
+              "name": "geocaching"
+            },
+            {
+              "name": "Yosemite"
+            },
+            {
+              "name": "CampingandHiking"
+            },
+            {
+              "name": "whitewater"
+            },
+            {
+              "name": "remoteplaces"
+            },
+            {
+              "name": "Adirondacks"
+            },
+            {
+              "name": "caving"
+            },
+            {
+              "name": "travelphotos"
+            },
+            {
+              "name": "canyoneering"
+            },
+            {
+              "name": "Backcountry"
+            },
+            {
+              "name": "Bushcraft"
+            },
+            {
+              "name": "Kayaking"
+            },
+            {
+              "name": "scuba"
+            },
+            {
+              "name": "bouldering"
+            },
+            {
+              "name": "CampingGear"
+            },
+            {
+              "name": "urbanexploration"
+            },
+            {
+              "name": "WWOOF"
+            },
+            {
+              "name": "adventures"
+            },
+            {
+              "name": "climbing"
+            },
+            {
+              "name": "Mountaineering"
+            },
+            {
+              "name": "sailing"
+            },
+            {
+              "name": "hiking"
+            },
+            {
+              "name": "iceclimbing"
+            },
+            {
+              "name": "tradclimbing"
+            },
+            {
+              "name": "backpacking"
+            },
+            {
+              "name": "trailmeals"
+            },
+            {
+              "name": "Climbingvids"
+            },
+            {
+              "name": "camping"
+            },
+            {
+              "name": "climbharder"
+            },
+            {
+              "name": "skiing"
+            },
+            {
+              "name": "Outdoors"
+            },
+            {
+              "name": "alpinism"
+            },
+            {
+              "name": "PacificCrestTrail"
+            },
+            {
+              "name": "Ultralight"
+            },
+            {
+              "name": "Hammocks"
+            },
+            {
+              "name": "AppalachianTrail"
+            }
+          ],
+          "created_utc": 1379445387.0,
+          "visibility": "private",
+          "icon_name": "",
+          "over_18": false,
+          "weighting_scheme": "classic",
+          "path": "/user/DRAWApiOfficial/m/wow2/",
+          "key_color": "#cee3f8",
+          "description_md": "A multireddit devoted to adventure outdoors\n\ncopied from [/user/conscendo/m/adventure](/user/conscendo/m/adventure)\n\ncopied from [/user/MyFifthOne/m/adventure/](/user/MyFifthOne/m/adventure/)"
+        }
+      },
+      {
+        "kind": "LabeledMulti",
+        "data": {
+          "can_edit": true,
+          "display_name": "wow3",
+          "name": "wow3",
+          "description_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;A multireddit devoted to adventure outdoors&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/conscendo/m/adventure\"&gt;/user/conscendo/m/adventure&lt;/a&gt;&lt;/p&gt;\n\n&lt;p&gt;copied from &lt;a href=\"/user/MyFifthOne/m/adventure/\"&gt;/user/MyFifthOne/m/adventure/&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+          "created": 1379474187.0,
+          "copied_from": "/user/MyFifthOne/m/adventure/",
+          "icon_url": null,
+          "subreddits": [
+            {
+              "name": "solotravel"
+            },
+            {
+              "name": "Fishing"
+            },
+            {
+              "name": "geocaching"
+            },
+            {
+              "name": "Yosemite"
+            },
+            {
+              "name": "CampingandHiking"
+            },
+            {
+              "name": "whitewater"
+            },
+            {
+              "name": "remoteplaces"
+            },
+            {
+              "name": "Adirondacks"
+            },
+            {
+              "name": "caving"
+            },
+            {
+              "name": "travelphotos"
+            },
+            {
+              "name": "canyoneering"
+            },
+            {
+              "name": "Backcountry"
+            },
+            {
+              "name": "Bushcraft"
+            },
+            {
+              "name": "Kayaking"
+            },
+            {
+              "name": "scuba"
+            },
+            {
+              "name": "bouldering"
+            },
+            {
+              "name": "CampingGear"
+            },
+            {
+              "name": "urbanexploration"
+            },
+            {
+              "name": "WWOOF"
+            },
+            {
+              "name": "adventures"
+            },
+            {
+              "name": "climbing"
+            },
+            {
+              "name": "Mountaineering"
+            },
+            {
+              "name": "sailing"
+            },
+            {
+              "name": "hiking"
+            },
+            {
+              "name": "iceclimbing"
+            },
+            {
+              "name": "tradclimbing"
+            },
+            {
+              "name": "backpacking"
+            },
+            {
+              "name": "trailmeals"
+            },
+            {
+              "name": "Climbingvids"
+            },
+            {
+              "name": "camping"
+            },
+            {
+              "name": "climbharder"
+            },
+            {
+              "name": "skiing"
+            },
+            {
+              "name": "Outdoors"
+            },
+            {
+              "name": "alpinism"
+            },
+            {
+              "name": "PacificCrestTrail"
+            },
+            {
+              "name": "Ultralight"
+            },
+            {
+              "name": "Hammocks"
+            },
+            {
+              "name": "AppalachianTrail"
+            }
+          ],
+          "created_utc": 1379445387.0,
+          "visibility": "private",
+          "icon_name": "",
+          "over_18": false,
+          "weighting_scheme": "classic",
+          "path": "/user/DRAWApiOfficial/m/wow3/",
+          "key_color": "#cee3f8",
+          "description_md": "A multireddit devoted to adventure outdoors\n\ncopied from [/user/conscendo/m/adventure](/user/conscendo/m/adventure)\n\ncopied from [/user/MyFifthOne/m/adventure/](/user/MyFifthOne/m/adventure/)"
+        }
+      }
+    ]
+  }
+]
