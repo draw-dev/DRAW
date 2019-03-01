@@ -77,7 +77,8 @@ class Objector extends RedditBase {
       if (stylesheetData.containsKey('images')) {
         final rawImages = stylesheetData['images'];
         for (final i in rawImages) {
-          images.add(StyleSheetImage(Uri.parse(i['url']), i['link'], i['name']));
+          images
+              .add(StyleSheetImage(Uri.parse(i['url']), i['link'], i['name']));
         }
       }
       return StyleSheet(stylesheet, images);

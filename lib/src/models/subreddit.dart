@@ -356,7 +356,6 @@ class SubredditRef extends RedditBase
 /// A class representing a particular Reddit community, also known as a
 /// Subreddit.
 class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
-
   /// The URL for the [Subreddit]'s header image, if it exists.
   Uri get headerImage => GetterUtils.uriOrNull(data['header_img']);
 
@@ -395,7 +394,7 @@ class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
   }
 
   Subreddit.parse(Reddit reddit, Map data)
-        // TODO(bkonyi): fix info path not being set properly for Subreddit.
+      // TODO(bkonyi): fix info path not being set properly for Subreddit.
       : super.name(reddit, data['data']['display_name']) {
     if (!data['data'].containsKey('name')) {
       // TODO(bkonyi) throw invalid object exception.
