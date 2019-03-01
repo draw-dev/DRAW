@@ -1,1 +1,75 @@
-[{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flaircsv/","{flair_csv: \"DRAWApiOfficial\",\"Flair Test\",\"\"\n\"XtremeCheese\",\"Flair Test\",\"\"}"],"response":[{"status":"added flair for user DRAWApiOfficial","errors":{},"ok":true,"warnings":{}},{"status":"added flair for user XtremeCheese","errors":{},"ok":true,"warnings":{}}]},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flairlist/","{limit: 1024}"],"response":{"users":[{"flair_css_class":"","user":"XtremeCheese","flair_text":"Flair Test"},{"flair_css_class":"","user":"DRAWApiOfficial","flair_text":"Flair Test"}]}},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flaircsv/","{flair_csv: \"DRAWApiOfficial\",\"\",\"\"\n\"XtremeCheese\",\"\",\"\"}"],"response":[{"status":"removed flair for user DRAWApiOfficial","errors":{},"ok":true,"warnings":{}},{"status":"removed flair for user XtremeCheese","errors":{},"ok":true,"warnings":{}}]},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/flairlist/","{limit: 1024}"],"response":{"users":[]}}]
+[
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flaircsv/",
+      "{flair_csv: \"DRAWApiOfficial\",\"Flair Test\",\"\"\n\"XtremeCheese\",\"Flair Test\",\"\"}"
+    ],
+    "response": [
+      {
+        "status": "added flair for user DRAWApiOfficial",
+        "errors": {},
+        "ok": true,
+        "warnings": {}
+      },
+      {
+        "status": "added flair for user XtremeCheese",
+        "errors": {},
+        "ok": true,
+        "warnings": {}
+      }
+    ]
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flairlist/",
+      "{limit: 1024}"
+    ],
+    "response": {
+      "users": [
+        {
+          "flair_css_class": "",
+          "user": "XtremeCheese",
+          "flair_text": "Flair Test"
+        },
+        {
+          "flair_css_class": "",
+          "user": "DRAWApiOfficial",
+          "flair_text": "Flair Test"
+        }
+      ]
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flaircsv/",
+      "{flair_csv: \"DRAWApiOfficial\",\"\",\"\"\n\"XtremeCheese\",\"\",\"\"}"
+    ],
+    "response": [
+      {
+        "status": "removed flair for user DRAWApiOfficial",
+        "errors": {},
+        "ok": true,
+        "warnings": {}
+      },
+      {
+        "status": "removed flair for user XtremeCheese",
+        "errors": {},
+        "ok": true,
+        "warnings": {}
+      }
+    ]
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/api/flairlist/",
+      "{limit: 1024}"
+    ],
+    "response": {
+      "users": []
+    }
+  }
+]

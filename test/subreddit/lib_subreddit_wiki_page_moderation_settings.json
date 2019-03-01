@@ -1,1 +1,32 @@
-[{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/wiki/settings/test_page","null"],"response":{"kind":"wikipagesettings","data":{"permlevel":1,"editors":[],"listed":true}}},{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/wiki/settings/test_page","{listed: false, permlevel: 2}"],"response":{"kind":"wikipagesettings","data":{"permlevel":2,"editors":[],"listed":false}}}]
+[
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/wiki/settings/test_page",
+      "null"
+    ],
+    "response": {
+      "kind": "wikipagesettings",
+      "data": {
+        "permlevel": 1,
+        "editors": [],
+        "listed": true
+      }
+    }
+  },
+  {
+    "always": false,
+    "request": [
+      "https://oauth.reddit.com/r/drawapitesting/wiki/settings/test_page",
+      "{listed: false, permlevel: 2}"
+    ],
+    "response": {
+      "kind": "wikipagesettings",
+      "data": {
+        "permlevel": 2,
+        "editors": [],
+        "listed": false
+      }
+    }
+  }
+]
