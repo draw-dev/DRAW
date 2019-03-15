@@ -136,6 +136,14 @@ class Submission extends SubmissionRef
     return _comments;
   }
 
+
+  @override
+  Map<String, String> get infoParams {
+    return {
+      "sort": commentSortTypeToString(commentSort)
+    };
+  }
+
   /// Is this [Submission] in contest mode.
   bool get contestMode => data['contest_mode'];
 
