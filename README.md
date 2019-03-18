@@ -55,8 +55,8 @@ main() async {
 
   // Create a `Reddit` instance using a configuration file in the
   // current directory.
-  final reddit = await Reddit.createWebFlowInstance(userAgent: userAgent,
-                                                    configUri: configUri);
+  final reddit = Reddit.createWebFlowInstance(userAgent: userAgent,
+                                              configUri: configUri);
 
   // Build the URL used for authentication. See `WebAuthenticator`
   // documentation for parameters.
