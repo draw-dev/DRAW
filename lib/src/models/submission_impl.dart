@@ -139,9 +139,11 @@ class Submission extends SubmissionRef
 
   @override
   Map<String, String> get infoParams {
-    return {
-      "sort": commentSortTypeToString(commentSort)
-    };
+    if (commentSort != CommentSortType.best)
+      return {
+        "sort": commentSortTypeToString(commentSort)
+      };
+    return null;
   }
 
   /// Is this [Submission] in contest mode.
