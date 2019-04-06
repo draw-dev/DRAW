@@ -183,10 +183,12 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
           // Should be handled by previous layer, dont increment
           break;
         } else {
+          // A new layer, lets add them to their parent
+          final parent = commentsAtCurrentLevel.last;
           // Should be handled by next layer, dont increment
           final replies =
               _fillCommentsForestsRecursively(fullList, currentDepth + 1);
-          currentComment._replies = CommentForest(submission, replies);
+          parent._replies = CommentForest(submission, replies);
         }
       } else {
         // More Comments don't have a level, but assume it is on the same level and break

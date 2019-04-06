@@ -136,13 +136,10 @@ class Submission extends SubmissionRef
     return _comments;
   }
 
-
   @override
   Map<String, String> get infoParams {
     if (commentSort != CommentSortType.best)
-      return {
-        "sort": commentSortTypeToString(commentSort)
-      };
+      return {"sort": commentSortTypeToString(commentSort)};
     return null;
   }
 
