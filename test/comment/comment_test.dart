@@ -171,6 +171,4 @@ Future<void> main() async {
     expect(comment.upvotes, 1);
     expect(comment.isRoot, isTrue);
   });
-
-  test('lib/comment/comment_properties_test', () async {});
 }
