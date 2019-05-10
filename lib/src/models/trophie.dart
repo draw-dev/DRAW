@@ -6,8 +6,7 @@ class Trophy extends RedditBase with RedditBaseInitializedMixin {
     setData(this, data);
   }
 
-  @override
-  String get id => data['award_id'];
+  String get awardId => data['award_id'];
 
   String get description => data['description'];
 
