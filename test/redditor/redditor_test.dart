@@ -376,7 +376,7 @@ Future<void> main() async {
   test('lib/redditor/trophies', () async {
     final reddit = await createRedditTestInstance(
         'test/redditor/lib_redditor_trophies.json');
-    final trophies = await reddit.redditor("spez").trophies();
+    final trophies = await reddit.redditor('spez').trophies();
     expect(trophies, isNotEmpty);
   });
 }

@@ -216,7 +216,7 @@ class Objector extends RedditBase {
         //logger.log(Level.INFO, 'parsing MoreComments');
         //logger.log(Level.INFO, 'Data: ${DRAWLoggingUtils.jsonify(data["data"])}');
         return MoreComments.parse(reddit, data['data']);
-      } else if (kind == "t6") {
+      } else if (kind == 't6') {
         return Trophy.parse(reddit, data['data']);
       } else {
         //logger.log(Level.INFO, 't2 but not more comments or Redditor');
