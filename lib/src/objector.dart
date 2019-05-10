@@ -5,10 +5,8 @@
 
 import 'package:draw/src/base.dart';
 import 'package:draw/src/exceptions.dart';
-import 'package:draw/src/modmail.dart';
-import 'package:draw/src/reddit.dart';
-import 'package:draw/src/models/comment_impl.dart';
 import 'package:draw/src/models/comment_forest.dart';
+import 'package:draw/src/models/comment_impl.dart';
 import 'package:draw/src/models/flair.dart';
 import 'package:draw/src/models/message.dart';
 import 'package:draw/src/models/multireddit.dart';
@@ -16,6 +14,9 @@ import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission_impl.dart';
 import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/subreddit_moderation.dart';
+import 'package:draw/src/models/trophie.dart';
+import 'package:draw/src/modmail.dart';
+import 'package:draw/src/reddit.dart';
 
 //final //logger = Logger('Objector');
 
@@ -147,6 +148,8 @@ class Objector extends RedditBase {
         data.containsKey('page') &&
         data.containsKey('id')) {
       return data;
+    } else if (data['kind'] == 'TrophyList') {
+      return _objectifyList(data['data']['trophies']);
     } else {
       throw DRAWInternalError('Cannot objectify unsupported'
           ' response:\n$data');
@@ -213,6 +216,8 @@ class Objector extends RedditBase {
         //logger.log(Level.INFO, 'parsing MoreComments');
         //logger.log(Level.INFO, 'Data: ${DRAWLoggingUtils.jsonify(data["data"])}');
         return MoreComments.parse(reddit, data['data']);
+      } else if (kind == "t6") {
+        return Trophy.parse(reddit, data['data']);
       } else {
         //logger.log(Level.INFO, 't2 but not more comments or Redditor');
         return _objectifyDictionary(data);

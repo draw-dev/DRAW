@@ -5,8 +5,8 @@
 
 import 'dart:async';
 
-import 'package:test/test.dart';
 import 'package:draw/draw.dart';
+import 'package:test/test.dart';
 
 import '../test_utils.dart';
 
@@ -372,4 +372,11 @@ Future<void> main() async {
     expect(content[0] is Submission, isTrue);
     expect((content[0] as Submission).title, "Gilded post!");
   }, skip: 'Rewrite to handle new gilding types');
+
+  test('lib/redditor/trophies', () async {
+    final reddit = await createRedditTestInstance(
+        'test/redditor/lib_redditor_trophies.json');
+    final trophies = await reddit.redditor("spez").trophies();
+    expect(trophies, isNotEmpty);
+  });
 }

@@ -150,6 +150,7 @@ final Map apiPath = {
   'subreddits_search': 'subreddits/search/',
   'subscribe': 'api/subscribe/',
   'suggested_sort': 'api/set_suggested_sort/',
+  'trophies': 'api/v1/user/{username}/trophies',
   'uncollapse': 'api/uncollapse_message',
   'unfriend': 'r/{subreddit}/api/unfriend/',
   'unhide': 'api/unhide/',
