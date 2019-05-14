@@ -18,7 +18,7 @@ import 'package:draw/src/models/mixins/messageable.dart';
 import 'package:draw/src/models/multireddit.dart';
 import 'package:draw/src/models/submission.dart';
 import 'package:draw/src/models/subreddit.dart';
-import 'package:draw/src/models/trophie.dart';
+import 'package:draw/src/models/trophy.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/util.dart';
 

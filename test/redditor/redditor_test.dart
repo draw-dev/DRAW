@@ -378,5 +378,9 @@ Future<void> main() async {
         'test/redditor/lib_redditor_trophies.json');
     final trophies = await reddit.redditor('spez').trophies();
     expect(trophies, isNotEmpty);
+    final firstTrophy = trophies.first;
+    expect(firstTrophy.name, equals('13-Year Club'));
+    expect(firstTrophy.icon_70,
+        equals('https://www.redditstatic.com/awards2/13_year_club-70.png'));
   });
 }

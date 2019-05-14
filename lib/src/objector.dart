@@ -14,7 +14,7 @@ import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission_impl.dart';
 import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/models/subreddit_moderation.dart';
-import 'package:draw/src/models/trophie.dart';
+import 'package:draw/src/models/trophy.dart';
 import 'package:draw/src/modmail.dart';
 import 'package:draw/src/reddit.dart';
 
