@@ -64,6 +64,9 @@ class DRAWConfigContext {
   /// The default Object Mapping key for [Subreddit].
   static const String kSubredditKind = 't5';
 
+  /// The default Object Mapping key for [Trophy].
+  static const String kTrophyKind = 't6';
+
   static const Map<String, List<String>> fieldMap = {
     kShortUrl: [kShortUrl],
     kCheckForUpdates: [kCheckForUpdates],
