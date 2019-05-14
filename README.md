@@ -60,7 +60,7 @@ main() async {
 
   // Build the URL used for authentication. See `WebAuthenticator`
   // documentation for parameters.
-  final auth_url = reddit.auth.url(['*'], 'foobar'));
+  final auth_url = reddit.auth.url(['*'], 'foobar');
   
   // ...
   // Complete authentication at `auth_url` in the browser and retrieve
