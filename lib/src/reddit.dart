@@ -5,20 +5,18 @@
 
 import 'dart:async';
 
-import 'package:oauth2/oauth2.dart' as oauth2;
-
 import 'package:draw/src/auth.dart';
 import 'package:draw/src/draw_config_context.dart';
 import 'package:draw/src/exceptions.dart';
 import 'package:draw/src/frontpage.dart';
-import 'package:draw/src/objector.dart';
-import 'package:draw/src/user.dart';
-
 import 'package:draw/src/models/comment.dart';
 import 'package:draw/src/models/inbox.dart';
 import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission.dart';
 import 'package:draw/src/models/subreddit.dart';
+import 'package:draw/src/objector.dart';
+import 'package:draw/src/user.dart';
+import 'package:oauth2/oauth2.dart' as oauth2;
 
 /// The [Reddit] class provides access to Reddit's API and stores session state
 /// for the current [Reddit] instance. This class contains objects that can be
@@ -42,6 +40,9 @@ class Reddit {
 
   /// The default object kind mapping for [Subreddit].
   static final String defaultSubredditKind = DRAWConfigContext.kSubredditKind;
+
+  /// The default object kind mapping for [Trophy].
+  static final String defaultTrophyKind = DRAWConfigContext.kTrophyKind;
 
   /// A flag representing whether or not this [Reddit] instance can only make
   /// read requests.

@@ -13,13 +13,14 @@ import 'package:draw/src/getter_utils.dart';
 import 'package:draw/src/listing/mixins/base.dart';
 import 'package:draw/src/listing/mixins/gilded.dart';
 import 'package:draw/src/listing/mixins/redditor.dart';
-import 'package:draw/src/reddit.dart';
-import 'package:draw/src/util.dart';
 import 'package:draw/src/models/comment.dart';
 import 'package:draw/src/models/mixins/messageable.dart';
 import 'package:draw/src/models/multireddit.dart';
 import 'package:draw/src/models/submission.dart';
 import 'package:draw/src/models/subreddit.dart';
+import 'package:draw/src/models/trophy.dart';
+import 'package:draw/src/reddit.dart';
+import 'package:draw/src/util.dart';
 
 /// A fully initialized class representing a particular Reddit user, also
 /// known as a Redditor.
@@ -209,6 +210,13 @@ class RedditorRef extends RedditBase
   /// Unfriend the [Redditor].
   Future<void> unfriend() async => await _throwOnInvalidRedditor(() async =>
       await reddit.delete(apiPath['friend_v1'].replaceAll(_userRegExp, _name)));
+
+  /// Returns a list of [Trophy] that this [Redditor] has
+  Future<List<Trophy>> trophies() async {
+    final response = await reddit.get(
+        apiPath['trophies'].replaceAll(RedditorRef._usernameRegExp, _name));
+    return List.castFrom<dynamic, Trophy>(response);
+  }
 }
 
 /// Provides [Comment] and [Submission] streams for a particular [Redditor].
