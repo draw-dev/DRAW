@@ -158,11 +158,16 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   }
 
   List<dynamic> _fillCommentsForests(List<dynamic> fullList) {
-    final first = fullList.first;
-    if (fullList.length > 0 && first is Comment) {
+    if (fullList.length > 1) {
+      final first = fullList.first;
       currentIndex = 0;
       return _fillCommentsForestsRecursively(fullList, first.depth);
     } else {
+      /*
+        For the cases
+        - fullList = [MoreComments]
+        - fullList = [Comment]
+       */
       return fullList;
     }
   }
@@ -180,12 +185,13 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
           commentsAtCurrentLevel.add(currentComment);
           currentIndex++;
         } else if (currentComment.depth < currentDepth) {
-          // Should be handled by previous layer, dont increment
+          // Should be handled by previous layer, dont increment currentIndex
           break;
         } else {
-          // A new layer, lets add them to their parent
+          // A new layer of children, lets add them to their parent,
+          // which is the last Comment added to the commentsAtCurrentLevelList
           final parent = commentsAtCurrentLevel.last;
-          // Should be handled by next layer, dont increment
+          // Should be handled by next layer, dont increment currentIndex
           final replies =
               _fillCommentsForestsRecursively(fullList, currentDepth + 1);
           parent._replies = CommentForest(submission, replies);
