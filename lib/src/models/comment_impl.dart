@@ -6,29 +6,28 @@
 import 'dart:async';
 import 'dart:collection';
 
-// Required for `hash2`
-import 'package:quiver/core.dart' show hash2;
-
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
 import 'package:draw/src/getter_utils.dart';
-import 'package:draw/src/reddit.dart';
 import 'package:draw/src/models/comment_forest.dart';
-import 'package:draw/src/models/redditor.dart';
-import 'package:draw/src/models/submission_impl.dart';
-import 'package:draw/src/models/subreddit.dart';
-import 'package:draw/src/models/user_content.dart';
-import 'package:draw/src/models/mixins/inboxable.dart';
-import 'package:draw/src/models/mixins/user_content_mixin.dart';
 import 'package:draw/src/models/mixins/editable.dart';
 import 'package:draw/src/models/mixins/gildable.dart';
+import 'package:draw/src/models/mixins/inboxable.dart';
 import 'package:draw/src/models/mixins/inboxtoggleable.dart';
 import 'package:draw/src/models/mixins/replyable.dart';
 import 'package:draw/src/models/mixins/reportable.dart';
 import 'package:draw/src/models/mixins/saveable.dart';
+import 'package:draw/src/models/mixins/user_content_mixin.dart';
 import 'package:draw/src/models/mixins/user_content_moderation.dart';
 import 'package:draw/src/models/mixins/voteable.dart';
+import 'package:draw/src/models/redditor.dart';
+import 'package:draw/src/models/submission_impl.dart';
+import 'package:draw/src/models/subreddit.dart';
+import 'package:draw/src/models/user_content.dart';
+import 'package:draw/src/reddit.dart';
+import 'package:quiver/core.dart' show hash2;
+// Required for `hash2`
 
 void setSubmissionInternal(commentLike, SubmissionRef s) {
   commentLike._submission = s;
@@ -150,10 +149,62 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
       _comments = await reddit.post(apiPath['morechildren'], data);
 
       if (update) {
-        _comments.forEach((c) => c._submission = _submission);
+        _comments.forEach((c) {
+          c._submission = _submission;
+        });
       }
     }
-    return _comments;
+    return _fillCommentsForests(_comments);
+  }
+
+  List<dynamic> _fillCommentsForests(List<dynamic> fullList) {
+    if (fullList.length > 1) {
+      final first = fullList.first;
+      currentIndex = 0;
+      return _fillCommentsForestsRecursively(fullList, first.depth);
+    } else {
+      /*
+        For the cases
+        - fullList = [MoreComments]
+        - fullList = [Comment]
+       */
+      return fullList;
+    }
+  }
+
+  int currentIndex;
+  List<dynamic> _fillCommentsForestsRecursively(
+      List<dynamic> fullList, int currentDepth) {
+    final List<dynamic> commentsAtCurrentLevel = [fullList[currentIndex]];
+    currentIndex++;
+    while (currentIndex < fullList.length) {
+      final currentComment = fullList[currentIndex];
+
+      if (currentComment is Comment) {
+        if (currentComment.depth == currentDepth) {
+          commentsAtCurrentLevel.add(currentComment);
+          currentIndex++;
+        } else if (currentComment.depth < currentDepth) {
+          // Should be handled by previous layer, dont increment currentIndex
+          break;
+        } else {
+          // A new layer of children, lets add them to their parent,
+          // which is the last Comment added to the commentsAtCurrentLevelList
+          final parent = commentsAtCurrentLevel.last;
+          // Should be handled by next layer, dont increment currentIndex
+          final replies =
+              _fillCommentsForestsRecursively(fullList, currentDepth + 1);
+          parent._replies = CommentForest(submission, replies);
+        }
+      } else {
+        // More Comments don't have a level, but assume it is on the same level and break
+        commentsAtCurrentLevel.add(currentComment);
+        currentIndex++;
+        break;
+      }
+    }
+
+    return commentsAtCurrentLevel;
   }
 }
 

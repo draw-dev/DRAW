@@ -7,6 +7,9 @@ If you're a first time contributor, welcome aboard! Otherwise, welcome back!
 This document contains all the information needed to contribute to DRAW, including
 how to write tests and how to prepare to create a pull request.
 
+# Checkout
+The project uses the line seperator LF in tests. In order to run tests locally on Windows, you have to configure Git to use LF on checkout, as described [here](https://help.github.com/en/articles/dealing-with-line-endings).
+
 # Adding new features
 *TODO*
 

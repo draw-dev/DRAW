@@ -60,9 +60,9 @@ Future<void> main() async {
         ZoneSpecification(print: (self, parent, zone, message) {
       output += message + '\n';
     }));
-    final actual =
+    final expected =
         File('test/comment/continue_test_expected.out').readAsStringSync();
-    expect(output, actual);
+    expect(output, expected);
   });
 
   test('lib/comment/more_comment_expand_test', () async {
@@ -83,9 +83,9 @@ Future<void> main() async {
       count++;
       output += "$count" + message + '\n';
     }));
-    final actual = File('test/comment/more_comment_expand_test_expected.out')
+    final expected = File('test/comment/more_comment_expand_test_expected.out')
         .readAsStringSync();
-    expect(output, actual);
+    expect(output, expected);
   });
 
   test('lib/comment/tons_of_comments_test', () async {
@@ -105,9 +105,9 @@ Future<void> main() async {
       count++;
       output += "$count" + message + '\n';
     }));
-    final actual =
+    final expected =
         File('test/comment/tons_of_comments_expected.out').readAsStringSync();
-    expect(output, equals(actual));
+    expect(output, equals(expected));
   });
 
   test('lib/comment/comment_ref_test', () async {

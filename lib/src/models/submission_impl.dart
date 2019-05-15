@@ -136,6 +136,13 @@ class Submission extends SubmissionRef
     return _comments;
   }
 
+  @override
+  Map<String, String> get infoParams {
+    if (commentSort != CommentSortType.best)
+      return {"sort": commentSortTypeToString(commentSort)};
+    return null;
+  }
+
   /// Is this [Submission] in contest mode.
   bool get contestMode => data['contest_mode'];
 
