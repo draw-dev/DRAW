@@ -132,7 +132,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   /// Expand [MoreComments] into the list of actual [Comments] it represents.
   ///
   /// Can contain additional [MoreComments] objects.
-  Future<List<dynamic>> comments({bool update: true}) async {
+  Future<List<dynamic>> comments({bool update = true}) async {
     if (_comments == null) {
       assert(_submission is Submission);
       final Submission initializedSubmission = _submission;
@@ -442,7 +442,7 @@ class CommentRef extends UserContent {
 
   SubmissionRef get _submission => __submission;
 
-  void set _submission(SubmissionRef s) {
+  set _submission(SubmissionRef s) {
     __submission = s;
     if (_replies != null) {
       setSubmission(_replies, s);
@@ -493,7 +493,7 @@ class CommentRef extends UserContent {
     // Gets some general info about the comment.
     final result = await reddit.get(apiPath['info'], params: params);
     final List listing = result['listing'];
-    if (listing.length == 0) {
+    if (listing.isEmpty) {
       throw DRAWInvalidCommentException(_id);
     }
     final comment = listing[0];

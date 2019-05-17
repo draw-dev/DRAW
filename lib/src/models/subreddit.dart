@@ -66,10 +66,10 @@ class SubredditRef extends RedditBase
       [bool allowRedirects = true]) async {
     try {
       return await f();
-    } on DRAWNotFoundException catch (e) {
+    } on DRAWNotFoundException catch (e) { // ignore: unused_catch_clause
       // ignore: unused_catch_clause
       throw DRAWInvalidSubredditException(displayName);
-    } on DRAWRedirectResponse catch (e) {
+    } on DRAWRedirectResponse catch (e) { // ignore: unused_catch_clause
       // ignore: unused_catch_clause
       if (allowRedirects) {
         rethrow;
@@ -217,7 +217,7 @@ class SubredditRef extends RedditBase
   /// 'lucene', 'plain'. [timeFilter] can be one of: all, day, hour, month,
   /// week, year.
   Stream<UserContent> search(String query,
-      {Sort sort: Sort.relevance,
+      {Sort sort = Sort.relevance,
       SearchSyntax syntax = SearchSyntax.lucene,
       TimeFilter timeFilter = TimeFilter.all,
       Map<String, String> params}) {
@@ -530,10 +530,10 @@ class SubredditFlair {
   /// 'linkSelfAssign' specifies whether or not a Redditor can set flair on
   /// their links.
   Future<void> configure(
-      {FlairPosition position: FlairPosition.right,
-      bool selfAssign: false,
-      FlairPosition linkPosition: FlairPosition.left,
-      bool linkSelfAssign: false}) {
+      {FlairPosition position = FlairPosition.right,
+      bool selfAssign = false,
+      FlairPosition linkPosition = FlairPosition.left,
+      bool linkSelfAssign = false}) {
     final disabledPosition = (position == FlairPosition.disabled);
     final disabledLinkPosition = (linkPosition == FlairPosition.disabled);
     final data = <String, String>{
@@ -584,7 +584,7 @@ class SubredditFlair {
   ///
   /// `cssClass` is the CSS class to apply to the flair.
   Future<void> setFlair(/* Redditor, String */ redditor,
-      {String text: '', String cssClass: ''}) {
+      {String text = '', String cssClass = ''}) {
     final redditorName = _redditorNameHelper(redditor);
     final data = <String, String>{
       'api_type': 'json',
@@ -617,8 +617,8 @@ class SubredditFlair {
          List<RedditorRef>,
          List<Flair> */
       flairList,
-      {String text: '',
-      String cssClass: ''}) async {
+      {String text = '',
+      String cssClass = ''}) async {
     if ((flairList is! List<String>) &&
             (flairList is! List<RedditorRef>) &&
             (flairList is! List<Flair>) ||
@@ -1170,7 +1170,7 @@ class Modmail {
   /// read.
   Future<List<ModmailConversationRef>> bulkRead(
       {List<SubredditRef> otherSubreddits,
-      ModmailState state: ModmailState.all}) async {
+      ModmailState state = ModmailState.all}) async {
     final params = {
       'entity': _buildSubredditList(otherSubreddits),
       'state': modmailStateToString(state),
@@ -1196,8 +1196,8 @@ class Modmail {
       {String after,
       int limit,
       List<SubredditRef> otherSubreddits,
-      ModmailSort sort: ModmailSort.recent,
-      ModmailState state: ModmailState.all}) async* {
+      ModmailSort sort = ModmailSort.recent,
+      ModmailState state = ModmailState.all}) async* {
     final params = <String, String>{};
     if (_subreddit.displayName != 'all') {
       params['entity'] = _buildSubredditList(otherSubreddits);

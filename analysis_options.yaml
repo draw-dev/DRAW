@@ -3,6 +3,7 @@ linter:
     - always_declare_return_types
     - avoid_empty_else
     - avoid_init_to_null
+    - avoid_return_types_on_setters
     - await_only_futures
     - camel_case_types
     - cancel_subscriptions
@@ -22,12 +23,13 @@ linter:
     - package_names
     - package_prefixed_library_names
     - parameter_assignments
+    - prefer_equal_for_default_values
     - prefer_final_fields
     - prefer_final_locals
     - prefer_is_not_empty
+    - prefer_is_empty
     - slash_for_doc_comments
     - sort_unnamed_constructors_first
-    - super_goes_last
     - test_types_in_equals
     - type_init_formals
     - throw_in_finally

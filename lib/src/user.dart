@@ -48,7 +48,7 @@ class User extends RedditBase {
 
   // TODO(bkonyi): actually do something with [useCache].
   /// Returns a [Future<Redditor>] which represents the current user.
-  Future<Redditor> me({useCache: true}) async {
+  Future<Redditor> me({useCache = true}) async {
     return (await reddit.get(apiPath['me'])) as Redditor;
   }
 

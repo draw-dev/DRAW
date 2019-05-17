@@ -344,44 +344,43 @@ class SubredditSettings {
   set wikiEditAge(int x) => _data['wiki_edit_age'] = x;
 
   String get submitText => _data['submit_text'];
-  void set submitText(String x) => _data['submit_text'] = x;
+  set submitText(String x) => _data['submit_text'] = x;
 
   // TODO(bkonyi): figure out what this is.
   // get spamLinks => _data['spam_links'];
 
   String get title => _data['title'];
-  void set title(String x) => _data['title'] = x;
+  set title(String x) => _data['title'] = x;
 
   bool get collapseDeletedComments => _data['collapse_deleted_comments'];
-  void set collapseDeletedComments(bool x) =>
-      _data['collapse_deleted_comments'] = x;
+  set collapseDeletedComments(bool x) => _data['collapse_deleted_comments'] = x;
 
   // TODO(bkonyi): figure out what this is.
   // get wikimode => _data['wikimode'];
 
   bool get publicTraffic => _data['public_traffic'];
-  void set publicTraffic(bool x) => _data['public_traffic'] = x;
+  set publicTraffic(bool x) => _data['public_traffic'] = x;
 
   bool get over18 => _data['over_18'];
-  void set over18(bool x) => _data['over_18'] = x;
+  set over18(bool x) => _data['over_18'] = x;
 
   bool get allowVideos => _data['allow_videos'];
-  void set allowVideos(bool x) => _data['allow_videos'] = x;
+  set allowVideos(bool x) => _data['allow_videos'] = x;
 
   bool get spoilersEnabled => _data['spoilers_enabled'];
-  void set spoilersEnabled(bool x) => _data['spoilers_enabled'] = x;
+  set spoilersEnabled(bool x) => _data['spoilers_enabled'] = x;
 
   // TODO(bkonyi): figure out what this is.
   // get suggestedCommentSort => _data['suggested_comment_sort'];
 
   String get description => _data['description'];
-  void set description(String x) => _data['description'] = x;
+  set description(String x) => _data['description'] = x;
 
   String get submitLinkLabel => _data['submit_link_label'];
-  void set submitLinkLabel(String x) => _data['submit_link_label'] = x;
+  set submitLinkLabel(String x) => _data['submit_link_label'] = x;
 
   bool get allowPostCrossposts => _data['allow_post_crossposts'];
-  void set allowPostCrossposts(bool x) => _data['allow_post_crossposts'] = x;
+  set allowPostCrossposts(bool x) => _data['allow_post_crossposts'] = x;
 
   // TODO(bkonyi): figure out what this is.
   // get spamComments => _data['spam_comments'];
@@ -390,39 +389,39 @@ class SubredditSettings {
   // get spamSelfposts => _data['spam_selfposts'];
 
   String get submitTextLabel => _data['submit_text_label'];
-  void set submitTextLabel(String x) => _data['submit_text_label'] = x;
+  set submitTextLabel(String x) => _data['submit_text_label'] = x;
 
   // TODO(bkonyi): we might want to use a color class for this.
   // get keyColor => _data['key_color];
 
   String get language => _data['language'];
-  void set language(String x) => _data['language'] = x;
+  set language(String x) => _data['language'] = x;
 
   int get wikiEditKarma => _data['wiki_edit_karma'];
-  void set wikiEditKarma(int x) => _data['wiki_edit_karma'] = x;
+  set wikiEditKarma(int x) => _data['wiki_edit_karma'] = x;
 
   bool get hideAds => _data['hide_ads'];
-  void set hideAds(bool x) => _data['hide_ads'] = x;
+  set hideAds(bool x) => _data['hide_ads'] = x;
 
   String get headerHoverText => _data['header_hover_text'];
-  void set headerHoverText(String x) => _data['header_hover_text'] = x;
+  set headerHoverText(String x) => _data['header_hover_text'] = x;
 
   bool get allowDiscovery => _data['allow_discovery'];
-  void set allowDiscovery(bool x) => _data['allow_discovery'] = x;
+  set allowDiscovery(bool x) => _data['allow_discovery'] = x;
 
   String get publicDescription => _data['public_description'];
-  void set publicDescription(String x) => _data['public_description'] = x;
+  set publicDescription(String x) => _data['public_description'] = x;
 
   bool get showMediaPreview => _data['show_media_preview'];
-  void set showMediaPreview(bool x) => _data['show_media_preview'] = x;
+  set showMediaPreview(bool x) => _data['show_media_preview'] = x;
 
   int get commentScoreHideMins => _data['comment_score_hide_mins'];
-  void set commentScoreHideMins(int x) => _data['comment_score_hide_mins'] = x;
+  set commentScoreHideMins(int x) => _data['comment_score_hide_mins'] = x;
 
   SubredditType get subredditType =>
       stringToSubredditType(_data['subreddit_type']);
 
-  void set subredditType(SubredditType type) {
+  set subredditType(SubredditType type) {
     if (type == null) {
       throw DRAWArgumentError("Parameter 'type' cannot be null.");
     }
@@ -430,8 +429,7 @@ class SubredditSettings {
   }
 
   bool get excludeBannedModQueue => _data['exclude_banned_modqueue'];
-  void set excludeBannedModQueue(bool x) =>
-      _data['exclude_banned_modqueue'] = x;
+  set excludeBannedModQueue(bool x) => _data['exclude_banned_modqueue'] = x;
 
   // TODO(bkonyi): figure out what this is for.
   // get contentOptions => _data['content_options'];

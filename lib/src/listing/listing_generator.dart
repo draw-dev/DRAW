@@ -22,7 +22,7 @@ abstract class ListingGenerator {
 
   static Stream<T> createBasicGenerator<T>(
           final Reddit reddit, final String path,
-          {Map<String, String> params, bool objectify: true}) =>
+          {Map<String, String> params, bool objectify = true}) =>
       generator<T>(reddit, path,
           limit: getLimit(params), params: params, objectify: objectify);
 
@@ -31,7 +31,7 @@ abstract class ListingGenerator {
   /// [defaultRequestLimit]. Returns a [Stream<T>] which can be iterated over
   /// using an asynchronous for-loop.
   static Stream<T> generator<T>(final Reddit reddit, final String api,
-      {int limit, Map<String, String> params, bool objectify: true}) async* {
+      {int limit, Map<String, String> params, bool objectify = true}) async* {
     final kLimitKey = 'limit';
     final kAfterKey = 'after';
     final nullLimit = 1024;
