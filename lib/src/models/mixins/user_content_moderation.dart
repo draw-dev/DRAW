@@ -56,7 +56,7 @@ mixin UserContentModerationMixin {
   /// placed at the top of the comment thread. If the item to be distinguished
   /// is not a [Comment] or is not a top-level [Comment], this parameter is
   /// ignored.
-  Future<void> distinguish({DistinctionType how, bool sticky: false}) async {
+  Future<void> distinguish({DistinctionType how, bool sticky = false}) async {
     final data = <String, String>{
       'how': distinctionTypeToString(how),
       'id': content.fullname,
@@ -80,7 +80,7 @@ mixin UserContentModerationMixin {
   /// Remove a [Comment] or [Submission].
   ///
   /// Set `spam` to `true` to help train the subreddit's spam filter.
-  Future<void> remove({bool spam: false}) async => content.reddit.post(
+  Future<void> remove({bool spam = false}) async => content.reddit.post(
       apiPath['remove'],
       <String, String>{'id': content.fullname, 'spam': spam.toString()},
       discardResponse: true);

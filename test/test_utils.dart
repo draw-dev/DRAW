@@ -9,7 +9,8 @@ import 'package:draw/draw.dart';
 import 'auth/credentials.dart';
 import 'test_authenticator.dart';
 
-Future<Reddit> createRedditTestInstance(String path, {bool live: false}) async {
+Future<Reddit> createRedditTestInstance(String path,
+    {bool live = false}) async {
   var testAuth;
   if (live) {
     final tempReddit = await Reddit.createScriptInstance(

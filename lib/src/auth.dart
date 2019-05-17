@@ -138,7 +138,7 @@ abstract class Authenticator {
   ///
   /// [path] is the destination URI that the request will be made to.
   Future<dynamic> get(Uri path,
-      {Map<String, String> params, bool followRedirects: false}) async {
+      {Map<String, String> params, bool followRedirects = false}) async {
     _logger.info('GET: $path params: ${DRAWLoggingUtils.jsonify(params)}');
     return _request(_kGetRequest, path,
         params: params, followRedirects: followRedirects);
@@ -180,7 +180,7 @@ abstract class Authenticator {
   Future<dynamic> _request(String type, Uri path,
       {/* Map<String,String>, String */ body,
       Map<String, String> params,
-      bool followRedirects: false}) async {
+      bool followRedirects = false}) async {
     if (_client == null) {
       throw DRAWAuthenticationError(
           'The authenticator does not have a valid token.');

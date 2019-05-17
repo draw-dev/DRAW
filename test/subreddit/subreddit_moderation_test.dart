@@ -13,21 +13,21 @@ import '../test_utils.dart';
 // ignore_for_file: unused_local_variable
 Reddit reddit;
 Future<SubredditModeration> subredditModerationHelper(String path,
-    {live: false, sub: 'MorbidReality'}) async {
+    {live = false, sub = 'MorbidReality'}) async {
   reddit = await createRedditTestInstance(path, live: live);
   final subreddit = reddit.subreddit(sub);
   return subreddit.mod;
 }
 
 Future<Modmail> subredditModmailHelper(String path,
-    {live: false, sub: 'MorbidReality'}) async {
+    {live = false, sub = 'MorbidReality'}) async {
   reddit = await createRedditTestInstance(path, live: live);
   final subreddit = reddit.subreddit(sub);
   return subreddit.modmail;
 }
 
 Future<ModeratorRelationship> subredditModRelationshipHelper(String path,
-    {live: false, sub: 'drawapitesting'}) async {
+    {live = false, sub = 'drawapitesting'}) async {
   reddit = await createRedditTestInstance(path, live: live);
   final subreddit = reddit.subreddit(sub);
   return subreddit.moderator;

@@ -105,7 +105,7 @@ mixin BaseListingMixin {
   /// Returns a [Stream] of controversial comments and submissions. [timeFilter]
   /// is used to filter comments and submissions by time period.
   Stream<UserContent> controversial(
-          {TimeFilter timeFilter: TimeFilter.all,
+          {TimeFilter timeFilter = TimeFilter.all,
           Map<String, String> params}) =>
       _buildTimeFilterGenerator(params, 'controversial', timeFilter);
 
@@ -120,7 +120,7 @@ mixin BaseListingMixin {
   /// Returns a [Stream] of the top comments and submissions. [timeFilter] is
   /// used to filter comments and submissions by time period.
   Stream<UserContent> top(
-          {TimeFilter timeFilter: TimeFilter.all,
+          {TimeFilter timeFilter = TimeFilter.all,
           Map<String, String> params}) =>
       _buildTimeFilterGenerator(params, 'top', timeFilter);
 }

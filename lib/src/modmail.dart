@@ -43,7 +43,7 @@ class ModmailConversationRef extends RedditBase {
   Future<ModmailConversation> populate() async =>
       ModmailConversation(reddit, data: await fetch());
 
-  ModmailConversationRef(Reddit reddit, this.id, {bool markRead: false})
+  ModmailConversationRef(Reddit reddit, this.id, {bool markRead = false})
       : _markRead = markRead,
         subject = null,
         super(reddit);

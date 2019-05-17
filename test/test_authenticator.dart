@@ -105,7 +105,7 @@ class TestAuthenticator extends Authenticator {
 
   @override
   Future<dynamic> get(Uri path,
-      {Map<String, String> params, bool followRedirects: false}) async {
+      {Map<String, String> params, bool followRedirects = false}) async {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), params.toString()]);

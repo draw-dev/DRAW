@@ -138,8 +138,9 @@ class Submission extends SubmissionRef
 
   @override
   Map<String, String> get infoParams {
-    if (commentSort != CommentSortType.best)
+    if (commentSort != CommentSortType.best) {
       return {"sort": commentSortTypeToString(commentSort)};
+    }
     return null;
   }
 
@@ -345,7 +346,7 @@ class Submission extends SubmissionRef
   /// beta. As a result, it's probably best not to use this method until
   /// crossposting is out of beta on Reddit (still in beta as of 2017/10/27).
   Future<Submission> crosspost(Subreddit subreddit,
-      {String title, bool sendReplies: true}) async {
+      {String title, bool sendReplies = true}) async {
     final data = <String, String>{
       'sr': subreddit.displayName,
       'title': title ?? this.data['title'],
@@ -453,8 +454,8 @@ class SubmissionRef extends UserContent {
       final submission = response[0]['listing'][0];
       submission._comments = CommentForest(submission, response[1]['listing']);
       return submission;
-    } on DRAWNotFoundException catch (e) {
       // ignore: unused_catch_clause
+    } on DRAWNotFoundException catch (e) {
       throw DRAWInvalidSubmissionException(_id);
     }
   }
