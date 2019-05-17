@@ -1,5 +1,8 @@
 Change Log
 =================================
+## Version 0.5.1+1 (2019/05/17)
+* Fixed analysis issues.
+
 ## Version 0.5.1 (2019/05/17)
 * Added basic implementation of `SubredditStyleSheet` that allows for simple
   stylesheet management.
