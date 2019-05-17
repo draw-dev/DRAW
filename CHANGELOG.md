@@ -1,6 +1,16 @@
 Change Log
 =================================
-## Version 0.5.0 (Unreleased)
+## Version 0.5.1 (2019/05/17)
+* Added basic implementation of `SubredditStyleSheet` that allows for simple
+  stylesheet management.
+* Added `RedditorRef.trophies` method for retrieving user trophies.
+* Fixed issue where `MoreComments` was not being correctly expanded to a subtree of
+  `CommentForest`
+* Fixed issue where `MoreComments` was not being removed from a `CommentForest` after
+  being expanded.
+* Miscellaneous documentation updates.
+
+## Version 0.5.0 (2019/01/07)
 
 *Dart SDK 2.1 or newer is now required to use DRAW.*
 

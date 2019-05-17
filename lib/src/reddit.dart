@@ -542,8 +542,8 @@ class Reddit {
 
   Future<dynamic> get(String api,
       {Map<String, String> params,
-      bool objectify: true,
-      bool followRedirects: false}) async {
+      bool objectify = true,
+      bool followRedirects = false}) async {
     if (!_initialized) {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
@@ -555,7 +555,7 @@ class Reddit {
   }
 
   Future<dynamic> post(String api, Map<String, String> body,
-      {bool discardResponse: false, bool objectify: true}) async {
+      {bool discardResponse = false, bool objectify = true}) async {
     if (!_initialized) {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');

@@ -224,7 +224,7 @@ Future<void> main() async {
     final other = await reddit.redditor('XtremeCheese').populate();
     try {
       await other.gild();
-    } on DRAWGildingException catch (e) {
+    } on DRAWGildingException catch (e) { // ignore: unused_catch_clause
       // Success
     } catch (e) {
       rethrow;

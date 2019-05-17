@@ -56,8 +56,13 @@ class CommentForest {
 
   void _removeMore(MoreComments more) {
     final parent = getCommentByIdInternal(_submission, more.parentId);
-    assert(parent != null);
-    parent.replies._comments.remove(more);
+    if (parent != null) {
+      parent.replies._comments.remove(more);
+    } else if (_submission is Submission) {
+      final sub = _submission as Submission;
+      sub.comments._comments.removeWhere(
+          (comment) => ((comment is MoreComments) && (comment.id == more.id)));
+    }
   }
 
   dynamic operator [](int i) => _comments[i];
