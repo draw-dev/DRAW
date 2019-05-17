@@ -88,7 +88,6 @@ Future<void> main() async {
     expect(output, expected);
   });
 
-
   int getMoreCommentsCount(Submission submission) {
     int moreComments = 0;
     submission.comments.toList().forEach((v) {
@@ -122,7 +121,7 @@ Future<void> main() async {
     expect(getMoreCommentsCount(submission), 0);
     expect(submission.comments.toList().length, 501);
     checkNoDuplicates(submission);
-    
+
     await submission.comments.replaceMore();
     expect(getMoreCommentsCount(submission), 0);
     expect(submission.comments.toList().length, 501);

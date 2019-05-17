@@ -59,7 +59,8 @@ Future<void> main() async {
     await reddit.inbox.markRead([message]);
 
     // Check to make sure we have no unread messages in our inbox.
-    await for (final message in reddit.inbox.unread()) { // ignore: unused_local_variable
+    await for (final message in reddit.inbox.unread()) {
+      // ignore: unused_local_variable
       expect(true, isFalse);
     }
 

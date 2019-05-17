@@ -66,9 +66,11 @@ class SubredditRef extends RedditBase
       [bool allowRedirects = true]) async {
     try {
       return await f();
-    } on DRAWNotFoundException catch (e) { // ignore: unused_catch_clause
+    } on DRAWNotFoundException catch (e) {
+      // ignore: unused_catch_clause
       throw DRAWInvalidSubredditException(displayName);
-    } on DRAWRedirectResponse catch (e) { // ignore: unused_catch_clause
+    } on DRAWRedirectResponse catch (e) {
+      // ignore: unused_catch_clause
       if (allowRedirects) {
         rethrow;
       }
