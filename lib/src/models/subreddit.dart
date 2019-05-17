@@ -66,11 +66,11 @@ class SubredditRef extends RedditBase
       [bool allowRedirects = true]) async {
     try {
       return await f();
-    } on DRAWNotFoundException catch (e) { // ignore: unused_catch_clause
       // ignore: unused_catch_clause
+    } on DRAWNotFoundException catch (e) {
       throw DRAWInvalidSubredditException(displayName);
-    } on DRAWRedirectResponse catch (e) { // ignore: unused_catch_clause
       // ignore: unused_catch_clause
+    } on DRAWRedirectResponse catch (e) {
       if (allowRedirects) {
         rethrow;
       }
@@ -470,11 +470,12 @@ class SubredditFilters {
     var filteredSubreddit = '';
     if (subreddit is String)
       filteredSubreddit = subreddit;
-    else if (subreddit is SubredditRef)
+    else if (subreddit is SubredditRef) {
       filteredSubreddit = subreddit.displayName;
-    else
+    } else {
       throw DRAWArgumentError(
           "Field 'subreddit' must be either a 'String' or 'SubredditRef'");
+    }
 
     final user = await _subreddit.reddit.user.me();
     final path = apiPath['subreddit_filter']

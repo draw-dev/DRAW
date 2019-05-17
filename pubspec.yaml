@@ -26,4 +26,5 @@ dev_dependencies:
 # TODO(bkonyi): remove these.
 # Temporary until package SDK restrictions are updated.
 dependency_overrides:
+  pedantic: '1.7.0'
   reply: '0.1.2-dev'
