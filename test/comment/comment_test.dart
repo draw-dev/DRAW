@@ -88,6 +88,46 @@ Future<void> main() async {
     expect(output, expected);
   });
 
+  int getMoreCommentsCount(Submission submission) {
+    int moreComments = 0;
+    submission.comments.toList().forEach((v) {
+      if (v is MoreComments) {
+        moreComments++;
+      }
+    });
+    return moreComments;
+  }
+
+  void checkNoDuplicates(Submission submission) {
+    final Set ids = new Set<String>();
+    final comments = submission.comments.toList();
+    for (dynamic comment in comments) {
+      if (ids.contains(comment.fullname)) {
+        fail('Multiple comments with the same ID are in the CommentForest');
+      }
+      ids.add(comment.fullname);
+    }
+  }
+
+  test('lib/comment/more_comment_count_test', () async {
+    final reddit = await createRedditTestInstance(
+        'test/comment/more_comment_count_test.json');
+    final submission = await reddit.submission(id: 'bpvpfm').populate();
+    expect(getMoreCommentsCount(submission), 2);
+    expect(submission.comments.toList().length, 202);
+    checkNoDuplicates(submission);
+
+    await submission.comments.replaceMore();
+    expect(getMoreCommentsCount(submission), 0);
+    expect(submission.comments.toList().length, 501);
+    checkNoDuplicates(submission);
+
+    await submission.comments.replaceMore();
+    expect(getMoreCommentsCount(submission), 0);
+    expect(submission.comments.toList().length, 501);
+    checkNoDuplicates(submission);
+  });
+
   test('lib/comment/tons_of_comments_test', () async {
     final reddit = await createRedditTestInstance(
         'test/comment/tons_of_comments_test.json');

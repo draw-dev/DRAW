@@ -454,6 +454,7 @@ class SubmissionRef extends UserContent {
       submission._comments = CommentForest(submission, response[1]['listing']);
       return submission;
     } on DRAWNotFoundException catch (e) {
+      // ignore: unused_catch_clause
       throw DRAWInvalidSubmissionException(_id);
     }
   }

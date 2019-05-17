@@ -6,14 +6,11 @@
 import 'dart:async';
 
 import 'package:draw/draw.dart';
-import 'package:draw/src/logging.dart';
 import 'auth/credentials.dart';
 import 'test_authenticator.dart';
 
 Future<Reddit> createRedditTestInstance(String path, {bool live: false}) async {
   var testAuth;
-//  DRAWLoggingUtils.initialize();
-//  DRAWLoggingUtils.setLogLevel(Level.INFO);
   if (live) {
     final tempReddit = await Reddit.createScriptInstance(
         userAgent: 'foobar',

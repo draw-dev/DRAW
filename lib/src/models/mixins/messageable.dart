@@ -51,6 +51,7 @@ mixin MessageableMixin {
       }
       throw DRAWInvalidSubredditException(name);
     } on DRAWInvalidRedditorException catch (e) {
+      // ignore: unused_catch_clause
       throw DRAWInvalidRedditorException(displayName);
     }
   }

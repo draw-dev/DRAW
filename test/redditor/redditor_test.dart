@@ -225,6 +225,7 @@ Future<void> main() async {
     try {
       await other.gild();
     } on DRAWGildingException catch (e) {
+      // ignore: unused_catch_clause
       // Success
     } catch (e) {
       rethrow;

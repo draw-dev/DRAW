@@ -329,19 +329,19 @@ class SubredditSettings {
   SubredditSettings._(this.subreddit, this._data);
 
   bool get defaultSet => _data['default_set'];
-  void set defaultSet(bool x) => _data['default_set'] = x;
+  set defaultSet(bool x) => _data['default_set'] = x;
 
   bool get allowImages => _data['allow_images'];
-  void set allowImages(bool x) => _data['allow_images'] = x;
+  set allowImages(bool x) => _data['allow_images'] = x;
 
   bool get allowFreeformReports => _data['free_form_reports'];
-  void set allowFreeformReports(bool x) => _data['free_form_reports'] = x;
+  set allowFreeformReports(bool x) => _data['free_form_reports'] = x;
 
   bool get showMedia => _data['show_media'];
-  void set showMedia(bool x) => _data['show_media'] = x;
+  set showMedia(bool x) => _data['show_media'] = x;
 
   int get wikiEditAge => _data['wiki_edit_age'];
-  void set wikiEditAge(int x) => _data['wiki_edit_age'] = x;
+  set wikiEditAge(int x) => _data['wiki_edit_age'] = x;
 
   String get submitText => _data['submit_text'];
   void set submitText(String x) => _data['submit_text'] = x;

@@ -291,6 +291,7 @@ class WikiPageModeration {
     try {
       await wikiPage.reddit.post(url, data, objectify: false);
     } on DRAWNotFoundException catch (e) {
+      // ignore: unused_catch_clause
       throw DRAWInvalidRedditorException(redditor);
     }
   }

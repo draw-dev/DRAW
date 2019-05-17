@@ -67,8 +67,10 @@ class SubredditRef extends RedditBase
     try {
       return await f();
     } on DRAWNotFoundException catch (e) {
+      // ignore: unused_catch_clause
       throw DRAWInvalidSubredditException(displayName);
     } on DRAWRedirectResponse catch (e) {
+      // ignore: unused_catch_clause
       if (allowRedirects) {
         rethrow;
       }
@@ -216,8 +218,8 @@ class SubredditRef extends RedditBase
   /// week, year.
   Stream<UserContent> search(String query,
       {Sort sort: Sort.relevance,
-      SearchSyntax syntax: SearchSyntax.lucene,
-      TimeFilter timeFilter: TimeFilter.all,
+      SearchSyntax syntax = SearchSyntax.lucene,
+      TimeFilter timeFilter = TimeFilter.all,
       Map<String, String> params}) {
     final timeStr = timeFilterToString(timeFilter);
     final isNotAll = !(_name.toLowerCase() == 'all');
@@ -265,10 +267,10 @@ class SubredditRef extends RedditBase
       String url,
       String flairId,
       String flairText,
-      bool resubmit: true,
-      bool sendReplies: true,
-      bool nsfw: false,
-      bool spoiler: false}) async {
+      bool resubmit = true,
+      bool sendReplies = true,
+      bool nsfw = false,
+      bool spoiler = false}) async {
     if ((selftext == null && url == null) ||
         (selftext != null && url != null)) {
       throw DRAWArgumentError('One of either selftext or url must be '
