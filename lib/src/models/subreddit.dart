@@ -468,9 +468,9 @@ class SubredditFilters {
   /// [SubredditRef].
   Future<void> remove(/* String, Subreddit */ subreddit) async {
     var filteredSubreddit = '';
-    if (subreddit is String)
+    if (subreddit is String) {
       filteredSubreddit = subreddit;
-    else if (subreddit is SubredditRef) {
+    } else if (subreddit is SubredditRef) {
       filteredSubreddit = subreddit.displayName;
     } else {
       throw DRAWArgumentError(
