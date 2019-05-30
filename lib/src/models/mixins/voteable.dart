@@ -46,9 +46,14 @@ mixin VoteableMixin implements RedditBaseInitializedMixin {
     }
   }
 
-  Future<void> _vote(String direction) async {
-    await reddit.post(apiPath['vote'], {'dir': direction, 'id': fullname},
+  Future<void> _vote(String direction, bool waitForResponse) async {
+    final response = reddit.post(
+        apiPath['vote'], {'dir': direction, 'id': fullname},
         discardResponse: true);
+    if (waitForResponse) {
+      await response;
+    }
+
     switch (direction) {
       case '0':
         data['likes'] = null;
@@ -66,63 +71,22 @@ mixin VoteableMixin implements RedditBaseInitializedMixin {
   /// Note: votes must be cast on behalf of a human user (i.e., no automatic
   /// voting by bots). See Reddit rules for more details on what is considered
   /// vote cheating or manipulation.
-  Future<void> clearVote() async => _vote('0');
+  Future<void> clearVote({bool waitForResponse = true}) async =>
+      _vote('0', waitForResponse);
 
   /// Clear the authenticated user's vote on the object.
   ///
   /// Note: votes must be cast on behalf of a human user (i.e., no automatic
   /// voting by bots). See Reddit rules for more details on what is considered
   /// vote cheating or manipulation.
-  Future<void> downvote() async => _vote('-1');
+  Future<void> downvote({bool waitForResponse = true}) async =>
+      _vote('-1', waitForResponse);
 
   /// Clear the authenticated user's vote on the object.
   ///
   /// Note: votes must be cast on behalf of a human user (i.e., no automatic
   /// voting by bots). See Reddit rules for more details on what is considered
   /// vote cheating or manipulation.
-  Future<void> upvote() async => _vote('1');
-
-
-
-  Future<void> _riskyVote(String direction) async {
-    switch (direction) {
-      case '0':
-        data['likes'] = null;
-        break;
-      case '1':
-        data['likes'] = true;
-        break;
-      case '-1':
-        data['likes'] = false;
-    }
-    await reddit.post(apiPath['vote'], {'dir': direction, 'id': fullname},
-      discardResponse: true);
-  }
-
-  /// Clear the authenticated user's vote on the object.
-  /// Does **not** waitfor the post request to be resolved before updating the local object
-  ///
-  /// Note: votes must be cast on behalf of a human user (i.e., no automatic
-  /// voting by bots). See Reddit rules for more details on what is considered
-  /// vote cheating or manipulation.
-  Future<void> riskyClearVote() async => _riskyVote('0');
-    /// Casts a downvote for the authenticated user's vote on the object.
-  /// Does **not** wait for the post request to be resolved before updating the local object
-  ///
-  /// Note: votes must be cast on behalf of a human user (i.e., no automatic
-  /// voting by bots). See Reddit rules for more details on what is considered
-  /// vote cheating or manipulation.
-  Future<void> riskyDownvote() async => _riskyVote('-1');
-  /// Casts an upvote for the authenticated user's vote on the object.
-  /// Does **not** wait for the post request to be resolved before updating the local object
-  ///
-  /// Note: votes must be cast on behalf of a human user (i.e., no automatic
-  /// voting by bots). See Reddit rules for more details on what is considered
-  /// vote cheating or manipulation.
-  Future<void> riskyUpvote() async => _riskyVote('1');
-
-
-
-
-
+  Future<void> upvote({bool waitForResponse = true}) async =>
+      _vote('1', waitForResponse);
 }
