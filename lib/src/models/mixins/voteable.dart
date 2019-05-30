@@ -46,9 +46,14 @@ mixin VoteableMixin implements RedditBaseInitializedMixin {
     }
   }
 
-  Future<void> _vote(String direction) async {
-    await reddit.post(apiPath['vote'], {'dir': direction, 'id': fullname},
+  Future<void> _vote(String direction, bool waitForResponse) async {
+    final response = reddit.post(
+        apiPath['vote'], {'dir': direction, 'id': fullname},
         discardResponse: true);
+    if (waitForResponse) {
+      await response;
+    }
+
     switch (direction) {
       case '0':
         data['likes'] = null;
@@ -66,19 +71,22 @@ mixin VoteableMixin implements RedditBaseInitializedMixin {
   /// Note: votes must be cast on behalf of a human user (i.e., no automatic
   /// voting by bots). See Reddit rules for more details on what is considered
   /// vote cheating or manipulation.
-  Future<void> clearVote() async => _vote('0');
+  Future<void> clearVote({bool waitForResponse = true}) async =>
+      _vote('0', waitForResponse);
 
   /// Clear the authenticated user's vote on the object.
   ///
   /// Note: votes must be cast on behalf of a human user (i.e., no automatic
   /// voting by bots). See Reddit rules for more details on what is considered
   /// vote cheating or manipulation.
-  Future<void> downvote() async => _vote('-1');
+  Future<void> downvote({bool waitForResponse = true}) async =>
+      _vote('-1', waitForResponse);
 
   /// Clear the authenticated user's vote on the object.
   ///
   /// Note: votes must be cast on behalf of a human user (i.e., no automatic
   /// voting by bots). See Reddit rules for more details on what is considered
   /// vote cheating or manipulation.
-  Future<void> upvote() async => _vote('1');
+  Future<void> upvote({bool waitForResponse = true}) async =>
+      _vote('1', waitForResponse);
 }
