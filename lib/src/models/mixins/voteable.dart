@@ -119,7 +119,7 @@ mixin VoteableMixin implements RedditBaseInitializedMixin {
   /// Note: votes must be cast on behalf of a human user (i.e., no automatic
   /// voting by bots). See Reddit rules for more details on what is considered
   /// vote cheating or manipulation.
-  Future<void> friskyUpvote() async => _riskyVote('1');
+  Future<void> riskyUpvote() async => _riskyVote('1');
 
 
 
