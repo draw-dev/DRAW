@@ -27,7 +27,7 @@ Future<void> main() async {
         redirectUri: Uri.parse(redirect),
         userAgent: userAgent + '_authenticated');
     expect(reddit.auth.userAgent, userAgent + '_authenticated');
-    // Create our implicit grant flow URI.
+    // Create our code grant flow URI.
     final dest = reddit.auth.url([scope], expectedState);
 
     // ------------------------------------------------------------------ //

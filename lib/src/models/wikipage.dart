@@ -290,8 +290,8 @@ class WikiPageModeration {
         .replaceAll(_kMethodRegExp, method);
     try {
       await wikiPage.reddit.post(url, data, objectify: false);
-    } on DRAWNotFoundException catch (e) {
       // ignore: unused_catch_clause
+    } on DRAWNotFoundException catch (e) {
       throw DRAWInvalidRedditorException(redditor);
     }
   }

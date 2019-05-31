@@ -120,6 +120,42 @@ class Reddit {
         'Unable to get valid OAuth token for read-only instance');
   }
 
+  /// Creates a new [Reddit] instance for use with the installed application
+  /// authentication flow. This instance is not authenticated until a valid
+  /// response code is provided to `WebAuthenticator.authorize`
+  /// (see test/auth/web_auth.dart for an example usage).
+  ///
+  /// [clientId] is the identifier associated with your authorized application
+  /// on Reddit. To get a client ID, create an authorized application
+  /// [here](http://www.reddit.com/prefs/apps).
+  ///
+  /// [userAgent] is an arbitrary identifier used by the Reddit API to
+  /// differentiate between client instances. This should be relatively unique.
+  ///
+  /// [redirectUri] is the redirect URI associated with your Reddit application.
+  ///
+  /// [tokenEndpoint] is a [Uri] to an alternative token endpoint. If not
+  /// provided, [defaultTokenEndpoint] is used.
+  ///
+  /// [authEndpoint] is a [Uri] to an alternative authentication endpoint. If not
+  /// provided, [defaultAuthTokenEndpoint] is used.
+  ///
+  /// [configUri] is a [Uri] pointing to a 'draw.ini' file, which can be used to
+  /// populate the previously described parameters.
+  ///
+  /// [siteName] is the name of the configuration to use from draw.ini. Defaults
+  /// to 'default'.
+  static Reddit createInstalledFlowInstance(
+          {String clientId,
+          String userAgent,
+          Uri redirectUri,
+          Uri tokenEndpoint,
+          Uri authEndpoint,
+          Uri configUri,
+          String siteName = 'default'}) =>
+      Reddit._webFlowInstance(clientId, '', userAgent, redirectUri,
+          tokenEndpoint, authEndpoint, configUri, siteName);
+
   /// Creates a new read-only [Reddit] instance for web and script applications.
   ///
   /// [clientId] is the identifier associated with your authorized application
