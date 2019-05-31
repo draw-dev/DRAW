@@ -17,7 +17,8 @@ export 'package:draw/src/models/comment_forest.dart' hide setSubmission;
 export 'package:draw/src/models/flair.dart'
     hide flairPositionToString, stringToFlairPosition;
 export 'package:draw/src/models/inbox.dart';
-export 'package:draw/src/listing/mixins/base.dart' show BaseListingMixin, Sort, TimeFilter;
+export 'package:draw/src/listing/mixins/base.dart'
+    show BaseListingMixin, Sort, TimeFilter;
 export 'package:draw/src/listing/mixins/gilded.dart';
 export 'package:draw/src/listing/mixins/redditor.dart';
 export 'package:draw/src/listing/mixins/subreddit.dart';
@@ -46,7 +47,8 @@ export 'package:draw/src/models/mixins/replyable.dart';
 export 'package:draw/src/models/mixins/reportable.dart';
 export 'package:draw/src/models/mixins/saveable.dart';
 export 'package:draw/src/models/mixins/user_content_mixin.dart';
-export 'package:draw/src/models/mixins/user_content_moderation.dart' show DistinctionType, UserContentModerationMixin;
+export 'package:draw/src/models/mixins/user_content_moderation.dart'
+    show DistinctionType, UserContentModerationMixin;
 export 'package:draw/src/models/mixins/voteable.dart';
 export 'package:draw/src/modmail.dart';
 export 'package:draw/src/models/wikipage.dart' hide revisionGenerator;
