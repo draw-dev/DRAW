@@ -1,5 +1,11 @@
 Change Log
 =================================
+## Version 0.5.2 (Unreleased)
+* Added optional `waitForResponse` to `clearVote`, `downvote`, and `upvote`, which
+  allows for these calls to complete without waiting for a response from Reddit.
+* Added `Reddit.createInstalledFlowInstance` to help with authenticating installed
+  applications with no client secret.
+
 ## Version 0.5.1+1 (2019/05/17)
 * Fixed analysis issues.
 
