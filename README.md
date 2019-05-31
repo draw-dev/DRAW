@@ -61,7 +61,7 @@ main() async {
   // Build the URL used for authentication. See `WebAuthenticator`
   // documentation for parameters.
   final auth_url = reddit.auth.url(['*'], 'foobar');
-  
+
   // ...
   // Complete authentication at `auth_url` in the browser and retrieve
   // the `code` query parameter from the redirect URL.
@@ -129,6 +129,48 @@ main() async {
   print(await reddit.user.me());
 }
 ```
+# Installed Application Authentication
+
+For usage in environments where it is impossible to keep a client secret secure, the installed application flow should be used. This requires that an installed application is registered with a valid Reddit account, which provides a `client-id`. As part of this process, a `redirect URL` is associated with the registered installed application. These two values are all that is needed to complete the installed application authentication flow.
+
+The installed application authentication flow is almost identical to the web authentication flow described above, and it is also possible to save and restore credentials for installed applications in a similar fashion.
+
+Here is a simple example of how to use the installed application authentication flow with DRAW:
+
+```dart
+import 'package:draw/draw.dart';
+
+main() async {
+  final userAgent = 'foobar';
+  final configUri = Uri.parse('draw.ini');
+
+  // Create a `Reddit` instance using a configuration file in the current
+  // directory. Unlike the web authentication example, a client secret does
+  // not need to be provided in the configuration file.
+  final reddit = Reddit.createInstalledFlowInstance(userAgent: userAgent,
+                                                    configUri: configUri);
+
+  // Build the URL used for authentication. See `WebAuthenticator`
+  // documentation for parameters.
+  final auth_url = reddit.auth.url(['*'], 'foobar');
+
+  // ...
+  // Complete authentication at `auth_url` in the browser and retrieve
+  // the `code` query parameter from the redirect URL.
+  // ...
+
+  // Assuming the `code` query parameter is stored in a variable
+  // `auth_code`, we pass it to the `authorize` method in the
+  // `WebAuthenticator`.
+  await reddit.auth.authorize(auth_code);
+
+  // If everything worked correctly, we should be able to retrieve
+  // information about the authenticated account.
+  print(await reddit.user.me());
+}
+```
+
+# DRAW Configuration Files (draw.ini)
 
 Here's an example `draw.ini` suitable for web based authentication:
 

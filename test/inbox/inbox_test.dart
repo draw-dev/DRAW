@@ -60,7 +60,7 @@ Future<void> main() async {
 
     // Check to make sure we have no unread messages in our inbox.
     // ignore: unused_local_variable
-    await for (final message in reddit.inbox.unread()) { 
+    await for (final message in reddit.inbox.unread()) {
       // ignore: unused_local_variable
       expect(true, isFalse);
     }

@@ -1,5 +1,8 @@
 Change Log
 =================================
+## Version 0.5.2+1 (2019/05/31)
+* Updated documentation.
+
 ## Version 0.5.2 (2019/05/31)
 * Added optional `waitForResponse` to `clearVote`, `downvote`, and `upvote`, which
   allows for these calls to complete without waiting for a response from Reddit.
