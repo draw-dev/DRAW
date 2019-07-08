@@ -1,5 +1,17 @@
 Change Log
 =================================
+
+## Version 0.6.0 (2019/07/08)
+
+### Breaking changes:
+* `Reddit.restoreAuthenticatedInstance` now returns `Reddit` instead of `Future<Reddit>`.
+
+### Other changes:
+* `Reddit.restoreAuthenticatedInstance` no longer throws an exception when not provided a
+  `clientSecret`. A `clientSecret` is still required for most client types except for
+  installed applications.
+* Updated dependencies.
+
 ## Version 0.5.2+1 (2019/05/31)
 * Updated documentation.
 

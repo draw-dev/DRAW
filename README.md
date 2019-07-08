@@ -118,7 +118,7 @@ main() async {
     await writeCredentials(reddit.auth.credentials.toJson());
   } else {
     // Create a new Reddit instance using previously cached credentials.
-    reddit = await Reddit.restoreAuthenticatedInstance(
+    reddit = Reddit.restoreAuthenticatedInstance(
         userAgent: userAgent,
         configUri: configUri,
         credentialsJson: credentialsJson);
