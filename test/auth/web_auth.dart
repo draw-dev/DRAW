@@ -123,7 +123,7 @@ Future<void> main() async {
     final creds = reddit.auth.credentials.toJson();
 
     // Attempt to create a new instance with the saved credentials.
-    final redditRestored = await Reddit.restoreAuthenticatedInstance(creds,
+    final redditRestored = Reddit.restoreAuthenticatedInstance(creds,
         clientId: kWebClientID,
         clientSecret: kWebClientSecret,
         userAgent: userAgent);

@@ -318,7 +318,7 @@ class Reddit {
   ///
   /// [siteName] is the name of the configuration to use from draw.ini. Defaults
   /// to 'default'.
-  static Future<Reddit> restoreAuthenticatedInstance(String credentialsJson,
+  static Reddit restoreAuthenticatedInstance(String credentialsJson,
       {String clientId,
       String clientSecret,
       String userAgent,
@@ -326,11 +326,11 @@ class Reddit {
       Uri tokenEndpoint,
       Uri authEndpoint,
       Uri configUri,
-      String siteName = 'default'}) async {
+      String siteName = 'default'}) {
     if (credentialsJson == null) {
       throw DRAWArgumentError('credentialsJson cannot be null.');
     }
-    final reddit = Reddit._webFlowInstanceRestore(
+    return Reddit._webFlowInstanceRestore(
         clientId,
         clientSecret,
         userAgent,
@@ -340,11 +340,6 @@ class Reddit {
         authEndpoint,
         configUri,
         siteName);
-    final initialized = await reddit._initializedCompleter.future;
-    if (initialized) {
-      return reddit;
-    }
-    throw DRAWAuthenticationError('Unable to authenticate with Reddit');
   }
 
   Reddit._readOnlyInstance(
@@ -513,9 +508,6 @@ class Reddit {
 
     if (_config.clientId == null) {
       throw DRAWAuthenticationError('clientId cannot be null.');
-    }
-    if (_config.clientSecret == null) {
-      throw DRAWAuthenticationError('clientSecret cannot be null.');
     }
     if (_config.userAgent == null) {
       throw DRAWAuthenticationError('userAgent cannot be null.');
