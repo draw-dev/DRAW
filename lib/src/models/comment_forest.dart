@@ -98,10 +98,16 @@ class CommentForest {
   /// (default: 32), and [threshold] is the minimum number of comments that a
   /// [MoreComments] object needs to represent in order to be expanded (default:
   /// 0).
-  Future<void> replaceMore({limit = 32, threshold = 0}) async {
+  Future<void> replaceMore(
+      {limit = 32, threshold = 0, MoreComments specificMoreComment}) async {
     var remaining = limit;
     final moreComments = _getMoreComments(_comments);
     final skipped = [];
+
+    if (specificMoreComment != null) {
+      await _replaceOneMore(specificMoreComment);
+      return;
+    }
 
     while (moreComments.isNotEmpty) {
       final moreComment = moreComments.removeFirst();
@@ -130,6 +136,15 @@ class CommentForest {
       newComments.forEach(_insertComment);
       _removeMore(moreComment);
     }
+  }
+
+  Future<void> _replaceOneMore(MoreComments moreComment) async {
+    final newComments = await moreComment.comments(update: false);
+    for (final more in _getMoreComments(newComments, _comments)?.toList()) {
+      setSubmissionInternal(more, _submission);
+    }
+    newComments.forEach(_insertComment);
+    _removeMore(moreComment);
   }
 
   static final _kNoParent = null;
