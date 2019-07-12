@@ -14,12 +14,18 @@ mixin RisingListingMixin {
   String get path;
 
   /// Returns a random [UserContent] that is "rising".
-  Stream<UserContent> randomRising({Map<String, String> params}) =>
+  /// `limit` is the maximum number of objects returned by Reddit per request
+  /// (the default is 100). `params` is a set of additional parameters that
+  /// will be forwarded along with the request.
+  Stream<UserContent> randomRising({int limit, Map<String, String> params}) =>
       ListingGenerator.createBasicGenerator(reddit, path + 'randomrising',
           params: params);
 
   /// Returns a [UserContent] that is "rising".
-  Stream<UserContent> rising({Map<String, String> params}) =>
+  /// `limit` is the maximum number of objects returned by Reddit per request
+  /// (the default is 100). `params` is a set of additional parameters that
+  /// will be forwarded along with the request.
+  Stream<UserContent> rising({int limit, Map<String, String> params}) =>
       ListingGenerator.createBasicGenerator(reddit, path + 'rising',
           params: params);
 }
