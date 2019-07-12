@@ -54,9 +54,9 @@ void setRepliesInternal(commentLike, CommentForest comments) {
 class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   static final RegExp _submissionRegExp = RegExp(r'{id}');
   List _comments;
-  List<String> _children;
-  int _count;
-  String _parentId;
+  final List<String> _children;
+  final int _count;
+  final String _parentId;
   SubmissionRef _submission;
 
   List get children => _children;
