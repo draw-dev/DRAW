@@ -18,11 +18,12 @@ mixin GildedListingMixin {
   /// Returns a [Stream] of content that has been gilded.
   ///
   /// `limit` is the maximum number of objects returned by Reddit per request
-  /// (the default is 100). `params` is a set of additional parameters that
-  /// will be forwarded along with the request.
+  /// (the default is 100). If provided, `after` specifies from which point
+  /// Reddit will return objects of the requested type. `params` is a set of
+  /// additional parameters that will be forwarded along with the request.
   Stream<UserContentInitialized> gilded(
-          {int limit, Map<String, String> params}) =>
+          {int limit, String after, Map<String, String> params}) =>
       ListingGenerator.createBasicGenerator<UserContentInitialized>(
           reddit, path + 'gilded',
-          limit: limit, params: params);
+          limit: limit, after: after, params: params);
 }
