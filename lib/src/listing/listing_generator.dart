@@ -24,7 +24,9 @@ abstract class ListingGenerator {
           final Reddit reddit, final String path,
           {int limit, Map<String, String> params, bool objectify = true}) =>
       generator<T>(reddit, path,
-          limit: limit ?? getLimit(params), params: params, objectify: objectify);
+          limit: limit ?? getLimit(params),
+          params: params,
+          objectify: objectify);
 
   /// An asynchronous iterator method used to make Reddit API calls as defined
   /// by [api] in blocks of size [limit]. The default [limit] is specified by
