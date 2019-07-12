@@ -77,7 +77,7 @@ mixin BaseListingMixin {
   String get path;
 
   Stream<UserContent> _buildGenerator(
-      int limit, Map<String, String> params, String sort) {
+      int limit, String after, Map<String, String> params, String sort) {
     Map<String, String> _params = params;
     if ((this is RedditorRef) || (this is SubListing)) {
       var arg = '';
@@ -87,58 +87,72 @@ mixin BaseListingMixin {
       _params ??= Map<String, String>();
       _params['sort'] = sort;
       return ListingGenerator.generator<UserContent>(reddit, path + arg,
-          limit: limit ?? ListingGenerator.getLimit(params), params: _params);
+          limit: limit ?? ListingGenerator.getLimit(params),
+          after: after,
+          params: _params);
     }
     return ListingGenerator.generator<UserContent>(reddit, path + sort,
-        limit: limit ?? ListingGenerator.getLimit(_params), params: _params);
+        limit: limit ?? ListingGenerator.getLimit(_params),
+        after: after,
+        params: _params);
   }
 
-  Stream<UserContent> _buildTimeFilterGenerator(int limit,
+  Stream<UserContent> _buildTimeFilterGenerator(int limit, String after,
       Map<String, String> params, String sort, TimeFilter timeFilter) {
     if (timeFilter == null) {
       throw DRAWArgumentError('Argument "timeFilter" cannot be null');
     }
     final _params = params ?? Map();
     _params['t'] = timeFilterToString(timeFilter);
-    return _buildGenerator(limit, _params, sort);
+    return _buildGenerator(limit, after, _params, sort);
   }
 
   /// Returns a [Stream] of controversial comments and submissions. [timeFilter]
   /// is used to filter comments and submissions by time period.
   ///
   /// `limit` is the maximum number of objects returned by Reddit per request
-  /// (the default is 100). `params` is a set of additional parameters that
-  /// will be forwarded along with the request.
+  /// (the default is 100). If provided, `after` specifies from which point
+  /// Reddit will return objects of the requested type. `params` is a set of
+  /// additional parameters that will be forwarded along with the request.
   Stream<UserContent> controversial(
           {TimeFilter timeFilter = TimeFilter.all,
           int limit,
+          String after,
           Map<String, String> params}) =>
-      _buildTimeFilterGenerator(limit, params, 'controversial', timeFilter);
+      _buildTimeFilterGenerator(
+          limit, after, params, 'controversial', timeFilter);
 
   /// Returns a [Stream] of hot comments and submissions.
   ///
   /// `limit` is the maximum number of objects returned by Reddit per request
-  /// (the default is 100). `params` is a set of additional parameters that
-  /// will be forwarded along with the request.
-  Stream<UserContent> hot({int limit, Map<String, String> params}) =>
-      _buildGenerator(limit, params, 'hot');
+  /// (the default is 100). If provided, `after` specifies from which point
+  /// Reddit will return objects of the requested type. `params` is a set of
+  /// additional parameters that will be forwarded along with the request.
+  Stream<UserContent> hot(
+          {int limit, String after, Map<String, String> params}) =>
+      _buildGenerator(limit, after, params, 'hot');
 
   /// Returns a [Stream] of the newest comments and submissions.
   ///
   /// `limit` is the maximum number of objects returned by Reddit per request
-  /// (the default is 100). `params` is a set of additional parameters that
-  /// will be forwarded along with the request.
-  Stream<UserContent> newest({int limit, Map<String, String> params}) =>
-      _buildGenerator(limit, params, 'new');
+  /// (the default is 100). If provided, `after` specifies from which point
+  /// Reddit will return objects of the requested type. `params` is a set of
+  /// additional parameters that will be forwarded along with the request.
+  Stream<UserContent> newest(
+          {int limit, String after, Map<String, String> params}) =>
+      _buildGenerator(limit, after, params, 'new');
 
-  /// Returns a [Stream] of the top comments and submissions. [timeFilter] is
-  /// used to filter comments and submissions by time period.
+  /// Returns a [Stream] of the top comments and submissions.
+  ///
+  /// [timeFilter] is used to filter comments and submissions by time period.
   /// `limit` is the maximum number of objects returned by Reddit per request
-  /// (the default is 100). `params` is a set of additional parameters that
-  /// will be forwarded along with the request.
+  /// (the default is 100). If provided, `after` specifies from which point
+  /// Reddit will return objects of the requested type. `params` is a set of
+  /// additional parameters that will be forwarded along with the request.
   Stream<UserContent> top(
           {TimeFilter timeFilter = TimeFilter.all,
           int limit,
+          String after,
           Map<String, String> params}) =>
-      _buildTimeFilterGenerator(limit, params, 'top', timeFilter);
+      _buildTimeFilterGenerator(limit, after, params, 'top', timeFilter);
 }

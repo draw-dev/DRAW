@@ -22,18 +22,26 @@ abstract class ListingGenerator {
 
   static Stream<T> createBasicGenerator<T>(
           final Reddit reddit, final String path,
-          {int limit, Map<String, String> params, bool objectify = true}) =>
+          {int limit,
+          String after,
+          Map<String, String> params,
+          bool objectify = true}) =>
       generator<T>(reddit, path,
           limit: limit ?? getLimit(params),
+          after: after,
           params: params,
           objectify: objectify);
 
   /// An asynchronous iterator method used to make Reddit API calls as defined
   /// by [api] in blocks of size [limit]. The default [limit] is specified by
-  /// [defaultRequestLimit]. Returns a [Stream<T>] which can be iterated over
-  /// using an asynchronous for-loop.
+  /// [defaultRequestLimit]. [after] specifies which fullname should be used as
+  /// an anchor point for the slice. Returns a [Stream<T>] which can be iterated
+  /// over using an asynchronous for-loop.
   static Stream<T> generator<T>(final Reddit reddit, final String api,
-      {int limit, Map<String, String> params, bool objectify = true}) async* {
+      {int limit,
+      String after,
+      Map<String, String> params,
+      bool objectify = true}) async* {
     final kLimitKey = 'limit';
     final kAfterKey = 'after';
     final nullLimit = 1024;
@@ -42,6 +50,13 @@ abstract class ListingGenerator {
         : Map<String, String>.from(params);
     final _limit = limit ?? nullLimit;
     paramsInternal[kLimitKey] = _limit.toString();
+
+    // If after is provided, we'll start getting objects older than the object
+    // ID specified.
+    if (after != null) {
+      paramsInternal[kAfterKey] = after;
+    }
+
     int yielded = 0;
     int index = 0;
     List<T> listing;
