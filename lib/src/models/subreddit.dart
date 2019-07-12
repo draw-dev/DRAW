@@ -374,6 +374,9 @@ class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
   /// The URL for the [Subreddit]'s mobile header image, if it exists.
   Uri get mobileHeaderImage => GetterUtils.uriOrNull(data['banner_img']);
 
+  /// Is the [Subreddit] restricted to users 18+.
+  bool get over18 => data['over18'];
+
   /// The title of the [Subreddit].
   ///
   /// For example, the title of /r/drawapitesting is 'DRAW API Testing'.
