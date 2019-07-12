@@ -1,0 +1,1 @@
+[{"always":false,"request":["https://oauth.reddit.com/subreddits/premium/","{limit: 5}"],"response":{"kind":"Listing","data":{"modhash":null,"dist":0,"children":[],"after":null,"before":null}}}]

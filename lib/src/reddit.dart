@@ -14,6 +14,7 @@ import 'package:draw/src/models/inbox.dart';
 import 'package:draw/src/models/redditor.dart';
 import 'package:draw/src/models/submission.dart';
 import 'package:draw/src/models/subreddit.dart';
+import 'package:draw/src/models/subreddits.dart';
 import 'package:draw/src/objector.dart';
 import 'package:draw/src/user.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
@@ -56,6 +57,9 @@ class Reddit {
 
   Inbox get inbox => _inbox;
 
+  /// Provides methods to interact with sets of subreddits.
+  Subreddits get subreddits => _subreddits;
+
   /// Provides methods for the currently authenticated user.
   User get user => _user;
 
@@ -69,6 +73,7 @@ class Reddit {
   DRAWConfigContext _config;
   FrontPage _front;
   Inbox _inbox;
+  Subreddits _subreddits;
   User _user;
   bool _readOnly = true;
   bool _initialized = false;
@@ -623,6 +628,7 @@ class Reddit {
     _front = FrontPage(this);
     _inbox = Inbox(this);
     _objector = Objector(this);
+    _subreddits = Subreddits(this);
     _user = User(this);
     _initialized = true;
     _initializedCompleter.complete(true);

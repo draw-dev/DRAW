@@ -19,6 +19,7 @@ import 'submission/submission_test.dart' as submission_test;
 import 'subreddit/subreddit_listing_mixin_test.dart'
     as subreddit_listing_mixin_test;
 import 'subreddit/subreddit_moderation_test.dart' as subreddit_mod_test;
+import 'subreddit/subreddits_test.dart' as subreddits_test;
 import 'subreddit/subreddit_test.dart' as subreddit_test;
 import 'unit_tests/enum_stringify_test.dart' as enum_stringify_test;
 import 'unit_tests/test_draw_config_context.dart' as draw_config_test;
@@ -41,6 +42,7 @@ void main() {
   redditor_test.main();
   rising_listing_mixin_test.main();
   submission_test.main();
+  subreddits_test.main();
   subreddit_listing_mixin_test.main();
   subreddit_mod_test.main();
   subreddit_test.main();
