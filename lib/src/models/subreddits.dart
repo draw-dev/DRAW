@@ -86,10 +86,16 @@ class Subreddits {
   /// This search is performed using both the title and description of
   /// subreddits. To search solely by name, see [Subreddits.searchByName].
   Stream<SubredditRef> search(String query,
-          {int limit, Map<String, String> params}) =>
-      ListingGenerator.createBasicGenerator(
-          reddit, apiPath['subreddits_search'],
-          limit: limit, params: params);
+      {int limit, Map<String, String> params}) {
+    if (query == null) {
+      throw DRAWArgumentError('Parameter "query" cannot be null');
+    }
+    params ??= <String, String>{};
+    params['q'] = query;
+    return ListingGenerator.createBasicGenerator(
+        reddit, apiPath['subreddits_search'],
+        limit: limit, params: params);
+  }
 
   /// Returns a [List<SubredditRef>] of subreddits whose names being with
   /// `query`.

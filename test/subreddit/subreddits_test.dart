@@ -63,6 +63,23 @@ Future<void> main() async {
         throwsA(TypeMatcher<DRAWArgumentError>()));
   });
 
+  test('lib/subreddits/search', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddits_search.json');
+    final results = await reddit.subreddits.search('drawapitesting').toList();
+    expect(results.length, 1);
+
+    bool threw = false;
+    try {
+      reddit.subreddits.search(null);
+      // ignore: unused_catch_clause
+    } on DRAWArgumentError catch (e) {
+      threw = true;
+    } finally {
+      expect(threw, isTrue);
+    }
+  });
+
   test('lib/subreddits/search_by_name', () async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddits_search_by_name.json');
