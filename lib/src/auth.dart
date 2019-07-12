@@ -40,7 +40,7 @@ final Logger _logger = Logger('Authenticator');
 abstract class Authenticator {
   oauth2.AuthorizationCodeGrant _grant;
   oauth2.Client _client;
-  DRAWConfigContext _config;
+  final DRAWConfigContext _config;
 
   Authenticator(DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant)
       : _config = config,
@@ -421,7 +421,7 @@ class ReadOnlyAuthenticator extends Authenticator {
 /// [documentation](https://github.com/reddit/reddit/wiki/OAuth2-App-Types)
 /// for descriptions of valid app types.
 class WebAuthenticator extends Authenticator {
-  Uri _redirect;
+  final Uri _redirect;
 
   WebAuthenticator._(
       DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant)

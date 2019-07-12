@@ -1144,7 +1144,7 @@ String modmailSortToString(ModmailSort s) {
 
 /// Provides modmail functions for a [Subreddit].
 class Modmail {
-  SubredditRef _subreddit;
+  final SubredditRef _subreddit;
   Modmail._(this._subreddit);
 
   String _buildSubredditList(List<SubredditRef> otherSubreddits) {
@@ -1293,7 +1293,7 @@ class Modmail {
 
 /// A representation of the number of unread Modmail conversations by state.
 class ModmailUnreadStatistics {
-  Map<String, int> _data;
+  final Map<String, int> _data;
   ModmailUnreadStatistics._(this._data);
 
   int get archived => _data['archived'];

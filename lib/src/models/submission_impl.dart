@@ -401,7 +401,7 @@ class Submission extends SubmissionRef
 class SubmissionRef extends UserContent {
   static final RegExp _submissionRegExp = RegExp(r'{id}');
   CommentForest _comments;
-  String _id;
+  final String _id;
   final Map _commentsById = Map();
 
   SubmissionRef.withPath(Reddit reddit, String path)
