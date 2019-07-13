@@ -179,7 +179,6 @@ class Objector extends RedditBase {
     if (data is List) {
       return _objectifyList(data);
     } else if (data is! Map) {
-      print("DATA: $data, ${data.runtimeType}");
       throw DRAWInternalError('data must be of type List or Map, got '
           '${data.runtimeType}');
     } else if (data.containsKey('kind')) {
