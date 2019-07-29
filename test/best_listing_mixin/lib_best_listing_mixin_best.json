@@ -1,0 +1,1841 @@
+[
+    {
+        "always": false,
+        "request": [
+            "https://oauth.reddit.com/best",
+            "{limit: 10}"
+        ],
+        "response": {
+            "kind": "Listing",
+            "data": {
+                "modhash": "ejvhuh5dj23eb72d04800ecf74d152ebe4cdf0da654e66c380",
+                "dist": 25,
+                "children": [
+                    {
+                        "kind": "t3",
+                        "data": {
+                            "approved_at_utc": null,
+                            "subreddit": "oculus",
+                            "selftext": "",
+                            "author_fullname": "t2_slrdo",
+                            "saved": false,
+                            "mod_reason_title": null,
+                            "gilded": 1,
+                            "clicked": false,
+                            "title": "Making a VR vs PC game where one player is a giant, the other a tiny warrior",
+                            "link_flair_richtext": [],
+                            "subreddit_name_prefixed": "r/oculus",
+                            "hidden": false,
+                            "pwls": 6,
+                            "link_flair_css_class": "maroon",
+                            "downs": 0,
+                            "thumbnail_height": 78,
+                            "hide_score": false,
+                            "name": "t3_cje47m",
+                            "quarantine": false,
+                            "link_flair_text_color": "dark",
+                            "author_flair_background_color": null,
+                            "subreddit_type": "public",
+                            "ups": 3013,
+                            "total_awards_received": 2,
+                            "media_embed": {},
+                            "thumbnail_width": 140,
+                            "author_flair_template_id": null,
+                            "is_original_content": false,
+                            "user_reports": [],
+                            "secure_media": {
+                                "reddit_video": {
+                                    "fallback_url": "https://v.redd.it/67zilebgx9d31/DASH_1080?source=fallback",
+                                    "height": 1080,
+                                    "width": 1920,
+                                    "scrubber_media_url": "https://v.redd.it/67zilebgx9d31/DASH_96",
+                                    "dash_url": "https://v.redd.it/67zilebgx9d31/DASHPlaylist.mpd",
+                                    "duration": 61,
+                                    "hls_url": "https://v.redd.it/67zilebgx9d31/HLSPlaylist.m3u8",
+                                    "is_gif": false,
+                                    "transcoding_status": "completed"
+                                }
+                            },
+                            "is_reddit_media_domain": true,
+                            "is_meta": false,
+                            "category": null,
+                            "secure_media_embed": {},
+                            "link_flair_text": "Video",
+                            "can_mod_post": false,
+                            "score": 3013,
+                            "approved_by": null,
+                            "thumbnail": "https://b.thumbs.redditmedia.com/ZYzgzlcwFRz4RcCwS3tUZeIUBMCwVQWh71YLNZGrEwI.jpg",
+                            "edited": false,
+                            "author_flair_css_class": null,
+                            "author_flair_richtext": [],
+                            "gildings": {
+                                "gid_1": 1,
+                                "gid_2": 1
+                            },
+                            "post_hint": "hosted:video",
+                            "content_categories": null,
+                            "is_self": false,
+                            "mod_note": null,
+                            "created": 1564448836.0,
+                            "link_flair_type": "text",
+                            "wls": 6,
+                            "banned_by": null,
+                            "author_flair_type": "text",
+                            "domain": "v.redd.it",
+                            "allow_live_comments": false,
+                            "selftext_html": null,
+                            "likes": null,
+                            "suggested_sort": null,
+                            "banned_at_utc": null,
+                            "view_count": null,
+                            "archived": false,
+                            "no_follow": false,
+                            "is_crosspostable": true,
+                            "pinned": false,
+                            "over_18": false,
+                            "preview": {
+                                "images": [
+                                    {
+                                        "source": {
+                                            "url": "https://external-preview.redd.it/JdsmgbLIxmYSRAwtzTL4aBULH693w4BcXgq_oKcmHnk.png?format=pjpg&amp;auto=webp&amp;s=d5557479d0582185a674ea661771f3ccc90840e3",
+                                            "width": 1920,
+                                            "height": 1080
+                                        },
+                                        "resolutions": [
+                                            {
+                                                "url": "https://external-preview.redd.it/JdsmgbLIxmYSRAwtzTL4aBULH693w4BcXgq_oKcmHnk.png?width=108&amp;crop=smart&amp;format=pjpg&amp;auto=webp&amp;s=fdd0c70efc7c046cd3553f6666e50f967a2bbbc1",
+                                                "width": 108,
+                                                "height": 60
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/JdsmgbLIxmYSRAwtzTL4aBULH693w4BcXgq_oKcmHnk.png?width=216&amp;crop=smart&amp;format=pjpg&amp;auto=webp&amp;s=621eb776fe79e5b3877d6fa9118c6ce1953a037c",
+                                                "width": 216,
+                                                "height": 121
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/JdsmgbLIxmYSRAwtzTL4aBULH693w4BcXgq_oKcmHnk.png?width=320&amp;crop=smart&amp;format=pjpg&amp;auto=webp&amp;s=13de7a984a76c1c26e28c0e9059438cfbb27042e",
+                                                "width": 320,
+                                                "height": 180
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/JdsmgbLIxmYSRAwtzTL4aBULH693w4BcXgq_oKcmHnk.png?width=640&amp;crop=smart&amp;format=pjpg&amp;auto=webp&amp;s=8664106f2c632e6fe9f5346e86f62c62eb95a789",
+                                                "width": 640,
+                                                "height": 360
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/JdsmgbLIxmYSRAwtzTL4aBULH693w4BcXgq_oKcmHnk.png?width=960&amp;crop=smart&amp;format=pjpg&amp;auto=webp&amp;s=6631401dddb3bf0434502e6bd33a8f9d0a66fdfd",
+                                                "width": 960,
+                                                "height": 540
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/JdsmgbLIxmYSRAwtzTL4aBULH693w4BcXgq_oKcmHnk.png?width=1080&amp;crop=smart&amp;format=pjpg&amp;auto=webp&amp;s=f73a9965b8501a4a1a8d1e1a4df9ad85a6e54062",
+                                                "width": 1080,
+                                                "height": 607
+                                            }
+                                        ],
+                                        "variants": {},
+                                        "id": "I5i208z5kqwVvKLfh4t3vuoM1zDfonEpFb-5xbOZBhM"
+                                    }
+                                ],
+                                "enabled": false
+                            },
+                            "all_awardings": [
+                                {
+                                    "is_enabled": true,
+                                    "count": 1,
+                                    "subreddit_id": null,
+                                    "description": "Gives the author a week of Reddit Premium, %%{coin_symbol}100 Coins to do with as they please, and shows a Gold Award on the post.",
+                                    "coin_reward": 100,
+                                    "icon_width": 512,
+                                    "icon_url": "https://www.redditstatic.com/gold/awards/icon/gold_512.png",
+                                    "days_of_premium": 7,
+                                    "icon_height": 512,
+                                    "resized_icons": [
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_16.png",
+                                            "width": 16,
+                                            "height": 16
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_32.png",
+                                            "width": 32,
+                                            "height": 32
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_48.png",
+                                            "width": 48,
+                                            "height": 48
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_64.png",
+                                            "width": 64,
+                                            "height": 64
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_128.png",
+                                            "width": 128,
+                                            "height": 128
+                                        }
+                                    ],
+                                    "days_of_drip_extension": 0,
+                                    "award_type": "global",
+                                    "coin_price": 500,
+                                    "id": "gid_2",
+                                    "name": "Gold"
+                                },
+                                {
+                                    "is_enabled": true,
+                                    "count": 1,
+                                    "subreddit_id": null,
+                                    "description": "Shows the Silver Award on the post... and that's it.",
+                                    "coin_reward": 0,
+                                    "icon_width": 512,
+                                    "icon_url": "https://www.redditstatic.com/gold/awards/icon/silver_512.png",
+                                    "days_of_premium": 0,
+                                    "icon_height": 512,
+                                    "resized_icons": [
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_16.png",
+                                            "width": 16,
+                                            "height": 16
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_32.png",
+                                            "width": 32,
+                                            "height": 32
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_48.png",
+                                            "width": 48,
+                                            "height": 48
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_64.png",
+                                            "width": 64,
+                                            "height": 64
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_128.png",
+                                            "width": 128,
+                                            "height": 128
+                                        }
+                                    ],
+                                    "days_of_drip_extension": 0,
+                                    "award_type": "global",
+                                    "coin_price": 100,
+                                    "id": "gid_1",
+                                    "name": "Silver"
+                                }
+                            ],
+                            "media_only": false,
+                            "link_flair_template_id": "36c7d8f6-0fd1-11e6-af2a-0e60abcbd63b",
+                            "can_gild": true,
+                            "spoiler": false,
+                            "locked": false,
+                            "author_flair_text": null,
+                            "visited": false,
+                            "num_reports": null,
+                            "distinguished": null,
+                            "subreddit_id": "t5_2uni5",
+                            "mod_reason_by": null,
+                            "removal_reason": null,
+                            "link_flair_background_color": "",
+                            "id": "cje47m",
+                            "is_robot_indexable": true,
+                            "report_reasons": null,
+                            "author": "IronWarriorU",
+                            "num_crossposts": 1,
+                            "num_comments": 177,
+                            "send_replies": true,
+                            "whitelist_status": "all_ads",
+                            "contest_mode": false,
+                            "mod_reports": [],
+                            "author_patreon_flair": false,
+                            "author_flair_text_color": null,
+                            "permalink": "/r/oculus/comments/cje47m/making_a_vr_vs_pc_game_where_one_player_is_a/",
+                            "parent_whitelist_status": "all_ads",
+                            "stickied": false,
+                            "url": "https://v.redd.it/67zilebgx9d31",
+                            "subreddit_subscribers": 172438,
+                            "created_utc": 1564420036.0,
+                            "discussion_type": null,
+                            "media": {
+                                "reddit_video": {
+                                    "fallback_url": "https://v.redd.it/67zilebgx9d31/DASH_1080?source=fallback",
+                                    "height": 1080,
+                                    "width": 1920,
+                                    "scrubber_media_url": "https://v.redd.it/67zilebgx9d31/DASH_96",
+                                    "dash_url": "https://v.redd.it/67zilebgx9d31/DASHPlaylist.mpd",
+                                    "duration": 61,
+                                    "hls_url": "https://v.redd.it/67zilebgx9d31/HLSPlaylist.m3u8",
+                                    "is_gif": false,
+                                    "transcoding_status": "completed"
+                                }
+                            },
+                            "is_video": true
+                        }
+                    },
+                    {
+                        "kind": "t3",
+                        "data": {
+                            "approved_at_utc": null,
+                            "subreddit": "fo76",
+                            "selftext": "",
+                            "author_fullname": "t2_2o37zfjn",
+                            "saved": false,
+                            "mod_reason_title": null,
+                            "gilded": 0,
+                            "clicked": false,
+                            "title": "Just wanted to remind you that you are suffering from rad worms",
+                            "link_flair_richtext": [],
+                            "subreddit_name_prefixed": "r/fo76",
+                            "hidden": false,
+                            "pwls": 6,
+                            "link_flair_css_class": null,
+                            "downs": 0,
+                            "thumbnail_height": null,
+                            "hide_score": false,
+                            "name": "t3_cjk5sa",
+                            "quarantine": false,
+                            "link_flair_text_color": "dark",
+                            "author_flair_background_color": "#646d73",
+                            "subreddit_type": "public",
+                            "ups": 589,
+                            "total_awards_received": 0,
+                            "media_embed": {},
+                            "thumbnail_width": null,
+                            "author_flair_template_id": "9f61b54e-e611-11e8-8ee9-0e82951d602a",
+                            "is_original_content": false,
+                            "user_reports": [],
+                            "secure_media": null,
+                            "is_reddit_media_domain": false,
+                            "is_meta": false,
+                            "category": null,
+                            "secure_media_embed": {},
+                            "link_flair_text": null,
+                            "can_mod_post": false,
+                            "score": 589,
+                            "approved_by": null,
+                            "thumbnail": "self",
+                            "edited": false,
+                            "author_flair_css_class": null,
+                            "author_flair_richtext": [
+                                {
+                                    "a": ":cult:",
+                                    "e": "emoji",
+                                    "u": "https://emoji.redditmedia.com/900q7kernsx11_t5_jrw25/cult"
+                                },
+                                {
+                                    "e": "text",
+                                    "t": " Cult of the Mothman"
+                                }
+                            ],
+                            "gildings": {},
+                            "content_categories": null,
+                            "is_self": true,
+                            "mod_note": null,
+                            "created": 1564476220.0,
+                            "link_flair_type": "text",
+                            "wls": 6,
+                            "banned_by": null,
+                            "author_flair_type": "richtext",
+                            "domain": "self.fo76",
+                            "allow_live_comments": false,
+                            "selftext_html": null,
+                            "likes": null,
+                            "suggested_sort": null,
+                            "banned_at_utc": null,
+                            "view_count": null,
+                            "archived": false,
+                            "no_follow": false,
+                            "is_crosspostable": true,
+                            "pinned": false,
+                            "over_18": false,
+                            "all_awardings": [],
+                            "media_only": false,
+                            "can_gild": true,
+                            "spoiler": false,
+                            "locked": false,
+                            "author_flair_text": ":cult: Cult of the Mothman",
+                            "visited": false,
+                            "num_reports": null,
+                            "distinguished": null,
+                            "subreddit_id": "t5_jrw25",
+                            "mod_reason_by": null,
+                            "removal_reason": null,
+                            "link_flair_background_color": "",
+                            "id": "cjk5sa",
+                            "is_robot_indexable": true,
+                            "report_reasons": null,
+                            "author": "DaffyDuck_DW",
+                            "num_crossposts": 0,
+                            "num_comments": 64,
+                            "send_replies": true,
+                            "whitelist_status": "all_ads",
+                            "contest_mode": false,
+                            "mod_reports": [],
+                            "author_patreon_flair": false,
+                            "author_flair_text_color": "light",
+                            "permalink": "/r/fo76/comments/cjk5sa/just_wanted_to_remind_you_that_you_are_suffering/",
+                            "parent_whitelist_status": "all_ads",
+                            "stickied": false,
+                            "url": "https://www.reddit.com/r/fo76/comments/cjk5sa/just_wanted_to_remind_you_that_you_are_suffering/",
+                            "subreddit_subscribers": 200669,
+                            "created_utc": 1564447420.0,
+                            "discussion_type": null,
+                            "media": null,
+                            "is_video": false
+                        }
+                    },
+                    {
+                        "kind": "t3",
+                        "data": {
+                            "approved_at_utc": null,
+                            "subreddit": "oneplus",
+                            "selftext": "",
+                            "author_fullname": "t2_aarws4m",
+                            "saved": false,
+                            "mod_reason_title": null,
+                            "gilded": 0,
+                            "clicked": false,
+                            "title": "Anyone heard of this case before?",
+                            "link_flair_richtext": [],
+                            "subreddit_name_prefixed": "r/oneplus",
+                            "hidden": false,
+                            "pwls": 6,
+                            "link_flair_css_class": "accessories",
+                            "downs": 0,
+                            "thumbnail_height": 140,
+                            "hide_score": false,
+                            "name": "t3_cjmpkk",
+                            "quarantine": false,
+                            "link_flair_text_color": "dark",
+                            "author_flair_background_color": null,
+                            "subreddit_type": "public",
+                            "ups": 23,
+                            "total_awards_received": 0,
+                            "media_embed": {},
+                            "thumbnail_width": 140,
+                            "author_flair_template_id": "83da72a6-7be0-11e9-9ef1-0e2e576e7cf0",
+                            "is_original_content": false,
+                            "user_reports": [],
+                            "secure_media": null,
+                            "is_reddit_media_domain": false,
+                            "is_meta": false,
+                            "category": null,
+                            "secure_media_embed": {},
+                            "link_flair_text": "Accessories &amp; Gadgets",
+                            "can_mod_post": false,
+                            "score": 23,
+                            "approved_by": null,
+                            "thumbnail": "https://b.thumbs.redditmedia.com/9nT2qaa0xYUAC645KW1lSJ3A0KhwdYRF7G0fsICXLEM.jpg",
+                            "edited": false,
+                            "author_flair_css_class": "7-pro-almond",
+                            "author_flair_richtext": [],
+                            "gildings": {},
+                            "post_hint": "link",
+                            "content_categories": null,
+                            "is_self": false,
+                            "mod_note": null,
+                            "created": 1564490148.0,
+                            "link_flair_type": "text",
+                            "wls": 6,
+                            "banned_by": null,
+                            "author_flair_type": "text",
+                            "domain": "lievu.com",
+                            "allow_live_comments": false,
+                            "selftext_html": null,
+                            "likes": null,
+                            "suggested_sort": null,
+                            "banned_at_utc": null,
+                            "view_count": null,
+                            "archived": false,
+                            "no_follow": false,
+                            "is_crosspostable": true,
+                            "pinned": false,
+                            "over_18": false,
+                            "preview": {
+                                "images": [
+                                    {
+                                        "source": {
+                                            "url": "https://external-preview.redd.it/I5dpJN_ik_E4guGbIKrrX4kc2XJe13Vt9-MsZemYyPA.jpg?auto=webp&amp;s=c50d6f6304c7ade4021e72c6a3f206afd7fa155a",
+                                            "width": 800,
+                                            "height": 800
+                                        },
+                                        "resolutions": [
+                                            {
+                                                "url": "https://external-preview.redd.it/I5dpJN_ik_E4guGbIKrrX4kc2XJe13Vt9-MsZemYyPA.jpg?width=108&amp;crop=smart&amp;auto=webp&amp;s=c5d959fff87cd166cd3a2973419e9be57dad4602",
+                                                "width": 108,
+                                                "height": 108
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/I5dpJN_ik_E4guGbIKrrX4kc2XJe13Vt9-MsZemYyPA.jpg?width=216&amp;crop=smart&amp;auto=webp&amp;s=610d6bb50938ed3f6e71e18ca7f085a2d8bd5972",
+                                                "width": 216,
+                                                "height": 216
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/I5dpJN_ik_E4guGbIKrrX4kc2XJe13Vt9-MsZemYyPA.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=34275125694c4d48fef0669e936b3867eaf93815",
+                                                "width": 320,
+                                                "height": 320
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/I5dpJN_ik_E4guGbIKrrX4kc2XJe13Vt9-MsZemYyPA.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=75452cb02654ba0ecfefff09c38c0137255c773d",
+                                                "width": 640,
+                                                "height": 640
+                                            }
+                                        ],
+                                        "variants": {},
+                                        "id": "Zj7dRHaY23ooLXrvPqlXQqgUbotl-O6Fka7GmGGlLQA"
+                                    }
+                                ],
+                                "enabled": false
+                            },
+                            "all_awardings": [],
+                            "media_only": false,
+                            "link_flair_template_id": "08acd832-5711-11e5-946f-0e600f1dff43",
+                            "can_gild": true,
+                            "spoiler": false,
+                            "locked": false,
+                            "author_flair_text": "OnePlus 7 Pro (Almond)",
+                            "visited": false,
+                            "num_reports": null,
+                            "distinguished": null,
+                            "subreddit_id": "t5_30qnb",
+                            "mod_reason_by": null,
+                            "removal_reason": null,
+                            "link_flair_background_color": "",
+                            "id": "cjmpkk",
+                            "is_robot_indexable": true,
+                            "report_reasons": null,
+                            "author": "LoneWolf2711",
+                            "num_crossposts": 0,
+                            "num_comments": 15,
+                            "send_replies": true,
+                            "whitelist_status": "all_ads",
+                            "contest_mode": false,
+                            "mod_reports": [],
+                            "author_patreon_flair": false,
+                            "author_flair_text_color": "dark",
+                            "permalink": "/r/oneplus/comments/cjmpkk/anyone_heard_of_this_case_before/",
+                            "parent_whitelist_status": "all_ads",
+                            "stickied": false,
+                            "url": "https://www.lievu.com/products/phone-case?variant=29492260110411",
+                            "subreddit_subscribers": 131589,
+                            "created_utc": 1564461348.0,
+                            "discussion_type": null,
+                            "media": null,
+                            "is_video": false
+                        }
+                    },
+                    {
+                        "kind": "t3",
+                        "data": {
+                            "approved_at_utc": null,
+                            "subreddit": "aww",
+                            "selftext": "",
+                            "author_fullname": "t2_ze435",
+                            "saved": false,
+                            "mod_reason_title": null,
+                            "gilded": 0,
+                            "clicked": false,
+                            "title": "Ollie works at a pet store and he can help you find what you need!",
+                            "link_flair_richtext": [],
+                            "subreddit_name_prefixed": "r/aww",
+                            "hidden": false,
+                            "pwls": 6,
+                            "link_flair_css_class": null,
+                            "downs": 0,
+                            "thumbnail_height": 140,
+                            "hide_score": false,
+                            "name": "t3_cjklwa",
+                            "quarantine": false,
+                            "link_flair_text_color": "dark",
+                            "author_flair_background_color": "",
+                            "subreddit_type": "public",
+                            "ups": 25617,
+                            "total_awards_received": 1,
+                            "media_embed": {},
+                            "thumbnail_width": 140,
+                            "author_flair_template_id": null,
+                            "is_original_content": false,
+                            "user_reports": [],
+                            "secure_media": null,
+                            "is_reddit_media_domain": true,
+                            "is_meta": false,
+                            "category": null,
+                            "secure_media_embed": {},
+                            "link_flair_text": null,
+                            "can_mod_post": false,
+                            "score": 25617,
+                            "approved_by": null,
+                            "thumbnail": "https://a.thumbs.redditmedia.com/6F1zg7W9-DXcnClnO7xHRf3ljq7ovlpCy7Hg_eaLKc0.jpg",
+                            "edited": false,
+                            "author_flair_css_class": "k",
+                            "author_flair_richtext": [],
+                            "gildings": {
+                                "gid_1": 1
+                            },
+                            "post_hint": "image",
+                            "content_categories": null,
+                            "is_self": false,
+                            "mod_note": null,
+                            "created": 1564478508.0,
+                            "link_flair_type": "text",
+                            "wls": 6,
+                            "banned_by": null,
+                            "author_flair_type": "text",
+                            "domain": "i.redd.it",
+                            "allow_live_comments": true,
+                            "selftext_html": null,
+                            "likes": null,
+                            "suggested_sort": "confidence",
+                            "banned_at_utc": null,
+                            "view_count": null,
+                            "archived": false,
+                            "no_follow": false,
+                            "is_crosspostable": true,
+                            "pinned": false,
+                            "over_18": false,
+                            "preview": {
+                                "images": [
+                                    {
+                                        "source": {
+                                            "url": "https://preview.redd.it/8hbixqklecd31.png?auto=webp&amp;s=0bc7a123533a35ac95c63ef912ca47841da1d9ab",
+                                            "width": 922,
+                                            "height": 1236
+                                        },
+                                        "resolutions": [
+                                            {
+                                                "url": "https://preview.redd.it/8hbixqklecd31.png?width=108&amp;crop=smart&amp;auto=webp&amp;s=834aa9a957f8cee5b77d88dd35afef916515501b",
+                                                "width": 108,
+                                                "height": 144
+                                            },
+                                            {
+                                                "url": "https://preview.redd.it/8hbixqklecd31.png?width=216&amp;crop=smart&amp;auto=webp&amp;s=960335ccb95eacb7259eeb5173a10791ff558a8b",
+                                                "width": 216,
+                                                "height": 289
+                                            },
+                                            {
+                                                "url": "https://preview.redd.it/8hbixqklecd31.png?width=320&amp;crop=smart&amp;auto=webp&amp;s=e8e17ce07060e27084687418d10033fc8c24bd05",
+                                                "width": 320,
+                                                "height": 428
+                                            },
+                                            {
+                                                "url": "https://preview.redd.it/8hbixqklecd31.png?width=640&amp;crop=smart&amp;auto=webp&amp;s=d04c6e2995503937cdc8ea24a97c541b476b51ed",
+                                                "width": 640,
+                                                "height": 857
+                                            }
+                                        ],
+                                        "variants": {},
+                                        "id": "PQFjC2KWpmnv4ZWIjtl65C7onw5KwldtRp0XriVcRlk"
+                                    }
+                                ],
+                                "enabled": true
+                            },
+                            "all_awardings": [
+                                {
+                                    "is_enabled": true,
+                                    "count": 1,
+                                    "subreddit_id": null,
+                                    "description": "Shows the Silver Award on the post... and that's it.",
+                                    "coin_reward": 0,
+                                    "icon_width": 512,
+                                    "icon_url": "https://www.redditstatic.com/gold/awards/icon/silver_512.png",
+                                    "days_of_premium": 0,
+                                    "icon_height": 512,
+                                    "resized_icons": [
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_16.png",
+                                            "width": 16,
+                                            "height": 16
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_32.png",
+                                            "width": 32,
+                                            "height": 32
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_48.png",
+                                            "width": 48,
+                                            "height": 48
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_64.png",
+                                            "width": 64,
+                                            "height": 64
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_128.png",
+                                            "width": 128,
+                                            "height": 128
+                                        }
+                                    ],
+                                    "days_of_drip_extension": 0,
+                                    "award_type": "global",
+                                    "coin_price": 100,
+                                    "id": "gid_1",
+                                    "name": "Silver"
+                                }
+                            ],
+                            "media_only": false,
+                            "can_gild": true,
+                            "spoiler": false,
+                            "locked": false,
+                            "author_flair_text": null,
+                            "visited": false,
+                            "num_reports": null,
+                            "distinguished": null,
+                            "subreddit_id": "t5_2qh1o",
+                            "mod_reason_by": null,
+                            "removal_reason": null,
+                            "link_flair_background_color": "",
+                            "id": "cjklwa",
+                            "is_robot_indexable": true,
+                            "report_reasons": null,
+                            "author": "mac_is_crack",
+                            "num_crossposts": 3,
+                            "num_comments": 325,
+                            "send_replies": true,
+                            "whitelist_status": "all_ads",
+                            "contest_mode": false,
+                            "mod_reports": [],
+                            "author_patreon_flair": false,
+                            "author_flair_text_color": "dark",
+                            "permalink": "/r/aww/comments/cjklwa/ollie_works_at_a_pet_store_and_he_can_help_you/",
+                            "parent_whitelist_status": "all_ads",
+                            "stickied": false,
+                            "url": "https://i.redd.it/8hbixqklecd31.png",
+                            "subreddit_subscribers": 21388521,
+                            "created_utc": 1564449708.0,
+                            "discussion_type": null,
+                            "media": null,
+                            "is_video": false
+                        }
+                    },
+                    {
+                        "kind": "t3",
+                        "data": {
+                            "approved_at_utc": null,
+                            "subreddit": "interestingasfuck",
+                            "selftext": "",
+                            "author_fullname": "t2_jowap",
+                            "saved": false,
+                            "mod_reason_title": null,
+                            "gilded": 2,
+                            "clicked": false,
+                            "title": "This historic sign in my hotel explains how to use electricity in case you had never used it before",
+                            "link_flair_richtext": [],
+                            "subreddit_name_prefixed": "r/interestingasfuck",
+                            "hidden": false,
+                            "pwls": 6,
+                            "link_flair_css_class": "approve",
+                            "downs": 0,
+                            "thumbnail_height": 102,
+                            "hide_score": false,
+                            "name": "t3_cjj5j8",
+                            "quarantine": false,
+                            "link_flair_text_color": "dark",
+                            "author_flair_background_color": null,
+                            "subreddit_type": "public",
+                            "ups": 48070,
+                            "total_awards_received": 3,
+                            "media_embed": {},
+                            "thumbnail_width": 140,
+                            "author_flair_template_id": null,
+                            "is_original_content": false,
+                            "user_reports": [],
+                            "secure_media": null,
+                            "is_reddit_media_domain": false,
+                            "is_meta": false,
+                            "category": null,
+                            "secure_media_embed": {},
+                            "link_flair_text": "/r/ALL",
+                            "can_mod_post": false,
+                            "score": 48070,
+                            "approved_by": null,
+                            "thumbnail": "https://a.thumbs.redditmedia.com/SrYNntZT63IOaAT8Lc-8SqY4fKc2fpuihv1GzTUWFW4.jpg",
+                            "edited": false,
+                            "author_flair_css_class": null,
+                            "author_flair_richtext": [],
+                            "gildings": {
+                                "gid_1": 1,
+                                "gid_2": 2
+                            },
+                            "post_hint": "image",
+                            "content_categories": null,
+                            "is_self": false,
+                            "mod_note": null,
+                            "created": 1564471117.0,
+                            "link_flair_type": "text",
+                            "wls": 6,
+                            "banned_by": null,
+                            "author_flair_type": "text",
+                            "domain": "i.imgur.com",
+                            "allow_live_comments": true,
+                            "selftext_html": null,
+                            "likes": null,
+                            "suggested_sort": null,
+                            "banned_at_utc": null,
+                            "view_count": null,
+                            "archived": false,
+                            "no_follow": false,
+                            "is_crosspostable": true,
+                            "pinned": false,
+                            "over_18": false,
+                            "preview": {
+                                "images": [
+                                    {
+                                        "source": {
+                                            "url": "https://external-preview.redd.it/ftVDOcddZ5Fr221IIe3rdiALEvLx-KumYKkHE9dJkho.jpg?auto=webp&amp;s=31ce5445fc29d200a4722c723a19f4f11490a859",
+                                            "width": 1031,
+                                            "height": 755
+                                        },
+                                        "resolutions": [
+                                            {
+                                                "url": "https://external-preview.redd.it/ftVDOcddZ5Fr221IIe3rdiALEvLx-KumYKkHE9dJkho.jpg?width=108&amp;crop=smart&amp;auto=webp&amp;s=4cacd8277e6edd871ad151dab07ee1db5fd5048f",
+                                                "width": 108,
+                                                "height": 79
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/ftVDOcddZ5Fr221IIe3rdiALEvLx-KumYKkHE9dJkho.jpg?width=216&amp;crop=smart&amp;auto=webp&amp;s=81dcc0012ab11fe50289120728ae0f5c7f96ea20",
+                                                "width": 216,
+                                                "height": 158
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/ftVDOcddZ5Fr221IIe3rdiALEvLx-KumYKkHE9dJkho.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=47f786f6158352fabba0b4fcb67cfeccb965dbca",
+                                                "width": 320,
+                                                "height": 234
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/ftVDOcddZ5Fr221IIe3rdiALEvLx-KumYKkHE9dJkho.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=66723a9b1c93ae5404ddc088029cd38ea6f8fd11",
+                                                "width": 640,
+                                                "height": 468
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/ftVDOcddZ5Fr221IIe3rdiALEvLx-KumYKkHE9dJkho.jpg?width=960&amp;crop=smart&amp;auto=webp&amp;s=9683a746d729de5fbd51e0daed2bb63821a5886d",
+                                                "width": 960,
+                                                "height": 703
+                                            }
+                                        ],
+                                        "variants": {},
+                                        "id": "TpQWyoKZJVbcrei2L0ZlVHthm7NNVJRa1_jyJO8VhM4"
+                                    }
+                                ],
+                                "enabled": true
+                            },
+                            "all_awardings": [
+                                {
+                                    "is_enabled": true,
+                                    "count": 2,
+                                    "subreddit_id": null,
+                                    "description": "Gives the author a week of Reddit Premium, %%{coin_symbol}100 Coins to do with as they please, and shows a Gold Award on the post.",
+                                    "coin_reward": 100,
+                                    "icon_width": 512,
+                                    "icon_url": "https://www.redditstatic.com/gold/awards/icon/gold_512.png",
+                                    "days_of_premium": 7,
+                                    "icon_height": 512,
+                                    "resized_icons": [
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_16.png",
+                                            "width": 16,
+                                            "height": 16
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_32.png",
+                                            "width": 32,
+                                            "height": 32
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_48.png",
+                                            "width": 48,
+                                            "height": 48
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_64.png",
+                                            "width": 64,
+                                            "height": 64
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_128.png",
+                                            "width": 128,
+                                            "height": 128
+                                        }
+                                    ],
+                                    "days_of_drip_extension": 0,
+                                    "award_type": "global",
+                                    "coin_price": 500,
+                                    "id": "gid_2",
+                                    "name": "Gold"
+                                },
+                                {
+                                    "is_enabled": true,
+                                    "count": 1,
+                                    "subreddit_id": null,
+                                    "description": "Shows the Silver Award on the post... and that's it.",
+                                    "coin_reward": 0,
+                                    "icon_width": 512,
+                                    "icon_url": "https://www.redditstatic.com/gold/awards/icon/silver_512.png",
+                                    "days_of_premium": 0,
+                                    "icon_height": 512,
+                                    "resized_icons": [
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_16.png",
+                                            "width": 16,
+                                            "height": 16
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_32.png",
+                                            "width": 32,
+                                            "height": 32
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_48.png",
+                                            "width": 48,
+                                            "height": 48
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_64.png",
+                                            "width": 64,
+                                            "height": 64
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_128.png",
+                                            "width": 128,
+                                            "height": 128
+                                        }
+                                    ],
+                                    "days_of_drip_extension": 0,
+                                    "award_type": "global",
+                                    "coin_price": 100,
+                                    "id": "gid_1",
+                                    "name": "Silver"
+                                }
+                            ],
+                            "media_only": false,
+                            "can_gild": true,
+                            "spoiler": false,
+                            "locked": false,
+                            "author_flair_text": null,
+                            "visited": false,
+                            "num_reports": null,
+                            "distinguished": null,
+                            "subreddit_id": "t5_2qhsa",
+                            "mod_reason_by": null,
+                            "removal_reason": null,
+                            "link_flair_background_color": "",
+                            "id": "cjj5j8",
+                            "is_robot_indexable": true,
+                            "report_reasons": null,
+                            "author": "jcepiano",
+                            "num_crossposts": 5,
+                            "num_comments": 742,
+                            "send_replies": true,
+                            "whitelist_status": "all_ads",
+                            "contest_mode": false,
+                            "mod_reports": [],
+                            "author_patreon_flair": false,
+                            "author_flair_text_color": null,
+                            "permalink": "/r/interestingasfuck/comments/cjj5j8/this_historic_sign_in_my_hotel_explains_how_to/",
+                            "parent_whitelist_status": "all_ads",
+                            "stickied": false,
+                            "url": "https://i.imgur.com/zTkGXST.jpg",
+                            "subreddit_subscribers": 4015954,
+                            "created_utc": 1564442317.0,
+                            "discussion_type": null,
+                            "media": null,
+                            "is_video": false
+                        }
+                    },
+                    {
+                        "kind": "t3",
+                        "data": {
+                            "approved_at_utc": null,
+                            "subreddit": "IAmA",
+                            "selftext": "Hi! My name is Jesper Juul and I\u2019m a video game theorist, occasional game developer, and author of a bunch of books on gaming. Have you ever felt like stabbing your eyes out after failing to make it to the next level of a game? And yet you continued slogging away? I have. I even wrote a book about [why we play video games despite the fact that we are almost certain to feel unhappy when we fail at them](https://mitpress.mit.edu/books/art-failure). I\u2019ve also written about [casual games](https://mitpress.mit.edu/books/casual-revolution) (they are good games!), and I have one coming in September [on the history of independent games](https://mitpress.mit.edu/books/handmade-pixels) \u2014 and on why we always disagree about which games are independent.\n \nAnd I\u2019m Mia Consalvo, a professor and researcher in game studies and design at Concordia University in Montreal. Among other books, I\u2019ve written a [cultural history of cheating in video games](https://mitpress.mit.edu/books/cheating) and have [a forthcoming book](https://mitpress.mit.edu/books/real-games) on what makes a real game. That one is in a series of short books that I edit with Jesper (along with a couple of other game designers) called [Playful Thinking](https://mitpress.mit.edu/books/series/playful-thinking).  \n\nVideo games are such a flourishing medium that any new perspective on them is likely to show us something unseen or forgotten, including those from such \u201cunconventional\u201d voices as artists, philosophers, or specialists in other industries or fields of study. We try to highlight those voices.\n \nWe\u2019ll be here from 12 \u2013 2 pm EDT answering any and all questions about video games and video game theory. Ask us anything!\n\nUPDATE: Thanks everyone for the great questions. We might poke around later to see if there are any other outstanding questions, but we're concluding things for today. Have a great end of July!\n\nProof: https://i.redd.it/ayvocay3ghc31.jpg",
+                            "author_fullname": "t2_2wtd6a96",
+                            "saved": false,
+                            "mod_reason_title": null,
+                            "gilded": 0,
+                            "clicked": false,
+                            "title": "We\u2019re Jesper Juul and Mia Consalvo, video game designers and researchers, and the editors of a series of books on everything from the pain of playing video games to how uncertainty shapes play experiences. Ask us anything!",
+                            "link_flair_richtext": [
+                                {
+                                    "e": "text",
+                                    "t": "Gaming - Live"
+                                }
+                            ],
+                            "subreddit_name_prefixed": "r/IAmA",
+                            "hidden": false,
+                            "pwls": 6,
+                            "link_flair_css_class": "gaming-live",
+                            "downs": 0,
+                            "thumbnail_height": null,
+                            "hide_score": false,
+                            "name": "t3_cjcqu4",
+                            "quarantine": false,
+                            "link_flair_text_color": "dark",
+                            "author_flair_background_color": null,
+                            "subreddit_type": "public",
+                            "ups": 3329,
+                            "total_awards_received": 1,
+                            "media_embed": {},
+                            "thumbnail_width": null,
+                            "author_flair_template_id": null,
+                            "is_original_content": false,
+                            "user_reports": [],
+                            "secure_media": null,
+                            "is_reddit_media_domain": false,
+                            "is_meta": false,
+                            "category": null,
+                            "secure_media_embed": {},
+                            "link_flair_text": "Gaming - Live",
+                            "can_mod_post": false,
+                            "score": 3329,
+                            "approved_by": null,
+                            "thumbnail": "self",
+                            "edited": 1564424502.0,
+                            "author_flair_css_class": null,
+                            "author_flair_richtext": [],
+                            "gildings": {
+                                "gid_3": 1
+                            },
+                            "post_hint": "self",
+                            "content_categories": null,
+                            "is_self": true,
+                            "mod_note": null,
+                            "created": 1564442849.0,
+                            "link_flair_type": "richtext",
+                            "wls": 6,
+                            "banned_by": null,
+                            "author_flair_type": "text",
+                            "domain": "self.IAmA",
+                            "allow_live_comments": true,
+                            "selftext_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;Hi! My name is Jesper Juul and I\u2019m a video game theorist, occasional game developer, and author of a bunch of books on gaming. Have you ever felt like stabbing your eyes out after failing to make it to the next level of a game? And yet you continued slogging away? I have. I even wrote a book about &lt;a href=\"https://mitpress.mit.edu/books/art-failure\"&gt;why we play video games despite the fact that we are almost certain to feel unhappy when we fail at them&lt;/a&gt;. I\u2019ve also written about &lt;a href=\"https://mitpress.mit.edu/books/casual-revolution\"&gt;casual games&lt;/a&gt; (they are good games!), and I have one coming in September &lt;a href=\"https://mitpress.mit.edu/books/handmade-pixels\"&gt;on the history of independent games&lt;/a&gt; \u2014 and on why we always disagree about which games are independent.&lt;/p&gt;\n\n&lt;p&gt;And I\u2019m Mia Consalvo, a professor and researcher in game studies and design at Concordia University in Montreal. Among other books, I\u2019ve written a &lt;a href=\"https://mitpress.mit.edu/books/cheating\"&gt;cultural history of cheating in video games&lt;/a&gt; and have &lt;a href=\"https://mitpress.mit.edu/books/real-games\"&gt;a forthcoming book&lt;/a&gt; on what makes a real game. That one is in a series of short books that I edit with Jesper (along with a couple of other game designers) called &lt;a href=\"https://mitpress.mit.edu/books/series/playful-thinking\"&gt;Playful Thinking&lt;/a&gt;.  &lt;/p&gt;\n\n&lt;p&gt;Video games are such a flourishing medium that any new perspective on them is likely to show us something unseen or forgotten, including those from such \u201cunconventional\u201d voices as artists, philosophers, or specialists in other industries or fields of study. We try to highlight those voices.&lt;/p&gt;\n\n&lt;p&gt;We\u2019ll be here from 12 \u2013 2 pm EDT answering any and all questions about video games and video game theory. Ask us anything!&lt;/p&gt;\n\n&lt;p&gt;UPDATE: Thanks everyone for the great questions. We might poke around later to see if there are any other outstanding questions, but we&amp;#39;re concluding things for today. Have a great end of July!&lt;/p&gt;\n\n&lt;p&gt;Proof: &lt;a href=\"https://i.redd.it/ayvocay3ghc31.jpg\"&gt;https://i.redd.it/ayvocay3ghc31.jpg&lt;/a&gt;&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+                            "likes": null,
+                            "suggested_sort": null,
+                            "banned_at_utc": null,
+                            "view_count": null,
+                            "archived": false,
+                            "no_follow": false,
+                            "is_crosspostable": true,
+                            "pinned": false,
+                            "over_18": false,
+                            "preview": {
+                                "images": [
+                                    {
+                                        "source": {
+                                            "url": "https://external-preview.redd.it/HQX6wPznuyjcY2OPsuU54vZFPC2DNP858IJ0eC98NVA.jpg?auto=webp&amp;s=7413ee2425855d7089c01b0bcf4f6a54496e4d35",
+                                            "width": 1584,
+                                            "height": 1064
+                                        },
+                                        "resolutions": [
+                                            {
+                                                "url": "https://external-preview.redd.it/HQX6wPznuyjcY2OPsuU54vZFPC2DNP858IJ0eC98NVA.jpg?width=108&amp;crop=smart&amp;auto=webp&amp;s=40698315e6af9f5820835d4601fd337daf5d550a",
+                                                "width": 108,
+                                                "height": 72
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/HQX6wPznuyjcY2OPsuU54vZFPC2DNP858IJ0eC98NVA.jpg?width=216&amp;crop=smart&amp;auto=webp&amp;s=836188e362bf7f9503c971cbb4694320ed5716d6",
+                                                "width": 216,
+                                                "height": 145
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/HQX6wPznuyjcY2OPsuU54vZFPC2DNP858IJ0eC98NVA.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=38552edf87a14ab11cd9f9b3f9c65740efbd5726",
+                                                "width": 320,
+                                                "height": 214
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/HQX6wPznuyjcY2OPsuU54vZFPC2DNP858IJ0eC98NVA.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=b89c36578a8d94fbceb169532e006dd15e4281a7",
+                                                "width": 640,
+                                                "height": 429
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/HQX6wPznuyjcY2OPsuU54vZFPC2DNP858IJ0eC98NVA.jpg?width=960&amp;crop=smart&amp;auto=webp&amp;s=b70deae8ba1c7bd93a86e2108d7830cdf1dc0f44",
+                                                "width": 960,
+                                                "height": 644
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/HQX6wPznuyjcY2OPsuU54vZFPC2DNP858IJ0eC98NVA.jpg?width=1080&amp;crop=smart&amp;auto=webp&amp;s=b488ca2c9adfdd9c72f8bebd700653dea34b9b81",
+                                                "width": 1080,
+                                                "height": 725
+                                            }
+                                        ],
+                                        "variants": {},
+                                        "id": "VKdS7KkE_HBvorYroIFzhuI58EL3HMgvv0-kOBqMmME"
+                                    }
+                                ],
+                                "enabled": false
+                            },
+                            "all_awardings": [
+                                {
+                                    "is_enabled": true,
+                                    "count": 1,
+                                    "subreddit_id": null,
+                                    "description": "Gives the author a month of Reddit Premium, which includes %%{coin_symbol}700 Coins for that month, and shows a Platinum Award on the post.",
+                                    "coin_reward": 0,
+                                    "icon_width": 512,
+                                    "icon_url": "https://www.redditstatic.com/gold/awards/icon/platinum_512.png",
+                                    "days_of_premium": 31,
+                                    "icon_height": 512,
+                                    "resized_icons": [
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/platinum_16.png",
+                                            "width": 16,
+                                            "height": 16
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/platinum_32.png",
+                                            "width": 32,
+                                            "height": 32
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/platinum_48.png",
+                                            "width": 48,
+                                            "height": 48
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/platinum_64.png",
+                                            "width": 64,
+                                            "height": 64
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/platinum_128.png",
+                                            "width": 128,
+                                            "height": 128
+                                        }
+                                    ],
+                                    "days_of_drip_extension": 31,
+                                    "award_type": "global",
+                                    "coin_price": 1800,
+                                    "id": "gid_3",
+                                    "name": "Platinum"
+                                }
+                            ],
+                            "media_only": false,
+                            "link_flair_template_id": "468ef090-8151-11e4-a1df-22000b3a8129",
+                            "can_gild": true,
+                            "spoiler": false,
+                            "locked": false,
+                            "author_flair_text": null,
+                            "visited": false,
+                            "num_reports": null,
+                            "distinguished": null,
+                            "subreddit_id": "t5_2qzb6",
+                            "mod_reason_by": null,
+                            "removal_reason": null,
+                            "link_flair_background_color": "",
+                            "id": "cjcqu4",
+                            "is_robot_indexable": true,
+                            "report_reasons": null,
+                            "author": "the_mit_press",
+                            "num_crossposts": 0,
+                            "num_comments": 348,
+                            "send_replies": true,
+                            "whitelist_status": "all_ads",
+                            "contest_mode": false,
+                            "mod_reports": [],
+                            "author_patreon_flair": false,
+                            "author_flair_text_color": null,
+                            "permalink": "/r/IAmA/comments/cjcqu4/were_jesper_juul_and_mia_consalvo_video_game/",
+                            "parent_whitelist_status": "all_ads",
+                            "stickied": false,
+                            "url": "https://www.reddit.com/r/IAmA/comments/cjcqu4/were_jesper_juul_and_mia_consalvo_video_game/",
+                            "subreddit_subscribers": 19237297,
+                            "created_utc": 1564414049.0,
+                            "discussion_type": null,
+                            "media": null,
+                            "is_video": false
+                        }
+                    },
+                    {
+                        "kind": "t3",
+                        "data": {
+                            "approved_at_utc": null,
+                            "subreddit": "europe",
+                            "selftext": "",
+                            "author_fullname": "t2_wqhdtd2",
+                            "saved": false,
+                            "mod_reason_title": null,
+                            "gilded": 0,
+                            "clicked": false,
+                            "title": "Winter proofing new Russians, Moscow 1958",
+                            "link_flair_richtext": [
+                                {
+                                    "e": "text",
+                                    "t": "Picture"
+                                }
+                            ],
+                            "subreddit_name_prefixed": "r/europe",
+                            "hidden": false,
+                            "pwls": 6,
+                            "link_flair_css_class": "",
+                            "downs": 0,
+                            "thumbnail_height": 140,
+                            "hide_score": false,
+                            "name": "t3_cji7iz",
+                            "quarantine": false,
+                            "link_flair_text_color": "light",
+                            "author_flair_background_color": null,
+                            "subreddit_type": "public",
+                            "ups": 4386,
+                            "total_awards_received": 0,
+                            "media_embed": {},
+                            "thumbnail_width": 140,
+                            "author_flair_template_id": "b3c1295c-2f83-11e7-9c38-0e9fb53c85e4",
+                            "is_original_content": false,
+                            "user_reports": [],
+                            "secure_media": null,
+                            "is_reddit_media_domain": false,
+                            "is_meta": false,
+                            "category": null,
+                            "secure_media_embed": {},
+                            "link_flair_text": "Picture",
+                            "can_mod_post": false,
+                            "score": 4386,
+                            "approved_by": null,
+                            "thumbnail": "https://b.thumbs.redditmedia.com/zmIyojy0gLBy7cn8Lx1qylSms7gQZTrfDVZIo13jBLE.jpg",
+                            "edited": false,
+                            "author_flair_css_class": "CH-ZH",
+                            "author_flair_richtext": [
+                                {
+                                    "e": "text",
+                                    "t": "Z\u00fcrich (Switzerland)"
+                                }
+                            ],
+                            "gildings": {},
+                            "post_hint": "image",
+                            "content_categories": null,
+                            "is_self": false,
+                            "mod_note": null,
+                            "created": 1564466653.0,
+                            "link_flair_type": "richtext",
+                            "wls": 6,
+                            "banned_by": null,
+                            "author_flair_type": "richtext",
+                            "domain": "i.imgur.com",
+                            "allow_live_comments": true,
+                            "selftext_html": null,
+                            "likes": null,
+                            "suggested_sort": null,
+                            "banned_at_utc": null,
+                            "view_count": null,
+                            "archived": false,
+                            "no_follow": false,
+                            "is_crosspostable": true,
+                            "pinned": false,
+                            "over_18": false,
+                            "preview": {
+                                "images": [
+                                    {
+                                        "source": {
+                                            "url": "https://external-preview.redd.it/eiXlqaTg8ovSHN2J-ID2Bv_wrCRvnxFLMULDsf4E0Jo.jpg?auto=webp&amp;s=f89753ceb7bc489ca75cef09fe9be74cda39781e",
+                                            "width": 689,
+                                            "height": 927
+                                        },
+                                        "resolutions": [
+                                            {
+                                                "url": "https://external-preview.redd.it/eiXlqaTg8ovSHN2J-ID2Bv_wrCRvnxFLMULDsf4E0Jo.jpg?width=108&amp;crop=smart&amp;auto=webp&amp;s=144bf98877db53c60893e468c55cdcc8e3072419",
+                                                "width": 108,
+                                                "height": 145
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/eiXlqaTg8ovSHN2J-ID2Bv_wrCRvnxFLMULDsf4E0Jo.jpg?width=216&amp;crop=smart&amp;auto=webp&amp;s=bf923fdace8c93382021c9e97b42ee3a3799ca4e",
+                                                "width": 216,
+                                                "height": 290
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/eiXlqaTg8ovSHN2J-ID2Bv_wrCRvnxFLMULDsf4E0Jo.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=8b0507ef7e41e59cf014ef712bbc057f7e9e52dc",
+                                                "width": 320,
+                                                "height": 430
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/eiXlqaTg8ovSHN2J-ID2Bv_wrCRvnxFLMULDsf4E0Jo.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=d70c68bacd3cc401734efbdc2896af0287b0cd0c",
+                                                "width": 640,
+                                                "height": 861
+                                            }
+                                        ],
+                                        "variants": {},
+                                        "id": "ErrW-Wnj2eTrXNZfMini-YsXOw8WblCCrYBcbh9-qzc"
+                                    }
+                                ],
+                                "enabled": true
+                            },
+                            "all_awardings": [],
+                            "media_only": false,
+                            "link_flair_template_id": "b5ecfcfa-9725-11e8-9bc1-0eb329a59280",
+                            "can_gild": true,
+                            "spoiler": false,
+                            "locked": false,
+                            "author_flair_text": "Z\u00fcrich (Switzerland)",
+                            "visited": false,
+                            "num_reports": null,
+                            "distinguished": null,
+                            "subreddit_id": "t5_2qh4j",
+                            "mod_reason_by": null,
+                            "removal_reason": null,
+                            "link_flair_background_color": "#349e48",
+                            "id": "cji7iz",
+                            "is_robot_indexable": true,
+                            "report_reasons": null,
+                            "author": "V2O5",
+                            "num_crossposts": 0,
+                            "num_comments": 257,
+                            "send_replies": true,
+                            "whitelist_status": "all_ads",
+                            "contest_mode": false,
+                            "mod_reports": [],
+                            "author_patreon_flair": false,
+                            "author_flair_text_color": "dark",
+                            "permalink": "/r/europe/comments/cji7iz/winter_proofing_new_russians_moscow_1958/",
+                            "parent_whitelist_status": "all_ads",
+                            "stickied": false,
+                            "url": "https://i.imgur.com/OL73G4B.jpg",
+                            "subreddit_subscribers": 2130866,
+                            "created_utc": 1564437853.0,
+                            "discussion_type": null,
+                            "media": null,
+                            "is_video": false
+                        }
+                    },
+                    {
+                        "kind": "t3",
+                        "data": {
+                            "approved_at_utc": null,
+                            "subreddit": "WearOS",
+                            "selftext": "I mean\n\n- We literally have ONE (1) watch that uses the 3100.\n- The most recent software update had an incredibly messy rollout, brought watches with 512mb RAM or less to their knees and *still doesn't have official API support so it's essentially useless*\n\nIt's very VERY hard to stay optimistic about the future of this platform.",
+                            "author_fullname": "t2_7zr0y",
+                            "saved": false,
+                            "mod_reason_title": null,
+                            "gilded": 0,
+                            "clicked": false,
+                            "title": "Real talk, if there's no Pixel Watch this year I'll have officially lost all confidence that Google gives a single solitary fuck about WearOS as a platform.",
+                            "link_flair_richtext": [],
+                            "subreddit_name_prefixed": "r/WearOS",
+                            "hidden": false,
+                            "pwls": 6,
+                            "link_flair_css_class": null,
+                            "downs": 0,
+                            "thumbnail_height": null,
+                            "hide_score": false,
+                            "name": "t3_cjhdeq",
+                            "quarantine": false,
+                            "link_flair_text_color": "dark",
+                            "author_flair_background_color": "#f45110",
+                            "subreddit_type": "public",
+                            "ups": 132,
+                            "total_awards_received": 0,
+                            "media_embed": {},
+                            "thumbnail_width": null,
+                            "author_flair_template_id": "b0f7a5d0-3c47-11e8-a21e-0e41b84465a4",
+                            "is_original_content": false,
+                            "user_reports": [],
+                            "secure_media": null,
+                            "is_reddit_media_domain": false,
+                            "is_meta": false,
+                            "category": null,
+                            "secure_media_embed": {},
+                            "link_flair_text": null,
+                            "can_mod_post": false,
+                            "score": 132,
+                            "approved_by": null,
+                            "thumbnail": "self",
+                            "edited": false,
+                            "author_flair_css_class": null,
+                            "author_flair_richtext": [
+                                {
+                                    "e": "text",
+                                    "t": "Huawei Watch 2 Sport"
+                                }
+                            ],
+                            "gildings": {},
+                            "content_categories": null,
+                            "is_self": true,
+                            "mod_note": null,
+                            "created": 1564462906.0,
+                            "link_flair_type": "text",
+                            "wls": 6,
+                            "banned_by": null,
+                            "author_flair_type": "richtext",
+                            "domain": "self.WearOS",
+                            "allow_live_comments": true,
+                            "selftext_html": "&lt;!-- SC_OFF --&gt;&lt;div class=\"md\"&gt;&lt;p&gt;I mean&lt;/p&gt;\n\n&lt;ul&gt;\n&lt;li&gt;We literally have ONE (1) watch that uses the 3100.&lt;/li&gt;\n&lt;li&gt;The most recent software update had an incredibly messy rollout, brought watches with 512mb RAM or less to their knees and &lt;em&gt;still doesn&amp;#39;t have official API support so it&amp;#39;s essentially useless&lt;/em&gt;&lt;/li&gt;\n&lt;/ul&gt;\n\n&lt;p&gt;It&amp;#39;s very VERY hard to stay optimistic about the future of this platform.&lt;/p&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;",
+                            "likes": null,
+                            "suggested_sort": null,
+                            "banned_at_utc": null,
+                            "view_count": null,
+                            "archived": false,
+                            "no_follow": false,
+                            "is_crosspostable": true,
+                            "pinned": false,
+                            "over_18": false,
+                            "all_awardings": [],
+                            "media_only": false,
+                            "can_gild": true,
+                            "spoiler": false,
+                            "locked": false,
+                            "author_flair_text": "Huawei Watch 2 Sport",
+                            "visited": false,
+                            "num_reports": null,
+                            "distinguished": null,
+                            "subreddit_id": "t5_gmj07",
+                            "mod_reason_by": null,
+                            "removal_reason": null,
+                            "link_flair_background_color": "",
+                            "id": "cjhdeq",
+                            "is_robot_indexable": true,
+                            "report_reasons": null,
+                            "author": "Randomd0g",
+                            "num_crossposts": 0,
+                            "num_comments": 43,
+                            "send_replies": false,
+                            "whitelist_status": "all_ads",
+                            "contest_mode": false,
+                            "mod_reports": [],
+                            "author_patreon_flair": false,
+                            "author_flair_text_color": "light",
+                            "permalink": "/r/WearOS/comments/cjhdeq/real_talk_if_theres_no_pixel_watch_this_year_ill/",
+                            "parent_whitelist_status": "all_ads",
+                            "stickied": false,
+                            "url": "https://www.reddit.com/r/WearOS/comments/cjhdeq/real_talk_if_theres_no_pixel_watch_this_year_ill/",
+                            "subreddit_subscribers": 32651,
+                            "created_utc": 1564434106.0,
+                            "discussion_type": null,
+                            "media": null,
+                            "is_video": false
+                        }
+                    },
+                    {
+                        "kind": "t3",
+                        "data": {
+                            "approved_at_utc": null,
+                            "subreddit": "politics",
+                            "selftext": "",
+                            "author_fullname": "t2_fuayv",
+                            "saved": false,
+                            "mod_reason_title": null,
+                            "gilded": 1,
+                            "clicked": false,
+                            "title": "As Deficit Explodes, GOP Demands Emergency Tax Cut for the Rich",
+                            "link_flair_richtext": [],
+                            "subreddit_name_prefixed": "r/politics",
+                            "hidden": false,
+                            "pwls": 6,
+                            "link_flair_css_class": null,
+                            "downs": 0,
+                            "thumbnail_height": 78,
+                            "hide_score": false,
+                            "name": "t3_cjjxt4",
+                            "quarantine": false,
+                            "link_flair_text_color": "dark",
+                            "author_flair_background_color": null,
+                            "subreddit_type": "public",
+                            "ups": 20799,
+                            "total_awards_received": 5,
+                            "media_embed": {},
+                            "thumbnail_width": 140,
+                            "author_flair_template_id": "bd600206-8e72-11e6-bf04-0ee844677561",
+                            "is_original_content": false,
+                            "user_reports": [],
+                            "secure_media": null,
+                            "is_reddit_media_domain": false,
+                            "is_meta": false,
+                            "category": null,
+                            "secure_media_embed": {},
+                            "link_flair_text": null,
+                            "can_mod_post": false,
+                            "score": 20799,
+                            "approved_by": null,
+                            "thumbnail": "https://b.thumbs.redditmedia.com/_377lUE0fYv-ngsT3iufxtLBUOUIPIiaqF_BhF6_jNc.jpg",
+                            "edited": false,
+                            "author_flair_css_class": "newyork-flag",
+                            "author_flair_richtext": [
+                                {
+                                    "a": ":flag-ny:",
+                                    "e": "emoji",
+                                    "u": "https://emoji.redditmedia.com/uzfj5qhxoxe11_t5_2cneq/flag-ny"
+                                },
+                                {
+                                    "e": "text",
+                                    "t": " New York"
+                                }
+                            ],
+                            "gildings": {
+                                "gid_1": 4,
+                                "gid_2": 1
+                            },
+                            "post_hint": "link",
+                            "content_categories": null,
+                            "is_self": false,
+                            "mod_note": null,
+                            "created": 1564475085.0,
+                            "link_flair_type": "text",
+                            "wls": 6,
+                            "banned_by": null,
+                            "author_flair_type": "richtext",
+                            "domain": "vanityfair.com",
+                            "allow_live_comments": true,
+                            "selftext_html": null,
+                            "likes": null,
+                            "suggested_sort": null,
+                            "banned_at_utc": null,
+                            "view_count": null,
+                            "archived": false,
+                            "no_follow": false,
+                            "is_crosspostable": true,
+                            "pinned": false,
+                            "over_18": false,
+                            "preview": {
+                                "images": [
+                                    {
+                                        "source": {
+                                            "url": "https://external-preview.redd.it/MC-wtVagVNnCj9cPe_Vo_ukwf3qELY9VYMoUmVD0Cko.jpg?auto=webp&amp;s=f848630798f92098270e5c015b8e3b71d605b556",
+                                            "width": 1280,
+                                            "height": 720
+                                        },
+                                        "resolutions": [
+                                            {
+                                                "url": "https://external-preview.redd.it/MC-wtVagVNnCj9cPe_Vo_ukwf3qELY9VYMoUmVD0Cko.jpg?width=108&amp;crop=smart&amp;auto=webp&amp;s=27b9ea581a56ddd81dd933104b33ccc4d9854078",
+                                                "width": 108,
+                                                "height": 60
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/MC-wtVagVNnCj9cPe_Vo_ukwf3qELY9VYMoUmVD0Cko.jpg?width=216&amp;crop=smart&amp;auto=webp&amp;s=7cdcb3924467e27920fe90dc46be48a535e58f8a",
+                                                "width": 216,
+                                                "height": 121
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/MC-wtVagVNnCj9cPe_Vo_ukwf3qELY9VYMoUmVD0Cko.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=24c6523813f87ecb82b7a2a64cca7eed5de57bb9",
+                                                "width": 320,
+                                                "height": 180
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/MC-wtVagVNnCj9cPe_Vo_ukwf3qELY9VYMoUmVD0Cko.jpg?width=640&amp;crop=smart&amp;auto=webp&amp;s=d89e1acb7e7b516f238517e646035bda6caa84a8",
+                                                "width": 640,
+                                                "height": 360
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/MC-wtVagVNnCj9cPe_Vo_ukwf3qELY9VYMoUmVD0Cko.jpg?width=960&amp;crop=smart&amp;auto=webp&amp;s=752a96e96d2463a6f8cc8e5e7913d49ac5438252",
+                                                "width": 960,
+                                                "height": 540
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/MC-wtVagVNnCj9cPe_Vo_ukwf3qELY9VYMoUmVD0Cko.jpg?width=1080&amp;crop=smart&amp;auto=webp&amp;s=7ff1714c2a9827f46f394d67688834ebeffa864b",
+                                                "width": 1080,
+                                                "height": 607
+                                            }
+                                        ],
+                                        "variants": {},
+                                        "id": "A2q2FiTIoDKCkjRKuc58O3Lrvlne-vkMUIaB4IYvIcs"
+                                    }
+                                ],
+                                "enabled": false
+                            },
+                            "all_awardings": [
+                                {
+                                    "is_enabled": true,
+                                    "count": 1,
+                                    "subreddit_id": null,
+                                    "description": "Gives the author a week of Reddit Premium, %%{coin_symbol}100 Coins to do with as they please, and shows a Gold Award on the post.",
+                                    "coin_reward": 100,
+                                    "icon_width": 512,
+                                    "icon_url": "https://www.redditstatic.com/gold/awards/icon/gold_512.png",
+                                    "days_of_premium": 7,
+                                    "icon_height": 512,
+                                    "resized_icons": [
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_16.png",
+                                            "width": 16,
+                                            "height": 16
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_32.png",
+                                            "width": 32,
+                                            "height": 32
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_48.png",
+                                            "width": 48,
+                                            "height": 48
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_64.png",
+                                            "width": 64,
+                                            "height": 64
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/gold_128.png",
+                                            "width": 128,
+                                            "height": 128
+                                        }
+                                    ],
+                                    "days_of_drip_extension": 0,
+                                    "award_type": "global",
+                                    "coin_price": 500,
+                                    "id": "gid_2",
+                                    "name": "Gold"
+                                },
+                                {
+                                    "is_enabled": true,
+                                    "count": 4,
+                                    "subreddit_id": null,
+                                    "description": "Shows the Silver Award on the post... and that's it.",
+                                    "coin_reward": 0,
+                                    "icon_width": 512,
+                                    "icon_url": "https://www.redditstatic.com/gold/awards/icon/silver_512.png",
+                                    "days_of_premium": 0,
+                                    "icon_height": 512,
+                                    "resized_icons": [
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_16.png",
+                                            "width": 16,
+                                            "height": 16
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_32.png",
+                                            "width": 32,
+                                            "height": 32
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_48.png",
+                                            "width": 48,
+                                            "height": 48
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_64.png",
+                                            "width": 64,
+                                            "height": 64
+                                        },
+                                        {
+                                            "url": "https://www.redditstatic.com/gold/awards/icon/silver_128.png",
+                                            "width": 128,
+                                            "height": 128
+                                        }
+                                    ],
+                                    "days_of_drip_extension": 0,
+                                    "award_type": "global",
+                                    "coin_price": 100,
+                                    "id": "gid_1",
+                                    "name": "Silver"
+                                }
+                            ],
+                            "media_only": false,
+                            "can_gild": true,
+                            "spoiler": false,
+                            "locked": false,
+                            "author_flair_text": ":flag-ny: New York",
+                            "visited": false,
+                            "num_reports": null,
+                            "distinguished": null,
+                            "subreddit_id": "t5_2cneq",
+                            "mod_reason_by": null,
+                            "removal_reason": null,
+                            "link_flair_background_color": "",
+                            "id": "cjjxt4",
+                            "is_robot_indexable": true,
+                            "report_reasons": null,
+                            "author": "parilmancy",
+                            "num_crossposts": 6,
+                            "num_comments": 2087,
+                            "send_replies": true,
+                            "whitelist_status": "all_ads",
+                            "contest_mode": false,
+                            "mod_reports": [],
+                            "author_patreon_flair": false,
+                            "author_flair_text_color": "dark",
+                            "permalink": "/r/politics/comments/cjjxt4/as_deficit_explodes_gop_demands_emergency_tax_cut/",
+                            "parent_whitelist_status": "all_ads",
+                            "stickied": false,
+                            "url": "https://www.vanityfair.com/news/2019/07/republicans-capital-gains-tax-cut",
+                            "subreddit_subscribers": 5304315,
+                            "created_utc": 1564446285.0,
+                            "discussion_type": null,
+                            "media": null,
+                            "is_video": false
+                        }
+                    },
+                    {
+                        "kind": "t3",
+                        "data": {
+                            "approved_at_utc": null,
+                            "subreddit": "videos",
+                            "selftext": "",
+                            "author_fullname": "t2_r2f25",
+                            "saved": false,
+                            "mod_reason_title": null,
+                            "gilded": 0,
+                            "clicked": false,
+                            "title": "Game Critics Pt. 2 - dunkey",
+                            "link_flair_richtext": [],
+                            "subreddit_name_prefixed": "r/videos",
+                            "hidden": false,
+                            "pwls": 6,
+                            "link_flair_css_class": null,
+                            "downs": 0,
+                            "thumbnail_height": 105,
+                            "hide_score": false,
+                            "name": "t3_cjg4iv",
+                            "quarantine": false,
+                            "link_flair_text_color": "dark",
+                            "author_flair_background_color": null,
+                            "subreddit_type": "public",
+                            "ups": 11872,
+                            "total_awards_received": 0,
+                            "media_embed": {
+                                "content": "&lt;iframe width=\"600\" height=\"338\" src=\"https://www.youtube.com/embed/sBqk7I5-0I0?feature=oembed&amp;enablejsapi=1\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen&gt;&lt;/iframe&gt;",
+                                "width": 600,
+                                "scrolling": false,
+                                "height": 338
+                            },
+                            "thumbnail_width": 140,
+                            "author_flair_template_id": null,
+                            "is_original_content": false,
+                            "user_reports": [],
+                            "secure_media": {
+                                "type": "youtube.com",
+                                "oembed": {
+                                    "provider_url": "https://www.youtube.com/",
+                                    "version": "1.0",
+                                    "title": "Game Critics (Part 2)",
+                                    "type": "video",
+                                    "thumbnail_width": 480,
+                                    "height": 338,
+                                    "width": 600,
+                                    "html": "&lt;iframe width=\"600\" height=\"338\" src=\"https://www.youtube.com/embed/sBqk7I5-0I0?feature=oembed&amp;enablejsapi=1\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen&gt;&lt;/iframe&gt;",
+                                    "author_name": "videogamedunkey",
+                                    "provider_name": "YouTube",
+                                    "thumbnail_url": "https://i.ytimg.com/vi/sBqk7I5-0I0/hqdefault.jpg",
+                                    "thumbnail_height": 360,
+                                    "author_url": "https://www.youtube.com/user/videogamedunkey"
+                                }
+                            },
+                            "is_reddit_media_domain": false,
+                            "is_meta": false,
+                            "category": null,
+                            "secure_media_embed": {
+                                "content": "&lt;iframe width=\"600\" height=\"338\" src=\"https://www.youtube.com/embed/sBqk7I5-0I0?feature=oembed&amp;enablejsapi=1\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen&gt;&lt;/iframe&gt;",
+                                "width": 600,
+                                "scrolling": false,
+                                "media_domain_url": "https://www.redditmedia.com/mediaembed/cjg4iv",
+                                "height": 338
+                            },
+                            "link_flair_text": null,
+                            "can_mod_post": false,
+                            "score": 11872,
+                            "approved_by": null,
+                            "thumbnail": "https://a.thumbs.redditmedia.com/pYzy0mV0Pgk0Nk4hAPWTKnnr5Wnu2OvmA9cF5WfKWQ8.jpg",
+                            "edited": false,
+                            "author_flair_css_class": null,
+                            "author_flair_richtext": [],
+                            "gildings": {},
+                            "post_hint": "rich:video",
+                            "content_categories": null,
+                            "is_self": false,
+                            "mod_note": null,
+                            "created": 1564457480.0,
+                            "link_flair_type": "text",
+                            "wls": 6,
+                            "banned_by": null,
+                            "author_flair_type": "text",
+                            "domain": "youtu.be",
+                            "allow_live_comments": true,
+                            "selftext_html": null,
+                            "likes": null,
+                            "suggested_sort": null,
+                            "banned_at_utc": null,
+                            "view_count": null,
+                            "archived": false,
+                            "no_follow": false,
+                            "is_crosspostable": true,
+                            "pinned": false,
+                            "over_18": false,
+                            "preview": {
+                                "images": [
+                                    {
+                                        "source": {
+                                            "url": "https://external-preview.redd.it/li0xIu1L_lMntbZFsPLCm9Fck_qrywckiIUCF_A-GGw.jpg?auto=webp&amp;s=7d49a1c220514593c604ba811628b3b569356340",
+                                            "width": 480,
+                                            "height": 360
+                                        },
+                                        "resolutions": [
+                                            {
+                                                "url": "https://external-preview.redd.it/li0xIu1L_lMntbZFsPLCm9Fck_qrywckiIUCF_A-GGw.jpg?width=108&amp;crop=smart&amp;auto=webp&amp;s=318819f96c2034a402ab5b69aec7da7220b2f1e1",
+                                                "width": 108,
+                                                "height": 81
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/li0xIu1L_lMntbZFsPLCm9Fck_qrywckiIUCF_A-GGw.jpg?width=216&amp;crop=smart&amp;auto=webp&amp;s=345a3c6d58fb0e10b395fd1a9c6f62342a29bc7c",
+                                                "width": 216,
+                                                "height": 162
+                                            },
+                                            {
+                                                "url": "https://external-preview.redd.it/li0xIu1L_lMntbZFsPLCm9Fck_qrywckiIUCF_A-GGw.jpg?width=320&amp;crop=smart&amp;auto=webp&amp;s=1eac9cabaa16cee3867acb48ae75ecaff6309601",
+                                                "width": 320,
+                                                "height": 240
+                                            }
+                                        ],
+                                        "variants": {},
+                                        "id": "mggGmLhy3Pi5pnuCFj56L0eDmF7jvsZ9gt_Z6deTSJc"
+                                    }
+                                ],
+                                "enabled": false
+                            },
+                            "all_awardings": [],
+                            "media_only": false,
+                            "can_gild": true,
+                            "spoiler": false,
+                            "locked": false,
+                            "author_flair_text": null,
+                            "visited": false,
+                            "num_reports": null,
+                            "distinguished": null,
+                            "subreddit_id": "t5_2qh1e",
+                            "mod_reason_by": null,
+                            "removal_reason": null,
+                            "link_flair_background_color": "",
+                            "id": "cjg4iv",
+                            "is_robot_indexable": true,
+                            "report_reasons": null,
+                            "author": "56haloodst",
+                            "num_crossposts": 1,
+                            "num_comments": 1333,
+                            "send_replies": true,
+                            "whitelist_status": "all_ads",
+                            "contest_mode": false,
+                            "mod_reports": [],
+                            "author_patreon_flair": false,
+                            "author_flair_text_color": null,
+                            "permalink": "/r/videos/comments/cjg4iv/game_critics_pt_2_dunkey/",
+                            "parent_whitelist_status": "all_ads",
+                            "stickied": false,
+                            "url": "https://youtu.be/sBqk7I5-0I0",
+                            "subreddit_subscribers": 20940830,
+                            "created_utc": 1564428680.0,
+                            "discussion_type": null,
+                            "media": {
+                                "type": "youtube.com",
+                                "oembed": {
+                                    "provider_url": "https://www.youtube.com/",
+                                    "version": "1.0",
+                                    "title": "Game Critics (Part 2)",
+                                    "type": "video",
+                                    "thumbnail_width": 480,
+                                    "height": 338,
+                                    "width": 600,
+                                    "html": "&lt;iframe width=\"600\" height=\"338\" src=\"https://www.youtube.com/embed/sBqk7I5-0I0?feature=oembed&amp;enablejsapi=1\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen&gt;&lt;/iframe&gt;",
+                                    "author_name": "videogamedunkey",
+                                    "provider_name": "YouTube",
+                                    "thumbnail_url": "https://i.ytimg.com/vi/sBqk7I5-0I0/hqdefault.jpg",
+                                    "thumbnail_height": 360,
+                                    "author_url": "https://www.youtube.com/user/videogamedunkey"
+                                }
+                            },
+                            "is_video": false
+                        }
+                    }
+                ],
+                "after": "t3_cjiram",
+                "before": null
+            }
+        }
+    }
+]
