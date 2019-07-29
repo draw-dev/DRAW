@@ -7,12 +7,13 @@ import 'package:draw/src/base.dart';
 import 'package:draw/src/listing/mixins/base.dart';
 import 'package:draw/src/listing/mixins/gilded.dart';
 import 'package:draw/src/listing/mixins/rising.dart';
+import 'package:draw/src/listing/mixins/best.dart';
 import 'package:draw/src/reddit.dart';
 
 /// The [FrontPage] class provides methods to access listings of content on the
 /// Reddit front page.
 class FrontPage extends RedditBase
-    with BaseListingMixin, GildedListingMixin, RisingListingMixin {
+    with BaseListingMixin, GildedListingMixin, RisingListingMixin, BestListingMixin {
   String path = '/';
   FrontPage(Reddit reddit) : super(reddit);
 }
