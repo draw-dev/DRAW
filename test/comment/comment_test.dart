@@ -19,6 +19,8 @@ Future<void> prettyPrint(comments, depth) async {
     final tabs = '$depth \t' * depth;
     final comment = comments[i];
     if (comment is MoreComments) {
+      expect(
+          comment.isContinueThisThread || comment.isLoadMoreComments, isTrue);
       await prettyPrint(await comment.comments(), depth);
     } else {
       final body = (await comment.body ?? 'Null');

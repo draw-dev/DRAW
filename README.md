@@ -188,5 +188,18 @@ Here the redirect URI is set to https://www.google.com, but you'll need to repla
 
 The format of `draw.ini` configuration files is very similar to that of [praw.ini files used by PRAW](http://praw.readthedocs.io/en/latest/getting_started/configuration/prawini.html), although there may be some minor differences due to the .ini parser used by DRAW.
 
+# Frequently Asked Questions (FAQ)
+
+## Q: "I'm having trouble authenticating. What's wrong?"
+
+Assuming the build status of DRAW is passing, there's likely something wrong
+with your credentials or user-agent. Here's some things to check:
+
+* Ensure your client ID and client secret match those provided by Reddit,
+  applicable for your use case.
+* Try a new value for `userAgent`. Reddit rejects requests with commonly used
+  user-agents like "foobar", "testing", or "reddit", so try using a randomly
+  generated user-agent to make sure this isn't the issue you're seeing.
+
 # License
 DRAW is provided under a [BSD 3-clause license](https://github.com/draw-dev/DRAW/blob/master/LICENSE). Copyright (c), 2017, the DRAW Project Authors and Google LLC.
