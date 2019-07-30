@@ -15,8 +15,6 @@ import 'multireddit/multireddit_test.dart' as multireddit_test;
 import 'redditor/redditor_test.dart' as redditor_test;
 import 'rising_listing_mixin/rising_listing_mixin_test.dart'
     as rising_listing_mixin_test;
-import 'best_listing_mixin/best_listing_mixin_test.dart'
-    as best_listing_mixin_test;
 import 'submission/submission_test.dart' as submission_test;
 import 'subreddit/subreddit_listing_mixin_test.dart'
     as subreddit_listing_mixin_test;
@@ -43,7 +41,6 @@ void main() {
   multireddit_test.main();
   redditor_test.main();
   rising_listing_mixin_test.main();
-  best_listing_mixin_test.main();
   submission_test.main();
   subreddits_test.main();
   subreddit_listing_mixin_test.main();
