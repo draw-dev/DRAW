@@ -1,6 +1,22 @@
 Change Log
 =================================
 
+## Version 0.7.0 (2019/07/29)
+
+### Breaking changes:
+* DRAW now requires a Dart SDK with version 2.2.2 or newer.
+
+### Other changes:
+* Added `isContinueThisThread` and `isLoadMoreComments` properties to
+  `MoreComments` to make it easier to differentiate between different types of
+  `MoreComment` responses from the Reddit API.
+* Added `Subreddits` class which contains streams for subreddits and subreddit
+  search functionality.
+* Added `over18` getter to `Subreddit`
+* Added `after` parameter to stream generators
+* Add `limit` parameters to stream generators to change number of elements
+  returned per request
+
 ## Version 0.6.0 (2019/07/08)
 
 ### Breaking changes:
