@@ -347,6 +347,30 @@ class Reddit {
         siteName);
   }
 
+  static Reddit restoreInstalledAuthenticatedInstance(String credentialsJson,
+      {String clientId,
+      String clientSecret,
+      String userAgent,
+      Uri redirectUri,
+      Uri tokenEndpoint,
+      Uri authEndpoint,
+      Uri configUri,
+      String siteName = 'default'}) {
+    if (credentialsJson == null) {
+      throw DRAWArgumentError('credentialsJson cannot be null.');
+    }
+    return Reddit._webFlowInstanceRestore(
+        clientId,
+        '',
+        userAgent,
+        credentialsJson,
+        redirectUri,
+        tokenEndpoint,
+        authEndpoint,
+        configUri,
+        siteName);
+  }
+
   Reddit._readOnlyInstance(
       String clientId,
       String clientSecret,
