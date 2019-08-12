@@ -288,24 +288,14 @@ class Reddit {
       Reddit._webFlowInstance(clientId, clientSecret, userAgent, redirectUri,
           tokenEndpoint, authEndpoint, configUri, siteName);
 
-  /// Creates a new authenticated [Reddit] instance from cached credentials.
-  ///
-  /// [credentialsJson] is a json string containing the cached credentials. This
-  /// parameter is required and cannot be 'null'.
-  ///
-  /// This string can be retrieved from an authenticated [Reddit] instance in
-  /// the following manner:
-  ///
-  /// ```dart
-  /// final credentialsJson = reddit.auth.credentials.toJson();
-  /// ```
+  /// Creates a new [Reddit] instance for use with the web authentication flow.
+  /// This instance is not authenticated until a valid response code is
+  /// provided to `WebAuthenticator.authorize` (see test/auth/web_auth.dart
+  /// for an example usage).
   ///
   /// [clientId] is the identifier associated with your authorized application
   /// on Reddit. To get a client ID, create an authorized application
   /// [here](http://www.reddit.com/prefs/apps).
-  ///
-  /// [clientSecret] is the unique secret associated with your client ID. This
-  /// is required for script and web applications.
   ///
   /// [userAgent] is an arbitrary identifier used by the Reddit API to
   /// differentiate between client instances. This should be relatively unique.
@@ -338,6 +328,62 @@ class Reddit {
     return Reddit._webFlowInstanceRestore(
         clientId,
         clientSecret,
+        userAgent,
+        credentialsJson,
+        redirectUri,
+        tokenEndpoint,
+        authEndpoint,
+        configUri,
+        siteName);
+  }
+
+  /// Creates a new installed [Reddit] instance from cached credentials.
+  ///
+  /// [credentialsJson] is a json string containing the cached credentials. This
+  /// parameter is required and cannot be 'null'.
+  ///
+  /// This string can be retrieved from an installed [Reddit] instance in
+  /// the following manner:
+  ///
+  /// ```dart
+  /// final credentialsJson = reddit.auth.credentials.toJson();
+  /// ```
+  ///
+  /// [clientId] is the identifier associated with your installed application
+  /// on Reddit. To get a client ID, create an installed application
+  /// [here](http://www.reddit.com/prefs/apps).
+  ///
+  /// [userAgent] is an arbitrary identifier used by the Reddit API to
+  /// differentiate between client instances. This should be relatively unique.
+  ///
+  /// [redirectUri] is the redirect URI associated with your Reddit application.
+  ///
+  /// [tokenEndpoint] is a [Uri] to an alternative token endpoint. If not
+  /// provided, [defaultTokenEndpoint] is used.
+  ///
+  /// [authEndpoint] is a [Uri] to an alternative authentication endpoint. If not
+  /// provided, [defaultAuthTokenEndpoint] is used.
+  ///
+  /// [configUri] is a [Uri] pointing to a 'draw.ini' file, which can be used to
+  /// populate the previously described parameters.
+  ///
+  /// [siteName] is the name of the configuration to use from draw.ini. Defaults
+  /// to 'default'.
+  static Reddit restoreInstalledAuthenticatedInstance(String credentialsJson,
+      {String clientId,
+      String clientSecret,
+      String userAgent,
+      Uri redirectUri,
+      Uri tokenEndpoint,
+      Uri authEndpoint,
+      Uri configUri,
+      String siteName = 'default'}) {
+    if (credentialsJson == null) {
+      throw DRAWArgumentError('credentialsJson cannot be null.');
+    }
+    return Reddit._webFlowInstanceRestore(
+        clientId,
+        '',
         userAgent,
         credentialsJson,
         redirectUri,
