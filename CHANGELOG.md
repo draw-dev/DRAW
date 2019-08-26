@@ -1,6 +1,12 @@
 Change Log
 =================================
 
+## Version 0.7.1 (2019/08/26)
+* Added 'best' sorting option to `FrontPage`
+* Added `Reddit.restoreInstalledAuthenticatedInstance` which allows for
+  restoring an OAuth context created for an installed application instance that
+  does not require a client secret.
+
 ## Version 0.7.0 (2019/07/29)
 
 ### Breaking changes:
