@@ -3,5 +3,9 @@
 /// Use of this source code is governed by a BSD-style license that
 /// can be found in the LICENSE file.
 
-export 'config_file_reader_unsupported.dart'
-    if (dart.library.io) 'config_file_reader_io.dart';
+class ConfigFileReader {
+  ConfigFileReader(String configUrl);
+
+  /// Loads file from [_localConfigPath] or [_userConfigPath].
+  Null loadCorrectFile() => null;
+}

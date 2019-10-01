@@ -1,8 +1,11 @@
 Change Log
 =================================
 
+## Version 0.8.0 (2019/10/01)
+* Added support for Dart for Web and Flutter Web.
+
 ## Version 0.7.1 (2019/08/26)
-* Added 'best' sorting option to `FrontPage`
+* Added 'best' sorting option to `FrontPage`.
 * Added `Reddit.restoreInstalledAuthenticatedInstance` which allows for
   restoring an OAuth context created for an installed application instance that
   does not require a client secret.
@@ -18,10 +21,10 @@ Change Log
   `MoreComment` responses from the Reddit API.
 * Added `Subreddits` class which contains streams for subreddits and subreddit
   search functionality.
-* Added `over18` getter to `Subreddit`
-* Added `after` parameter to stream generators
+* Added `over18` getter to `Subreddit`.
+* Added `after` parameter to stream generators.
 * Add `limit` parameters to stream generators to change number of elements
-  returned per request
+  returned per request.
 
 ## Version 0.6.0 (2019/07/08)
 

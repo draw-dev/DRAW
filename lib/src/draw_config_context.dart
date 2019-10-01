@@ -3,12 +3,11 @@
 /// Use of this source code is governed by a BSD-style license that
 /// can be found in the LICENSE file.
 
-import 'dart:io';
-
 import 'package:ini/ini.dart';
 
 import 'config_file_reader.dart';
 import 'exceptions.dart';
+import 'platform_utils.dart';
 
 const String kAccessToken = 'access_token';
 const String kAuthorize = 'authorize_uri';
