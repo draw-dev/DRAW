@@ -3,5 +3,10 @@
 /// Use of this source code is governed by a BSD-style license that
 /// can be found in the LICENSE file.
 
-export 'config_file_reader_unsupported.dart'
-    if (dart.library.io) 'config_file_reader_io.dart';
+class Platform {
+  static bool get isAndroid => false;
+  static bool get isFuchsia => false;
+  static bool get isIOS => false;
+  static bool get isLinux => false;
+  static bool get isMacOS => false;
+}
