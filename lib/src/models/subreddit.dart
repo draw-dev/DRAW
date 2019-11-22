@@ -6,10 +6,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/exceptions.dart';
+import 'package:draw/src/image_file_reader.dart';
 import 'package:draw/src/listing/listing_generator.dart';
 import 'package:draw/src/listing/mixins/base.dart';
 import 'package:draw/src/listing/mixins/gilded.dart';
@@ -1406,12 +1408,16 @@ class StyleSheetImage {
   String toString() => name;
 }
 
+enum ImageFormat {
+  jpeg,
+  png,
+}
+
 /// Provides a set of stylesheet functions to a [Subreddit].
 class SubredditStyleSheet {
-  // TODO(bkonyi): implement _uploadImage
   // static const String _kJpegHeader = '\xff\xd8\xff';
-  // static const String _kUploadType = 'upload_type';
-  final Subreddit _subreddit;
+  static const String _kUploadType = 'upload_type';
+  final SubredditRef _subreddit;
   SubredditStyleSheet(this._subreddit);
 
   /// Return the stylesheet for the [Subreddit].
@@ -1421,27 +1427,37 @@ class SubredditStyleSheet {
     return await _subreddit.reddit.get(uri);
   }
 
-// TODO(bkonyi): uploading files requires some pretty large changes to the
-// authenticator implementation. Will do later.
-/*
-  Future _uploadImage(Uri imagePath, Map<String, dynamic> data) async {
+  Future<Uri> _uploadImage(Uri imagePath, Uint8List imageBytes,
+      ImageFormat format, Map<String, dynamic> data) async {
     const kImgType = 'img_type';
-    final image = File.fromUri(imagePath);
-    if (!await image.exists()) {
-      // TODO(bkonyi): throw
+    if ((imagePath == null) && (imageBytes == null)) {
+      throw DRAWArgumentError(
+          'Only one of imagePath or imageBytes can be provided.');
     }
-    final imageRAF = await image.open();
-    if (await imageRAF.length() < _kJpegHeader.length) {
-      // TODO(bkonyi): throw
-    }
-    final header = (await imageRAF.read(_kJpegHeader.length));
-    data[kImgType] = (header == _kJpegHeader.codeUnits) ? 'jpg' : 'png';
 
+    if (imageBytes == null) {
+      final imageInfo = await loadImage(imagePath);
+      // ignore: parameter_assignments
+      format = imageInfo['imageType'];
+      // ignore: parameter_assignments
+      imageBytes = imageInfo['imageBytes'];
+    }
+    data[kImgType] = (format == ImageFormat.png) ? 'png' : 'jpeg';
+    data['api_type'] = 'json';
     final uri = apiPath['upload_image']
         .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
-    //final response =_subreddit.reddit.post(uri, data, )
+    final response = await _subreddit.reddit
+        .post(uri, data, files: {'file': imageBytes}, objectify: false) as Map;
+    const kImgSrc = 'img_src';
+    const kErrors = 'errors';
+    const kErrorsValues = 'errors_values';
+    if (response[kImgSrc].isNotEmpty) {
+      return Uri.parse(response[kImgSrc]);
+    } else {
+      throw DRAWImageUploadException(
+          response[kErrors].first, response[kErrorsValues].first);
+    }
   }
-*/
 
   /// Remove the current header image for the [Subreddit].
   Future<void> deleteHeader() async {
@@ -1496,48 +1512,81 @@ class SubredditStyleSheet {
     return await _subreddit.reddit.post(uri, data);
   }
 
-  // TODO(bkonyi): implement _uploadImage
-  // Upload an image to the [Subreddit].
-  //
-  // `name` is the name to be used for the image. If an image already exists
-  // with this name, it will be replaced.
-  //
-  // `imagePath` is the path to a JPEG or PNG image. This path must be local
-  // and accessible from disk.
-  /*
-  Future upload(String name, Uri imagePath) async =>
-      await _uploadImage(imagePath, <String, String>{
+  /// Upload an image to the [Subreddit].
+  ///
+  /// `name` is the name to be used for the image. If an image already exists
+  /// with this name, it will be replaced.
+  ///
+  /// `imagePath` is the path to a JPEG or PNG image. This path must be local
+  /// and accessible from disk. Will result in an [UnsupportedError] if provided
+  /// in a web application.
+  ///
+  /// `bytes` is a list of bytes representing an image.
+  ///
+  /// `format` is the format of the image defined by `bytes`.
+  ///
+  /// On success, the [Uri] for the uploaded image is returned. On failure,
+  /// [DRAWImageUploadException] is thrown.
+  Future<Uri> upload(String name,
+          {Uri imagePath, Uint8List bytes, ImageFormat format}) async =>
+      await _uploadImage(imagePath, bytes, format, <String, String>{
         'name': name,
         _kUploadType: 'img',
       });
-  */
 
-  // TODO(bkonyi): implement _uploadImage
-  // Upload an image to be used as the header image for the [Subreddit].
-  /*
-  Future uploadHeader(Uri imagePath) async =>
-      await _uploadImage(imagePath, <String, String>{
+  /// Upload an image to be used as the header image for the [Subreddit].
+  ///
+  /// `imagePath` is the path to a JPEG or PNG image. This path must be local
+  /// and accessible from disk. Will result in an [UnsupportedError] if provided
+  /// in a web application.
+  ///
+  /// `bytes` is a list of bytes representing an image.
+  ///
+  /// `format` is the format of the image defined by `bytes`.
+  ///
+  /// On success, the [Uri] for the uploaded image is returned. On failure,
+  /// [DRAWImageUploadException] is thrown.
+  Future<Uri> uploadHeader(
+          {Uri imagePath, Uint8List bytes, ImageFormat format}) async =>
+      await _uploadImage(imagePath, bytes, format, <String, String>{
         _kUploadType: 'header',
       });
-  */
 
-  // TODO(bkonyi): implement _uploadImage
-  // Upload an image to be used as the mobile header image for the [Subreddit].
-  /*
-  Future uploadMobileHeader(Uri imagePath) async =>
-      await _uploadImage(imagePath, <String, String>{
+  /// Upload an image to be used as the mobile header image for the [Subreddit].
+  ///
+  /// `imagePath` is the path to a JPEG or PNG image. This path must be local
+  /// and accessible from disk. Will result in an [UnsupportedError] if provided
+  /// in a web application.
+  ///
+  /// `bytes` is a list of bytes representing an image.
+  ///
+  /// `format` is the format of the image defined by `bytes`.
+  ///
+  /// On success, the [Uri] for the uploaded image is returned. On failure,
+  /// [DRAWImageUploadException] is thrown.
+  Future<Uri> uploadMobileHeader(
+          {Uri imagePath, Uint8List bytes, ImageFormat format}) async =>
+      await _uploadImage(imagePath, bytes, format, <String, String>{
         _kUploadType: 'banner',
       });
-  */
 
-  // TODO(bkonyi): implement _uploadImage
-  // Upload an image to be used as the mobile icon image for the [Subreddit].
-  /*
-  Future uploadMobileIcon(Uri imagePath) async =>
-      await _uploadImage(imagePath, <String, String>{
+  /// Upload an image to be used as the mobile icon image for the [Subreddit].
+  ///
+  /// `imagePath` is the path to a JPEG or PNG image. This path must be local
+  /// and accessible from disk. Will result in an [UnsupportedError] if provided
+  /// in a web application.
+  ///
+  /// `bytes` is a list of bytes representing an image.
+  ///
+  /// `format` is the format of the image defined by `bytes`.
+  ///
+  /// On success, the [Uri] for the uploaded image is returned. On failure,
+  /// [DRAWImageUploadException] is thrown.
+  Future<Uri> uploadMobileIcon(
+          {Uri imagePath, Uint8List bytes, ImageFormat format}) async =>
+      await _uploadImage(imagePath, bytes, format, <String, String>{
         _kUploadType: 'icon',
       });
-  */
 }
 
 /// Provides a set of wiki functions to a [Subreddit].

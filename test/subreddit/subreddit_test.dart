@@ -4,6 +4,7 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:draw/draw.dart';
 import 'package:test/test.dart';
@@ -313,6 +314,87 @@ Future<void> main() async {
     await stylesheetHelper.update(kNewStyle, reason: 'Test');
     stylesheet = await stylesheetHelper();
     expect(stylesheet.stylesheet, kNewStyle);
+  });
+
+  test('lib/subreddit_stylesheet/upload', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_stylesheet_upload.json');
+    final stylesheet = reddit.subreddit('drawapitesting').stylesheet;
+    final uri = await stylesheet.upload('foobar',
+        imagePath: Uri.file('test/images/dart_header.png'));
+    expect(uri.toString(),
+        'https://a.thumbs.redditmedia.com/MJGdqUs7bXLgG7-pYG5zVRdI_6qUQ6svvlZXURe5K98.png');
+  });
+
+  test('lib/subreddit_stylesheet/upload_bytes', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_stylesheet_upload_bytes.json');
+    final stylesheet = reddit.subreddit('drawapitesting').stylesheet;
+    final imageBytes =
+        await File.fromUri(Uri.file('test/images/dart_header.png'))
+            .readAsBytes();
+    final uri = await stylesheet.upload('foobar',
+        bytes: imageBytes, format: ImageFormat.png);
+    expect(uri.toString(),
+        'https://a.thumbs.redditmedia.com/MJGdqUs7bXLgG7-pYG5zVRdI_6qUQ6svvlZXURe5K98.png');
+  });
+
+  test('lib/subreddit_stylesheet/upload_invalid_cases', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_stylesheet_upload_invalid_cases.json');
+    final stylesheet = reddit.subreddit('drawapitesting').stylesheet;
+
+    // Missing args.
+    await expectLater(() async => await stylesheet.upload('foobar'),
+        throwsA(TypeMatcher<DRAWArgumentError>()));
+
+    // Bad format.
+    await expectLater(
+        () async => await stylesheet.upload('foobar',
+            imagePath: Uri.file('test/test_utils.dart')),
+        throwsA(TypeMatcher<DRAWImageUploadException>()));
+
+    // Too small.
+    await expectLater(
+        () async => await stylesheet.upload('foobar',
+            imagePath: Uri.file('test/images/bad.jpg')),
+        throwsA(TypeMatcher<FormatException>()));
+
+    // File doesn't exist.
+    await expectLater(
+        () async => await stylesheet.upload('foobar',
+            imagePath: Uri.file('foobar.bad')),
+        throwsA(TypeMatcher<FileSystemException>()));
+  });
+
+  test('lib/subreddit_stylesheet/upload_header', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_stylesheet_upload_header.json');
+    final stylesheet = reddit.subreddit('drawapitesting').stylesheet;
+    final uri = await stylesheet.uploadHeader(
+        imagePath: Uri.file('test/images/dart_header.png'));
+    expect(uri.toString(),
+        'https://a.thumbs.redditmedia.com/MJGdqUs7bXLgG7-pYG5zVRdI_6qUQ6svvlZXURe5K98.png');
+  });
+
+  test('lib/subreddit_stylesheet/upload_mobile_header', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_stylesheet_upload_mobile_header.json');
+    final stylesheet = reddit.subreddit('drawapitesting').stylesheet;
+    final uri = await stylesheet.uploadMobileHeader(
+        imagePath: Uri.file('test/images/10by3.jpg'));
+    expect(uri.toString(),
+        'https://a.thumbs.redditmedia.com/MkErrkhg6-Iou7zdTRxnpwOSNK4DPWXZ3xI35LiKTU0.png');
+  });
+
+  test('lib/subreddit_stylesheet/upload_mobile_icon', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_stylesheet_upload_mobile_icon.json');
+    final stylesheet = reddit.subreddit('drawapitesting').stylesheet;
+    final uri = await stylesheet.uploadMobileIcon(
+        imagePath: Uri.file('test/images/256.jpg'));
+    expect(uri.toString(),
+        'https://b.thumbs.redditmedia.com/GJSQRXiRY-2CH4PTgrrPNXqSPaQSKJYUikUr15m2n3Y.png');
   });
 
   test('lib/subreddit_flair/call', () async {

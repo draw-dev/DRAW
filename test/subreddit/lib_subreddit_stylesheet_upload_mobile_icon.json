@@ -1,0 +1,1 @@
+[{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/upload_sr_img","{upload_type: icon, img_type: jpeg, api_type: json}"],"response":{"errors":[],"img_src":"https://b.thumbs.redditmedia.com/GJSQRXiRY-2CH4PTgrrPNXqSPaQSKJYUikUr15m2n3Y.png","errors_values":[]}}]

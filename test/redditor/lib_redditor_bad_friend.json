@@ -3,7 +3,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/api/v1/me/friends/drawapiofficial2",
-      "{\"note\":\"\"}"
+      "{note: }"
     ],
     "response": [
       "DRAWNotFoundException",

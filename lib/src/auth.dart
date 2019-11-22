@@ -5,8 +5,10 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import "package:oauth2/src/handle_access_token_response.dart";
 
@@ -148,16 +150,18 @@ abstract class Authenticator {
   ///
   /// [path] is the destination URI and [body] contains the POST parameters
   /// that will be sent with the request.
-  Future<dynamic> post(Uri path, Map<String, String> body) async {
+  Future<dynamic> post(Uri path, Map<String, String> body,
+      {Map<String, Uint8List> files, Map params}) async {
     _logger.info('POST: $path body: ${DRAWLoggingUtils.jsonify(body)}');
-    return _request(_kPostRequest, path, body: body);
+    return _request(_kPostRequest, path,
+        body: body, files: files, params: params);
   }
 
   /// Make a simple `PUT` request.
   ///
   /// [path] is the destination URI and [body] contains the PUT parameters that
   /// will be sent with the request.
-  Future<dynamic> put(Uri path, {/* Map<String,String>, String */ body}) async {
+  Future<dynamic> put(Uri path, {Map<String, String> body}) async {
     _logger.info('PUT: $path body: ${DRAWLoggingUtils.jsonify(body)}');
     return _request(_kPutRequest, path, body: body);
   }
@@ -166,8 +170,7 @@ abstract class Authenticator {
   ///
   /// [path] is the destination URI and [body] contains the DELETE parameters
   /// that will be sent with the request.
-  Future<dynamic> delete(Uri path,
-      {/* Map<String,String>, String */ body}) async {
+  Future<dynamic> delete(Uri path, {Map<String, String> body}) async {
     _logger.info('DELETE: $path body: ${DRAWLoggingUtils.jsonify(body)}');
     return _request(_kDeleteRequest, path, body: body);
   }
@@ -178,8 +181,9 @@ abstract class Authenticator {
   /// request parameters. [body] is an optional parameter which contains the
   /// body fields for a POST request.
   Future<dynamic> _request(String type, Uri path,
-      {/* Map<String,String>, String */ body,
+      {Map<String, String> body,
       Map<String, String> params,
+      Map<String, Uint8List> files,
       bool followRedirects = false}) async {
     if (_client == null) {
       throw DRAWAuthenticationError(
@@ -189,7 +193,7 @@ abstract class Authenticator {
       await refresh();
     }
     final finalPath = path.replace(queryParameters: params);
-    final request = http.Request(type, finalPath);
+    final request = http.MultipartRequest(type, finalPath);
 
     // Some API requests initiate a redirect (i.e., random submission from a
     // subreddit) but the redirect doesn't forward the OAuth credentials
@@ -198,11 +202,13 @@ abstract class Authenticator {
     request.followRedirects = followRedirects;
 
     if (body != null) {
-      if (body is Map<String, String>) {
-        request.bodyFields = body;
-      } else {
-        request.body = body;
-      }
+      request.fields.addAll(body);
+    }
+    if (files != null) {
+      request.files.addAll([
+        for (final key in files.keys)
+          http.MultipartFile.fromBytes(key, files[key], filename: 'filename')
+      ]);
     }
     http.StreamedResponse responseStream;
     try {

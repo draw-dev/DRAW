@@ -4,6 +4,7 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:draw/src/auth.dart';
 import 'package:draw/src/draw_config_context.dart';
@@ -634,21 +635,23 @@ class Reddit {
   }
 
   Future<dynamic> post(String api, Map<String, String> body,
-      {bool discardResponse = false, bool objectify = true}) async {
+      {Map<String, Uint8List> files,
+      Map params,
+      bool discardResponse = false,
+      bool objectify = true}) async {
     if (!_initialized) {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
     final path = Uri.https(defaultOAuthApiEndpoint, api);
-    final response = await auth.post(path, body);
+    final response = await auth.post(path, body, files: files, params: params);
     if (discardResponse) {
       return null;
     }
     return objectify ? _objector.objectify(response) : response;
   }
 
-  Future<dynamic> put(String api,
-      {/* Map<String, String>, String */ body}) async {
+  Future<dynamic> put(String api, {Map<String, String> body}) async {
     if (!_initialized) {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
@@ -658,8 +661,7 @@ class Reddit {
     return _objector.objectify(response);
   }
 
-  Future<dynamic> delete(String api,
-      {/* Map<String, String>, String */ body}) async {
+  Future<dynamic> delete(String api, {Map<String, String> body}) async {
     if (!_initialized) {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');

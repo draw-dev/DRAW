@@ -6,6 +6,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:reply/reply.dart';
@@ -127,14 +128,18 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<dynamic> post(Uri path, Map<String, String> body) async {
+  Future<dynamic> post(Uri path, Map<String, String> body,
+      {Map<String, Uint8List> files, Map params}) async {
     var result;
     if (isRecording) {
+      // Note: we ignore the files parameter for creating recordings, so tests
+      // which try to overwrite a remote file multiple times might have issues.
       result = _recording.reply([path.toString(), body.toString()]);
       _throwOnError(result);
     } else {
       try {
-        result = await _recordAuth.post(path, body);
+        result =
+            await _recordAuth.post(path, body, files: files, params: params);
       } catch (e) {
         // Throws.
         _recordException(path, body, e);
@@ -148,8 +153,7 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<dynamic> put(Uri path,
-      {/* Map<String, String>, String */ body}) async {
+  Future<dynamic> put(Uri path, {Map<String, String> body}) async {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);
@@ -170,8 +174,7 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<dynamic> delete(Uri path,
-      {/* Map<String, String>, String */ body}) async {
+  Future<dynamic> delete(Uri path, {Map<String, String> body}) async {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);
