@@ -109,3 +109,11 @@ class DRAWUnknownResponseException implements Exception {
   DRAWUnknownResponseException(this.status, this.message);
   String toString() => 'DRAWUnknownResponse: $message (status: $status)';
 }
+
+/// Thrown if an image upload fails.
+class DRAWImageUploadException implements Exception {
+  final String error;
+  final String message;
+  DRAWImageUploadException(this.error, this.message);
+  String toString() => 'DRAWImageUploadException: ($error) $message';
+}

@@ -3,7 +3,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/api/v1/me/friends/XtremeCheese",
-      "{\"note\":\"My best friend!\"}"
+      "{note: My best friend!}"
     ],
     "response": {
       "date": 1503502054.0,

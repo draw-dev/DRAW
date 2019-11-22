@@ -4,7 +4,6 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
@@ -147,7 +146,7 @@ class RedditorRef extends RedditBase
   Future<void> friend({String note = ''}) async =>
       _throwOnInvalidRedditor(() async => await reddit.put(
           apiPath['friend_v1'].replaceAll(_userRegExp, _name),
-          body: json.encode({'note': note})));
+          body: {'note': note}));
 
   /// Returns a [Redditor] object with friend information populated.
   ///

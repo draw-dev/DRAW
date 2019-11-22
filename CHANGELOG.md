@@ -1,6 +1,15 @@
 Change Log
 =================================
 
+## Version 0.9.0 (2019/11/22)
+
+### Breaking changes:
+* HTTP methods exposed through `Reddit` now only accept `Map<String, String>` for
+  body arguments.
+
+### Other changes:
+* Added support for uploading images for subreddit theming in `SubredditStyleSheet`.
+
 ## Version 0.8.0 (2019/10/01)
 * Added support for Dart for Web and Flutter Web.
 

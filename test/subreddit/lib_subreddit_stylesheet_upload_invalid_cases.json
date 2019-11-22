@@ -1,0 +1,1 @@
+[{"always":false,"request":["https://oauth.reddit.com/r/drawapitesting/api/upload_sr_img","{name: foobar, upload_type: img, img_type: png, api_type: json}"],"response":{"errors":["IMAGE_ERROR"],"img_src":"","errors_values":["Invalid image or general image error"]}}]
