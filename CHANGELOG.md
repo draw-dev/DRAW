@@ -1,6 +1,9 @@
 Change Log
 =================================
 
+## Version 0.9.1 (2020/01/09)
+* Fixed issue where `SubredditRef.search` would throw a type error.
+
 ## Version 0.9.0 (2019/11/22)
 
 ### Breaking changes:

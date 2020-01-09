@@ -225,7 +225,9 @@ class SubredditRef extends RedditBase
       Map<String, String> params}) {
     final timeStr = timeFilterToString(timeFilter);
     final isNotAll = !(_name.toLowerCase() == 'all');
-    final data = (params != null) ? Map.from(params) : Map();
+    final data = (params != null)
+        ? Map<String, String>.from(params)
+        : <String, String>{};
     data['q'] = query;
     data['restrict_sr'] = isNotAll.toString();
     data['sort'] = sortToString(sort);
