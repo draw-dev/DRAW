@@ -22,7 +22,7 @@ const String kDefaultOAuthUrl = r'oauth.reddit.com';
 const String kDefaultRedditUrl = 'https://www.reddit.com';
 const String kDefaultRevokeToken =
     r'https://www.reddit.com/api/v1/revoke_token';
-const String kDefaultShortUrl = 'https://redd.it';
+const String kDefaultShortUrl = 'https://redd.it/';
 const String kHttpProxy = 'http_proxy';
 const String kHttpsProxy = 'https_proxy';
 const String kKind = 'kind';
