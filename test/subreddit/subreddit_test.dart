@@ -151,6 +151,15 @@ Future<void> main() async {
     expect(stickied.title, equals('Official DRAW GitHub'));
   });
 
+  test('lib/subreddit/about/moderators', () async {
+    final reddit = await createRedditTestInstance(
+        'test/subreddit/lib_subreddit_sticky.json');
+
+    final subreddit = reddit.subreddit('programming');
+    final moderators = (await subreddit.moderators());
+    expect(moderators.isNotEmpty, true);
+  });
+
   test('lib/subreddit/submit', () async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_submit.json');

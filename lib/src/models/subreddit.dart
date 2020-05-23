@@ -254,6 +254,13 @@ class SubredditRef extends RedditBase
     return null; // Shut the analyzer up.
   }
 
+  /// Returns a [Future<List<Redditor>>] of moderators.
+  Future<List<Redditor>> moderators() async {
+    return (await reddit.get(apiPath['list_moderator']
+            .replaceAll(SubredditRef._subredditRegExp, _name)))
+        .cast<Redditor>();
+  }
+
   /// Creates a [Submission] on the [Subreddit].
   ///
   /// [title] is the title of the submission. [selftext] is markdown formatted
