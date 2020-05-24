@@ -18,6 +18,7 @@ import 'package:draw/src/listing/mixins/gilded.dart';
 import 'package:draw/src/listing/mixins/rising.dart';
 import 'package:draw/src/listing/mixins/subreddit.dart';
 import 'package:draw/src/getter_utils.dart';
+import 'package:draw/src/models/moderator.dart';
 import 'package:draw/src/modmail.dart';
 import 'package:draw/src/reddit.dart';
 import 'package:draw/src/util.dart';
@@ -254,11 +255,13 @@ class SubredditRef extends RedditBase
     return null; // Shut the analyzer up.
   }
 
-  /// Returns a [Future<List<Redditor>>] of moderators.
-  Future<List<Redditor>> moderators() async {
-    return (await reddit.get(apiPath['list_moderator']
-            .replaceAll(SubredditRef._subredditRegExp, _name)))
-        .cast<Redditor>();
+  /// Returns a [Future<List<Moderator>>] of moderators.
+  Future<List<Moderator>> moderators() async {
+    return (await reddit.get(
+      apiPath['list_moderator']
+          .replaceAll(SubredditRef._subredditRegExp, _name),
+    ))
+        .cast(Moderator);
   }
 
   /// Creates a [Submission] on the [Subreddit].

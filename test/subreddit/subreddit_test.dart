@@ -153,10 +153,10 @@ Future<void> main() async {
 
   test('lib/subreddit/about/moderators', () async {
     final reddit = await createRedditTestInstance(
-        'test/subreddit/lib_subreddit_sticky.json');
+        'test/subreddit/lib_subreddit_about_moderators.json');
 
-    final subreddit = reddit.subreddit('programming');
-    final moderators = (await subreddit.moderators());
+    final subreddit = reddit.subreddit('dartlang');
+    final moderators = await subreddit.moderators();
     expect(moderators.isNotEmpty, true);
   });
 

@@ -26,6 +26,7 @@ export 'package:draw/src/models/message.dart';
 export 'package:draw/src/models/multireddit.dart'
     hide iconNameToString, visibilityToString, weightingSchemeToString;
 export 'package:draw/src/models/redditor.dart';
+export 'package:draw/src/models/moderator.dart';
 export 'package:draw/src/models/submission.dart';
 export 'package:draw/src/models/subreddit.dart'
     hide searchSyntaxToString, modmailSortToString, modmailStateToString;
