@@ -1,0 +1,84 @@
+{
+    "kind": "UserList",
+    "data": {
+        "children": [
+            {
+                "name": "knome",
+                "author_flair_text": null,
+                "mod_permissions": [
+                    "all"
+                ],
+                "date": 1315590431.0,
+                "rel_id": "rb_kvrkx",
+                "id": "t2_1p9n0",
+                "author_flair_css_class": null
+            },
+            {
+                "name": "corevette",
+                "author_flair_text": null,
+                "mod_permissions": [
+                    "all"
+                ],
+                "date": 1315867352.0,
+                "rel_id": "rb_l1vk0",
+                "id": "t2_15bor",
+                "author_flair_css_class": null
+            },
+            {
+                "name": "__tosh",
+                "author_flair_text": null,
+                "mod_permissions": [
+                    "all"
+                ],
+                "date": 1432784175.0,
+                "rel_id": "rb_akvi71",
+                "id": "t2_538hk",
+                "author_flair_css_class": null
+            },
+            {
+                "name": "fphat",
+                "author_flair_text": null,
+                "mod_permissions": [
+                    "all"
+                ],
+                "date": 1464540708.0,
+                "rel_id": "rb_g2k3yw",
+                "id": "t2_imyiw",
+                "author_flair_css_class": null
+            },
+            {
+                "name": "kevmoo",
+                "author_flair_text": null,
+                "mod_permissions": [
+                    "all"
+                ],
+                "date": 1535847090.0,
+                "rel_id": "rb_100ut5t",
+                "id": "t2_32z1x",
+                "author_flair_css_class": null
+            },
+            {
+                "name": "Darkglow666",
+                "author_flair_text": null,
+                "mod_permissions": [
+                    "all"
+                ],
+                "date": 1557258529.0,
+                "rel_id": "rb_1amn8yc",
+                "id": "t2_aaxo5",
+                "author_flair_css_class": null
+            },
+            {
+                "name": "akerro",
+                "author_flair_text": null,
+                "mod_permissions": [
+                    "all"
+                ],
+                "date": 1569590798.0,
+                "rel_id": "rb_1iwrnq5",
+                "id": "t2_w33c3",
+                "author_flair_css_class": null
+            }
+        ]
+    }
+}
