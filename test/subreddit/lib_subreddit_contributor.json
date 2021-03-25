@@ -258,7 +258,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/r/drawapitesting/about/contributors/",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -299,7 +299,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/r/drawapitesting/about/contributors/",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",

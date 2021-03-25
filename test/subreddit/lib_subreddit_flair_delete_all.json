@@ -3,7 +3,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/r/drawapitesting/api/flairlist/",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "users": [
@@ -19,7 +19,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/r/drawapitesting/api/flairlist/",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "users": [
@@ -50,7 +50,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/r/drawapitesting/api/flairlist/",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "users": []

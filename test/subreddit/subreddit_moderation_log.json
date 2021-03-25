@@ -79,7 +79,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/r/MorbidReality/about/log/",
-      "{mod: XtremeCheese, limit: 1024}"
+      "{mod: XtremeCheese, limit: 100}"
     ],
     "response": {
       "kind": "Listing",

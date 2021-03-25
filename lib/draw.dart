@@ -21,6 +21,7 @@ export 'package:draw/src/listing/mixins/base.dart'
     show BaseListingMixin, Sort, TimeFilter;
 export 'package:draw/src/listing/mixins/gilded.dart';
 export 'package:draw/src/listing/mixins/redditor.dart';
+export 'package:draw/src/listing/mixins/rising.dart';
 export 'package:draw/src/listing/mixins/subreddit.dart';
 export 'package:draw/src/models/message.dart';
 export 'package:draw/src/models/multireddit.dart'
