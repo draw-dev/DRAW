@@ -15,21 +15,21 @@ const String kWindowsEnvVar = 'APPDATA';
 
 class ConfigFileReader {
   /// Path to Local, User, Global Configuration Files, with matching precedence.
-  Uri _localConfigPath;
-  Uri _userConfigPath;
+  late Uri _localConfigPath;
+  late Uri _userConfigPath;
 
-  String _configUrl;
+  String? _configUrl;
 
-  ConfigFileReader(String configUrl) {
+  ConfigFileReader(String? configUrl) {
     _configUrl = configUrl;
     _localConfigPath = _getLocalConfigPath();
     _userConfigPath = _getUserConfigPath();
   }
 
   /// Loads file from [_localConfigPath] or [_userConfigPath].
-  File loadCorrectFile() {
+  File? loadCorrectFile() {
     if (_configUrl != null) {
-      final primaryFile = File(_configUrl);
+      final primaryFile = File(_configUrl!);
       if (primaryFile.existsSync()) {
         return primaryFile;
       }
@@ -55,10 +55,10 @@ class ConfigFileReader {
   /// uses [$HOME] or the corresponding root path for the os.
   Uri _getUserConfigPath() {
     final environment = Platform.environment;
-    String osConfigPath;
+    String? osConfigPath;
     // Load correct path for user level configuration paths based on operating system.
     if (Platform.isMacOS) {
-      osConfigPath = path.join(environment[kMacEnvVar], '.config');
+      osConfigPath = path.join(environment[kMacEnvVar]!, '.config');
     } else if (Platform.isLinux) {
       osConfigPath = environment[kLinuxEnvVar] ?? environment[kLinuxHomeEnvVar];
     } else if (Platform.isWindows) {
@@ -73,7 +73,7 @@ class ConfigFileReader {
     if (osConfigPath == null) {
       // Sets osConfigPath to the corresponding root path
       // based on the os.
-      final path.Context osDir = path.Context();
+      final osDir = path.Context();
       final cwd = osDir.current;
       osConfigPath = osDir.rootPrefix(cwd);
     }
@@ -82,7 +82,7 @@ class ConfigFileReader {
 
   /// Returns path to local configuration file.
   Uri _getLocalConfigPath() {
-    final path.Context osDir = path.Context();
+    final osDir = path.Context();
     final cwd = osDir.current;
     return path.toUri(path.join(cwd, kFileName));
   }

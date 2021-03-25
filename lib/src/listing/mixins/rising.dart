@@ -20,7 +20,7 @@ mixin RisingListingMixin {
   /// Reddit will return objects of the requested type. `params` is a set of
   /// additional parameters that will be forwarded along with the request.
   Stream<UserContent> randomRising(
-          {int limit, String after, Map<String, String> params}) =>
+          {int? limit, String? after, Map<String, String>? params}) =>
       ListingGenerator.createBasicGenerator(reddit, path + 'randomrising',
           limit: limit, after: after, params: params);
 
@@ -31,7 +31,7 @@ mixin RisingListingMixin {
   /// Reddit will return objects of the requested type. `params` is a set of
   /// additional parameters that will be forwarded along with the request.
   Stream<UserContent> rising(
-          {int limit, String after, Map<String, String> params}) =>
+          {int? limit, String? after, Map<String, String>? params}) =>
       ListingGenerator.createBasicGenerator(reddit, path + 'rising',
           limit: limit, after: after, params: params);
 }

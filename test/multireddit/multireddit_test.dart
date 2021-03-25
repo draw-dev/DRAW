@@ -75,7 +75,7 @@ Future<void> main() async {
     final newMultiNameSlug = 'copyofmultireddit';
     final reddit = await createRedditTestInstance(
         'test/multireddit/lib_multireddit_copy_2.json');
-    final oldMulti = (await reddit.user.multireddits())[1];
+    final oldMulti = (await reddit.user.multireddits())![1];
     final newMulti = await oldMulti.copy(newMultiName);
     expect(newMulti.displayName, newMultiNameSlug);
     expect(newMulti.subreddits, oldMulti.subreddits);
@@ -84,18 +84,18 @@ Future<void> main() async {
   test('lib/multireddit/multis_from_user_non_trival', () async {
     final reddit = await createRedditTestInstance(
         'test/multireddit/lib_user_multireddits.json');
-    final multis = await reddit.user.multireddits();
+    final multis = (await reddit.user.multireddits()) as List<Multireddit>;
     expect(multis.length, 9);
     final multi = multis[1];
 
     // Testing using data variable.
-    expect(multi.data['name'], 'drawtestingmulti');
-    expect(multi.data['display_name'], 'drawtestingmulti');
-    expect(multi.data['can_edit'], isTrue);
-    expect(multi.data['subreddits'].length, 81);
+    expect(multi.data!['name'], 'drawtestingmulti');
+    expect(multi.data!['display_name'], 'drawtestingmulti');
+    expect(multi.data!['can_edit'], isTrue);
+    expect(multi.data!['subreddits'].length, 81);
 
     // Testing using getters.
-    expect(multi.author.displayName, (await reddit.user.me()).displayName);
+    expect(multi.author.displayName, (await reddit.user.me())!.displayName);
     expect(multi.over18, isFalse);
     expect(multi.keyColor, HexColor('#cee3f8'));
     expect(multi.visibility, Visibility.public);
@@ -111,10 +111,10 @@ Future<void> main() async {
     final reddit = await createRedditTestInstance(
       'test/multireddit/lib_multireddit_delete.json',
     );
-    final multis = await reddit.user.multireddits();
+    final multis = (await reddit.user.multireddits()) as List<Multireddit>;
     expect(multis.length, 5);
     await multis[1].delete();
-    final newMultis = await reddit.user.multireddits();
+    final newMultis = (await reddit.user.multireddits()) as List<Multireddit>;
     expect(newMultis.length, 4);
   });
 
@@ -122,7 +122,7 @@ Future<void> main() async {
     final reddit = await createRedditTestInstance(
       'test/multireddit/lib_multireddit_add_subreddit.json',
     );
-    final multis = await reddit.user.multireddits();
+    final multis = (await reddit.user.multireddits()) as List<Multireddit>;
     final multi = multis[1];
     await multi.add('camping');
   });

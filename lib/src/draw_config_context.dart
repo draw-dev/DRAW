@@ -3,6 +3,7 @@
 /// Use of this source code is governed by a BSD-style license that
 /// can be found in the LICENSE file.
 
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:ini/ini.dart';
 
 import 'config_file_reader.dart';
@@ -43,7 +44,7 @@ const String kSubreddit = 'subreddit_kind';
 const String kUserAgent = 'user_agent';
 const String kUsername = 'username';
 
-final kNotSet = null;
+final Null kNotSet = null;
 
 /// The [DRAWConfigContext] class provides an interface to store.
 /// Load the DRAW's configuration file draw.ini.
@@ -89,55 +90,55 @@ class DRAWConfigContext {
     kRequiredField: [kOauthUrl, kRedditUrl]
   };
 
-  Config _customConfig;
+  Config? _customConfig;
 
-  final Map<String, String> _kind = Map<String, String>();
+  final Map<String, String> _kind = <String, String>{};
 
-  bool _checkForUpdates;
+  bool? _checkForUpdates;
 
   bool get checkForUpdates => _checkForUpdates ?? false;
 
-  String _accessToken;
-  String _authorizeUrl;
-  String _clientId;
-  String _clientSecret;
-  String _configUrl;
-  String _httpProxy;
-  String _httpsProxy;
-  String _oauthUrl;
-  String _password;
-  String _primarySiteName;
-  String _redditUrl;
-  String _redirectUrl;
-  String _refreshToken;
-  String _revokeToken;
-  String _shortURL;
-  String _userAgent;
-  String _username;
+  String? _accessToken;
+  String? _authorizeUrl;
+  String? _clientId;
+  String? _clientSecret;
+  String? _configUrl;
+  String? _httpProxy;
+  String? _httpsProxy;
+  String? _oauthUrl;
+  String? _password;
+  late String _primarySiteName;
+  String? _redditUrl;
+  String? _redirectUrl;
+  String? _refreshToken;
+  String? _revokeToken;
+  String? _shortURL;
+  String? _userAgent;
+  String? _username;
 
-  String get accessToken => _accessToken;
-  String get authorizeUrl => _authorizeUrl;
-  String get clientId => _clientId;
-  String get clientSecret => _clientSecret;
+  String? get accessToken => _accessToken;
+  String? get authorizeUrl => _authorizeUrl;
+  String? get clientId => _clientId;
+  String? get clientSecret => _clientSecret;
   String get commentKind => _kind[kComment] ?? kCommentKind;
-  String get configUrl => _configUrl;
-  String get httpProxy => _httpProxy;
-  String get httpsProxy => _httpsProxy;
+  String? get configUrl => _configUrl;
+  String? get httpProxy => _httpProxy;
+  String? get httpsProxy => _httpsProxy;
   String get messageKind => _kind[kMessage] ?? kMessageKind;
-  String get oauthUrl => _oauthUrl;
-  String get password => _password;
-  String get redditUrl => _redditUrl;
+  String? get oauthUrl => _oauthUrl;
+  String? get password => _password;
+  String? get redditUrl => _redditUrl;
   String get redditorKind => _kind[kRedditor] ?? kRedditorKind;
-  String get redirectUrl => _redirectUrl;
-  String get refreshToken => _refreshToken;
-  String get revokeToken => _revokeToken;
+  String? get redirectUrl => _redirectUrl;
+  String? get refreshToken => _refreshToken;
+  String? get revokeToken => _revokeToken;
   String get submissionKind => _kind[kSubmission] ?? kSubmissionKind;
   String get subredditKind => _kind[kSubreddit] ?? kSubredditKind;
-  String get userAgent => _userAgent;
-  String get username => _username;
+  String? get userAgent => _userAgent;
+  String? get username => _username;
 
   //Note this accessor throws if _shortURL is not set.
-  String get shortUrl {
+  String? get shortUrl {
     if (_shortURL == kNotSet) {
       throw DRAWClientError('No short domain specified');
     }
@@ -154,15 +155,15 @@ class DRAWConfigContext {
   /// between client instances. Should be unique for example related to [siteName].
   ///
   DRAWConfigContext({
-    String clientId,
-    String clientSecret,
-    String userAgent,
-    String username,
-    String password,
-    String redirectUrl,
-    String accessToken,
-    String authorizeUrl,
-    String configUrl,
+    String? clientId,
+    String? clientSecret,
+    String? userAgent,
+    String? username,
+    String? password,
+    String? redirectUrl,
+    String? accessToken,
+    String? authorizeUrl,
+    String? configUrl,
     String siteName = 'default',
     var checkForUpdates,
   }) {
@@ -188,7 +189,7 @@ class DRAWConfigContext {
       final configFileReader = ConfigFileReader(_configUrl);
 
       // Load the first file found in order of path preference.
-      final primaryFile = configFileReader.loadCorrectFile();
+      final dynamic primaryFile = configFileReader.loadCorrectFile();
       if (primaryFile != null) {
         try {
           _customConfig = Config.fromStrings(primaryFile.readAsLinesSync());
@@ -257,7 +258,6 @@ class DRAWConfigContext {
           default:
             throw DRAWInternalError(
                 'Parameter $param does not exist in the fieldMap for $type');
-            break;
         }
       }
     } else if (type == kOptionalWithDefaultValues) {
@@ -275,7 +275,6 @@ class DRAWConfigContext {
         default:
           throw DRAWInternalError(
               'Parameter $param does not exist in the fieldMap for $type');
-          break;
       }
     } else if (type == kRequiredField) {
       final value = _fetchOrNotSet(param);
@@ -289,7 +288,6 @@ class DRAWConfigContext {
         default:
           throw DRAWInternalError(
               'Parameter $param does not exist in the fieldMap for $type');
-          break;
       }
     }
   }
@@ -300,20 +298,20 @@ class DRAWConfigContext {
       return item;
     } else if (item is String) {
       final trueValues = ['1', 'yes', 'true', 'on'];
-      return trueValues.contains(item?.toLowerCase());
+      return trueValues.contains(item.toLowerCase());
     } else {
       return false;
     }
   }
 
   /// Fetch the value under the default site section in the ini file.
-  String _fetchDefault(String key) {
-    return _customConfig.get('default', key);
+  String? _fetchDefault(String key) {
+    return _customConfig!.get('default', key);
   }
 
-  String _fetchOptional(String key) {
+  String? _fetchOptional(String key) {
     try {
-      return _customConfig.get(_primarySiteName, key);
+      return _customConfig!.get(_primarySiteName, key);
     } catch (exception) {
       throw DRAWArgumentError(
           'Invalid paramter value, siteName cannot be null');
@@ -323,6 +321,6 @@ class DRAWConfigContext {
   /// Checks if [key] is contained in the parsed ini file, if not returns [kNotSet].
   ///
   /// [key] is the key to be searched in the draw.ini file.
-  String _fetchOrNotSet(final key) =>
+  String? _fetchOrNotSet(final key) =>
       (_fetchOptional(key) ?? _fetchDefault(key) ?? kNotSet);
 }

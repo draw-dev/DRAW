@@ -26,20 +26,21 @@ class WikiPageRef extends RedditBase {
   /// The name of the wiki page.
   final String name;
 
-  final String _revision;
+  final String? _revision;
   final SubredditRef _subreddit;
-  WikiPageModeration _mod;
+  WikiPageModeration? _mod;
 
+  @override
   String get infoPath => apiPath['wiki_page']
       .replaceAll(_kSubredditRegExp, _subreddit.displayName)
       .replaceAll(_kPageRegExp, name);
 
   factory WikiPageRef(Reddit reddit, SubredditRef subreddit, String name,
-          {String revision}) =>
+          {String? revision}) =>
       WikiPageRef._(reddit, subreddit, name, revision);
 
   WikiPageRef._(
-      Reddit reddit, SubredditRef subreddit, String name, String revision)
+      Reddit reddit, SubredditRef subreddit, String name, String? revision)
       : _subreddit = subreddit,
         _revision = revision,
         name = name,
@@ -56,7 +57,7 @@ class WikiPageRef extends RedditBase {
   /// this wiki page.
   WikiPageModeration get mod {
     _mod ??= WikiPageModeration._(this);
-    return _mod;
+    return _mod!;
   }
 
   /// Promote this [WikiPageRef] into a populated [WikiPage].
@@ -67,11 +68,9 @@ class WikiPageRef extends RedditBase {
     final params = <String, String>{
       'api_type': 'json',
     };
-    if (name != null) {
-      params['page'] = name;
-    }
+    params['page'] = name;
     if (_revision != null) {
-      params['v'] = _revision;
+      params['v'] = _revision!;
     }
     final result = (await reddit.get(infoPath,
         params: params,
@@ -81,7 +80,8 @@ class WikiPageRef extends RedditBase {
       result['revision_by'] =
           Redditor.parse(reddit, result['revision_by']['data']);
     }
-    return WikiPage._(reddit, _subreddit, name, _revision, result);
+    return WikiPage._(
+        reddit, _subreddit, name, _revision, result as Map<String, dynamic>);
   }
 
   static Stream<WikiEdit> _revisionGenerator(
@@ -105,7 +105,7 @@ class WikiPageRef extends RedditBase {
   /// content of the page.
   ///
   /// `reason` is an optional parameter used to describe why the edit was made.
-  Future<void> edit(String content, {String reason}) async {
+  Future<void> edit(String content, {String? reason}) async {
     final data = <String, String>{
       'content': content,
       'page': name,
@@ -138,26 +138,26 @@ class WikiPageRef extends RedditBase {
 /// A representation of a subreddit's wiki page.
 class WikiPage extends WikiPageRef with RedditBaseInitializedMixin {
   WikiPage._(Reddit reddit, SubredditRef subreddit, String name,
-      String revision, Map<String, dynamic> data)
+      String? revision, Map<String, dynamic> data)
       : super._(reddit, subreddit, name, revision) {
     setData(this, data);
   }
 
   /// The content of the page, in HTML format.
-  String get contentHtml => data['content_html'];
+  String get contentHtml => data!['content_html'];
 
   /// The content of the page, in Markdown format.
-  String get contentMarkdown => data['content_md'];
+  String get contentMarkdown => data!['content_md'];
 
   /// Whether this page may be revised.
-  bool get mayRevise => data['may_revise'];
+  bool get mayRevise => data!['may_revise'];
 
   /// The date and time the revision was made.
-  DateTime get revisionDate =>
-      GetterUtils.dateTimeOrNull(data['revision_date']);
+  DateTime /*!*/ get revisionDate =>
+      GetterUtils.dateTimeOrNull(data!['revision_date'])!;
 
   /// The [Redditor] who made the revision.
-  Redditor get revisionBy => data['revision_by'];
+  Redditor get revisionBy => data!['revision_by'];
 
   @override
   Future<WikiPage> refresh() async {
@@ -178,13 +178,13 @@ class WikiEdit {
   WikiPageRef get page => data['page'];
 
   /// The optional reason the edit was made.
-  String get reason => data['reason'];
+  String? get reason => data['reason'];
 
   /// The ID of the revision.
   String get revision => data['id'];
 
   /// The date and time the revision was made.
-  DateTime get timestamp => GetterUtils.dateTimeOrNull(data['timestamp']);
+  DateTime get timestamp => GetterUtils.dateTimeOrNull(data['timestamp'])!;
 
   WikiEdit._(this.data);
 
@@ -217,9 +217,9 @@ enum WikiPermissionLevel {
 
 /// Contains the current settings of a [WikiPageRef].
 class WikiPageSettings {
-  Map get data => _data;
+  Map? get data => _data;
   final WikiPageRef wikiPage;
-  Map _data;
+  Map? _data;
   final List<Redditor> _editors = <Redditor>[];
 
   WikiPageSettings._(this.wikiPage, this._data) {
@@ -227,7 +227,7 @@ class WikiPageSettings {
   }
 
   void _populateEditorsList() {
-    final rawEditors = data['editors'];
+    final rawEditors = data!['editors'];
     for (final e in rawEditors) {
       _editors.add(Redditor.parse(wikiPage.reddit, e['data']));
     }
@@ -240,11 +240,11 @@ class WikiPageSettings {
   List<Redditor> get editors => _editors;
 
   /// Whether the wiki page is listed and visible for non-moderators.
-  bool get listed => data['listed'];
+  bool get listed => data!['listed'];
 
   /// Who can edit this wiki page.
   WikiPermissionLevel get permissionLevel =>
-      WikiPermissionLevel.values[data['permlevel']];
+      WikiPermissionLevel.values[data!['permlevel']];
 
   /// Retrieve the most up-to-date settings and update in-place.
   ///

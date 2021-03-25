@@ -22,7 +22,7 @@ mixin GildedListingMixin {
   /// Reddit will return objects of the requested type. `params` is a set of
   /// additional parameters that will be forwarded along with the request.
   Stream<UserContentInitialized> gilded(
-          {int limit, String after, Map<String, String> params}) =>
+          {int? limit, String? after, Map<String, String>? params}) =>
       ListingGenerator.createBasicGenerator<UserContentInitialized>(
           reddit, path + 'gilded',
           limit: limit, after: after, params: params);

@@ -218,7 +218,7 @@ Future<void> main() async {
   test('lib/redditor/gild_insufficient_creddits', () async {
     final reddit = await createRedditTestInstance(
         'test/redditor/lib_reddit_gild_insufficient.json');
-    final current = await reddit.user.me();
+    final current = (await reddit.user.me()) as Redditor;
     expect(current.goldCreddits, 0);
 
     final other = await reddit.redditor('XtremeCheese').populate();
@@ -235,7 +235,7 @@ Future<void> main() async {
   test('lib/redditor/multireddits', () async {
     final reddit = await createRedditTestInstance(
         'test/redditor/lib_redditor_multireddits.json');
-    final current = await reddit.user.me();
+    final current = (await reddit.user.me()) as Redditor;
     final multis = await current.multireddits();
     expect(multis.length, 7);
     expect(multis[0].displayName, 'all');
@@ -319,7 +319,7 @@ Future<void> main() async {
     final content = <Comment>[];
     await for (final comment in redditor.comments.top(params: {'limit': '2'})) {
       expect(comment is Comment, isTrue);
-      content.add(comment);
+      content.add(comment as Comment);
     }
 
     expect(content.length, 2);
@@ -335,7 +335,7 @@ Future<void> main() async {
     await for (final submission
         in redditor.submissions.newest(params: {'limit': '2'})) {
       expect(submission is Submission, isTrue);
-      content.add(submission);
+      content.add(submission as Submission);
     }
 
     expect(content.length, 2);
@@ -371,7 +371,7 @@ Future<void> main() async {
 
     expect(content.length, 1);
     expect(content[0] is Submission, isTrue);
-    expect((content[0] as Submission).title, "Gilded post!");
+    expect((content[0] as Submission).title, 'Gilded post!');
   }, skip: 'Rewrite to handle new gilding types');
 
   test('lib/redditor/trophies', () async {

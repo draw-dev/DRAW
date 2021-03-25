@@ -3,7 +3,7 @@ import 'package:draw/src/draw_config_context.dart';
 
 void main() {
   test('Simple tests for default section of local file.', () {
-    final DRAWConfigContext configContext = DRAWConfigContext();
+    final configContext = DRAWConfigContext();
     expect(configContext.clientId, equals('Y4PJOclpDQy3xZ'));
     expect(configContext.clientSecret, equals('UkGLTe6oqsMk5nHCJTHLrwgvHpr'));
     expect(configContext.password, equals('pni9ubeht4wd50gk'));
@@ -11,8 +11,7 @@ void main() {
   });
 
   test('Testing non-default section.', () {
-    final DRAWConfigContext configContext =
-        DRAWConfigContext(siteName: 'section');
+    final configContext = DRAWConfigContext(siteName: 'section');
     expect(configContext.password, equals('different'));
     expect(configContext.oauthUrl, equals('https://oauth.reddit.com'));
   });
@@ -20,20 +19,18 @@ void main() {
   test(
       'Testing non-default section for parameters not present in default site.',
       () {
-    final DRAWConfigContext configContext =
-        DRAWConfigContext(siteName: 'section1');
+    final configContext = DRAWConfigContext(siteName: 'section1');
     expect(configContext.password, equals('pni9ubeht4wd50gk'));
     expect(configContext.username, equals('sectionbot'));
   });
 
   test('Testing non-default parameters with empty strings.', () {
-    final DRAWConfigContext configContext =
-        DRAWConfigContext(siteName: 'emptyTest');
+    final configContext = DRAWConfigContext(siteName: 'emptyTest');
     expect(configContext.username, equals(''));
   });
 
   test('Testing default values for unset parameters.', () {
-    final DRAWConfigContext configContext = DRAWConfigContext();
+    final configContext = DRAWConfigContext();
     expect(configContext.shortUrl, equals('https://redd.it'));
     expect(configContext.checkForUpdates, equals(false));
     expect(configContext.revokeToken,
@@ -46,20 +43,15 @@ void main() {
   });
 
   test('Test for CheckForUpdates Truth value check', () {
-    final DRAWConfigContext configContext =
-        DRAWConfigContext(siteName: 'testUpdateCheck1');
+    final configContext = DRAWConfigContext(siteName: 'testUpdateCheck1');
     expect(configContext.checkForUpdates, equals(true));
-    final DRAWConfigContext configContext1 =
-        DRAWConfigContext(siteName: 'testUpdateCheckOn');
+    final configContext1 = DRAWConfigContext(siteName: 'testUpdateCheckOn');
     expect(configContext1.checkForUpdates, equals(true));
-    final DRAWConfigContext configContext2 =
-        DRAWConfigContext(siteName: 'testUpdateCheckTrue');
+    final configContext2 = DRAWConfigContext(siteName: 'testUpdateCheckTrue');
     expect(configContext2.checkForUpdates, equals(true));
-    final DRAWConfigContext configContext3 =
-        DRAWConfigContext(siteName: 'testUpdateCheckYes');
+    final configContext3 = DRAWConfigContext(siteName: 'testUpdateCheckYes');
     expect(configContext3.checkForUpdates, equals(true));
-    final DRAWConfigContext configContext4 =
-        DRAWConfigContext(siteName: 'testUpdateCheckFalse');
+    final configContext4 = DRAWConfigContext(siteName: 'testUpdateCheckFalse');
     expect(configContext4.checkForUpdates, equals(false));
   });
 }

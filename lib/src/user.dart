@@ -31,7 +31,7 @@ class User extends RedditBase {
   /// request.
   Stream<Subreddit> contributorSubreddits(
           {int limit = ListingGenerator.defaultRequestLimit,
-          Map<String, String> params}) =>
+          Map<String, String>? params}) =>
       ListingGenerator.generator<Subreddit>(reddit, apiPath['my_contributor'],
           limit: limit, params: params);
 
@@ -42,14 +42,15 @@ class User extends RedditBase {
 
   /// Returns a [Future<Map>] mapping subreddits to karma earned on the given
   /// subreddit.
-  Future<Map<Subreddit, Map<String, int>>> karma() async {
-    return reddit.get(apiPath['karma']);
+  Future<Map<Subreddit, Map<String, int>>?> karma() async {
+    return (await reddit.get(apiPath['karma']))
+        as Map<Subreddit, Map<String, int>>?;
   }
 
   // TODO(bkonyi): actually do something with [useCache].
   /// Returns a [Future<Redditor>] which represents the current user.
-  Future<Redditor> me({useCache = true}) async {
-    return (await reddit.get(apiPath['me'])) as Redditor;
+  Future<Redditor?> me({useCache = true}) async {
+    return (await reddit.get(apiPath['me'])) as Redditor?;
   }
 
   /// Returns a [Stream] of [Subreddit]s the currently authenticated user is a
@@ -60,7 +61,7 @@ class User extends RedditBase {
   /// request.
   Stream<Subreddit> moderatorSubreddits(
           {int limit = ListingGenerator.defaultRequestLimit,
-          Map<String, String> params}) =>
+          Map<String, String>? params}) =>
       ListingGenerator.generator<Subreddit>(reddit, apiPath['my_moderator'],
           limit: limit, params: params);
 
@@ -70,7 +71,7 @@ class User extends RedditBase {
   /// [limit] is the number of [Subreddit]s to request, and [params] should
   /// contain any additional parameters that should be sent as part of the API
   /// request.
-  Future<List<Multireddit>> multireddits() async {
+  Future<List<Multireddit>?> multireddits() async {
     return (await reddit.get(apiPath['my_multireddits'])).cast<Multireddit>();
   }
 
@@ -82,7 +83,7 @@ class User extends RedditBase {
   /// request.
   Stream<Subreddit> subreddits(
           {int limit = ListingGenerator.defaultRequestLimit,
-          Map<String, String> params}) =>
+          Map<String, String>? params}) =>
       ListingGenerator.generator<Subreddit>(reddit, apiPath['my_subreddits'],
           limit: limit, params: params);
 }

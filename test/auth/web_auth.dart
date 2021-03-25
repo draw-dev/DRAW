@@ -85,8 +85,8 @@ Future<void> main() async {
     expect(outputHeaderFile.existsSync(), isTrue);
 
     final fileLines = outputHeaderFile.readAsStringSync().split('\n');
-    String state;
-    String code;
+    String? state;
+    String? code;
 
     // Try and find the code and state in the response.
     for (final line in fileLines) {
@@ -105,7 +105,7 @@ Future<void> main() async {
     expect(state, expectedState);
     expect(code, isNotNull);
 
-    if (code.codeUnitAt(code.length - 1) == 13) {
+    if (code!.codeUnitAt(code.length - 1) == 13) {
       // Remove \r (this was annoying to find).
       code = code.substring(0, code.length - 1);
     }

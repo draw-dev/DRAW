@@ -4,7 +4,6 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:draw/src/reddit.dart';
 
@@ -14,18 +13,18 @@ import 'package:draw/src/reddit.dart';
 abstract class ListingGenerator {
   static const defaultRequestLimit = 100;
 
-  static int getLimit(Map<String, String> params) {
+  static int? getLimit(Map<String, String>? params) {
     if ((params != null) && params.containsKey('limit')) {
-      return int.tryParse(params['limit']);
+      return int.tryParse(params['limit']!);
     }
     return null;
   }
 
   static Stream<T> createBasicGenerator<T>(
           final Reddit reddit, final String path,
-          {int limit,
-          String after,
-          Map<String, String> params,
+          {int? limit,
+          String? after,
+          Map<String, String>? params,
           bool objectify = true}) =>
       generator<T>(reddit, path,
           limit: limit ?? getLimit(params),
@@ -39,15 +38,15 @@ abstract class ListingGenerator {
   /// an anchor point for the slice. Returns a [Stream<T>] which can be iterated
   /// over using an asynchronous for-loop.
   static Stream<T> generator<T>(final Reddit reddit, final String api,
-      {int limit,
-      String after,
-      Map<String, String> params,
+      {int? limit,
+      String? after,
+      Map<String, String>? params,
       bool objectify = true}) async* {
     final kLimitKey = 'limit';
     final kAfterKey = 'after';
     final nullLimit = 100;
-    final paramsInternal = (params == null)
-        ? Map<String, String>()
+    final Map<String, String?> paramsInternal = (params == null)
+        ? <String, String>{}
         : Map<String, String>.from(params);
     final _limit = limit;
     paramsInternal[kLimitKey] = (_limit ?? nullLimit).toString();
@@ -58,12 +57,12 @@ abstract class ListingGenerator {
       paramsInternal[kAfterKey] = after;
     }
 
-    int yielded = 0;
-    int index = 0;
-    List<T> listing;
-    bool exhausted = false;
+    var yielded = 0;
+    var index = 0;
+    List<T>? listing;
+    var exhausted = false;
 
-    Future<List> _nextBatch() async {
+    Future<List?> _nextBatch() async {
       if (exhausted) {
         return null;
       }
@@ -74,8 +73,8 @@ abstract class ListingGenerator {
         newListing = response;
         exhausted = true;
       } else {
-        response = response as Map;
-        newListing = response['listing'].cast<T>();
+        response = response as Map?;
+        newListing = response!['listing'].cast<T>();
         if (response[kAfterKey] == null) {
           exhausted = true;
         } else {

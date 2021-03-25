@@ -29,15 +29,15 @@ Future<void> main() async {
     final reddit = await createRedditTestInstance(
         'test/user_content_moderation/lib_user_content_moderation_set_flair.json');
     final submission = await reddit.submission(id: '7x6ew7').populate();
-    expect(submission.data['link_flair_text'], isNull);
+    expect(submission.data!['link_flair_text'], isNull);
 
     await submission.mod.flair(text: 'Test Flair');
     await submission.refresh();
-    expect(submission.data['link_flair_text'], 'Test Flair');
+    expect(submission.data!['link_flair_text'], 'Test Flair');
 
     await submission.mod.flair();
     await submission.refresh();
-    expect(submission.data['link_flair_text'], isNull);
+    expect(submission.data!['link_flair_text'], isNull);
   });
 
   test('lib/user_content_moderation/lock-unlock', () async {
@@ -118,12 +118,12 @@ Future<void> main() async {
       await submission.mod.suggestedSort(sort: s);
       await submission.refresh();
       if (s != CommentSortType.blank) {
-        expect(submission.data['suggested_sort'], _commentSortTypeToString(s));
+        expect(submission.data!['suggested_sort'], _commentSortTypeToString(s));
       } else {
-        expect(submission.data['suggested_sort'], isNull);
+        expect(submission.data!['suggested_sort'], isNull);
       }
     }
-    expect(submission.data['suggested_sort'], isNull);
+    expect(submission.data!['suggested_sort'], isNull);
   }, skip: 'Needs updating to support "CommentSortType.best"');
 
   test('lib/user_content_moderation/sticky', () async {

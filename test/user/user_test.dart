@@ -13,7 +13,7 @@ import '../test_utils.dart';
 Future<void> main() async {
   test('lib/user/me', () async {
     final reddit = await createRedditTestInstance('test/user/lib_user_me.json');
-    final Redditor me = await reddit.user.me();
+    final me = (await reddit.user.me()) as Redditor;
     expect(me.displayName, equals('DRAWApiOfficial'));
     expect(me.isEmployee, isFalse);
     expect(me.preferNoProfanity, isTrue);
@@ -21,7 +21,7 @@ Future<void> main() async {
     expect(me.commentKarma, equals(0));
     expect(me.linkKarma, equals(1));
     expect(me.goldCreddits, equals(0));
-    expect(me.createdUtc.millisecondsSinceEpoch / 1000, equals(1501801979));
+    expect(me.createdUtc!.millisecondsSinceEpoch / 1000, equals(1501801979));
   });
 
   test('lib/user/blocked', () async {
@@ -44,7 +44,7 @@ Future<void> main() async {
     }
     expect(subreddits.length, equals(1));
     final subreddit = subreddits[0];
-    expect(subreddit.displayName, equals("drawapitesting"));
+    expect(subreddit.displayName, equals('drawapitesting'));
     expect(subreddit.isContributor, isTrue);
     expect(subreddit.isBanned, isFalse);
   });
@@ -52,11 +52,11 @@ Future<void> main() async {
   test('lib/user/friends', () async {
     final reddit =
         await createRedditTestInstance('test/user/lib_user_friends.json');
-    final List<Redditor> friends = await reddit.user.friends();
+    final friends = await reddit.user.friends();
     expect(friends.length, equals(1));
     final friend = friends[0];
     expect(friend.displayName, equals('XtremeCheese'));
-    expect(friend.data['date'], equals(1501884713.0));
+    expect(friend.data!['date'], equals(1501884713.0));
   });
 
   test('lib/user/karma', () async {
@@ -79,7 +79,7 @@ Future<void> main() async {
     expect(subreddit.isContributor, isTrue);
     expect(subreddit.isBanned, isFalse);
     expect(subreddit.title, equals('DRAW API Testing'));
-    expect(subreddit.data['public_description'],
+    expect(subreddit.data!['public_description'],
         contains('A subreddit used for testing'));
   });
 
@@ -87,16 +87,16 @@ Future<void> main() async {
   test('lib/user/multireddits', () async {
     final reddit =
         await createRedditTestInstance('test/user/lib_user_multireddits.json');
-    final multis = await reddit.user.multireddits();
+    final multis = (await reddit.user.multireddits()) as List<Multireddit>;
     expect(multis.length, equals(1));
     final multi = multis[0];
-    expect(multi.data['name'], equals('drawtestingmulti'));
-    expect(multi.data['display_name'], equals('drawtestingmulti'));
-    expect(multi.data['can_edit'], isTrue);
-    expect(multi.data['subreddits'].length, equals(81));
+    expect(multi.data!['name'], equals('drawtestingmulti'));
+    expect(multi.data!['display_name'], equals('drawtestingmulti'));
+    expect(multi.data!['can_edit'], isTrue);
+    expect(multi.data!['subreddits'].length, equals(81));
     // TODO(bkonyi): once Multireddit is fully implemented, we probably want to
     // return a map of [Subreddit]s.
-    expect(multi.data['subreddits'][0]['name'], equals('lisp'));
+    expect(multi.data!['subreddits'][0]['name'], equals('lisp'));
   });
 
   test('lib/user/subreddits', () async {

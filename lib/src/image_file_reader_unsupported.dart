@@ -3,5 +3,5 @@
 /// Use of this source code is governed by a BSD-style license that
 /// can be found in the LICENSE file.
 
-Future<Map> loadImage(Uri imagePath) async =>
+Future<Map> loadImage(Uri? imagePath) async =>
     throw UnsupportedError('Loading images from disk is not supported on web.');

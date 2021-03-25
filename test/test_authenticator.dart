@@ -9,6 +9,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
+import 'package:oauth2/oauth2.dart' as oauth2;
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:reply/reply.dart';
 
 import 'package:draw/src/auth.dart';
@@ -22,10 +24,10 @@ const notFoundExceptionStr = 'DRAWNotFoundException';
 /// Reddit API interactions, used primarily for testing.
 class TestAuthenticator extends Authenticator {
   final String _recordingPath;
-  final Authenticator _recordAuth;
+  final Authenticator? _recordAuth;
   final _recorder = Recorder<List, dynamic>();
   bool get isRecording => (_recordAuth == null);
-  Recording _recording;
+  late Recording _recording;
 
   /// Creates a [TestAuthenticator] object which either reads a recording from
   /// [recordingPath] or records Reddit API requests and responses if
@@ -34,10 +36,11 @@ class TestAuthenticator extends Authenticator {
   /// making requests to the Reddit API. Note: when recording Reddit API
   /// interactions, [writeRecording] must be called to write all prior records
   /// to the file at [recordingPath].
-  TestAuthenticator(String recordingPath, {Authenticator recordAuth})
+  TestAuthenticator(String recordingPath, {Authenticator? recordAuth})
       : _recordingPath = recordingPath,
         _recordAuth = recordAuth,
-        super(DRAWConfigContext(), null) {
+        super(DRAWConfigContext(),
+            oauth2.AuthorizationCodeGrant('', Uri(), Uri())) {
     if (isRecording) {
       final rawRecording = File(recordingPath).readAsStringSync();
       final recording = json.decode(rawRecording).cast<Map<String, dynamic>>();
@@ -54,7 +57,7 @@ class TestAuthenticator extends Authenticator {
     if (isRecording) {
       throw DRAWAuthenticationError('cannot refresh a TestAuthenticator.');
     }
-    return _recordAuth.refresh();
+    return _recordAuth!.refresh();
   }
 
   @override
@@ -62,7 +65,7 @@ class TestAuthenticator extends Authenticator {
     if (isRecording) {
       throw DRAWAuthenticationError('cannot revoke a TestAuthenticator.');
     }
-    return _recordAuth.revoke();
+    return _recordAuth!.revoke();
   }
 
   dynamic _copyResponse(response) {
@@ -106,18 +109,18 @@ class TestAuthenticator extends Authenticator {
 
   @override
   Future<dynamic> get(Uri path,
-      {Map<String, String> params, bool followRedirects = false}) async {
+      {Map<String, String?>? params, bool followRedirects = false}) async {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), params.toString()]);
       _throwOnError(result);
     } else {
       try {
-        result = await _recordAuth.get(path,
-            params: params, followRedirects: followRedirects);
+        result = await _recordAuth!
+            .get(path, params: params, followRedirects: followRedirects);
       } catch (e) {
         // Throws.
-        _recordException(path, params, e);
+        _recordException(path, params, e as Exception);
       }
       _recorder
           .given([path.toString(), params.toString()])
@@ -128,8 +131,8 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<dynamic> post(Uri path, Map<String, String> body,
-      {Map<String, Uint8List> files, Map params}) async {
+  Future<dynamic> post(Uri path, Map<String, String?>? body,
+      {Map<String, Uint8List?>? files, Map? params}) async {
     var result;
     if (isRecording) {
       // Note: we ignore the files parameter for creating recordings, so tests
@@ -139,10 +142,10 @@ class TestAuthenticator extends Authenticator {
     } else {
       try {
         result =
-            await _recordAuth.post(path, body, files: files, params: params);
+            await _recordAuth!.post(path, body, files: files, params: params);
       } catch (e) {
         // Throws.
-        _recordException(path, body, e);
+        _recordException(path, body, e as Exception);
       }
       _recorder
           .given([path.toString(), body.toString()])
@@ -153,17 +156,17 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<dynamic> put(Uri path, {Map<String, String> body}) async {
+  Future<dynamic> put(Uri path, {Map<String, String>? body}) async {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);
       _throwOnError(result);
     } else {
       try {
-        result = await _recordAuth.put(path, body: body);
+        result = await _recordAuth!.put(path, body: body);
       } catch (e) {
         // Throws.
-        _recordException(path, body, e);
+        _recordException(path, body, e as Exception);
       }
       _recorder
           .given([path.toString(), body.toString()])
@@ -174,17 +177,17 @@ class TestAuthenticator extends Authenticator {
   }
 
   @override
-  Future<dynamic> delete(Uri path, {Map<String, String> body}) async {
+  Future<dynamic> delete(Uri path, {Map<String, String>? body}) async {
     var result;
     if (isRecording) {
       result = _recording.reply([path.toString(), body.toString()]);
       _throwOnError(result);
     } else {
       try {
-        result = await _recordAuth.delete(path, body: body);
+        result = await _recordAuth!.delete(path, body: body);
       } catch (e) {
         // Throws.
-        _recordException(path, body, e);
+        _recordException(path, body, e as Exception);
       }
       _recorder
           .given([path.toString(), body.toString()])
@@ -203,7 +206,7 @@ class TestAuthenticator extends Authenticator {
   /// to [recordingPath] and returns a [Future<File>], which is the file that
   /// has been written to, when in recording mode. When not in recording mode,
   /// does nothing and returns null.
-  Future<File> writeRecording() {
+  Future<File>? writeRecording() {
     if (!isRecording) {
       return (File(_recordingPath)).writeAsString(json
           .encode(_recorder.toRecording().toJsonEncodable(

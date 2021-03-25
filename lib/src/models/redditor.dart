@@ -25,77 +25,77 @@ import 'package:draw/src/util.dart';
 /// known as a Redditor.
 class Redditor extends RedditorRef with RedditBaseInitializedMixin {
   /// The amount of comment karma earned by the Redditor.
-  int get commentKarma => data['comment_karma'];
+  int? get commentKarma => data!['comment_karma'];
 
   /// The time the Redditor's account was created.
-  DateTime get createdUtc => GetterUtils.dateTimeOrNull(data['created_utc']);
+  DateTime? get createdUtc => GetterUtils.dateTimeOrNull(data!['created_utc']);
 
   /// The amount of Reddit Gold creddits a Redditor currently has.
-  int get goldCreddits => data['gold_creddits'];
+  int? get goldCreddits => data!['gold_creddits'];
 
   /// The UTC date and time that the Redditor's Reddit Gold subscription ends.
   ///
   /// Returns `null` if the Redditor does not have Reddit Gold.
-  DateTime get goldExpiration =>
-      GetterUtils.dateTimeOrNull(data['gold_expiration']);
+  DateTime? get goldExpiration =>
+      GetterUtils.dateTimeOrNull(data!['gold_expiration']);
 
   /// Redditor has Reddit Gold.
-  bool get hasGold => data['is_gold'];
+  bool? get hasGold => data!['is_gold'];
 
   /// Redditor has Mod Mail.
-  bool get hasModMail => data['has_mod_mail'];
+  bool? get hasModMail => data!['has_mod_mail'];
 
   /// Redditor has a verified email address.
-  bool get hasVerifiedEmail => data['has_verified_email'];
+  bool? get hasVerifiedEmail => data!['has_verified_email'];
 
   /// Redditor has opted into the Reddit beta.
-  bool get inBeta => data['in_beta'];
+  bool? get inBeta => data!['in_beta'];
 
   /// Number of [Message]s in the Redditor's [Inbox].
-  int get inboxCount => data['inbox_count'];
+  int? get inboxCount => data!['inbox_count'];
 
   /// Redditor is a Reddit employee.
-  bool get isEmployee => data['is_employee'];
+  bool? get isEmployee => data!['is_employee'];
 
   /// Redditor is a Moderator.
-  bool get isModerator => data['is_mod'];
+  bool? get isModerator => data!['is_mod'];
 
   /// The suspension status of the current Redditor.
-  bool get isSuspended => data['is_suspended'];
+  bool? get isSuspended => data!['is_suspended'];
 
   /// The amount of link karma earned by the Redditor.
-  int get linkKarma => data['link_karma'];
+  int? get linkKarma => data!['link_karma'];
 
   /// The list of moderator permissions for the user.
   ///
   /// Only populated for moderator related calls for a [Subreddit].
   List<ModeratorPermission> get moderatorPermissions =>
-      stringsToModeratorPermissions(data['mod_permissions'].cast<String>());
+      stringsToModeratorPermissions(data!['mod_permissions'].cast<String>());
 
   /// Redditor has new Mod Mail.
-  bool get newModMailExists => data['new_modmail_exists'];
+  bool? get newModMailExists => data!['new_modmail_exists'];
 
   /// The note associated with a friend.
   ///
   /// Only populated for responses from friend related called.
-  String get note => data['note'];
+  String? get note => data!['note'];
 
   /// Redditor can see 18+ content.
-  bool get over18 => data['over_18'];
+  bool? get over18 => data!['over_18'];
 
   /// Whether the Redditor has chosen to filter profanity.
-  bool get preferNoProfanity => data['pref_no_profanity'];
+  bool? get preferNoProfanity => data!['pref_no_profanity'];
 
   /// The date and time when the Redditor's suspension ends.
-  DateTime get suspensionExpirationUtc =>
-      GetterUtils.dateTimeOrNull(data['suspension_expiration_utc']);
+  DateTime? get suspensionExpirationUtc =>
+      GetterUtils.dateTimeOrNull(data!['suspension_expiration_utc']);
 
   Redditor.parse(Reddit reddit, Map data) : super(reddit) {
     if (!data.containsKey('name') &&
         !(data.containsKey('kind') &&
             data['kind'] == Reddit.defaultRedditorKind)) {
       throw DRAWArgumentError("input argument 'data' is not a valid"
-          " representation of a Redditor");
+          ' representation of a Redditor');
     }
     setData(this, data);
     _name = data['name'];
@@ -116,12 +116,14 @@ class RedditorRef extends RedditBase
   static final _usernameRegExp = RegExp(r'{username}');
 
   /// The Redditor's display name (e.g., spez or XtremeCheese).
+  @override
   String get displayName => _name;
-  String _name;
+  late String _name;
 
   /// The Reddit path suffix for this Redditor (e.g., 'user/spez/')
+  @override
   String get path => _path;
-  String _path;
+  late String _path;
 
   RedditorRef(Reddit reddit) : super(reddit);
 
@@ -153,8 +155,8 @@ class RedditorRef extends RedditBase
   /// Friend fields include those such as [note]. Other fields may not be
   /// completely initialized.
   Future<Redditor> friendInfo() async =>
-      await _throwOnInvalidRedditor(() async => await reddit
-          .get(apiPath['friend_v1'].replaceAll(_userRegExp, _name)));
+      (await _throwOnInvalidRedditor(() async => await reddit.get(
+          apiPath['friend_v1'].replaceAll(_userRegExp, _name)))) as Redditor;
 
   /// Gives Reddit Gold to the [Redditor]. [months] is the number of months of
   /// Reddit Gold to be given to the [Redditor].
@@ -182,8 +184,10 @@ class RedditorRef extends RedditBase
           .cast<Multireddit>();
 
   /// Promotes this [RedditorRef] into a populated [Redditor].
-  Future<Redditor> populate() async => (await _throwOnInvalidRedditor(
-      () async => Redditor.parse(reddit, await fetch()))) as Redditor;
+  Future<Redditor> populate() async =>
+      ((await _throwOnInvalidRedditor(() async =>
+              Redditor.parse(reddit, (await fetch()) as Map<dynamic, dynamic>)))
+          as Redditor?)!;
 
   // TODO(bkonyi): Add code samples.
   /// Provides a [RedditorStream] for the current [Redditor].
@@ -194,9 +198,9 @@ class RedditorRef extends RedditBase
 
   /// Unblock the [Redditor].
   Future<void> unblock() async {
-    final currentUser = await reddit.user.me();
+    final currentUser = (await reddit.user.me()) as Redditor;
     final data = {
-      'container': 't2_' + currentUser.data['id'],
+      'container': 't2_' + currentUser.data!['id'],
       'name': displayName,
       'type': 'enemy',
     };
@@ -231,7 +235,7 @@ class RedditorStream extends RedditBase {
   /// be returned initially. If [limit] is provided, the stream will close after
   /// after [limit] iterations. If [pauseAfter] is provided, null will be
   /// returned after [pauseAfter] requests without new items.
-  Stream<Comment> comments({int limit, int pauseAfter}) =>
+  Stream<Comment?> comments({int? limit, int? pauseAfter}) =>
       streamGenerator(redditor.comments.newest,
           itemLimit: limit, pauseAfter: pauseAfter);
 
@@ -243,7 +247,7 @@ class RedditorStream extends RedditBase {
   /// the stream will close after after [limit] iterations. If [pauseAfter] is
   /// provided, null will be returned after [pauseAfter] requests without new
   /// items.
-  Stream<Submission> submissions({int limit, int pauseAfter}) =>
+  Stream<Submission?> submissions({int? limit, int? pauseAfter}) =>
       streamGenerator(redditor.submissions.newest,
           itemLimit: limit, pauseAfter: pauseAfter);
 }

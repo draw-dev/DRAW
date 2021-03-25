@@ -18,8 +18,8 @@ class BoundedSet<T> {
 
   BoundedSet(int maxItems)
       : _maxItems = maxItems,
-        _fifo = List<T>(),
-        _set = Set<T>();
+        _fifo = <T>[],
+        _set = <T>{};
 
   bool contains(T object) {
     return _set.contains(object);
@@ -60,9 +60,10 @@ class ExponentialCounter {
   }
 }
 
-Stream<T> streamGenerator<T>(function, {int itemLimit, int pauseAfter}) async* {
+Stream<T?> streamGenerator<T>(function,
+    {int? itemLimit, int? pauseAfter}) async* {
   final counter = ExponentialCounter(16);
-  final seen = BoundedSet<String>(301);
+  final BoundedSet<String?> seen = BoundedSet<String>(301);
   var withoutBeforeCounter = 0;
   var responsesWithoutNew = 0;
   var beforeFullname;
@@ -93,7 +94,7 @@ Stream<T> streamGenerator<T>(function, {int itemLimit, int pauseAfter}) async* {
       found = true;
       seen.add(fullname);
       newestFullname = fullname;
-      yield item;
+      yield item as T;
       count++;
       if (itemLimit == count) {
         return;
@@ -121,11 +122,11 @@ Stream<T> streamGenerator<T>(function, {int itemLimit, int pauseAfter}) async* {
 Map<String, dynamic> snakeCaseMapKeys(Map<String, dynamic> m) =>
     m.map((k, v) => MapEntry(snakeCase(k), v));
 
-final RegExp _snakecaseRegexp = RegExp("[A-Z]");
+final RegExp _snakecaseRegexp = RegExp('[A-Z]');
 String snakeCase(String name, [separator = '_']) => name.replaceAllMapped(
     _snakecaseRegexp,
     (Match match) =>
-        (match.start != 0 ? separator : '') + match.group(0).toLowerCase());
+        (match.start != 0 ? separator : '') + match.group(0)!.toLowerCase());
 
 String permissionsString(
     List<String> permissions, Set<String> validPermissions) {

@@ -40,7 +40,7 @@ Future<void> main() async {
   test('lib/subreddit/comment_stream', () async {
     final reddit = await createRedditTestInstance(
         'test/subreddit/lib_subreddit_comments_stream.json');
-    int count = 0;
+    var count = 0;
     await for (final comment
         in reddit.subreddit('drawapitesting').stream.comments(limit: 10)) {
       expect(comment is CommentRef, isTrue);
@@ -88,7 +88,8 @@ Future<void> main() async {
     // Risky subreddit that's quarantined. In we go...
     await garbage.quarantine.optIn();
     try {
-      await for (final Submission submission in garbage.top()) {
+      await for (final Submission submission
+          in garbage.top().cast<Submission>()) {
         break;
       }
     } catch (e) {
@@ -98,7 +99,8 @@ Future<void> main() async {
     // Let's opt back out of seeing this subreddit...
     await garbage.quarantine.optOut();
     try {
-      await for (final Submission submission in garbage.top()) {
+      await for (final Submission submission
+          in garbage.top().cast<Submission>()) {
         fail('Expected DRAWAuthenticationError but got a submission');
       }
     } on DRAWAuthenticationError catch (e) {
@@ -181,8 +183,8 @@ Future<void> main() async {
     // to. A short delay is enough to ensure Reddit finishes processing.
     // await new Future.delayed(const Duration(seconds: 1));
 
-    bool hasFunny = false;
-    bool hasWTF = false;
+    var hasFunny = false;
+    var hasWTF = false;
     await for (final subscription in reddit.user.subreddits()) {
       if (subscription.displayName == 'WTF') {
         hasWTF = true;
@@ -233,7 +235,7 @@ Future<void> main() async {
     expect(stylesheet.stylesheet,
         '.flair-redandblue { color: blue; background: red; }');
     expect(stylesheet.toString(), stylesheet.stylesheet);
-    expect(stylesheet.images?.length, 1);
+    expect(stylesheet.images.length, 1);
 
     final dartLogo = stylesheet.images.first;
     expect(
@@ -321,6 +323,7 @@ Future<void> main() async {
         'test/subreddit/lib_subreddit_stylesheet_upload.json');
     final stylesheet = reddit.subreddit('drawapitesting').stylesheet;
     final uri = await stylesheet.upload('foobar',
+        format: ImageFormat.png,
         imagePath: Uri.file('test/images/dart_header.png'));
     expect(uri.toString(),
         'https://a.thumbs.redditmedia.com/MJGdqUs7bXLgG7-pYG5zVRdI_6qUQ6svvlZXURe5K98.png');
@@ -345,25 +348,31 @@ Future<void> main() async {
     final stylesheet = reddit.subreddit('drawapitesting').stylesheet;
 
     // Missing args.
-    await expectLater(() async => await stylesheet.upload('foobar'),
+    await expectLater(
+        () async => await stylesheet.upload(
+              'foobar',
+              format: ImageFormat.png,
+            ),
         throwsA(TypeMatcher<DRAWArgumentError>()));
 
     // Bad format.
     await expectLater(
         () async => await stylesheet.upload('foobar',
+            format: ImageFormat.jpeg,
             imagePath: Uri.file('test/test_utils.dart')),
         throwsA(TypeMatcher<DRAWImageUploadException>()));
 
     // Too small.
     await expectLater(
         () async => await stylesheet.upload('foobar',
+            format: ImageFormat.jpeg,
             imagePath: Uri.file('test/images/bad.jpg')),
         throwsA(TypeMatcher<FormatException>()));
 
     // File doesn't exist.
     await expectLater(
         () async => await stylesheet.upload('foobar',
-            imagePath: Uri.file('foobar.bad')),
+            format: ImageFormat.jpeg, imagePath: Uri.file('foobar.bad')),
         throwsA(TypeMatcher<FileSystemException>()));
   });
 
@@ -372,6 +381,7 @@ Future<void> main() async {
         'test/subreddit/lib_subreddit_stylesheet_upload_header.json');
     final stylesheet = reddit.subreddit('drawapitesting').stylesheet;
     final uri = await stylesheet.uploadHeader(
+        format: ImageFormat.png,
         imagePath: Uri.file('test/images/dart_header.png'));
     expect(uri.toString(),
         'https://a.thumbs.redditmedia.com/MJGdqUs7bXLgG7-pYG5zVRdI_6qUQ6svvlZXURe5K98.png');
@@ -382,7 +392,7 @@ Future<void> main() async {
         'test/subreddit/lib_subreddit_stylesheet_upload_mobile_header.json');
     final stylesheet = reddit.subreddit('drawapitesting').stylesheet;
     final uri = await stylesheet.uploadMobileHeader(
-        imagePath: Uri.file('test/images/10by3.jpg'));
+        format: ImageFormat.jpeg, imagePath: Uri.file('test/images/10by3.jpg'));
     expect(uri.toString(),
         'https://a.thumbs.redditmedia.com/MkErrkhg6-Iou7zdTRxnpwOSNK4DPWXZ3xI35LiKTU0.png');
   });
@@ -392,7 +402,7 @@ Future<void> main() async {
         'test/subreddit/lib_subreddit_stylesheet_upload_mobile_icon.json');
     final stylesheet = reddit.subreddit('drawapitesting').stylesheet;
     final uri = await stylesheet.uploadMobileIcon(
-        imagePath: Uri.file('test/images/256.jpg'));
+        format: ImageFormat.png, imagePath: Uri.file('test/images/256.jpg'));
     expect(uri.toString(),
         'https://b.thumbs.redditmedia.com/GJSQRXiRY-2CH4PTgrrPNXqSPaQSKJYUikUr15m2n3Y.png');
   });
@@ -487,7 +497,7 @@ Future<void> main() async {
     final users = <String>['DRAWApiOfficial', 'XtremeCheese'];
     await subredditFlair.update(users, text: 'Flair Test');
 
-    int count = 0;
+    var count = 0;
     await for (final f in subredditFlair()) {
       expect(f.flairText, 'Flair Test');
       ++count;

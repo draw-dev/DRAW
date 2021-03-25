@@ -7,7 +7,6 @@ import 'dart:async';
 
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base.dart';
-import 'package:draw/src/reddit.dart';
 
 enum VoteState {
   none,
@@ -28,19 +27,16 @@ int _voteStateToIndex(VoteState vote) {
 
 /// A mixin which provides voting functionality for [Comment] and [Submission].
 mixin VoteableMixin implements RedditBaseInitializedMixin {
-  Reddit get reddit;
-  String get fullname;
-
   /// The author of the item.
-  String get author => data['author'];
+  String get author => data!['author'];
 
   /// The body of the item.
   ///
   /// Returns null for non-text [Submission]s.
-  String get body => data['body'];
+  String? get body => data!['body'];
 
   /// The karma score of the voteable item.
-  int get score => data['score'];
+  int get score => data!['score'];
 
   /// Has the currently authenticated [User] voted on this [UserContent].
   ///
@@ -48,9 +44,9 @@ mixin VoteableMixin implements RedditBaseInitializedMixin {
   /// [VoteState.downvoted] if it has been downvoted, and [VoteState.none]
   /// otherwise.
   VoteState get vote {
-    if (data['likes'] == null) {
+    if (data!['likes'] == null) {
       return VoteState.none;
-    } else if (data['likes']) {
+    } else if (data!['likes']) {
       return VoteState.upvoted;
     } else {
       return VoteState.downvoted;
@@ -60,21 +56,21 @@ mixin VoteableMixin implements RedditBaseInitializedMixin {
   void _updateScore(VoteState newVote) {
     if (vote == VoteState.upvoted) {
       if (newVote == VoteState.downvoted) {
-        data['score'] = score - 2;
+        data!['score'] = score - 2;
       } else if (newVote == VoteState.none) {
-        data['score'] = score - 1;
+        data!['score'] = score - 1;
       }
     } else if (vote == VoteState.none) {
       if (newVote == VoteState.downvoted) {
-        data['score'] = score - 1;
+        data!['score'] = score - 1;
       } else if (newVote == VoteState.upvoted) {
-        data['score'] = score + 1;
+        data!['score'] = score + 1;
       }
     } else if (vote == VoteState.downvoted) {
       if (newVote == VoteState.upvoted) {
-        data['score'] = score + 2;
+        data!['score'] = score + 2;
       } else if (newVote == VoteState.none) {
-        data['score'] = score + 1;
+        data!['score'] = score + 1;
       }
     }
   }
@@ -98,13 +94,13 @@ mixin VoteableMixin implements RedditBaseInitializedMixin {
 
     switch (direction) {
       case VoteState.none:
-        data['likes'] = null;
+        data!['likes'] = null;
         break;
       case VoteState.upvoted:
-        data['likes'] = true;
+        data!['likes'] = true;
         break;
       case VoteState.downvoted:
-        data['likes'] = false;
+        data!['likes'] = false;
     }
   }
 

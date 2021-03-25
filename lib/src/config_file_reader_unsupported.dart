@@ -4,7 +4,7 @@
 /// can be found in the LICENSE file.
 
 class ConfigFileReader {
-  ConfigFileReader(String configUrl);
+  ConfigFileReader(String? configUrl);
 
   /// Loads file from [_localConfigPath] or [_userConfigPath].
   Null loadCorrectFile() => null;

@@ -70,16 +70,16 @@ class Reddit {
   /// A utility class that converts Reddit API responses to DRAW objects.
   Objector get objector => _objector;
 
-  Authenticator _auth;
-  DRAWConfigContext _config;
-  FrontPage _front;
-  Inbox _inbox;
-  Subreddits _subreddits;
-  User _user;
+  late Authenticator _auth;
+  late DRAWConfigContext _config;
+  late FrontPage _front;
+  late Inbox _inbox;
+  late Subreddits _subreddits;
+  late User _user;
   bool _readOnly = true;
   bool _initialized = false;
   final _initializedCompleter = Completer<bool>();
-  Objector _objector;
+  late Objector _objector;
 
   /// Creates a new read-only [Reddit] instance for installed application types.
   ///
@@ -109,12 +109,12 @@ class Reddit {
   /// [siteName] is the name of the configuration to use from draw.ini. Defaults
   /// to 'default'.
   static Future<Reddit> createUntrustedReadOnlyInstance(
-      {String clientId,
-      String deviceId,
-      String userAgent,
-      Uri tokenEndpoint,
-      Uri authEndpoint,
-      Uri configUri,
+      {String? clientId,
+      String? deviceId,
+      String? userAgent,
+      Uri? tokenEndpoint,
+      Uri? authEndpoint,
+      Uri? configUri,
       String siteName = 'default'}) async {
     final reddit = Reddit._untrustedReadOnlyInstance(clientId, deviceId,
         userAgent, tokenEndpoint, authEndpoint, configUri, siteName);
@@ -152,12 +152,12 @@ class Reddit {
   /// [siteName] is the name of the configuration to use from draw.ini. Defaults
   /// to 'default'.
   static Reddit createInstalledFlowInstance(
-          {String clientId,
-          String userAgent,
-          Uri redirectUri,
-          Uri tokenEndpoint,
-          Uri authEndpoint,
-          Uri configUri,
+          {String? clientId,
+          String? userAgent,
+          Uri? redirectUri,
+          Uri? tokenEndpoint,
+          Uri? authEndpoint,
+          Uri? configUri,
           String siteName = 'default'}) =>
       Reddit._webFlowInstance(clientId, '', userAgent, redirectUri,
           tokenEndpoint, authEndpoint, configUri, siteName);
@@ -186,12 +186,12 @@ class Reddit {
   /// [siteName] is the name of the configuration to use from draw.ini. Defaults
   /// to 'default'.
   static Future<Reddit> createReadOnlyInstance(
-      {String clientId,
-      String clientSecret,
-      String userAgent,
-      Uri tokenEndpoint,
-      Uri authEndpoint,
-      Uri configUri,
+      {String? clientId,
+      String? clientSecret,
+      String? userAgent,
+      Uri? tokenEndpoint,
+      Uri? authEndpoint,
+      Uri? configUri,
       String siteName = 'default'}) async {
     final reddit = Reddit._readOnlyInstance(clientId, clientSecret, userAgent,
         tokenEndpoint, authEndpoint, configUri, siteName);
@@ -231,14 +231,14 @@ class Reddit {
   /// [siteName] is the name of the configuration to use from draw.ini. Defaults
   /// to 'default'.
   static Future<Reddit> createScriptInstance(
-      {String clientId,
-      String clientSecret,
-      String userAgent,
-      String username,
-      String password,
-      Uri tokenEndpoint,
-      Uri authEndpoint,
-      Uri configUri,
+      {String? clientId,
+      String? clientSecret,
+      String? userAgent,
+      String? username,
+      String? password,
+      Uri? tokenEndpoint,
+      Uri? authEndpoint,
+      Uri? configUri,
       String siteName = 'default'}) async {
     final reddit = Reddit._scriptInstance(clientId, clientSecret, userAgent,
         username, password, tokenEndpoint, authEndpoint, configUri, siteName);
@@ -278,13 +278,13 @@ class Reddit {
   /// [siteName] is the name of the configuration to use from draw.ini. Defaults
   /// to 'default'.
   static Reddit createWebFlowInstance(
-          {String clientId,
-          String clientSecret,
-          String userAgent,
-          Uri redirectUri,
-          Uri tokenEndpoint,
-          Uri authEndpoint,
-          Uri configUri,
+          {String? clientId,
+          String? clientSecret,
+          String? userAgent,
+          Uri? redirectUri,
+          Uri? tokenEndpoint,
+          Uri? authEndpoint,
+          Uri? configUri,
           String siteName = 'default'}) =>
       Reddit._webFlowInstance(clientId, clientSecret, userAgent, redirectUri,
           tokenEndpoint, authEndpoint, configUri, siteName);
@@ -315,17 +315,14 @@ class Reddit {
   /// [siteName] is the name of the configuration to use from draw.ini. Defaults
   /// to 'default'.
   static Reddit restoreAuthenticatedInstance(String credentialsJson,
-      {String clientId,
-      String clientSecret,
-      String userAgent,
-      Uri redirectUri,
-      Uri tokenEndpoint,
-      Uri authEndpoint,
-      Uri configUri,
+      {String? clientId,
+      String? clientSecret,
+      String? userAgent,
+      Uri? redirectUri,
+      Uri? tokenEndpoint,
+      Uri? authEndpoint,
+      Uri? configUri,
       String siteName = 'default'}) {
-    if (credentialsJson == null) {
-      throw DRAWArgumentError('credentialsJson cannot be null.');
-    }
     return Reddit._webFlowInstanceRestore(
         clientId,
         clientSecret,
@@ -371,17 +368,14 @@ class Reddit {
   /// [siteName] is the name of the configuration to use from draw.ini. Defaults
   /// to 'default'.
   static Reddit restoreInstalledAuthenticatedInstance(String credentialsJson,
-      {String clientId,
-      String clientSecret,
-      String userAgent,
-      Uri redirectUri,
-      Uri tokenEndpoint,
-      Uri authEndpoint,
-      Uri configUri,
+      {String? clientId,
+      String? clientSecret,
+      String? userAgent,
+      Uri? redirectUri,
+      Uri? tokenEndpoint,
+      Uri? authEndpoint,
+      Uri? configUri,
       String siteName = 'default'}) {
-    if (credentialsJson == null) {
-      throw DRAWArgumentError('credentialsJson cannot be null.');
-    }
     return Reddit._webFlowInstanceRestore(
         clientId,
         '',
@@ -395,12 +389,12 @@ class Reddit {
   }
 
   Reddit._readOnlyInstance(
-      String clientId,
-      String clientSecret,
-      String userAgent,
-      Uri tokenEndpoint,
-      Uri authEndpoint,
-      Uri configUri,
+      String? clientId,
+      String? clientSecret,
+      String? userAgent,
+      Uri? tokenEndpoint,
+      Uri? authEndpoint,
+      Uri? configUri,
       String siteName) {
     // Loading passed in values into config file.
     _config = DRAWConfigContext(
@@ -416,8 +410,8 @@ class Reddit {
       throw DRAWAuthenticationError('userAgent cannot be null.');
     }
 
-    final grant = oauth2.AuthorizationCodeGrant(_config.clientId,
-        Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
+    final grant = oauth2.AuthorizationCodeGrant(_config.clientId!,
+        Uri.parse(_config.authorizeUrl!), Uri.parse(_config.accessToken!),
         secret: _config.clientSecret);
     _readOnly = true;
     ReadOnlyAuthenticator.create(_config, grant)
@@ -426,12 +420,12 @@ class Reddit {
   }
 
   Reddit._untrustedReadOnlyInstance(
-      String clientId,
-      String deviceId,
-      String userAgent,
-      Uri tokenEndpoint,
-      Uri authEndpoint,
-      Uri configUri,
+      String? clientId,
+      String? deviceId,
+      String? userAgent,
+      Uri? tokenEndpoint,
+      Uri? authEndpoint,
+      Uri? configUri,
       String siteName) {
     // Loading passed in values into config file.
     _config = DRAWConfigContext(
@@ -447,8 +441,8 @@ class Reddit {
       throw DRAWAuthenticationError('userAgent cannot be null.');
     }
 
-    final grant = oauth2.AuthorizationCodeGrant(_config.clientId,
-        Uri.parse(_config.accessToken), Uri.parse(_config.accessToken),
+    final grant = oauth2.AuthorizationCodeGrant(_config.clientId!,
+        Uri.parse(_config.accessToken!), Uri.parse(_config.accessToken!),
         secret: null);
 
     _readOnly = true;
@@ -458,14 +452,14 @@ class Reddit {
   }
 
   Reddit._scriptInstance(
-      String clientId,
-      String clientSecret,
-      String userAgent,
-      String username,
-      String password,
-      Uri tokenEndpoint,
-      Uri authEndpoint,
-      Uri configUri,
+      String? clientId,
+      String? clientSecret,
+      String? userAgent,
+      String? username,
+      String? password,
+      Uri? tokenEndpoint,
+      Uri? authEndpoint,
+      Uri? configUri,
       String siteName) {
     // Loading passed in values into config file.
     _config = DRAWConfigContext(
@@ -489,8 +483,8 @@ class Reddit {
       throw DRAWAuthenticationError('userAgent cannot be null.');
     }
 
-    final grant = oauth2.AuthorizationCodeGrant(_config.clientId,
-        Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
+    final grant = oauth2.AuthorizationCodeGrant(_config.clientId!,
+        Uri.parse(_config.authorizeUrl!), Uri.parse(_config.accessToken!),
         secret: _config.clientSecret);
 
     _readOnly = false;
@@ -500,13 +494,13 @@ class Reddit {
   }
 
   Reddit._webFlowInstance(
-      String clientId,
-      String clientSecret,
-      String userAgent,
-      Uri redirectUri,
-      Uri tokenEndpoint,
-      Uri authEndpoint,
-      Uri configUri,
+      String? clientId,
+      String? clientSecret,
+      String? userAgent,
+      Uri? redirectUri,
+      Uri? tokenEndpoint,
+      Uri? authEndpoint,
+      Uri? configUri,
       String siteName) {
     // Loading passed in values into config file.
     _config = DRAWConfigContext(
@@ -529,8 +523,8 @@ class Reddit {
       throw DRAWAuthenticationError('userAgent cannot be null.');
     }
 
-    final grant = oauth2.AuthorizationCodeGrant(_config.clientId,
-        Uri.parse(_config.authorizeUrl), Uri.parse(_config.accessToken),
+    final grant = oauth2.AuthorizationCodeGrant(_config.clientId!,
+        Uri.parse(_config.authorizeUrl!), Uri.parse(_config.accessToken!),
         secret: _config.clientSecret);
 
     _initializationCallback(WebAuthenticator.create(_config, grant));
@@ -538,14 +532,14 @@ class Reddit {
   }
 
   Reddit._webFlowInstanceRestore(
-      String clientId,
-      String clientSecret,
-      String userAgent,
+      String? clientId,
+      String? clientSecret,
+      String? userAgent,
       String credentialsJson,
-      Uri redirectUri,
-      Uri tokenEndpoint,
-      Uri authEndpoint,
-      Uri configUri,
+      Uri? redirectUri,
+      Uri? tokenEndpoint,
+      Uri? authEndpoint,
+      Uri? configUri,
       String siteName) {
     // Loading passed in values into config file.
     _config = DRAWConfigContext(
@@ -570,9 +564,6 @@ class Reddit {
   }
 
   Reddit.fromAuthenticator(Authenticator auth) {
-    if (auth == null) {
-      throw DRAWAuthenticationError('auth cannot be null.');
-    }
     _config = DRAWConfigContext();
     _initializationCallback(auth);
   }
@@ -585,7 +576,7 @@ class Reddit {
   /// `url` is the URL to the comment.
   ///
   /// Only one of `id` and `url` can be provided.
-  CommentRef comment({String id, /* Uri, String */ url}) {
+  CommentRef comment({String? id, /* Uri, String */ url}) {
     if ((id != null) && (url != null)) {
       throw DRAWArgumentError('One of either id or url can be provided');
     } else if ((id == null) && (url == null)) {
@@ -604,7 +595,7 @@ class Reddit {
   /// `url` is the URL to the submission.
   ///
   /// Only one of `id` and `url` can be provided.
-  SubmissionRef submission({String id, /* Uri, String */ url}) {
+  SubmissionRef submission({String? id, /* Uri, String */ url}) {
     if ((id != null) && (url != null)) {
       throw DRAWArgumentError('One of either id or url can be provided');
     } else if ((id == null) && (url == null)) {
@@ -621,7 +612,7 @@ class Reddit {
       SubredditRef.name(this, subreddit);
 
   Future<dynamic> get(String api,
-      {Map<String, String> params,
+      {Map<String, String?>? params,
       bool objectify = true,
       bool followRedirects = false}) async {
     if (!_initialized) {
@@ -634,9 +625,9 @@ class Reddit {
     return objectify ? _objector.objectify(response) : response;
   }
 
-  Future<dynamic> post(String api, Map<String, String> body,
-      {Map<String, Uint8List> files,
-      Map params,
+  Future<dynamic> post(String api, Map<String, String?>? body,
+      {Map<String, Uint8List?>? files,
+      Map? params,
       bool discardResponse = false,
       bool objectify = true}) async {
     if (!_initialized) {
@@ -651,7 +642,7 @@ class Reddit {
     return objectify ? _objector.objectify(response) : response;
   }
 
-  Future<dynamic> put(String api, {Map<String, String> body}) async {
+  Future<dynamic> put(String api, {Map<String, String>? body}) async {
     if (!_initialized) {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
@@ -661,7 +652,7 @@ class Reddit {
     return _objector.objectify(response);
   }
 
-  Future<dynamic> delete(String api, {Map<String, String> body}) async {
+  Future<dynamic> delete(String api, {Map<String, String>? body}) async {
     if (!_initialized) {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');

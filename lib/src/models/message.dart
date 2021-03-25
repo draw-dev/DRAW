@@ -14,31 +14,31 @@ class Message extends RedditBase
     with InboxableMixin, RedditBaseInitializedMixin {
   var _replies;
 
-  Message.parse(Reddit reddit, Map data) : super(reddit) {
+  Message.parse(Reddit reddit, Map? data) : super(reddit) {
     setData(this, data);
   }
 
   /// The author of the [Message].
-  String get author => data['author'];
+  String get author => data!['author'];
 
   /// The body of the [Message].
-  String get body => data['body'];
+  String get body => data!['body'];
 
   /// When was this [Message] created.
   DateTime get createdUtc =>
-      DateTime.fromMillisecondsSinceEpoch(data['created_utc'].round() * 1000,
+      DateTime.fromMillisecondsSinceEpoch(data!['created_utc'].round() * 1000,
           isUtc: true);
 
   /// Who is this [Message] for.
   ///
   /// Can be for either a [Redditor] or [Subreddit].
-  String get destination => data['dest'];
+  String get destination => data!['dest'];
 
   /// The type of distinguishment that is assigned to this message.
   ///
   /// Can be `null` if the [Message] isn't distinguished. An example value for
   /// this field is 'moderator'
-  String get distinguished => data['distinguished'];
+  String get distinguished => data!['distinguished'];
 
   /// The [List] of replies to this [Message].
   ///
@@ -46,7 +46,7 @@ class Message extends RedditBase
   List<Message> get replies {
     if (_replies == null) {
       _replies = <Message>[];
-      final repliesListing = data['replies'];
+      final repliesListing = data!['replies'];
       if (repliesListing == null) {
         return <Message>[];
       }
@@ -62,6 +62,6 @@ class Message extends RedditBase
   /// for ModMail [Message]s.
   ///
   /// Returns `null` if this is not a ModMail [Message].
-  SubredditRef get subreddit =>
-      GetterUtils.subredditRefOrNull(reddit, data['subreddit']);
+  SubredditRef? get subreddit =>
+      GetterUtils.subredditRefOrNull(reddit, data!['subreddit']);
 }

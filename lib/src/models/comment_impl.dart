@@ -38,8 +38,8 @@ void setSubmissionInternal(commentLike, SubmissionRef s) {
     insertCommentById(s, commentLike);
   }
   if ((commentLike is Comment) && (commentLike._replies != null)) {
-    for (var i = 0; i < commentLike._replies.length; ++i) {
-      final comment = commentLike._replies[i];
+    for (var i = 0; i < commentLike._replies!.length; ++i) {
+      final comment = commentLike._replies![i];
       setSubmissionInternal(comment, s);
     }
   }
@@ -53,11 +53,11 @@ void setRepliesInternal(commentLike, CommentForest comments) {
 /// or 'continue this thread' section.
 class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   static final RegExp _submissionRegExp = RegExp(r'{id}');
-  List _comments;
+  List? _comments;
   final List<String> _children;
   final int _count;
   final String _parentId;
-  SubmissionRef _submission;
+  late SubmissionRef _submission;
 
   List get children => _children;
 
@@ -66,6 +66,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   /// If `count` is 0, this instance represents a `continue this thread` link.
   int get count => _count;
 
+  @override
   int get hashCode => hash2(_count.hashCode, _children.hashCode);
 
   /// True if this instance of [MoreComments] is the equivalent of the
@@ -93,6 +94,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
     setData(this, data);
   }
 
+  @override
   bool operator ==(other) {
     return ((other is MoreComments) &&
         (count == other.count) &&
@@ -101,6 +103,7 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
 
   bool operator <(other) => (count > other.count);
 
+  @override
   String toString() {
     final buffer = StringBuffer();
     buffer.write('<MoreComments count=${_children.length}, children=');
@@ -115,28 +118,28 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
     return buffer.toString();
   }
 
-  Future<List<dynamic>> _continueComments(bool update) async {
+  Future<List<dynamic>?> _continueComments(bool update) async {
     assert(_children.isEmpty);
-    final parent = await _loadComment(_parentId.split('_')[1]);
+    final parent = (await _loadComment(_parentId.split('_')[1])) as Comment;
     _comments = parent.replies?.comments;
     if (update && (_comments != null)) {
-      _comments.forEach((c) => setSubmissionInternal(c, submission));
+      _comments!.forEach((c) => setSubmissionInternal(c, submission));
     }
     return _comments;
   }
 
-  Future<Comment> _loadComment(String commentId) async {
+  Future<Comment?> _loadComment(String commentId) async {
     if (_submission is! Submission) {
       _submission = await _submission.populate();
     }
-    final Submission initializedSubmission = _submission;
+    final initializedSubmission = _submission as Submission;
     final path = apiPath['submission'].replaceAll(
-            _submissionRegExp, initializedSubmission.fullname.split('_')[1]) +
+            _submissionRegExp, initializedSubmission.fullname!.split('_')[1]) +
         '_/' +
         commentId;
     final response = await reddit.get(path, params: {
-      'limit': initializedSubmission.data['commentLimit'],
-      'sort': initializedSubmission.data['commentSort'],
+      'limit': initializedSubmission.data!['commentLimit'],
+      'sort': initializedSubmission.data!['commentSort'],
     });
 
     final comments = response[1]['listing'];
@@ -147,29 +150,29 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
   /// Expand [MoreComments] into the list of actual [Comments] it represents.
   ///
   /// Can contain additional [MoreComments] objects.
-  Future<List<dynamic>> comments({bool update = true}) async {
+  Future<List<dynamic>?> comments({bool update = true}) async {
     if (_comments == null) {
       assert(_submission is Submission);
-      final Submission initializedSubmission = _submission;
+      final initializedSubmission = _submission as Submission;
       if (_count == 0) {
         return await _continueComments(update);
       }
-      assert(_children != null);
       final data = {
         'children': _children.join(','),
         'link_id': initializedSubmission.fullname,
         'sort': commentSortTypeToString(initializedSubmission.commentSort),
         'api_type': 'json',
       };
-      _comments = await reddit.post(apiPath['morechildren'], data);
+      _comments =
+          (await reddit.post(apiPath['morechildren'], data)) as List<dynamic>?;
 
       if (update) {
-        _comments.forEach((c) {
+        _comments!.forEach((c) {
           c._submission = _submission;
         });
       }
     }
-    return _fillCommentsForests(_comments);
+    return _fillCommentsForests(_comments!);
   }
 
   List<dynamic> _fillCommentsForests(List<dynamic> fullList) {
@@ -187,10 +190,10 @@ class MoreComments extends RedditBase with RedditBaseInitializedMixin {
     }
   }
 
-  int currentIndex;
+  late int currentIndex;
   List<dynamic> _fillCommentsForestsRecursively(
       List<dynamic> fullList, int currentDepth) {
-    final List<dynamic> commentsAtCurrentLevel = [fullList[currentIndex]];
+    final commentsAtCurrentLevel = <dynamic>[fullList[currentIndex]];
     currentIndex++;
     while (currentIndex < fullList.length) {
       final currentComment = fullList[currentIndex];
@@ -239,22 +242,22 @@ class Comment extends CommentRef
   // CommentModeration get mod; // TODO(bkonyi): implement
 
   /// Has this [Comment] been approved.
-  bool get approved => data['approved'];
+  bool get approved => data!['approved'];
 
   /// When this [Comment] was approved.
   ///
   /// Returns `null` if this [Comment] has not been approved.
-  DateTime get approvedAtUtc =>
-      GetterUtils.dateTimeOrNull(data['approved_at_utc']);
+  DateTime? get approvedAtUtc =>
+      GetterUtils.dateTimeOrNull(data!['approved_at_utc']);
 
   /// Which Redditor approved this [Comment].
   ///
   /// Returns `null` if this [Comment] has not been approved.
-  RedditorRef get approvedBy =>
-      GetterUtils.redditorRefOrNull(reddit, data['approved_by']);
+  RedditorRef? get approvedBy =>
+      GetterUtils.redditorRefOrNull(reddit, data!['approved_by']);
 
   /// Is this [Comment] archived.
-  bool get archived => data['archived'];
+  bool get archived => data!['archived'];
 
   // TODO(bkonyi): update this definition.
   // RedditorRef get author => reddit.redditor(data['author']);
@@ -262,102 +265,105 @@ class Comment extends CommentRef
   /// The author's flair text, if set.
   ///
   /// Returns `null` if the author does not have any flair text set.
-  String get authorFlairText => data['author_flair_text'];
+  String? get authorFlairText => data!['author_flair_text'];
 
   /// When this [Comment] was removed.
   ///
   /// Returns `null` if the [Comment] has not been removed.
-  DateTime get bannedAtUtc => GetterUtils.dateTimeOrNull(data['banned_at_utc']);
+  DateTime? get bannedAtUtc =>
+      GetterUtils.dateTimeOrNull(data!['banned_at_utc']);
 
   /// Which Redditor removed this [Comment].
   ///
   /// Returns `null` if the [Comment] has not been removed.
-  RedditorRef get bannedBy =>
-      GetterUtils.redditorRefOrNull(reddit, data['banned_by']);
+  RedditorRef? get bannedBy =>
+      GetterUtils.redditorRefOrNull(reddit, data!['banned_by']);
 
   /// Is this [Comment] eligible for Reddit Gold.
-  bool get canGild => data['can_gild'];
+  bool get canGild => data!['can_gild'];
 
-  bool get canModPost => data['can_mod_post'];
+  bool get canModPost => data!['can_mod_post'];
 
   /// Is this [Comment] and its children collapsed.
-  bool get collapsed => data['collapsed'];
+  bool get collapsed => data!['collapsed'];
 
   /// The reason for this [Comment] being collapsed.
   ///
   /// Returns `null` if the [Comment] isn't collapsed or there is no reason set.
-  String get collapsedReason => data['collapsed_reason'];
+  String? get collapsedReason => data!['collapsed_reason'];
 
   /// The time this [Comment] was created.
-  DateTime get createdUtc => GetterUtils.dateTimeOrNull(data['created_utc']);
+  DateTime get createdUtc => GetterUtils.dateTimeOrNull(data!['created_utc'])!;
 
   /// The depth of this [Comment] in the tree of comments.
-  int get depth => data['depth'];
+  int get depth => data!['depth'];
 
   /// The number of downvotes this [Comment] has received.
-  int get downvotes => data['downs'];
+  int get downvotes => data!['downs'];
 
   /// Has this [Comment] been edited.
   // `edited` is `false` iff the comment hasn't been edited.
   // `else edited` is a timestamp.
-  bool get edited => (data['edited'] is double);
+  bool get edited => (data!['edited'] is double);
 
   /// Ignore reports for this [Comment].
   ///
   /// This is only visible to moderators on the [Subreddit] this [Comment] was
   /// posted on.
-  bool get ignoreReports => data['ignore_reports'];
+  bool? get ignoreReports => data!['ignore_reports'];
 
   /// Did the currently authenticated [User] post this [Comment].
-  bool get isSubmitter => data['is_submitter'];
+  bool get isSubmitter => data!['is_submitter'];
 
   /// The id of the [Submission] link.
   ///
   /// Takes the form of `t3_7czz1q`.
-  String get linkId => data['link_id'];
+  String get linkId => data!['link_id'];
 
   /// The number of reports made regarding this [Comment].
   ///
   /// This is only visible to moderators on the [Subreddit] this [Comment] was
   /// posted on.
-  int get numReports => data['num_reports'];
+  int? get numReports => data!['num_reports'];
 
   /// The ID of the parent [Comment] or [Submission].
-  String get parentId => data['parent_id'];
+  String get parentId => data!['parent_id'];
 
-  String get permalink => data['permalink'];
+  String get permalink => data!['permalink'];
 
-  String get removalReason => data['removal_reason'];
+  String? get removalReason => data!['removal_reason'];
 
   /// Has this [Comment] been removed.
-  bool get removed => data['removed'];
+  bool get removed => data!['removed'];
 
   /// Has this [Comment] been saved.
-  bool get saved => data['saved'];
+  @override
+  bool get saved => data!['saved'];
 
   /// The score associated with this [Comment] (aka net-upvotes).
-  int get score => data['score'];
+  @override
+  int get score => data!['score'];
 
   /// Is this score of this [Comment] hidden.
-  bool get scoreHidden => data['score_hidden'];
+  bool get scoreHidden => data!['score_hidden'];
 
   /// Is this [Comment] marked as spam.
-  bool get spam => data['spam'];
+  bool? get spam => data!['spam'];
 
   /// Has this [Comment] been stickied.
-  bool get stickied => data['stickied'];
+  bool get stickied => data!['stickied'];
 
   /// The [Subreddit] this [Comment] was posted in.
-  SubredditRef get subreddit => reddit.subreddit(data['subreddit']);
+  SubredditRef get subreddit => reddit.subreddit(data!['subreddit']);
 
   /// The id of the [Subreddit] this [Comment] was posted in.
-  String get subredditId => data['subreddit_id'];
+  String get subredditId => data!['subreddit_id'];
 
   /// The type of the [Subreddit] this [Comment] was posted in.
-  String get subredditType => data['subreddit_type'];
+  String get subredditType => data!['subreddit_type'];
 
   /// The number of upvotes this [Comment] has received.
-  int get upvotes => data['ups'];
+  int get upvotes => data!['ups'];
 
   /// Returns true if the current [Comment] is a top-level comment. A [Comment]
   /// is a top-level comment if its parent is a [Submission].
@@ -372,15 +378,15 @@ class Comment extends CommentRef
   /// [Submission].
   Future<UserContent> parent() async {
     if (_submission is! Submission) {
-      _submission = await _submission.populate();
+      _submission = await _submission!.populate();
     }
-    final Submission initializedSubmission = _submission;
+    final initializedSubmission = _submission as Submission;
     if (parentId == initializedSubmission.fullname) {
       return submission;
     }
 
     // Check if the comment already exists.
-    CommentRef parent = getCommentByIdInternal(_submission, parentId);
+    CommentRef? parent = getCommentByIdInternal(_submission!, parentId);
     if (parent == null) {
       parent = CommentRef.withID(reddit, parentId.split('_')[1]);
       parent._submission = _submission;
@@ -389,13 +395,13 @@ class Comment extends CommentRef
   }
 
   String _extractSubmissionId() {
-    var id = data['context'];
+    var id = data!['context'];
     if (id != null) {
       final split = id.split('/');
       print(split);
       throw DRAWUnimplementedError();
     }
-    id = data['link_id'];
+    id = data!['link_id'];
     if (id != null) {
       return id.split('_')[1];
     }
@@ -423,7 +429,7 @@ class Comment extends CommentRef
     while (queue.isNotEmpty && ((comment == null) || (comment._id != _id))) {
       comment = queue.removeFirst();
       if ((comment is CommentRef) && (comment.replies != null)) {
-        queue.addAll(comment.replies.toList());
+        queue.addAll(comment.replies!.toList());
       }
     }
     if ((comment == null) || comment._id != _id) {
@@ -441,26 +447,24 @@ class Comment extends CommentRef
 
   /// The [Submission] which this comment belongs to.
   SubmissionRef get submission {
-    if (_submission == null) {
-      _submission = reddit.submission(id: _extractSubmissionId());
-    }
-    return _submission;
+    _submission ??= reddit.submission(id: _extractSubmissionId());
+    return _submission!;
   }
 }
 
 /// A lazily initialized class which represents a single Reddit comment. Can be
 /// promoted to a [Comment].
 class CommentRef extends UserContent {
-  CommentForest _replies;
-  SubmissionRef __submission;
+  CommentForest? _replies;
+  SubmissionRef? __submission;
   final String _id;
 
-  SubmissionRef get _submission => __submission;
+  SubmissionRef? get _submission => __submission;
 
-  set _submission(SubmissionRef s) {
+  set _submission(SubmissionRef? s) {
     __submission = s;
     if (_replies != null) {
-      setSubmission(_replies, s);
+      setSubmission(_replies!, s!);
     }
   }
 
@@ -520,11 +524,12 @@ class CommentRef extends UserContent {
   }
 
   /// A forest of replies to the current comment.
-  CommentForest get replies => _replies;
+  CommentForest? get replies => _replies;
 }
 
 /// Provides a set of moderation functions for a [Comment].
 class CommentModeration extends Object with UserContentModerationMixin {
+  @override
   Comment get content => _content;
   final Comment _content;
 

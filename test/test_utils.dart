@@ -28,6 +28,6 @@ Future<Reddit> createRedditTestInstance(String path,
 
 Future<void> writeRecording(Reddit reddit) async {
   assert(reddit.auth is TestAuthenticator);
-  final TestAuthenticator auth = reddit.auth;
+  final auth = reddit.auth as TestAuthenticator;
   await auth.writeRecording();
 }

@@ -8,9 +8,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
-import "package:oauth2/src/handle_access_token_response.dart";
+import 'package:oauth2/src/handle_access_token_response.dart';
 
 import 'package:draw/src/draw_config_context.dart';
 import 'package:draw/src/exception_objector.dart';
@@ -40,14 +39,13 @@ final Logger _logger = Logger('Authenticator');
 /// credentials, refreshing and revoking access tokens, and issuing HTTPS
 /// requests using OAuth2 credentials.
 abstract class Authenticator {
-  oauth2.AuthorizationCodeGrant _grant;
-  oauth2.Client _client;
+  late oauth2.AuthorizationCodeGrant _grant;
+  late oauth2.Client _client;
   final DRAWConfigContext _config;
 
   Authenticator(DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant)
       : _config = config,
-        _grant = grant,
-        _client = null;
+        _grant = grant;
 
   Authenticator.restore(
       DRAWConfigContext config, oauth2.Credentials credentials)
@@ -72,19 +70,12 @@ abstract class Authenticator {
   /// Request a new access token from the Reddit API. Throws a
   /// [DRAWAuthenticationError] if the [Authenticator] is not yet initialized.
   Future<void> refresh() async {
-    if (_client == null) {
-      throw DRAWAuthenticationError(
-          'cannot refresh uninitialized Authenticator.');
-    }
     await _authenticationFlow();
   }
 
   /// Revokes any outstanding tokens associated with the [Authenticator].
   Future<void> revoke() async {
-    if (credentials == null) {
-      return;
-    }
-    final tokens = List<Map>();
+    final tokens = <Map>[];
     final accessToken = {
       _kTokenKey: credentials.accessToken,
       _kTokenTypeHintKey: 'access_token',
@@ -99,11 +90,11 @@ abstract class Authenticator {
       tokens.add(refreshToken);
     }
     for (final token in tokens) {
-      final revokeAccess = Map<String, String>();
+      final Map<String, String?> revokeAccess = <String, String>{};
       revokeAccess[_kTokenKey] = token[_kTokenKey];
       revokeAccess[_kTokenTypeHintKey] = token[_kTokenTypeHintKey];
 
-      var path = Uri.parse(_config.revokeToken);
+      var path = Uri.parse(_config.revokeToken!);
 
       // Retrieve the client ID and secret.
       final clientId = _config.clientId;
@@ -113,14 +104,14 @@ abstract class Authenticator {
         final userInfo = '$clientId:$clientSecret';
         path = path.replace(userInfo: userInfo);
       }
-      final headers = Map<String, String>();
+      final Map<String, String?> headers = <String, String>{};
       headers[_kUserAgentKey] = _config.userAgent;
 
       final httpClient = http.Client();
 
       // Request the token from the server.
-      final response =
-          await httpClient.post(path, headers: headers, body: revokeAccess);
+      final response = await httpClient.post(path,
+          headers: headers as Map<String, String>?, body: revokeAccess);
 
       if (response.statusCode != 204) {
         // We should always get a 204 response for this call.
@@ -140,7 +131,7 @@ abstract class Authenticator {
   ///
   /// [path] is the destination URI that the request will be made to.
   Future<dynamic> get(Uri path,
-      {Map<String, String> params, bool followRedirects = false}) async {
+      {Map<String, String?>? params, bool followRedirects = false}) async {
     _logger.info('GET: $path params: ${DRAWLoggingUtils.jsonify(params)}');
     return _request(_kGetRequest, path,
         params: params, followRedirects: followRedirects);
@@ -150,18 +141,18 @@ abstract class Authenticator {
   ///
   /// [path] is the destination URI and [body] contains the POST parameters
   /// that will be sent with the request.
-  Future<dynamic> post(Uri path, Map<String, String> body,
-      {Map<String, Uint8List> files, Map params}) async {
+  Future<dynamic> post(Uri path, Map<String, String?>? body,
+      {Map<String, Uint8List?>? files, Map? params}) async {
     _logger.info('POST: $path body: ${DRAWLoggingUtils.jsonify(body)}');
     return _request(_kPostRequest, path,
-        body: body, files: files, params: params);
+        body: body, files: files, params: params as Map<String, String?>?);
   }
 
   /// Make a simple `PUT` request.
   ///
   /// [path] is the destination URI and [body] contains the PUT parameters that
   /// will be sent with the request.
-  Future<dynamic> put(Uri path, {Map<String, String> body}) async {
+  Future<dynamic> put(Uri path, {Map<String, String>? body}) async {
     _logger.info('PUT: $path body: ${DRAWLoggingUtils.jsonify(body)}');
     return _request(_kPutRequest, path, body: body);
   }
@@ -170,7 +161,7 @@ abstract class Authenticator {
   ///
   /// [path] is the destination URI and [body] contains the DELETE parameters
   /// that will be sent with the request.
-  Future<dynamic> delete(Uri path, {Map<String, String> body}) async {
+  Future<dynamic> delete(Uri path, {Map<String, String>? body}) async {
     _logger.info('DELETE: $path body: ${DRAWLoggingUtils.jsonify(body)}');
     return _request(_kDeleteRequest, path, body: body);
   }
@@ -181,14 +172,10 @@ abstract class Authenticator {
   /// request parameters. [body] is an optional parameter which contains the
   /// body fields for a POST request.
   Future<dynamic> _request(String type, Uri path,
-      {Map<String, String> body,
-      Map<String, String> params,
-      Map<String, Uint8List> files,
+      {Map<String, String?>? body,
+      Map<String, String?>? params,
+      Map<String, Uint8List?>? files,
       bool followRedirects = false}) async {
-    if (_client == null) {
-      throw DRAWAuthenticationError(
-          'The authenticator does not have a valid token.');
-    }
     if (!isValid) {
       await refresh();
     }
@@ -202,12 +189,12 @@ abstract class Authenticator {
     request.followRedirects = followRedirects;
 
     if (body != null) {
-      request.fields.addAll(body);
+      request.fields.addAll(body as Map<String, String>);
     }
     if (files != null) {
       request.files.addAll([
         for (final key in files.keys)
-          http.MultipartFile.fromBytes(key, files[key], filename: 'filename')
+          http.MultipartFile.fromBytes(key, files[key]!, filename: 'filename')
       ]);
     }
     http.StreamedResponse responseStream;
@@ -217,7 +204,7 @@ abstract class Authenticator {
       throw DRAWAuthenticationError('$e');
     }
     if (responseStream.isRedirect) {
-      var redirectStr = Uri.parse(responseStream.headers['location']).path;
+      var redirectStr = Uri.parse(responseStream.headers['location']!).path;
       if (redirectStr.endsWith('.json')) {
         redirectStr = redirectStr.substring(0, redirectStr.length - 5);
       }
@@ -227,7 +214,8 @@ abstract class Authenticator {
     if (response.isEmpty) return null;
     final parsed = json.decode(response);
     if ((parsed is Map) && responseStream.statusCode >= 400) {
-      parseAndThrowError(responseStream.statusCode, parsed);
+      parseAndThrowError(
+          responseStream.statusCode, parsed as Map<String, dynamic>);
     }
     if ((parsed is Map) && parsed.containsKey(_kErrorKey)) {
       _throwAuthenticationError(parsed);
@@ -238,25 +226,21 @@ abstract class Authenticator {
 
   /// Requests the authentication token from Reddit based on parameters provided
   /// in [accountInfo] and [_grant].
-  Future<void> _requestToken(Map<String, String> accountInfo) async {
+  Future<void> _requestToken(Map<String, String?> accountInfo) async {
     // Retrieve the client ID and secret.
     final clientId = _grant.identifier;
     final clientSecret = _grant.secret;
-    String userInfo;
-
-    if ((clientId != null) && (clientSecret != null)) {
-      userInfo = '$clientId:$clientSecret';
-    }
+    final userInfo = '$clientId:$clientSecret';
 
     final httpClient = http.Client();
     final start = DateTime.now();
-    final headers = Map<String, String>();
+    final headers = <String, String?>{};
     headers[_kUserAgentKey] = _config.userAgent;
 
     // Request the token from the server.
     final response = await httpClient.post(
         _grant.tokenEndpoint.replace(userInfo: userInfo),
-        headers: headers,
+        headers: headers as Map<String, String>?,
         body: accountInfo);
 
     // Check for error response.
@@ -277,24 +261,23 @@ abstract class Authenticator {
   void _throwAuthenticationError(Map response) {
     final statusCode = response[_kErrorKey];
     final reason = response[_kMessageKey];
-    throw DRAWAuthenticationError(
-        'Status Code: ${statusCode} Reason: ${reason}');
+    throw DRAWAuthenticationError('Status Code: $statusCode Reason: $reason');
   }
 
-  Future<void> _requestTokenUntrusted(Map<String, String> accountInfo) async {
+  Future<void> _requestTokenUntrusted(Map<String, String?> accountInfo) async {
     // Retrieve the client ID and secret.
     final clientId = _grant.identifier;
 
     final httpClient = http.Client();
     final start = DateTime.now();
-    final headers = Map<String, String>();
+    final headers = <String, String?>{};
     headers[_kUserAgentKey] = _config.userAgent;
     headers[_kAuthorizationKey] =
         'Basic ${base64Encode((clientId + ":").codeUnits)})';
 
     // Request the token from the server.
     final response = await httpClient.post(_grant.tokenEndpoint,
-        headers: headers, body: accountInfo);
+        headers: headers as Map<String, String>?, body: accountInfo);
 
     // Check for error response.
     final responseMap = json.decode(response.body);
@@ -315,20 +298,20 @@ abstract class Authenticator {
   ///
   /// Returns an [oauth2.Credentials] object associated with the current
   /// authenticator instance, otherwise returns [null].
-  oauth2.Credentials get credentials => _client?.credentials;
+  oauth2.Credentials get credentials => _client.credentials;
 
   /// The user agent value to be presented to Reddit.
   ///
   /// Returns the user agent value which is used as an identifier for this
   /// session. Provided on authenticator creation.
-  String get userAgent => _config.userAgent;
+  String get userAgent => _config.userAgent!;
 
   /// A flag representing whether or not this authenticator instance is valid.
   ///
   /// Returns `false` if the authentication flow has not yet been completed, if
   /// [revoke] has been called, or the access token has expired.
   bool get isValid {
-    return !(credentials?.isExpired ?? true);
+    return !(credentials.isExpired);
   }
 }
 
@@ -344,8 +327,7 @@ class ScriptAuthenticator extends Authenticator {
 
   static Future<ScriptAuthenticator> create(
       DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant) async {
-    final ScriptAuthenticator authenticator =
-        ScriptAuthenticator._(config, grant);
+    final authenticator = ScriptAuthenticator._(config, grant);
     await authenticator._authenticationFlow();
     return authenticator;
   }
@@ -355,7 +337,7 @@ class ScriptAuthenticator extends Authenticator {
   /// call [_requestToken] to authenticate.
   @override
   Future<void> _authenticationFlow() async {
-    final accountInfo = Map<String, String>();
+    final accountInfo = <String, String?>{};
     accountInfo[_kUsernameKey] = _config.username;
     accountInfo[_kPasswordKey] = _config.password;
     accountInfo[_kGrantTypeKey] = 'password';
@@ -375,7 +357,7 @@ class ReadOnlyAuthenticator extends Authenticator {
   static const String _kDeviceIdKey = 'device_id';
 
   final bool _applicationOnlyOAuth;
-  final String _deviceId;
+  final String? _deviceId;
 
   ReadOnlyAuthenticator._(
       DRAWConfigContext config,
@@ -386,15 +368,14 @@ class ReadOnlyAuthenticator extends Authenticator {
 
   static Future<ReadOnlyAuthenticator> create(
       DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant) async {
-    final ReadOnlyAuthenticator authenticator =
-        ReadOnlyAuthenticator._(config, grant, false, null);
+    final authenticator = ReadOnlyAuthenticator._(config, grant, false, '');
     await authenticator._authenticationFlow();
     return authenticator;
   }
 
   static Future<ReadOnlyAuthenticator> createUntrusted(DRAWConfigContext config,
-      oauth2.AuthorizationCodeGrant grant, String deviceId) async {
-    final ReadOnlyAuthenticator authenticator =
+      oauth2.AuthorizationCodeGrant grant, String? deviceId) async {
+    final authenticator =
         ReadOnlyAuthenticator._(config, grant, true, deviceId);
     await authenticator._authenticationFlow();
     return authenticator;
@@ -405,7 +386,7 @@ class ReadOnlyAuthenticator extends Authenticator {
   /// call [_requestToken] to authenticate.
   @override
   Future<void> _authenticationFlow() async {
-    final accountInfo = Map<String, String>();
+    final Map<String, String?> accountInfo = <String, String>{};
     if (_applicationOnlyOAuth) {
       accountInfo[_kGrantTypeKey] =
           'https://oauth.reddit.com/grants/installed_client';
@@ -431,14 +412,11 @@ class WebAuthenticator extends Authenticator {
 
   WebAuthenticator._(
       DRAWConfigContext config, oauth2.AuthorizationCodeGrant grant)
-      : _redirect = Uri.parse(config.redirectUrl),
-        super(config, grant) {
-    assert(_redirect != null);
-  }
+      : _redirect = Uri.parse(config.redirectUrl!),
+        super(config, grant);
 
   WebAuthenticator._restore(DRAWConfigContext config, String credentialsJson)
-      : _redirect =
-            (config.redirectUrl != null) ? Uri.parse(config.redirectUrl) : null,
+      : _redirect = Uri.parse(config.redirectUrl!),
         super.restore(config, oauth2.Credentials.fromJson(credentialsJson));
 
   static WebAuthenticator create(
@@ -465,16 +443,8 @@ class WebAuthenticator extends Authenticator {
   Uri url(List<String> scopes, String state,
       {String duration = 'permanent', bool compactLogin = false}) {
     // TODO(bkonyi) do we want to add the [implicit] flag to the argument list?
-    if (scopes == null) {
-      // scopes cannot be null.
-      throw DRAWAuthenticationError('Parameter scopes cannot be null.');
-    }
-    Uri redditAuthUri =
+    var redditAuthUri =
         _grant.getAuthorizationUrl(_redirect, scopes: scopes, state: state);
-    if (redditAuthUri == null) {
-      throw DRAWAuthenticationError('The Auth URL for Reddit must not be '
-          'null');
-    }
     // getAuthorizationUrl returns a Uri which is missing the duration field, so
     // we need to add it here.
     final queryParameters =
@@ -482,7 +452,7 @@ class WebAuthenticator extends Authenticator {
     queryParameters[_kDurationKey] = duration;
     redditAuthUri = redditAuthUri.replace(queryParameters: queryParameters);
     if (compactLogin) {
-      String path = redditAuthUri.path;
+      var path = redditAuthUri.path;
       path = path.substring(0, path.length) + r'.compact';
       redditAuthUri = redditAuthUri.replace(path: path);
     }
@@ -497,10 +467,6 @@ class WebAuthenticator extends Authenticator {
   /// this method.
   @override
   Future<void> authorize(String code) async {
-    if (code == null) {
-      // code cannot be null.
-      throw DRAWAuthenticationError('Parameter code cannot be null.');
-    }
     _client = await _grant.handleAuthorizationCode(code);
   }
 
@@ -517,10 +483,6 @@ class WebAuthenticator extends Authenticator {
   /// [DRAWAuthenticationError] if the [Authenticator] is not yet initialized.
   @override
   Future<void> refresh() async {
-    if (_client == null) {
-      throw DRAWAuthenticationError(
-          'cannot refresh uninitialized Authenticator.');
-    }
     _client = await _client.refreshCredentials();
   }
 }

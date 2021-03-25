@@ -15,6 +15,7 @@ import 'package:draw/src/reddit.dart';
 /// Reddit front page.
 class FrontPage extends RedditBase
     with BaseListingMixin, GildedListingMixin, RisingListingMixin {
+  @override
   String path = '/';
   FrontPage(Reddit reddit) : super(reddit);
 
@@ -25,7 +26,7 @@ class FrontPage extends RedditBase
   /// Reddit will return objects of the requested type. `params` is a set of
   /// additional parameters that will be forwarded along with the request.
   Stream<UserContent> best(
-          {int limit, String after, Map<String, String> params}) =>
+          {int? limit, String? after, Map<String, String>? params}) =>
       ListingGenerator.createBasicGenerator(reddit, path + 'best',
           limit: limit, after: after, params: params);
 }

@@ -44,7 +44,7 @@ class Inbox extends RedditBase {
     var end = min(items.length, 25);
     while (true) {
       final sublist = items.sublist(start, end);
-      final nameList = <String>[];
+      final nameList = <String?>[];
       for (final m in sublist) {
         nameList.add(await m.fullname);
       }
@@ -71,7 +71,7 @@ class Inbox extends RedditBase {
   /// Returns a [Message] associated with a given fullname.
   ///
   /// If [messageId] is not a valid fullname for a message, null is returned.
-  Future<Message> message(String messageId) async {
+  Future<Message?> message(String messageId) async {
     final listing = await reddit
         .get(apiPath['message'].replaceAll(_messagesRegExp, messageId));
     final messages = <Message>[];
@@ -98,7 +98,7 @@ class Inbox extends RedditBase {
   ///
   /// If [pauseAfter] is provided, the [Stream] will close after [pauseAfter]
   /// results are yielded. Oldest items are yielded first.
-  Stream stream({int pauseAfter}) =>
+  Stream stream({int? pauseAfter}) =>
       streamGenerator(unread, pauseAfter: pauseAfter);
 
   /// Returns a [Stream<Comment>] of replies to submissions made by the
@@ -115,7 +115,7 @@ class Inbox extends RedditBase {
   ///
   /// [markRead] specifies whether or not to mark the inbox as having no new
   /// messages.
-  Stream unread({int limit, bool markRead = false}) {
+  Stream unread({int? limit, bool markRead = false}) {
     final params = {
       'mark': markRead.toString(),
     };

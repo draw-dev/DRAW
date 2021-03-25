@@ -11,7 +11,7 @@ import 'package:test/test.dart';
 import '../test_utils.dart';
 
 // ignore_for_file: unused_local_variable
-Reddit reddit;
+late Reddit reddit;
 Future<SubredditModeration> subredditModerationHelper(String path,
     {live = false, sub = 'MorbidReality'}) async {
   reddit = await createRedditTestInstance(path, live: live);
@@ -44,15 +44,20 @@ Future<void> main() async {
     }
 
     // Retrieve edited `Comment`s.
-    await for (final Comment post in morbidRealityMod.edited(
-        limit: 5, only: SubredditModerationContentTypeFilter.commentsOnly)) {
+    await for (final Comment post in morbidRealityMod
+        .edited(
+            limit: 5, only: SubredditModerationContentTypeFilter.commentsOnly)
+        .cast<Comment>()) {
       expect(post.edited, isTrue);
       expect(post.runtimeType, Comment);
     }
 
     // Retrieve edited `Submission`s. These are always self-text posts.
-    await for (final Submission post in morbidRealityMod.edited(
-        limit: 5, only: SubredditModerationContentTypeFilter.submissionsOnly)) {
+    await for (final Submission post in morbidRealityMod
+        .edited(
+            limit: 5,
+            only: SubredditModerationContentTypeFilter.submissionsOnly)
+        .cast<Submission>()) {
       expect(post.edited, isTrue);
       // Only self-posts can be edited.
       expect(post.isSelf, isTrue);
@@ -108,7 +113,7 @@ Future<void> main() async {
         'test/subreddit/subreddit_mod_queue.json');
 
     // Retrieve recently posted `UserContent`.
-    final Comment post = await morbidRealityMod.modQueue().first;
+    final post = (await morbidRealityMod.modQueue().first) as Comment;
     expect(
         post.body, "If the toddler had a gun this wouldn't have happened /s");
 
@@ -130,7 +135,7 @@ Future<void> main() async {
         'test/subreddit/subreddit_mod_reports.json');
 
     // Retrieve recently posted `UserContent`.
-    final Comment post = await morbidRealityMod.reports().first;
+    final post = (await morbidRealityMod.reports().first) as Comment;
     expect(post.modReports.length, 0);
     expect(post.userReports.length, 1);
     final userReport = post.userReports[0];
@@ -155,17 +160,20 @@ Future<void> main() async {
         'test/subreddit/subreddit_mod_spam.json');
 
     // Retrieve recently posted `UserContent`.
-    final Comment post = await morbidRealityMod.spam().first;
+    final post = (await morbidRealityMod.spam().first) as Comment;
     // Items in the spam queue aren't necessarily marked as spam.
     expect(post.spam, isFalse);
 
     // Nothing that can really be checked here to verify the items are in the
     // spam queue, so we'll just exercise the filters.
-    await for (final Comment post in morbidRealityMod.spam(
-        limit: 5, only: SubredditModerationContentTypeFilter.commentsOnly)) {}
-    await for (final Submission post in morbidRealityMod.spam(
-        limit: 5,
-        only: SubredditModerationContentTypeFilter.submissionsOnly)) {}
+    await for (final Comment post in morbidRealityMod
+        .spam(limit: 5, only: SubredditModerationContentTypeFilter.commentsOnly)
+        .cast<Comment>()) {}
+    await for (final Submission post in morbidRealityMod
+        .spam(
+            limit: 5,
+            only: SubredditModerationContentTypeFilter.submissionsOnly)
+        .cast<Submission>()) {}
   });
 
   test('lib/subreddit/subreddit_unmoderated', () async {
@@ -178,7 +186,7 @@ Future<void> main() async {
 
     // In this case, we know we're getting a submission back, but that's not
     // always the case.
-    final Submission submission = post;
+    final submission = post as Submission;
 
     // Unmoderated posts are never approved.
     expect(submission.approved, isFalse);
@@ -207,13 +215,13 @@ Future<void> main() async {
     final morbidRealityMod = await subredditModerationHelper(
         'test/subreddit/subreddit_moderation_unread.json');
 
-    final Message message = await morbidRealityMod.unread().first;
+    final message = await morbidRealityMod.unread().first;
 
     // Obviously, this message should be new.
     expect(message.newItem, isTrue);
     expect(message.author, 'AutoModerator');
     expect(message.subject, 'Doxxing Alert!');
-    expect(message.subreddit.displayName, 'MorbidReality');
+    expect(message.subreddit!.displayName, 'MorbidReality');
   });
 
   test('lib/subreddit/subreddit_settings', () async {
@@ -422,7 +430,7 @@ Future<void> main() async {
     final modmail = await subredditModmailHelper(
         'test/subreddit/subreddit_modmail_bulkread.json',
         sub: 'drawapitesting');
-    final ModmailConversation conversation =
+    final conversation =
         await ModmailConversationRef(reddit, '3nyfr').populate();
     await conversation.unread();
     final oneMarkedRead = await modmail.bulkRead();
@@ -492,7 +500,7 @@ Future<void> main() async {
     expect(read.newMail, 0);
     expect(read.notifications, 0);
 
-    final ModmailConversation conversation =
+    final conversation =
         await ModmailConversationRef(reddit, '3nyfr').populate();
     await conversation.unread();
 
@@ -511,8 +519,8 @@ Future<void> main() async {
     final modmail = await subredditModmailHelper(
         'test/subreddit/subreddit_modmail_archive_unarchive.json',
         sub: 'drawapitesting');
-    final ModmailConversation conversation =
-        await ModmailConversation(reddit, id: '3nyfr').refresh();
+    final conversation = (await ModmailConversation(reddit, id: '3nyfr')
+        .refresh()) as ModmailConversation;
     // TODO(bkonyi): figure out how to determine whether or not a conversation is archived.
     // Manually confirmed this works for now.
     expect(conversation.isHighlighted, false);
@@ -526,8 +534,8 @@ Future<void> main() async {
     final modmail = await subredditModmailHelper(
         'test/subreddit/subreddit_modmail_highlight_unhighlight.json',
         sub: 'drawapitesting');
-    final ModmailConversation conversation =
-        await ModmailConversation(reddit, id: '3nyfr').refresh();
+    final conversation = (await ModmailConversation(reddit, id: '3nyfr')
+        .refresh()) as ModmailConversation;
     expect(conversation.isHighlighted, false);
     await conversation.highlight();
     expect(conversation.isHighlighted, true);
@@ -539,8 +547,8 @@ Future<void> main() async {
     final modmail = await subredditModmailHelper(
         'test/subreddit/subreddit_modmail_mute_unmute.json',
         sub: 'drawapitesting');
-    final ModmailConversation conversation =
-        await ModmailConversation(reddit, id: '3nyfr').refresh();
+    final conversation = (await ModmailConversation(reddit, id: '3nyfr')
+        .refresh()) as ModmailConversation;
     // TODO(bkonyi): figure out how to determine whether or not a conversation is muted.
     // Manually confirmed this works for now.
     expect(conversation.isHighlighted, false);
@@ -572,7 +580,7 @@ Future<void> main() async {
     final modmail = await subredditModmailHelper(
         'test/subreddit/subreddit_modmail_reply.json',
         sub: 'drawapitesting');
-    final ModmailConversation conversation = await modmail('3nyfr').populate();
+    final conversation = await modmail('3nyfr').populate();
     final internal = await conversation.reply('TestInternal',
         authorHidden: true, internal: true);
     expect(internal.isInternal, true);
@@ -600,7 +608,7 @@ Future<void> main() async {
         '<!-- SC_OFF --><div class=\"md\"><p>Visible reply</p>\n</div><!-- SC_ON -->');
     expect(reply.bodyMarkdown, 'Visible reply');
     expect(reply.date, DateTime.parse('2018-10-06 22:56:49.916324Z'));
-    expect(reply.toString() != "", true);
+    expect(reply.toString() != '', true);
     final action = conversation.modActions[0];
     expect(action.actionType, ModmailActionType.highlight);
     expect(action.date, DateTime.parse('2018-09-29T19:35:25.916654+00:00'));
@@ -637,7 +645,7 @@ Future<void> main() async {
     final relationship = await subredditModRelationshipHelper(
         'test/subreddit/lib_subreddit_moderator_relationship_leave.json');
     var mods = await relationship().toList();
-    bool containsDRAWApiOfficial = false;
+    var containsDRAWApiOfficial = false;
     for (final m in mods) {
       if (m.displayName == 'DRAWApiOfficial') {
         containsDRAWApiOfficial = true;
@@ -661,7 +669,7 @@ Future<void> main() async {
     final relationship = await subredditModRelationshipHelper(
         'test/subreddit/lib_subreddit_moderator_relationship_remove.json');
     var mods = await relationship().toList();
-    bool containsCheese = false;
+    var containsCheese = false;
     for (final m in mods) {
       if (m.displayName == 'XtremeCheese') {
         containsCheese = true;

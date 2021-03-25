@@ -14,21 +14,21 @@ import 'base.dart';
 mixin RedditorListingMixin {
   Reddit get reddit;
   String get path;
-  SubListing _comments;
-  SubListing _submissions;
+  SubListing? _comments;
+  SubListing? _submissions;
 
   /// Provides an instance of [SubListing], used to make requests for
   /// [Comment]s.
   SubListing get comments {
     _comments ??= SubListing(reddit, path, 'comments/');
-    return _comments;
+    return _comments!;
   }
 
   /// Provides an instance of [SubListing], used to make requests for
   /// [Submission]s.
   SubListing get submissions {
     _submissions ??= SubListing(reddit, path, 'submitted/');
-    return _submissions;
+    return _submissions!;
   }
 
   /// Returns a [Stream] of content that the user has downvoted.
@@ -41,7 +41,7 @@ mixin RedditorListingMixin {
   /// May raise an exception on access if the current user is not authorized to
   /// access this list.
   Stream<UserContent> downvoted(
-          {int limit, String after, Map<String, String> params}) =>
+          {int? limit, String? after, Map<String, String>? params}) =>
       ListingGenerator.createBasicGenerator(reddit, path + 'downvoted',
           limit: limit, after: after, params: params);
 
@@ -55,7 +55,7 @@ mixin RedditorListingMixin {
   /// May raise an exception on access if the current user is not authorized to
   /// access this list.
   Stream<UserContent> gildings(
-          {int limit, String after, Map<String, String> params}) =>
+          {int? limit, String? after, Map<String, String>? params}) =>
       ListingGenerator.createBasicGenerator(reddit, path + 'gilded/given',
           limit: limit, after: after, params: params);
 
@@ -69,7 +69,7 @@ mixin RedditorListingMixin {
   /// May raise an exception on access if the current user is not authorized to
   /// access this list.
   Stream<UserContent> hidden(
-          {int limit, String after, Map<String, String> params}) =>
+          {int? limit, String? after, Map<String, String>? params}) =>
       ListingGenerator.createBasicGenerator(reddit, path + 'hidden',
           limit: limit, after: after, params: params);
 
@@ -83,7 +83,7 @@ mixin RedditorListingMixin {
   /// May raise an exception on access if the current user is not authorized to
   /// access this list.
   Stream<UserContent> saved(
-          {int limit, String after, Map<String, String> params}) =>
+          {int? limit, String? after, Map<String, String>? params}) =>
       ListingGenerator.createBasicGenerator(reddit, path + 'saved',
           limit: limit, after: after, params: params);
 
@@ -97,14 +97,16 @@ mixin RedditorListingMixin {
   /// May raise an exception on access if the current user is not authorized to
   /// access this list.
   Stream<UserContent> upvoted(
-          {int limit, String after, Map<String, String> params}) =>
+          {int? limit, String? after, Map<String, String>? params}) =>
       ListingGenerator.createBasicGenerator(reddit, path + 'upvoted',
           limit: limit, after: after, params: params);
 }
 
 class SubListing extends Object with BaseListingMixin {
+  @override
   final Reddit reddit;
-  String _path;
+  late String _path;
+  @override
   String get path => _path;
 
   SubListing(this.reddit, final String path, final String api) {
