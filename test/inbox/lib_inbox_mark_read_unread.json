@@ -3,7 +3,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/message/unread/",
-      "{mark: false, limit: 1024}"
+      "{mark: false, limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -58,7 +58,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/message/unread/",
-      "{mark: false, limit: 1024}"
+      "{mark: false, limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -84,7 +84,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/message/unread/",
-      "{mark: false, limit: 1024}"
+      "{mark: false, limit: 100}"
     ],
     "response": {
       "kind": "Listing",

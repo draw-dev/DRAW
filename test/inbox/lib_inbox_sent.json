@@ -3,7 +3,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/message/sent/",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",

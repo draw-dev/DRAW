@@ -15,6 +15,17 @@ enum VoteState {
   downvoted,
 }
 
+int _voteStateToIndex(VoteState vote) {
+  switch (vote) {
+    case VoteState.none:
+      return 0;
+    case VoteState.upvoted:
+      return 1;
+    case VoteState.downvoted:
+      return -1;
+  }
+}
+
 /// A mixin which provides voting functionality for [Comment] and [Submission].
 mixin VoteableMixin implements RedditBaseInitializedMixin {
   Reddit get reddit;
@@ -46,22 +57,53 @@ mixin VoteableMixin implements RedditBaseInitializedMixin {
     }
   }
 
-  Future<void> _vote(String direction, bool waitForResponse) async {
+  void _updateScore(VoteState newVote) {
+    if (vote == VoteState.upvoted) {
+      if (newVote == VoteState.downvoted) {
+        data['score'] = score - 2;
+      } else if (newVote == VoteState.none) {
+        data['score'] = score - 1;
+      }
+    } else if (vote == VoteState.none) {
+      if (newVote == VoteState.downvoted) {
+        data['score'] = score - 1;
+      } else if (newVote == VoteState.upvoted) {
+        data['score'] = score + 1;
+      }
+    } else if (vote == VoteState.downvoted) {
+      if (newVote == VoteState.upvoted) {
+        data['score'] = score + 2;
+      } else if (newVote == VoteState.none) {
+        data['score'] = score + 1;
+      }
+    }
+  }
+
+  Future<void> _vote(VoteState direction, bool waitForResponse) async {
+    if (vote == direction) {
+      return;
+    }
     final response = reddit.post(
-        apiPath['vote'], {'dir': direction, 'id': fullname},
+        apiPath['vote'],
+        {
+          'dir': _voteStateToIndex(direction).toString(),
+          'id': fullname,
+        },
         discardResponse: true);
     if (waitForResponse) {
       await response;
     }
 
+    _updateScore(direction);
+
     switch (direction) {
-      case '0':
+      case VoteState.none:
         data['likes'] = null;
         break;
-      case '1':
+      case VoteState.upvoted:
         data['likes'] = true;
         break;
-      case '-1':
+      case VoteState.downvoted:
         data['likes'] = false;
     }
   }
@@ -72,7 +114,7 @@ mixin VoteableMixin implements RedditBaseInitializedMixin {
   /// voting by bots). See Reddit rules for more details on what is considered
   /// vote cheating or manipulation.
   Future<void> clearVote({bool waitForResponse = true}) async =>
-      _vote('0', waitForResponse);
+      _vote(VoteState.none, waitForResponse);
 
   /// Clear the authenticated user's vote on the object.
   ///
@@ -80,7 +122,7 @@ mixin VoteableMixin implements RedditBaseInitializedMixin {
   /// voting by bots). See Reddit rules for more details on what is considered
   /// vote cheating or manipulation.
   Future<void> downvote({bool waitForResponse = true}) async =>
-      _vote('-1', waitForResponse);
+      _vote(VoteState.downvoted, waitForResponse);
 
   /// Clear the authenticated user's vote on the object.
   ///
@@ -88,5 +130,5 @@ mixin VoteableMixin implements RedditBaseInitializedMixin {
   /// voting by bots). See Reddit rules for more details on what is considered
   /// vote cheating or manipulation.
   Future<void> upvote({bool waitForResponse = true}) async =>
-      _vote('1', waitForResponse);
+      _vote(VoteState.upvoted, waitForResponse);
 }

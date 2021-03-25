@@ -1,6 +1,9 @@
 Change Log
 =================================
 
+## Version 0.9.2 (2021/03/25)
+* Fixed issues with `limit` parameter for listing generators.
+
 ## Version 0.9.1 (2020/01/09)
 * Fixed issue where `SubredditRef.search` would throw a type error.
 

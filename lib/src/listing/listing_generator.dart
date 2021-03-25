@@ -4,6 +4,7 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:draw/src/reddit.dart';
 
@@ -44,12 +45,12 @@ abstract class ListingGenerator {
       bool objectify = true}) async* {
     final kLimitKey = 'limit';
     final kAfterKey = 'after';
-    final nullLimit = 1024;
+    final nullLimit = 100;
     final paramsInternal = (params == null)
         ? Map<String, String>()
         : Map<String, String>.from(params);
-    final _limit = limit ?? nullLimit;
-    paramsInternal[kLimitKey] = _limit.toString();
+    final _limit = limit;
+    paramsInternal[kLimitKey] = (_limit ?? nullLimit).toString();
 
     // If after is provided, we'll start getting objects older than the object
     // ID specified.

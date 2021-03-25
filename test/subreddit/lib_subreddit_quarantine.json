@@ -11,7 +11,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/r/whiteswinfights/top",
-      "{t: all, limit: 1024}"
+      "{t: all, limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -114,7 +114,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/r/whiteswinfights/top",
-      "{t: all, limit: 1024}"
+      "{t: all, limit: 100}"
     ],
     "response": {
       "kind": "DRAW_TEST_THROW_AUTH_ERROR"

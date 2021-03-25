@@ -3,7 +3,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/user/DRAWApiOfficial/upvoted",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -1154,7 +1154,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/user/DRAWApiOfficial/downvoted",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -1294,7 +1294,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/r/drawapitesting/new",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -1515,7 +1515,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/user/DRAWApiOfficial/upvoted",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -2852,7 +2852,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/user/DRAWApiOfficial/downvoted",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -2992,7 +2992,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/r/drawapitesting/new",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -3213,7 +3213,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/user/DRAWApiOfficial/upvoted",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -4364,7 +4364,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/user/DRAWApiOfficial/downvoted",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -4690,7 +4690,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/r/drawapitesting/new",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -4911,7 +4911,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/user/DRAWApiOfficial/upvoted",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -6062,7 +6062,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/user/DRAWApiOfficial/downvoted",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",
@@ -6202,7 +6202,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/r/drawapitesting/new",
-      "{limit: 1024}"
+      "{limit: 100}"
     ],
     "response": {
       "kind": "Listing",
