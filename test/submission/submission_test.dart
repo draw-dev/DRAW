@@ -30,7 +30,7 @@ Future<void> main() async {
     expect(submission.approvedAt,
         DateTime.fromMillisecondsSinceEpoch(1524535384000));
     expect(submission.approved, isTrue);
-    expect(submission.approvedBy.displayName, 'DRAWApiOfficial');
+    expect(submission.approvedBy!.displayName, 'DRAWApiOfficial');
     expect(submission.archived, isFalse);
     expect(submission.authorFlairText, isNull);
     expect(submission.bannedAt, isNull);
@@ -87,7 +87,7 @@ Future<void> main() async {
     final reddit = await createRedditTestInstance(
         'test/submission/lib_submission_refresh_comments_sanity.json');
     final submission = await reddit.submission(id: '7x6ew7').populate();
-    final originalComments = submission.comments;
+    final originalComments = submission.comments!;
     final updatedComments = await submission.refreshComments();
     expect(submission.comments, updatedComments);
     expect(originalComments.length, updatedComments.length);

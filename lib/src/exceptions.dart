@@ -7,6 +7,7 @@
 class DRAWAuthenticationError implements Exception {
   DRAWAuthenticationError(this.message);
   final String message;
+  @override
   String toString() => 'DRAWAuthenticationError: $message';
 }
 
@@ -14,6 +15,7 @@ class DRAWAuthenticationError implements Exception {
 class DRAWArgumentError implements Exception {
   DRAWArgumentError(this.message);
   final String message;
+  @override
   String toString() => 'DRAWArgumentError: $message';
 }
 
@@ -23,6 +25,7 @@ class DRAWArgumentError implements Exception {
 class DRAWInternalError implements Exception {
   DRAWInternalError(this.message);
   final String message;
+  @override
   String toString() => 'DRAWInternalError: $message';
 }
 
@@ -30,6 +33,7 @@ class DRAWInternalError implements Exception {
 class DRAWClientError implements Exception {
   DRAWClientError(this.message);
   final String message;
+  @override
   String toString() =>
       'DRAWClientError: $message This is likely due to issues with your ini file.';
 }
@@ -40,30 +44,33 @@ class DRAWRedirectResponse implements Exception {
   final String path;
   final response;
   DRAWRedirectResponse(this.path, this.response);
-  String toString() => 'DRAWRedirectResponse: Unexpected redirect to ${path}.';
+  @override
+  String toString() => 'DRAWRedirectResponse: Unexpected redirect to $path.';
 }
 
 /// Thrown if a call to gild a [Comment], [Redditor], or [Submission] fails.
 class DRAWGildingException implements Exception {
   final Map<String, String> response;
   DRAWGildingException(this.response);
-  String get explanation => response['explanation'];
-  String get message => response['message'];
-  String get reason => response['reason'];
+  String? get explanation => response['explanation'];
+  String? get message => response['message'];
+  String? get reason => response['reason'];
+  @override
   String toString() => 'DRAWGildingException: $explanation (reason: $reason)';
 }
 
 /// Thrown by unfinished code that hasn't yet implemented all the features it
 /// needs.
 class DRAWUnimplementedError extends UnimplementedError {
-  DRAWUnimplementedError([String message]) : super(message);
+  DRAWUnimplementedError([String? message]) : super(message);
 }
 
 /// Thrown when a Reddit object could not be found.
 class DRAWNotFoundException implements Exception {
-  final String reason;
-  final String message;
+  final String? reason;
+  final String? message;
   DRAWNotFoundException(this.reason, this.message);
+  @override
   String toString() =>
       'DRAWNotFoundException(Reason: "$reason", Message: "$message")';
 }
@@ -72,6 +79,7 @@ class DRAWNotFoundException implements Exception {
 class DRAWInvalidCommentException implements Exception {
   final String commentId;
   DRAWInvalidCommentException(this.commentId);
+  @override
   String toString() =>
       'DRAWInvalidCommentException: "$commentId" is not a valid comment ID.';
 }
@@ -80,6 +88,7 @@ class DRAWInvalidCommentException implements Exception {
 class DRAWInvalidRedditorException implements Exception {
   final String redditorName;
   DRAWInvalidRedditorException(this.redditorName);
+  @override
   String toString() =>
       'DRAWInvalidRedditorException: "$redditorName" is not a valid redditor.';
 }
@@ -88,6 +97,7 @@ class DRAWInvalidRedditorException implements Exception {
 class DRAWInvalidSubmissionException implements Exception {
   final String submissionId;
   DRAWInvalidSubmissionException(this.submissionId);
+  @override
   String toString() =>
       'DRAWInvalidSubmissionException: "$submissionId" is not a valid submission ID.';
 }
@@ -96,6 +106,7 @@ class DRAWInvalidSubmissionException implements Exception {
 class DRAWInvalidSubredditException implements Exception {
   final String subredditName;
   DRAWInvalidSubredditException(this.subredditName);
+  @override
   String toString() =>
       'DRAWInvalidSubredditException: "$subredditName" is not a valid subreddit.';
 }
@@ -107,6 +118,7 @@ class DRAWUnknownResponseException implements Exception {
   final int status;
   final String message;
   DRAWUnknownResponseException(this.status, this.message);
+  @override
   String toString() => 'DRAWUnknownResponse: $message (status: $status)';
 }
 
@@ -115,5 +127,6 @@ class DRAWImageUploadException implements Exception {
   final String error;
   final String message;
   DRAWImageUploadException(this.error, this.message);
+  @override
   String toString() => 'DRAWImageUploadException: ($error) $message';
 }

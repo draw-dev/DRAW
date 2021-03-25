@@ -8,13 +8,9 @@ import 'dart:async';
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
 import 'package:draw/src/models/comment.dart';
-import 'package:draw/src/reddit.dart';
 
 /// A mixin for RedditBase classes that can be replied to.
 mixin ReplyableMixin implements RedditBaseInitializedMixin {
-  Reddit get reddit;
-  String get fullname;
-
   // TODO(bkonyi): check if we actually need to access an array element.
   /// Reply to the object.
   ///

@@ -17,7 +17,7 @@ String flairPositionToString(FlairPosition p) {
   }
 }
 
-FlairPosition stringToFlairPosition(String p) {
+FlairPosition stringToFlairPosition(String? p) {
   switch (p) {
     case 'left':
       return FlairPosition.left;
@@ -29,8 +29,8 @@ FlairPosition stringToFlairPosition(String p) {
 }
 
 class _FlairBase {
-  String get flairCssClass => _data['flair_css_class'];
-  String get flairText => _data['flair_text'];
+  String? get flairCssClass => _data['flair_css_class'];
+  String? get flairText => _data['flair_text'];
 
   final Map<String, dynamic> _data;
 
@@ -42,6 +42,7 @@ class _FlairBase {
 
   _FlairBase.parse(Map<String, dynamic> data) : _data = data;
 
+  @override
   String toString() => JsonEncoder.withIndent('   ').convert(_data);
 }
 
@@ -74,5 +75,6 @@ class Flair extends _FlairBase {
       : user = RedditorRef.name(reddit, data['user']),
         super.parse(data);
 
+  @override
   String toString() => JsonEncoder.withIndent('   ').convert(_data);
 }

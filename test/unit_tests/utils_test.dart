@@ -10,7 +10,7 @@ import 'package:draw/src/util.dart';
 void main() {
   test('BoundedSet', () {
     final bounded = BoundedSet<int>(5);
-    for (int i = 0; i < 5; ++i) {
+    for (var i = 0; i < 5; ++i) {
       bounded.add(i);
       expect(bounded.contains(i), isTrue);
     }
@@ -22,7 +22,7 @@ void main() {
 
   test('ExponentialCounter', () {
     final counter = ExponentialCounter(5);
-    for (int i = 0; i < 25; ++i) {
+    for (var i = 0; i < 25; ++i) {
       expect(counter.counter() <= 5.0, isTrue);
     }
     counter.reset();

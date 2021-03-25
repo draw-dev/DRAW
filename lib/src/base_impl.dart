@@ -9,30 +9,30 @@ import 'dart:convert';
 import 'package:draw/src/exceptions.dart';
 import 'package:draw/src/reddit.dart';
 
-void setData(RedditBaseInitializedMixin base, Map data) {
+void setData(RedditBaseInitializedMixin base, Map? data) {
   base._data = data;
 }
 
 abstract class RedditBaseInitializedMixin {
   Reddit get reddit;
   String get infoPath;
-  Map<String, String> get infoParams => null;
+  Map<String, String>? get infoParams => null;
 
   /// Returns the raw properties dictionary for this object.
   ///
   /// This getter returns null if the object is lazily initialized.
-  Map get data => _data;
-  Map _data;
+  Map? get data => _data;
+  Map? _data;
 
   /// The fullname of a Reddit object.
   ///
   /// Reddit object fullnames take the form of 't3_15bfi0'.
-  String get fullname => (data == null) ? null : data['name'];
+  String? get fullname => (data == null) ? null : data!['name'];
 
   /// The id of a Reddit object.
   ///
   /// Reddit object ids take the form of '15bfi0'.
-  String get id => (data == null) ? null : data['id'];
+  String? get id => (data == null) ? null : data!['id'];
 
   /// Requests updated information from the Reddit API and updates the current
   /// object properties.
@@ -70,11 +70,11 @@ abstract class RedditBase {
   /// The current [Reddit] instance.
   final Reddit reddit;
 
-  Map<String, String> get infoParams => null;
+  Map<String, String>? get infoParams => null;
 
   /// The base request format for the current object.
   String get infoPath => _infoPath;
-  String _infoPath;
+  late String _infoPath;
 
   RedditBase(this.reddit);
 

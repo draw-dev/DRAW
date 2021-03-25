@@ -14,14 +14,14 @@ Future<void> main() async {
   test('lib/inbox/all', () async {
     final reddit =
         await createRedditTestInstance('test/inbox/lib_inbox_all.json');
-    final messages = <Message>[];
+    final List<Message?> messages = <Message>[];
     await for (final message in reddit.inbox.all()) {
       messages.add(message);
     }
     expect(messages.length, equals(9));
-    expect(messages[0].author, equals('XtremeCheese'));
-    expect(messages[0].subject, equals('Test'));
-    expect(messages[0].body, equals('BLOCK ME I DARE YOU'));
+    expect(messages[0]!.author, equals('XtremeCheese'));
+    expect(messages[0]!.subject, equals('Test'));
+    expect(messages[0]!.body, equals('BLOCK ME I DARE YOU'));
   });
 
   test('lib/inbox/collapse_uncollapse', () async {
@@ -89,7 +89,7 @@ Future<void> main() async {
   test('lib/inbox/message', () async {
     final reddit =
         await createRedditTestInstance('test/inbox/lib_inbox_message.json');
-    final message = await reddit.inbox.message('t4_awl3r7');
+    final message = (await reddit.inbox.message('t4_awl3r7')) as Message;
     expect(message.id, equals('awl3r7'));
     expect(message.body, equals('Hi!'));
     expect(message.replies.length, equals(2));

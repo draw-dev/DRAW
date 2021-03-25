@@ -31,7 +31,7 @@ import 'package:draw/src/reddit.dart';
 
 final Logger _logger = Logger('Submission');
 
-Comment getCommentByIdInternal(SubmissionRef s, String id) {
+Comment? getCommentByIdInternal(SubmissionRef s, String id) {
   if (s._commentsById.containsKey(id)) {
     return s._commentsById[id];
   }
@@ -44,7 +44,7 @@ void insertCommentById(SubmissionRef s, /*Comment, MoreComments*/ c) {
       'insertCommentById: Comment(id:${c.fullname}) Submission(id:${s._id},hash:${s.hashCode})');
   s._commentsById[c.fullname] = c;
   if ((c is Comment) && (c.replies != null)) {
-    for (final reply in c.replies.toList()) {
+    for (final reply in c.replies!.toList()) {
       if (reply is Comment) {
         s._commentsById[reply.fullname] = reply;
       }
@@ -74,54 +74,54 @@ class Submission extends SubmissionRef
   /// The date and time that this [Submission] was approved.
   ///
   /// Returns `null` if the [Submission] has not been approved.
-  DateTime get approvedAt => (data['approved_at_utc'] == null)
+  DateTime? get approvedAt => (data!['approved_at_utc'] == null)
       ? null
       : DateTime.fromMillisecondsSinceEpoch(
-          data['approved_at_utc'].round() * 1000);
+          data!['approved_at_utc'].round() * 1000);
 
   /// Has this [Submission] been approved.
-  bool get approved => data['approved'];
+  bool? get approved => data!['approved'];
 
   /// A [RedditorRef] of the [Redditor] who approved this [Submission]
   ///
   /// Returns `null` if the [Submission] has not been approved.
-  RedditorRef get approvedBy =>
-      GetterUtils.redditorRefOrNull(reddit, data['approved_by']);
+  RedditorRef? get approvedBy =>
+      GetterUtils.redditorRefOrNull(reddit, data!['approved_by']);
 
   /// Is this [Submission] archived.
-  bool get archived => data['archived'];
+  bool get archived => data!['archived'];
 
   /// The author's flair text, if set.
   ///
   /// If the author does not have flair text set, this property is `null`.
-  String get authorFlairText => data['author_flair_text'];
+  String? get authorFlairText => data!['author_flair_text'];
 
   /// The date and time that this [Submission] was banned.
   ///
   /// Returns `null` if the [Submission] has not been approved.
-  DateTime get bannedAt => GetterUtils.dateTimeOrNull(data['banned_at_utc']);
+  DateTime? get bannedAt => GetterUtils.dateTimeOrNull(data!['banned_at_utc']);
 
   /// A [RedditorRef] of the [Redditor] who banned this [Submission].
   ///
   /// Returns `null` if the [Submission] has not been banned.
-  RedditorRef get bannedBy =>
-      GetterUtils.redditorRefOrNull(reddit, data['banned_by']);
+  RedditorRef? get bannedBy =>
+      GetterUtils.redditorRefOrNull(reddit, data!['banned_by']);
 
   /// Is this [Submission] considered 'brand-safe' by Reddit.
-  bool get brandSafe => data['brand_safe'];
+  bool? get brandSafe => data!['brand_safe'];
 
   /// Can this [Submission] be awarded Reddit Gold.
-  bool get canGild => data['can_gild'];
+  bool get canGild => data!['can_gild'];
 
   /// Can this [Submission] be moderated by the currently authenticated [Redditor].
-  bool get canModeratePost => data['can_mod_post'];
+  bool? get canModeratePost => data!['can_mod_post'];
 
   /// Has this [Submission] been clicked.
-  bool get clicked => data['clicked'];
+  bool get clicked => data!['clicked'];
 
   /// Returns the [CommentForest] representing the comments for this
   /// [Submission]. May be null (see [refreshComments]).
-  CommentForest get comments => _comments;
+  CommentForest? get comments => _comments;
 
   /// Repopulates the [CommentForest] with the most up-to-date comments.
   ///
@@ -133,100 +133,100 @@ class Submission extends SubmissionRef
     _commentSort = sort;
     final response = await fetch();
     _comments = CommentForest(this, response[1]['listing']);
-    return _comments;
+    return _comments!;
   }
 
   @override
-  Map<String, String> get infoParams {
+  Map<String, String>? get infoParams {
     if (commentSort != CommentSortType.best) {
-      return {"sort": commentSortTypeToString(commentSort)};
+      return {'sort': commentSortTypeToString(commentSort)};
     }
     return null;
   }
 
   /// Is this [Submission] in contest mode.
-  bool get contestMode => data['contest_mode'];
+  bool get contestMode => data!['contest_mode'];
 
   /// The time this [Submission] was created.
-  DateTime get createdUtc => GetterUtils.dateTimeOrNull(data['created_utc']);
+  DateTime get createdUtc => GetterUtils.dateTimeOrNull(data!['created_utc'])!;
 
   /// Is this [Submission] distinguished.
   ///
   /// For example, if a moderator creates a post and chooses to show that it was
   /// created by a moderator, this property will be set to 'moderator'. If this
   /// [Submission] is not distinguished, this property is `null`.
-  String get distinguished => data['distinguished'];
+  String? get distinguished => data!['distinguished'];
 
   /// Returns the domain of this [Submission].
   ///
   /// For self-text [Submission]s, domains take the form of 'self.announcements'.
   /// For link [Submission]s, domains take the form of 'github.com'.
-  String get domain => data['domain'];
+  String get domain => data!['domain'];
 
   /// The number of downvotes for this [Submission].
-  int get downvotes => data['downs'];
+  int get downvotes => data!['downs'];
 
   /// Has this [Submission] been edited.
-  bool get edited => (data['edited'] is double);
+  bool get edited => (data!['edited'] is double);
 
-  SubmissionFlair _flair;
+  SubmissionFlair? _flair;
 
   /// Helper utilities to manage flair for this [Submission].
   SubmissionFlair get flair {
     _flair ??= SubmissionFlair._(this);
-    return _flair;
+    return _flair!;
   }
 
   /// Is this [Submission] marked as hidden.
-  bool get hidden => data['hidden'];
+  bool get hidden => data!['hidden'];
 
   /// Is the score of this [Submission] hidden.
-  bool get hideScore => data['hide_score'];
+  bool get hideScore => data!['hide_score'];
 
   /// Ignore reports for this [Submission].
-  bool get ignoreReports => data['ignore_reports'];
+  bool? get ignoreReports => data!['ignore_reports'];
 
   /// Can this [Submission] be cross-posted.
-  bool get isCrosspostable => data['is_crosspostable'];
+  bool get isCrosspostable => data!['is_crosspostable'];
 
   /// Is this [Submission] hosted on a Reddit media domain.
-  bool get isRedditMediaDomain => data['is_reddit_media_domain'];
+  bool get isRedditMediaDomain => data!['is_reddit_media_domain'];
 
   /// Is this [Submission] a self-post.
   ///
   /// Self-posts are [Submission]s that consist solely of text.
-  bool get isSelf => data['is_self'];
+  bool get isSelf => data!['is_self'];
 
   /// Is this [Submission] a video.
-  bool get isVideo => data['is_video'];
+  bool get isVideo => data!['is_video'];
 
   /// Text of the flair set for this [Submission].
   ///
   /// May return `null` if the submission has no flair.
-  String get linkFlairText => data['link_flair_text'];
+  String? get linkFlairText => data!['link_flair_text'];
 
   /// Has this [Submission] been locked.
-  bool get locked => data['locked'];
+  bool get locked => data!['locked'];
 
   /// The number of [Comment]s made on this [Submission].
-  int get numComments => data['num_comments'];
+  int get numComments => data!['num_comments'];
 
   /// The number of times this [Submission] has been cross-posted.
-  int get numCrossposts => data['num_crossposts'];
+  int get numCrossposts => data!['num_crossposts'];
 
   /// Is this [Submission] restricted to [Redditor]s 18+.
-  bool get over18 => data['over_18'];
+  bool get over18 => data!['over_18'];
 
   /// The preview images for this [Submission].
   ///
   /// Returns an empty list if the [Submission] does not have a preview image.
   List<SubmissionPreview> get preview {
     final previews = <SubmissionPreview>[];
-    if (!data.containsKey('preview')) {
+    if (!data!.containsKey('preview')) {
       return previews;
     }
-    assert(data['preview'].containsKey('images'));
-    final raw = data['preview']['images'].cast<Map<String, dynamic>>();
+    assert(data!['preview'].containsKey('images'));
+    final raw = data!['preview']['images'].cast<Map<String, dynamic>>();
     for (final i in raw) {
       previews.add(SubmissionPreview._fromMap(i));
     }
@@ -239,12 +239,13 @@ class Submission extends SubmissionRef
   ///
   /// Returns an empty List if the [Submission] does not have any image variations.
   List<Map<String, SubmissionPreview>> get variants {
-    final previews = List<Map<String, SubmissionPreview>>();
-    if (!data.containsKey('preview')) {
-      return previews;
+    final List<Map<String?, SubmissionPreview>> previews =
+        <Map<String, SubmissionPreview>>[];
+    if (!data!.containsKey('preview')) {
+      return previews as List<Map<String, SubmissionPreview>>;
     }
-    assert(data['preview'].containsKey('images'));
-    final raw = data['preview']['images'].cast<Map<String, dynamic>>();
+    assert(data!['preview'].containsKey('images'));
+    final raw = data!['preview']['images'].cast<Map<String, dynamic>>();
     for (final image in raw) {
       if (image.containsKey('variants')) {
         final _variants = image['variants'];
@@ -254,79 +255,81 @@ class Submission extends SubmissionRef
         }
       }
     }
-    return previews;
+    return previews as List<Map<String, SubmissionPreview>>;
   }
 
   /// Is this [Submission] pinned.
-  bool get pinned => data['pinned'];
+  bool get pinned => data!['pinned'];
 
   /// Is this [Submission] in quarantine.
-  bool get quarantine => data['quarantine'];
+  bool get quarantine => data!['quarantine'];
 
   /// The reason why this [Submission] was removed.
   ///
   /// Returns `null` if the [Submission] has not been removed.
-  String get removalReason => data['removal_reason'];
+  String? get removalReason => data!['removal_reason'];
 
   /// Has this [Submission] been removed.
-  bool get removed => data['removed'];
+  bool get removed => data!['removed'];
 
   /// Is this [Submission] saved.
-  bool get saved => data['saved'];
+  @override
+  bool get saved => data!['saved'];
 
   /// The current score (net upvotes) for this [Submission].
-  int get score => data['score'];
+  @override
+  int get score => data!['score'];
 
   /// The text body of a self-text post.
   ///
   /// Returns null if the [Submission] is not a self-text submission.
-  String get selftext => data['selftext'];
+  String? get selftext => data!['selftext'];
 
   /// Is this [Submission] marked as spam.
-  bool get spam => data['spam'];
+  bool? get spam => data!['spam'];
 
   /// Does this [Submission] contain a spoiler.
-  bool get spoiler => data['spoiler'];
+  bool get spoiler => data!['spoiler'];
 
   /// A [SubredditRef] of the [Subreddit] this [Submission] was made in.
-  SubredditRef get subreddit => reddit.subreddit(data['subreddit']);
+  SubredditRef get subreddit => reddit.subreddit(data!['subreddit']);
 
   /// The type of the [Subreddit] this [Submission] was made in.
   ///
   /// For example, if a [Subreddit] is restricted to approved submitters, this
   /// property will be 'restricted'.
-  String get subredditType => data['subreddit_type'];
+  String get subredditType => data!['subreddit_type'];
 
   /// Has this [Submission] been stickied.
-  bool get stickied => data['stickied'];
+  bool get stickied => data!['stickied'];
 
   /// The title of the [Submission].
-  String get title => data['title'];
+  String get title => data!['title'];
 
   /// The Uri of the [Submission]'s thumbnail image.
-  Uri get thumbnail => Uri.parse(data['thumbnail']);
+  Uri get thumbnail => Uri.parse(data!['thumbnail']);
 
   /// The ratio of upvotes to downvotes for this [Submission].
-  double get upvoteRatio => data['upvote_ratio'];
+  double get upvoteRatio => data!['upvote_ratio'];
 
   /// The number of upvotes this [Submission] has received.
-  int get upvotes => data['ups'];
+  int get upvotes => data!['ups'];
 
   /// The URL of the [Submission]'s link.
-  Uri get url => (data['url'] == null) ? null : Uri.parse(data['url']);
+  Uri get url => Uri.parse(data!['url']!);
 
   /// The number of views this [Submission] has.
-  int get viewCount => data['view_count'];
+  int get viewCount => data!['view_count'];
 
   /// Has this [Submission] been visited by the current [User].
-  bool get visited => data['visited'];
+  bool? get visited => data!['visited'];
 
   SubmissionModeration get mod {
     _mod ??= SubmissionModeration._(this);
-    return _mod;
+    return _mod!;
   }
 
-  SubmissionModeration _mod;
+  SubmissionModeration? _mod;
 
   Submission.parse(Reddit reddit, Map data)
       : super.withPath(reddit, SubmissionRef._infoPath(data['id'])) {
@@ -346,23 +349,23 @@ class Submission extends SubmissionRef
   /// beta. As a result, it's probably best not to use this method until
   /// crossposting is out of beta on Reddit (still in beta as of 2017/10/27).
   Future<Submission> crosspost(Subreddit subreddit,
-      {String title, bool sendReplies = true}) async {
-    final data = <String, String>{
+      {String? title, bool sendReplies = true}) async {
+    final data = <String, String?>{
       'sr': subreddit.displayName,
-      'title': title ?? this.data['title'],
+      'title': title ?? this.data!['title'],
       'sendreplies': sendReplies.toString(),
       'kind': 'crosspost',
       'crosspost_fullname': fullname,
       'api_type': 'json',
     };
-    return await reddit.post(apiPath['submit'], data);
+    return (await reddit.post(apiPath['submit'], data)) as Submission;
   }
 
   /// Unhide the submission.
   ///
   /// If provided, [otherSubmissions] is a list of other submissions to be
   /// unhidden.
-  Future<void> unhide({List<Submission> otherSubmissions}) async {
+  Future<void> unhide({List<Submission>? otherSubmissions}) async {
     for (final submissions in _chunk(otherSubmissions, 50)) {
       await reddit.post(apiPath['unhide'], {'id': submissions},
           discardResponse: true);
@@ -373,7 +376,7 @@ class Submission extends SubmissionRef
   ///
   /// If provided, [otherSubmissions] is a list of other submissions to be
   /// hidden.
-  Future<void> hide({List<Submission> otherSubmissions}) async {
+  Future<void> hide({List<Submission>? otherSubmissions}) async {
     for (final submissions in _chunk(otherSubmissions, 50)) {
       await reddit.post(apiPath['hide'], {'id': submissions},
           discardResponse: true);
@@ -381,11 +384,11 @@ class Submission extends SubmissionRef
   }
 
   Iterable<String> _chunk(
-      List<Submission> otherSubmissions, int chunkSize) sync* {
-    final submissions = <String>[fullname];
+      List<Submission>? otherSubmissions, int chunkSize) sync* {
+    final submissions = <String>[fullname!];
     if (otherSubmissions != null) {
       otherSubmissions.forEach((Submission s) {
-        submissions.add(s.fullname);
+        submissions.add(s.fullname!);
       });
     }
     for (var i = 0; i < submissions.length; i += chunkSize) {
@@ -400,9 +403,9 @@ class Submission extends SubmissionRef
 /// promoted to a [Submission].
 class SubmissionRef extends UserContent {
   static final RegExp _submissionRegExp = RegExp(r'{id}');
-  CommentForest _comments;
+  CommentForest? _comments;
   final String _id;
-  final Map _commentsById = Map();
+  final Map _commentsById = {};
 
   SubmissionRef.withPath(Reddit reddit, String path)
       : _id = idFromUrl(path),
@@ -416,7 +419,7 @@ class SubmissionRef extends UserContent {
       apiPath['submission'].replaceAll(_submissionRegExp, id);
 
   /// The shortened link for the [Submission].
-  Uri get shortlink => Uri.parse(reddit.config.shortUrl + _id);
+  Uri get shortlink => Uri.parse(reddit.config.shortUrl! + _id);
 
   // TODO(bkonyi): allow for paths without trailing '/'.
   /// Retrieve a submission ID from a given URL.
@@ -472,9 +475,9 @@ class SubmissionPreview {
   /// The original source of the preview image.
   PreviewImage get source => _source;
 
-  PreviewImage _source;
-  List<PreviewImage> _resolutions;
-  String _id;
+  late PreviewImage _source;
+  late List<PreviewImage> _resolutions;
+  late String _id;
 
   SubmissionPreview._fromMap(Map<String, dynamic> map) {
     final sourceMap = map['source'];
@@ -483,7 +486,7 @@ class SubmissionPreview {
     assert(resolutionsList != null);
 
     _source = PreviewImage._fromMap(sourceMap);
-    _resolutions = List<PreviewImage>();
+    _resolutions = <PreviewImage>[];
     resolutionsList.forEach((e) => _resolutions.add(PreviewImage._fromMap(e)));
     _id = map['id'];
   }
@@ -542,6 +545,7 @@ enum CommentSortType {
 class SubmissionModeration extends Object with UserContentModerationMixin {
   static final RegExp _subModRegExp = RegExp(r'{subreddit}');
 
+  @override
   Submission get content => _content;
   final Submission _content;
 
@@ -639,7 +643,7 @@ class SubmissionModeration extends Object with UserContentModerationMixin {
   /// no top sticky exists, this [Submission] will become the top sticky.
   Future<void> sticky({bool state = true, bool bottom = true}) async {
     final data = <String, String>{
-      'id': _content.fullname,
+      'id': _content.fullname!,
       'state': state.toString(),
       'api_type': 'json',
     };
@@ -694,7 +698,7 @@ class SubmissionFlair {
         .replaceAll(_kSubredditRegExp, _submission.subreddit.displayName);
     final List rawChoices =
         (await _submission.reddit.post(url, <String, String>{
-      'link': _submission.fullname,
+      'link': _submission.fullname!,
     }))['choices'];
     final choices = <FlairTemplate>[];
     rawChoices.forEach((e) => choices.add(FlairTemplate.parse(e)));
@@ -710,11 +714,11 @@ class SubmissionFlair {
   Future<void> select(String flairTemplateId, {String text = ''}) async {
     if (text.length > 64) {
       throw DRAWArgumentError("Argument 'text' must not be longer than"
-          " 64 characters");
+          ' 64 characters');
     }
     final data = <String, String>{
       'flair_template_id': flairTemplateId,
-      'link': _submission.fullname,
+      'link': _submission.fullname!,
       'text': text,
     };
     final url = apiPath['select_flair']

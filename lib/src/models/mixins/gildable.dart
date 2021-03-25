@@ -7,13 +7,9 @@ import 'dart:async';
 
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
-import 'package:draw/src/reddit.dart';
 
 /// Interface for classes that can be gilded.
 mixin GildableMixin implements RedditBaseInitializedMixin {
-  Reddit get reddit;
-  String get fullname;
-
   /// Gild the author of the item.
   Future<void> gild() async => reddit.post(
       apiPath['gild_thing'].replaceAll(RegExp(r'{fullname}'), fullname), null);

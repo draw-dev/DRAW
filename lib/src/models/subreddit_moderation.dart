@@ -53,7 +53,7 @@ SubredditType stringToSubredditType(String s) {
     case 'restricted':
       return SubredditType.restrictedSubreddit;
     default:
-      throw DRAWInternalError("Invalid subreddit type: $s.");
+      throw DRAWInternalError('Invalid subreddit type: $s.');
   }
 }
 
@@ -310,7 +310,7 @@ ModeratorActionType stringToModeratorActionType(String s) {
     case 'wikiunbanned':
       return ModeratorActionType.wikiUnbanned;
     default:
-      throw DRAWInternalError("Invalid moderator action type: $s.");
+      throw DRAWInternalError('Invalid moderator action type: $s.');
   }
 }
 
@@ -374,7 +374,7 @@ class SubredditSettings {
   // get suggestedCommentSort => _data['suggested_comment_sort'];
 
   String get description => _data['description'];
-  set description(String x) => _data['description'] = x;
+  set description(String? x) => _data['description'] = x;
 
   String get submitLinkLabel => _data['submit_link_label'];
   set submitLinkLabel(String x) => _data['submit_link_label'] = x;
@@ -388,8 +388,8 @@ class SubredditSettings {
   // TODO(bkonyi): figure out what this is.
   // get spamSelfposts => _data['spam_selfposts'];
 
-  String get submitTextLabel => _data['submit_text_label'];
-  set submitTextLabel(String x) => _data['submit_text_label'] = x;
+  String? get submitTextLabel => _data['submit_text_label'];
+  set submitTextLabel(String? x) => _data['submit_text_label'] = x;
 
   // TODO(bkonyi): we might want to use a color class for this.
   // get keyColor => _data['key_color];
@@ -410,7 +410,7 @@ class SubredditSettings {
   set allowDiscovery(bool x) => _data['allow_discovery'] = x;
 
   String get publicDescription => _data['public_description'];
-  set publicDescription(String x) => _data['public_description'] = x;
+  set publicDescription(String? x) => _data['public_description'] = x;
 
   bool get showMediaPreview => _data['show_media_preview'];
   set showMediaPreview(bool x) => _data['show_media_preview'] = x;
@@ -422,9 +422,6 @@ class SubredditSettings {
       stringToSubredditType(_data['subreddit_type']);
 
   set subredditType(SubredditType type) {
-    if (type == null) {
-      throw DRAWArgumentError("Parameter 'type' cannot be null.");
-    }
     _data['subreddit_type'] = subredditTypeToString(type);
   }
 
@@ -436,11 +433,8 @@ class SubredditSettings {
 
   @override
   String toString() {
-    if (_data != null) {
-      final encoder = JsonEncoder.withIndent('  ');
-      return encoder.convert(_data);
-    }
-    return 'null';
+    final encoder = JsonEncoder.withIndent('  ');
+    return encoder.convert(_data);
   }
 }
 
@@ -466,11 +460,8 @@ class ModeratorAction {
 
   @override
   String toString() {
-    if (data != null) {
-      final encoder = JsonEncoder.withIndent('  ');
-      return encoder.convert(data);
-    }
-    return 'null';
+    final encoder = JsonEncoder.withIndent('  ');
+    return encoder.convert(data);
   }
 }
 
@@ -480,7 +471,8 @@ class SubredditModeration {
   final SubredditRef _subreddit;
   SubredditModeration(this._subreddit);
 
-  Map<String, String> _buildOnlyMap(SubredditModerationContentTypeFilter only) {
+  Map<String, String> _buildOnlyMap(
+      SubredditModerationContentTypeFilter? only) {
     final params = <String, String>{};
     if (only != null) {
       var _only;
@@ -495,7 +487,8 @@ class SubredditModeration {
   }
 
   Stream<T> _subredditModerationListingGeneratorHelper<T>(
-          String api, SubredditModerationContentTypeFilter only, {int limit}) =>
+          String api, SubredditModerationContentTypeFilter? only,
+          {int? limit}) =>
       ListingGenerator.generator<T>(_subreddit.reddit, _formatApiPath(api),
           params: _buildOnlyMap(only), limit: limit);
 
@@ -514,12 +507,12 @@ class SubredditModeration {
   /// If `only` is provided, only [Comment]s or [Submission]s will be returned
   /// exclusively.
   Stream<UserContent> edited(
-          {SubredditModerationContentTypeFilter only, int limit}) =>
+          {SubredditModerationContentTypeFilter? only, int? limit}) =>
       _subredditModerationListingGeneratorHelper('about_edited', only,
           limit: limit);
 
   /// Returns a [Stream<Message>] of moderator messages.
-  Stream<Message> inbox({int limit}) =>
+  Stream<Message> inbox({int? limit}) =>
       _subredditModerationListingGeneratorHelper('moderator_messages', null,
           limit: limit);
 
@@ -531,8 +524,8 @@ class SubredditModeration {
   /// only [ModeratorAction]s of that [ModeratorActionType] will be returned.
   Stream<ModeratorAction> log(
       {/* RedditorRef, List<RedditorRef>, String */ mod,
-      ModeratorActionType type,
-      int limit}) {
+      ModeratorActionType? type,
+      int? limit}) {
     final params = <String, String>{};
     if (mod != null) {
       const kMods = 'mod';
@@ -545,7 +538,7 @@ class SubredditModeration {
       } else {
         throw DRAWArgumentError("Argument type 'mod' must be of "
             "'RedditorRef' `List<RedditorRef>`, or `String`; got "
-            "${mod.runtimeType}.");
+            '${mod.runtimeType}.');
       }
     }
 
@@ -564,7 +557,7 @@ class SubredditModeration {
   /// If `only` is provided, only [Comment]s or [Submission]s will be returned
   /// exclusively.
   Stream<UserContent> modQueue(
-          {SubredditModerationContentTypeFilter only, int limit}) =>
+          {SubredditModerationContentTypeFilter? only, int? limit}) =>
       _subredditModerationListingGeneratorHelper('about_modqueue', only,
           limit: limit);
 
@@ -574,7 +567,7 @@ class SubredditModeration {
   /// If `only` is provided, only [Comment]s or [Submission]s will be returned
   /// exclusively.
   Stream<UserContent> reports(
-          {SubredditModerationContentTypeFilter only, int limit}) =>
+          {SubredditModerationContentTypeFilter? only, int? limit}) =>
       _subredditModerationListingGeneratorHelper('about_reports', only,
           limit: limit);
 
@@ -591,27 +584,24 @@ class SubredditModeration {
   /// If `only` is provided, only [Comment]s or [Submission]s will be returned
   /// exclusively.
   Stream<UserContent> spam(
-          {SubredditModerationContentTypeFilter only, int limit}) =>
+          {SubredditModerationContentTypeFilter? only, int? limit}) =>
       _subredditModerationListingGeneratorHelper('about_spam', only,
           limit: limit);
 
   /// Returns a [Stream<UserContent>] of unmoderated [Comment]s and
   /// [Submission]s.
-  Stream<UserContent> unmoderated({int limit}) =>
+  Stream<UserContent> unmoderated({int? limit}) =>
       _subredditModerationListingGeneratorHelper('about_unmoderated', null,
           limit: limit);
 
   /// Returns a [Stream<Message>] of unread moderator messages.
-  Stream<Message> unread({int limit}) =>
+  Stream<Message> unread({int? limit}) =>
       _subredditModerationListingGeneratorHelper<Message>(
           'moderator_unread', null,
           limit: limit);
 
   /// Update the [Subreddit]s settings.
   Future<void> update(SubredditSettings updated) async {
-    if (updated == null) {
-      throw DRAWArgumentError("Field 'updated' cannot be null.");
-    }
     final data = Map<String, dynamic>.from(updated._data);
     final remap = <String, String>{
       'allow_top': 'default_set',

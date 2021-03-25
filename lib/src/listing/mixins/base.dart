@@ -77,14 +77,14 @@ mixin BaseListingMixin {
   String get path;
 
   Stream<UserContent> _buildGenerator(
-      int limit, String after, Map<String, String> params, String sort) {
-    Map<String, String> _params = params;
+      int? limit, String? after, Map<String, String>? params, String sort) {
+    var _params = params;
     if ((this is RedditorRef) || (this is SubListing)) {
       var arg = '';
       if (this is RedditorRef) {
         arg = 'overview';
       }
-      _params ??= Map<String, String>();
+      _params ??= <String, String>{};
       _params['sort'] = sort;
       return ListingGenerator.generator<UserContent>(reddit, path + arg,
           limit: limit ?? ListingGenerator.getLimit(params),
@@ -97,12 +97,9 @@ mixin BaseListingMixin {
         params: _params);
   }
 
-  Stream<UserContent> _buildTimeFilterGenerator(int limit, String after,
-      Map<String, String> params, String sort, TimeFilter timeFilter) {
-    if (timeFilter == null) {
-      throw DRAWArgumentError('Argument "timeFilter" cannot be null');
-    }
-    final _params = params ?? Map();
+  Stream<UserContent> _buildTimeFilterGenerator(int? limit, String? after,
+      Map<String, String>? params, String sort, TimeFilter timeFilter) {
+    final _params = params ?? {};
     _params['t'] = timeFilterToString(timeFilter);
     return _buildGenerator(limit, after, _params, sort);
   }
@@ -116,9 +113,9 @@ mixin BaseListingMixin {
   /// additional parameters that will be forwarded along with the request.
   Stream<UserContent> controversial(
           {TimeFilter timeFilter = TimeFilter.all,
-          int limit,
-          String after,
-          Map<String, String> params}) =>
+          int? limit,
+          String? after,
+          Map<String, String>? params}) =>
       _buildTimeFilterGenerator(
           limit, after, params, 'controversial', timeFilter);
 
@@ -129,7 +126,7 @@ mixin BaseListingMixin {
   /// Reddit will return objects of the requested type. `params` is a set of
   /// additional parameters that will be forwarded along with the request.
   Stream<UserContent> hot(
-          {int limit, String after, Map<String, String> params}) =>
+          {int? limit, String? after, Map<String, String>? params}) =>
       _buildGenerator(limit, after, params, 'hot');
 
   /// Returns a [Stream] of the newest comments and submissions.
@@ -139,7 +136,7 @@ mixin BaseListingMixin {
   /// Reddit will return objects of the requested type. `params` is a set of
   /// additional parameters that will be forwarded along with the request.
   Stream<UserContent> newest(
-          {int limit, String after, Map<String, String> params}) =>
+          {int? limit, String? after, Map<String, String>? params}) =>
       _buildGenerator(limit, after, params, 'new');
 
   /// Returns a [Stream] of the top comments and submissions.
@@ -151,8 +148,8 @@ mixin BaseListingMixin {
   /// additional parameters that will be forwarded along with the request.
   Stream<UserContent> top(
           {TimeFilter timeFilter = TimeFilter.all,
-          int limit,
-          String after,
-          Map<String, String> params}) =>
+          int? limit,
+          String? after,
+          Map<String, String>? params}) =>
       _buildTimeFilterGenerator(limit, after, params, 'top', timeFilter);
 }

@@ -136,13 +136,14 @@ class Objector extends RedditBase {
       return data;
     } else if (data.containsKey('conversation')) {
       // Single modmail conversation.
-      return ModmailConversation.parse(reddit, data).data;
+      return ModmailConversation.parse(reddit, data as Map<String, dynamic>)
+          .data;
     } else if (data.containsKey('body') &&
         data.containsKey('author') &&
         data.containsKey('isInternal')) {
-      return ModmailMessage.parse(reddit, data);
+      return ModmailMessage.parse(reddit, data as Map<String, dynamic>?);
     } else if (data.containsKey('date') && data.containsKey('actionTypeId')) {
-      return ModmailAction.parse(reddit, data);
+      return ModmailAction.parse(reddit, data as Map<String, dynamic>);
     } else if (data.containsKey('timestamp') &&
         data.containsKey('reason') &&
         data.containsKey('page') &&
@@ -158,7 +159,7 @@ class Objector extends RedditBase {
 
   List _objectifyList(List listing) {
     //logger.log(Level.FINE, 'objectifying list(len: ${listing.length})');
-    final objectifiedListing = List(listing.length);
+    final objectifiedListing = List<dynamic>.filled(listing.length, null);
     for (var i = 0; i < listing.length; ++i) {
       objectifiedListing[i] = objectify(listing[i]);
     }
@@ -202,7 +203,7 @@ class Objector extends RedditBase {
       } else if (kind == 'KarmaList') {
         //logger.log(Level.FINE, 'parsing KarmaList');
         final listing = _objectifyList(data['data']);
-        final karmaMap = Map<Subreddit, Map<String, int>>();
+        final karmaMap = <Subreddit, Map<String, int>>{};
         listing.forEach((map) {
           karmaMap.addAll(map);
         });

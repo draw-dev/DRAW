@@ -7,23 +7,19 @@ import 'dart:async';
 
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
-import 'package:draw/src/reddit.dart';
 
 /// A mixin containing inbox functionality.
 mixin InboxableMixin implements RedditBaseInitializedMixin {
-  String get fullname;
-  Reddit get reddit;
-
   /// Returns true if the [Inbox] item is new.
-  bool get newItem => data['new'];
+  bool get newItem => data!['new'];
 
   /// The subject of the [Inbox] item.
   ///
   /// If this item was not retrieved via the [Inbox], this may be null.
-  String get subject => data['subject'];
+  String? get subject => data!['subject'];
 
   /// Returns true if the current [Inbox] reply was from a [Comment].
-  bool get wasComment => data['was_comment'];
+  bool get wasComment => data!['was_comment'];
 
   /// Block the user who sent the item.
   ///
@@ -54,5 +50,5 @@ mixin InboxableMixin implements RedditBaseInitializedMixin {
 
   /// Removes the message from the recipient's view of their inbox.
   Future<void> remove() async =>
-      await reddit.post(apiPath['del_msg'], <String, String>{'id': fullname});
+      await reddit.post(apiPath['del_msg'], <String, String>{'id': fullname!});
 }

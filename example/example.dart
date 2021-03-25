@@ -6,22 +6,22 @@
 import 'dart:async';
 import 'package:draw/draw.dart';
 
-String kClientId;
-String kSecret;
-String kAgentName;
+String? kClientId;
+String? kSecret;
+String? kAgentName;
 
 Future<void> main() async {
   // Create the `Reddit` instance and authenticate
-  final Reddit reddit = await Reddit.createScriptInstance(
+  final reddit = await Reddit.createScriptInstance(
     clientId: kClientId,
     clientSecret: kSecret,
     userAgent: kAgentName,
-    username: "DRAWApiOfficial",
-    password: "hunter12", // Fake
+    username: 'DRAWApiOfficial',
+    password: 'hunter12', // Fake
   );
 
   // Retrieve information for the currently authenticated user
-  final Redditor currentUser = await reddit.user.me();
+  final currentUser = (await reddit.user.me()) as Redditor;
   // Outputs: My name is DRAWApiOfficial
-  print("My name is ${currentUser.displayName}");
+  print('My name is ${currentUser.displayName}');
 }

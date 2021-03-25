@@ -7,18 +7,14 @@ import 'dart:async';
 
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
-import 'package:draw/src/reddit.dart';
 
 /// Mixin for RedditBase classes that can be saved.
 mixin SaveableMixin implements RedditBaseInitializedMixin {
-  Reddit get reddit;
-  String get fullname;
-
   /// Save the object.
   ///
   /// [category] (Gold only) is the category to save the object to. If your user does not
   /// have gold, this value is ignored.
-  Future<void> save({String category}) async =>
+  Future<void> save({String? category}) async =>
       reddit.post(apiPath['save'], {'category': category ?? '', 'id': fullname},
           discardResponse: true);
 

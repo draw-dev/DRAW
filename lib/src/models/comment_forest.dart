@@ -12,7 +12,6 @@ import 'comment_impl.dart';
 import 'submission_impl.dart';
 
 void setSubmission(CommentForest f, SubmissionRef s) {
-  assert(f != null);
   f._submission = s;
 }
 
@@ -23,13 +22,13 @@ class CommentForest {
 
   /// The number of top-level comments associated with the current
   /// [CommentForest].
-  int get length => (_comments?.length) ?? 0;
+  int get length => _comments.length;
 
   /// A list of top-level comments associated with the current [CommentForest].
   List get comments => _comments;
 
-  CommentForest(SubmissionRef submission, [List comments])
-      : _comments = List(),
+  CommentForest(SubmissionRef submission, [List? comments])
+      : _comments = [],
         _submission = submission {
     if (comments != null) {
       _comments.addAll(comments);
@@ -40,7 +39,7 @@ class CommentForest {
   void _insertComment(comment) {
     assert((comment is MoreComments) ||
         ((comment is Comment) &&
-            (getCommentByIdInternal(_submission, comment.fullname) == null)));
+            (getCommentByIdInternal(_submission, comment.fullname!) == null)));
     setSubmissionInternal(comment, _submission);
     assert((comment is MoreComments) ||
         (getCommentByIdInternal(_submission, comment.fullname) != null));
@@ -48,19 +47,18 @@ class CommentForest {
     if ((comment is MoreComments) || comment.isRoot) {
       _comments.add(comment);
     } else {
-      final parent = getCommentByIdInternal(_submission, comment.parentId);
-      assert(parent != null);
-      parent.replies._comments.add(comment);
+      final parent = getCommentByIdInternal(_submission, comment.parentId)!;
+      parent.replies!._comments.add(comment);
     }
   }
 
   void _removeMore(MoreComments more) {
     final parent = getCommentByIdInternal(_submission, more.parentId);
     if (parent != null) {
-      parent.replies._comments.remove(more);
+      parent.replies!._comments.remove(more);
     } else if (_submission is Submission) {
       final sub = _submission as Submission;
-      sub.comments._comments.removeWhere(
+      sub.comments!._comments.removeWhere(
           (comment) => ((comment is MoreComments) && (comment.id == more.id)));
     }
   }
@@ -116,13 +114,14 @@ class CommentForest {
         continue;
       }
 
-      final newComments = await moreComment.comments(update: false);
+      final newComments =
+          (await moreComment.comments(update: false)) as List<dynamic>;
       if (remaining != null) {
         --remaining;
       }
 
       // Add any additional MoreComments objects to the heap.
-      for (final more in _getMoreComments(newComments, _comments)?.toList()) {
+      for (final more in _getMoreComments(newComments, _comments).toList()) {
         setSubmissionInternal(more, _submission);
         moreComments.add(more);
       }
@@ -132,13 +131,13 @@ class CommentForest {
     }
   }
 
-  static final _kNoParent = null;
+  static final dynamic _kNoParent = null;
   // static final _kParentIndex = 0;
   static final _kCommentIndex = 1;
 
   static HeapPriorityQueue<MoreComments> _getMoreComments(List currentRoot,
-      [List rootParent]) {
-    final int Function(MoreComments, MoreComments) comparator = (a, b) {
+      [List? rootParent]) {
+    final comparator = (MoreComments a, MoreComments b) {
       return a.count.compareTo(b.count);
     };
     final moreComments = HeapPriorityQueue<MoreComments>(comparator);
@@ -148,7 +147,7 @@ class CommentForest {
       queue.add([_kNoParent, rootComment]);
     }
     // Keep track of which comments we've seen already.
-    final seen = Set();
+    final seen = <dynamic>{};
 
     while (queue.isNotEmpty) {
       final pair = queue.removeFirst();

@@ -5,6 +5,7 @@
 
 import 'dart:async';
 
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:color/color.dart';
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
@@ -151,7 +152,7 @@ String iconNameToString(IconName iconName) {
 // TODO(@ckartik): Add CommentHelper.
 class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   static const String _kDisplayName = 'display_name';
-  static const String _kFrom = "from";
+  static const String _kFrom = 'from';
   // static const String _kMultiApi = 'multireddit_api';
   // static const String _kMultiredditRename = 'multireddit_rename';
   static const String _kMultiredditUpdate = 'multireddit_update';
@@ -165,59 +166,55 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   static final RegExp _multiredditRegExp = RegExp(r'{multi}');
 
   // TODO(@ckartik): Try to make the data['key_color'] value null.
-  Color get keyColor => HexColor(data['key_color']);
+  Color get keyColor => HexColor(data!['key_color']);
 
   /// When was this [Multireddit] created.
   DateTime get createdUtc =>
-      DateTime.fromMillisecondsSinceEpoch(data['created_utc'].round() * 1000,
+      DateTime.fromMillisecondsSinceEpoch(data!['created_utc'].round() * 1000,
           isUtc: true);
 
   /// The [IconName] associated with this multireddit.
   ///
   /// Refer to [IconName]'s Enum definition for more information.
   /// If this information is not provided, will return null.
-  IconName get iconName => IconName.values.firstWhere(
-      (e) =>
-          e.toString() ==
-          ('IconName.' + _convertToCamelCase(data['icon_name'])),
-      orElse: () => null);
+  IconName? get iconName => IconName.values.firstWhereOrNull((e) =>
+      e.toString() == ('IconName.' + _convertToCamelCase(data!['icon_name'])!));
 
   List<SubredditRef> get subreddits {
     final subredditList = <SubredditRef>[];
-    subredditList.addAll(data['subreddits'].map<SubredditRef>(
+    subredditList.addAll(data!['subreddits'].map<SubredditRef>(
         (subreddit) => SubredditRef.name(reddit, subreddit['name'])));
     return subredditList;
   }
 
   /// The [Redditor] associated with this multireddit.
   RedditorRef get author => _author;
-  RedditorRef _author;
+  late RedditorRef _author;
 
   /// The displayName given to the [Multireddit].
-  String get displayName => data['display_name'];
+  String get displayName => data!['display_name'];
 
   /// The visibility of this multireddit.
   ///
   /// Refer to [Visibility]'s Enum definition for more information.
   /// If this information is not provided, will return null.
-  Visibility get visibility => Visibility.values.firstWhere(
-      (e) => e.toString() == ('Visibility.' + data['visibility']),
-      orElse: () => null);
+  Visibility? get visibility => Visibility.values.firstWhereOrNull(
+      (e) => e.toString() == ('Visibility.' + data!['visibility']));
 
   /// The weightingScheme of this multireddit.
   ///
   /// Refer to [WeightingScheme]'s Enum definition for more information.
   /// If this information is not provided, will return null.
-  WeightingScheme get weightingScheme => WeightingScheme.values.firstWhere(
-      (e) => e.toString() == ('WeightingScheme.' + data['weighting_scheme']),
-      orElse: () => null);
+  WeightingScheme? get weightingScheme =>
+      WeightingScheme.values.firstWhereOrNull((e) =>
+          e.toString() == ('WeightingScheme.' + data!['weighting_scheme']));
 
   /// Does the currently authenticated [User] have the privilege to edit this
   /// multireddit.
-  bool get canEdit => data['can_edit'];
+  bool get canEdit => data!['can_edit'];
 
   /// Does this multireddit require visitors to be over the age of 18.
-  bool get over18 => data['over_18'];
+  bool get over18 => data!['over_18'];
 
   Multireddit.parse(Reddit reddit, Map data)
       : super.withPath(reddit,
@@ -243,7 +240,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
           .replaceAll(_userRegExp, user);
 
   // Returns `str` in camel case.
-  static String _convertToCamelCase(String str) {
+  static String? _convertToCamelCase(String? str) {
     if (str == null) {
       return null;
     }
@@ -258,11 +255,11 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   }
 
   /// Returns a slug version of the `title`.
-  static String _sluggify(String title) {
+  static String? _sluggify(String? title) {
     if (title == null) {
       return null;
     }
-    final RegExp _invalidRegExp = RegExp(r'(\s|\W|_)+');
+    final _invalidRegExp = RegExp(r'(\s|\W|_)+');
     var titleScoped = title.replaceAll(_invalidRegExp, '_').trim();
     if (titleScoped.length > 21) {
       titleScoped = titleScoped.substring(21);
@@ -272,7 +269,7 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
         titleScoped = titleScoped.substring(lastWord);
       }
     }
-    return titleScoped ?? '_';
+    return titleScoped;
   }
 
   /// Add a [Subreddit] to this [Multireddit].
@@ -282,15 +279,15 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   /// `subreddit` is the name of the [Subreddit] to be added to this [Multireddit].
   Future<void> add(/* String, Subreddit */ subreddit) async {
     final subredditName = _subredditNameHelper(subreddit);
-    final newSubredditObject = {'name': "$subredditName"};
+    final newSubredditObject = {'name': '$subredditName'};
     if (subreddit == null) return;
     final url = apiPath[_kMultiredditUpdate]
         .replaceAll(_userRegExp, _author.displayName)
         .replaceAll(_multiredditRegExp, displayName)
         .replaceAll(_subredditRegExp, subreddit);
     await reddit.put(url, body: {'model': '{"name": "$subredditName"}'});
-    if (!(data['subreddits'] as List).contains(newSubredditObject)) {
-      (data['subreddits'] as List).add(newSubredditObject);
+    if (!(data!['subreddits'] as List).contains(newSubredditObject)) {
+      (data!['subreddits'] as List).add(newSubredditObject);
     }
   }
 
@@ -311,20 +308,20 @@ class Multireddit extends RedditBase with RedditBaseInitializedMixin {
   /// `multiName` is an optional string that will become the display name of the new
   /// [Multireddit] and be used as the source for the [displayName]. If `multiName` is not
   /// provided, the [name] of this [Multireddit] will be used.
-  Future<Multireddit> copy([String multiName]) async {
+  Future<Multireddit> copy([String? multiName]) async {
     final url = apiPath['multireddit_copy'];
-    final name = _sluggify(multiName) ?? data['display_name'];
-    final userName = await reddit.user.me().then((me) => me.displayName);
-    final scopedMultiName = multiName ?? data['display_name'];
+    final name = _sluggify(multiName) ?? data!['display_name'];
+    final userName = await reddit.user.me().then((me) => me!.displayName);
+    final scopedMultiName = multiName ?? data!['display_name'];
 
-    final jsonData = <String, String>{
+    final jsonData = <String, String?>{
       _kDisplayName: scopedMultiName,
       _kFrom: infoPath,
       _kTo: apiPath['multireddit']
           .replaceAll(_multiredditRegExp, name)
           .replaceAll(_userRegExp, userName),
     };
-    return await reddit.post(url, jsonData);
+    return (await reddit.post(url, jsonData)) as Multireddit;
   }
 
   /// Delete this [Multireddit].

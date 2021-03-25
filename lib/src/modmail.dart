@@ -23,25 +23,27 @@ class ModmailConversationRef extends RedditBase {
   static final _kIdRegExp = RegExp(r'{id}');
 
   /// A unique ID for this conversation.
-  final String id;
+  final String? id;
 
   /// THe subject line of this conversation.
   ///
   /// May be null.
-  final String subject;
+  final String? subject;
   final bool _markRead;
 
+  @override
   String get infoPath =>
       apiPath['modmail_conversation'].replaceAll(_kIdRegExp, id);
 
-  Map<String, String> get infoParams => <String, String>{
+  @override
+  Map<String, String>? get infoParams => <String, String>{
         'markRead': _markRead.toString(),
       };
 
   /// Promotes this [ModmailConversationRef] into a populated
   /// [ModmailConversation].
-  Future<ModmailConversation> populate() async =>
-      ModmailConversation(reddit, data: await fetch());
+  Future<ModmailConversation> populate() async => ModmailConversation(reddit,
+      data: (await fetch()) as Map<dynamic, dynamic>?);
 
   ModmailConversationRef(Reddit reddit, this.id, {bool markRead = false})
       : _markRead = markRead,
@@ -64,54 +66,55 @@ class ModmailConversation extends ModmailConversationRef
   static final _kConvKey = 'conversation';
 
   @override
-  String get id => data[_kConvKey]['id'];
+  String get id => data![_kConvKey]['id'];
 
   /// An ordered list of [Redditor]s who have participated in the conversation.
   List<Redditor> get authors =>
-      (data[_kConvKey]['authors'] as List).cast<Redditor>();
+      (data![_kConvKey]['authors'] as List).cast<Redditor>();
 
   /// Whether or not the current conversation highlighted.
-  bool get isHighlighted => data[_kConvKey]['isHighlighted'];
+  bool get isHighlighted => data![_kConvKey]['isHighlighted'];
 
   /// Whether or not this is a private moderator conversation.
-  bool get isInternal => data[_kConvKey]['isInternal'];
+  bool get isInternal => data![_kConvKey]['isInternal'];
 
   /// The date and time the conversation was last updated by a moderator.
-  DateTime get lastModUpdate =>
-      GetterUtils.dateTimeOrNullFromString(data[_kConvKey]['lastModUpdate']);
+  DateTime? get lastModUpdate =>
+      GetterUtils.dateTimeOrNullFromString(data![_kConvKey]['lastModUpdate']);
 
   /// The date and time the conversation was last updated.
   DateTime get lastUpdated =>
-      GetterUtils.dateTimeOrNullFromString(data[_kConvKey]['lastUpdated']);
+      GetterUtils.dateTimeOrNullFromString(data![_kConvKey]['lastUpdated'])!;
 
   /// The date and time the conversation was last updated by a non-moderator
   /// user.
-  DateTime get lastUserUpdate =>
-      GetterUtils.dateTimeOrNullFromString(data[_kConvKey]['lastUserUpdate']);
+  DateTime? get lastUserUpdate =>
+      GetterUtils.dateTimeOrNullFromString(data![_kConvKey]['lastUserUpdate']);
 
   /// The messages from this conversation.
-  List<ModmailMessage> get messages => data['messages'].cast<ModmailMessage>();
+  List<ModmailMessage> get messages => data!['messages'].cast<ModmailMessage>();
 
   /// A list of all moderator actions made on this conversation.
   List<ModmailAction> get modActions =>
-      data['modActions'].cast<ModmailAction>();
+      data!['modActions'].cast<ModmailAction>();
 
   /// The number of messages in this conversation.
-  int get numMessages => data[_kConvKey]['numMessages'];
+  int get numMessages => data![_kConvKey]['numMessages'];
 
   // TODO(bkonyi): find better representation of this
-  List<Map> get objectIds => (data[_kConvKey]['objIds'] as List).cast<Map>();
+  List<Map> get objectIds => (data![_kConvKey]['objIds'] as List).cast<Map>();
 
   /// The subreddit associated with this conversation.
-  SubredditRef get owner => data[_kConvKey]['owner'];
+  SubredditRef get owner => data![_kConvKey]['owner'];
 
-  RedditorRef get participant => data[_kConvKey]['participant'];
+  RedditorRef get participant => data![_kConvKey]['participant'];
 
   /// The subject line of the conversation.
-  String get subject => data[_kConvKey]['subject'];
+  @override
+  String? get subject => data![_kConvKey]['subject'];
 
   ModmailConversation(Reddit reddit,
-      {String id, bool markRead = false, Map data})
+      {String? id, bool markRead = false, Map? data})
       : super._(reddit, markRead) {
     if ((id == null) && (data == null)) {
       throw DRAWArgumentError("Either 'id' or 'data' must be provided");
@@ -137,10 +140,10 @@ class ModmailConversation extends ModmailConversationRef
         .toList();
     conversation['owner'] =
         reddit.subreddit(conversation['owner']['displayName']);
-    final participant = conversation['participant'] as Map;
+    final participant = conversation['participant'] as Map?;
     if ((participant != null) && participant.isNotEmpty) {
-      conversation['participant'] =
-          reddit.objector.objectify(snakeCaseMapKeys(participant));
+      conversation['participant'] = reddit.objector
+          .objectify(snakeCaseMapKeys(participant as Map<String, dynamic>));
     }
 
     if (data.containsKey('user')) {
@@ -154,7 +157,7 @@ class ModmailConversation extends ModmailConversationRef
     return ModmailConversation(reddit, data: data);
   }
 
-  String _buildConversationList(List<ModmailConversation> otherConversations) {
+  String _buildConversationList(List<ModmailConversation>? otherConversations) {
     final conversations = <ModmailConversation>[this];
     if (otherConversations != null) {
       conversations.addAll(otherConversations);
@@ -172,7 +175,7 @@ class ModmailConversation extends ModmailConversationRef
   static void _convertUserSummary(Reddit reddit, Map<String, dynamic> data) {
     // Recent Comments
     final recentComments = <Comment>[];
-    final rawRecentComments = data['recentComments'] as Map;
+    final rawRecentComments = data['recentComments'] as Map?;
     if (rawRecentComments != null) {
       rawRecentComments.forEach((k, v) {
         recentComments.add(Comment.parse(reddit, v));
@@ -181,7 +184,7 @@ class ModmailConversation extends ModmailConversationRef
     }
     // Modmail Conversations
     final conversations = <ModmailConversationRef>[];
-    final rawConversations = data['recentConvos'] as Map;
+    final rawConversations = data['recentConvos'] as Map?;
     if (rawConversations != null) {
       rawConversations.forEach((k, v) {
         conversations.add(ModmailConversationRef._withSubject(
@@ -192,7 +195,7 @@ class ModmailConversation extends ModmailConversationRef
 
     // Submissions
     final submissions = <Submission>[];
-    final rawSubmissions = data['recentPosts'] as Map;
+    final rawSubmissions = data['recentPosts'] as Map?;
     if (rawSubmissions != null) {
       rawSubmissions.forEach((k, v) {
         submissions.add(Submission.parse(reddit, v));
@@ -204,36 +207,37 @@ class ModmailConversation extends ModmailConversationRef
   static Map<String, List<dynamic>> _convertConversationObjects(
       Reddit reddit, Map<String, dynamic> data) {
     final result = {
-      'messages': <ModmailMessage>[],
+      'messages': <ModmailMessage?>[],
       'modActions': [],
     };
     for (final t in data['conversation']['objIds']) {
       final key = t['key'];
       final tData = data[key][t['id']];
-      result[key].add(reddit.objector.objectify(tData));
+      result[key]!.add(reddit.objector.objectify(tData));
     }
     return result;
   }
 
   /// Archive the conversation.
-  Future<void> archive() async => _internalUpdate(await reddit.post(
+  Future<void> archive() async => _internalUpdate((await reddit.post(
       apiPath['modmail_archive'].replaceAll(_kIdRegExp, id),
-      <String, String>{}));
+      <String, String>{})) as Map<dynamic, dynamic>);
 
   /// Highlight the conversation.
-  Future<void> highlight() async => _internalUpdate(await reddit.post(
+  Future<void> highlight() async => _internalUpdate((await reddit.post(
       apiPath['modmail_highlight'].replaceAll(_kIdRegExp, id),
-      <String, String>{}));
+      <String, String>{})) as Map<dynamic, dynamic>);
 
   /// Mute the user (non-moderator) associated with the conversation.
-  Future<void> mute() async => _internalUpdate(await reddit.post(
-      apiPath['modmail_mute'].replaceAll(_kIdRegExp, id), <String, String>{}));
+  Future<void> mute() async => _internalUpdate((await reddit.post(
+      apiPath['modmail_mute'].replaceAll(_kIdRegExp, id),
+      <String, String>{})) as Map<dynamic, dynamic>);
 
   /// Mark the conversation as read.
   ///
   /// If `otherConversations` is provided, those conversations will also be
   /// marked as read.
-  Future<void> read({List<ModmailConversation> otherConversations}) async {
+  Future<void> read({List<ModmailConversation>? otherConversations}) async {
     final data = <String, String>{
       'conversationIds': _buildConversationList(otherConversations),
     };
@@ -265,27 +269,28 @@ class ModmailConversation extends ModmailConversationRef
   }
 
   /// Unarchive the conversation.
-  Future<void> unarchive() async => _internalUpdate(await reddit.post(
+  Future<void> unarchive() async => _internalUpdate((await reddit.post(
       apiPath['modmail_unarchive'].replaceAll(_kIdRegExp, id),
-      <String, String>{}));
+      <String, String>{})) as Map<dynamic, dynamic>);
 
   /// Unhighlight the conversation.
-  Future<void> unhighlight() async => _internalUpdate(await reddit.delete(
+  Future<void> unhighlight() async => _internalUpdate((await reddit.delete(
         apiPath['modmail_highlight'].replaceAll(_kIdRegExp, id),
-      ));
+      )) as Map<dynamic, dynamic>);
 
   /// Unmute the conversation.
-  Future<void> unmute() async => _internalUpdate(await reddit.post(
+  Future<void> unmute() async => _internalUpdate((await reddit.post(
       apiPath['modmail_unmute'].replaceAll(_kIdRegExp, id),
-      <String, String>{}));
+      <String, String>{})) as Map<dynamic, dynamic>);
 
   /// Mark the conversation as unread.
   ///
   /// If `otherConversations` is provided, those conversations will also be
   /// marked as unread.
-  Future<void> unread({List otherConversations}) async {
+  Future<void> unread({List? otherConversations}) async {
     final data = <String, String>{
-      'conversationIds': _buildConversationList(otherConversations),
+      'conversationIds': _buildConversationList(
+          otherConversations as List<ModmailConversation>?),
     };
     return await reddit.post(
         apiPath['modmail_unread'].replaceAll(_kIdRegExp, id), data);
@@ -295,40 +300,41 @@ class ModmailConversation extends ModmailConversationRef
 /// A class that represents a message from a [ModmailConversation].
 class ModmailMessage {
   final Reddit reddit;
-  final Map<String, dynamic> data;
+  final Map<String, dynamic>? data;
   ModmailMessage.parse(this.reddit, this.data);
 
   /// The [Redditor] who composed this message.
   Redditor get author =>
-      Redditor.parse(reddit, snakeCaseMapKeys(data['author']));
+      Redditor.parse(reddit, snakeCaseMapKeys(data!['author']));
 
   /// The HTML body of the message.
-  String get body => data['body'];
+  String get body => data!['body'];
 
   /// The body of the message in Markdown format.
-  String get bodyMarkdown => data['bodyMarkdown'];
+  String get bodyMarkdown => data!['bodyMarkdown'];
 
   /// The date and time the message was sent.
-  DateTime get date => GetterUtils.dateTimeOrNullFromString(data['date']);
+  DateTime get date => GetterUtils.dateTimeOrNullFromString(data!['date'])!;
 
   /// A unique ID associated with this message.
-  String get id => data['id'];
+  String get id => data!['id'];
 
   /// True if the account that authored this message has been deleted.
-  bool get isDeleted => data['author']['isDeleted'];
+  bool get isDeleted => data!['author']['isDeleted'];
 
   /// True if the message was sent on behalf of a subreddit.
-  bool get isHidden => data['author']['isHidden'];
+  bool get isHidden => data!['author']['isHidden'];
 
   /// True if the message is only visible to moderators.
-  bool get isInternal => data['isInternal'];
+  bool get isInternal => data!['isInternal'];
 
   /// True if this message was written by the author of the thread.
-  bool get isOriginalPoster => data['author']['isOp'];
+  bool get isOriginalPoster => data!['author']['isOp'];
 
   /// True if the author of this message has participated in the conversation.
-  bool get isParticipant => data['author']['isParticipant'];
+  bool get isParticipant => data!['author']['isParticipant'];
 
+  @override
   String toString() => JsonEncoder.withIndent('  ').convert(data);
 }
 
@@ -381,10 +387,11 @@ class ModmailAction {
       Redditor.parse(reddit, snakeCaseMapKeys(data['author']));
 
   /// The date the action was made.
-  DateTime get date => GetterUtils.dateTimeOrNullFromString(data['date']);
+  DateTime get date => GetterUtils.dateTimeOrNullFromString(data['date'])!;
 
   /// A unique ID associated with this action.
   String get id => data['id'];
 
+  @override
   String toString() => JsonEncoder.withIndent('  ').convert(data);
 }

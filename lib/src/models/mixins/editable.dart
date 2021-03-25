@@ -7,14 +7,10 @@ import 'dart:async';
 
 import '../../api_paths.dart';
 import '../../base_impl.dart';
-import '../../reddit.dart';
 import '../user_content.dart';
 
 /// Interface for classes that can be edited and deleted.
 mixin EditableMixin implements RedditBaseInitializedMixin {
-  Reddit get reddit;
-  String get fullname;
-
   /// Delete the object.
   Future<void> delete() async =>
       reddit.post(apiPath['del'], {'id': fullname}, discardResponse: true);

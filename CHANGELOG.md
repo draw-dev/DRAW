@@ -1,6 +1,14 @@
 Change Log
 =================================
 
+## Version 1.0.0 (2021/03/25)
+
+### Breaking change:
+* DRAW now requires a Dart SDK with version 2.12.0 or newer.
+* Add null-safety support.
+
+### Other changes:
+* Miscellaneous refactoring and analysis hint cleanup.
 ## Version 0.9.2 (2021/03/25)
 * Fixed issues with `limit` parameter for listing generators.
 

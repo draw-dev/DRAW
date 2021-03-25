@@ -55,10 +55,6 @@ Future<void> main() async {
     expect(results.length, 10);
 
     // ignore: unawaited_futures
-    expectLater(reddit.subreddits.recommended(null),
-        throwsA(TypeMatcher<DRAWArgumentError>()));
-
-    // ignore: unawaited_futures
     expectLater(reddit.subreddits.recommended([2]),
         throwsA(TypeMatcher<DRAWArgumentError>()));
   });
@@ -68,16 +64,6 @@ Future<void> main() async {
         'test/subreddit/lib_subreddits_search.json');
     final results = await reddit.subreddits.search('drawapitesting').toList();
     expect(results.length, 1);
-
-    bool threw = false;
-    try {
-      reddit.subreddits.search(null);
-      // ignore: unused_catch_clause
-    } on DRAWArgumentError catch (e) {
-      threw = true;
-    } finally {
-      expect(threw, isTrue);
-    }
   });
 
   test('lib/subreddits/search_by_name', () async {
@@ -97,10 +83,6 @@ Future<void> main() async {
       final populated = await s.populate();
       expect(populated.over18, isFalse);
     }
-
-    // ignore: unawaited_futures
-    expectLater(reddit.subreddits.searchByName(null),
-        throwsA(TypeMatcher<DRAWArgumentError>()));
   });
 
   test('lib/subreddits/stream', () async {

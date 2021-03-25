@@ -81,7 +81,7 @@ class SubredditRef extends RedditBase
   }
 
   /// Promotes this [SubredditRef] into a populated [Subreddit].
-  Future<Subreddit> populate() async => await fetch();
+  Future<Subreddit> populate() async => (await fetch()) as Subreddit;
 
   @override
   Future<dynamic> fetch() async => await _throwOnInvalidSubreddit(
@@ -89,95 +89,90 @@ class SubredditRef extends RedditBase
           params: infoParams, followRedirects: false),
       false);
 
+  @override
   String get displayName => _name;
-  String _name;
+  late String _name;
 
+  @override
   String get path => _path;
-  String _path;
-  SubredditRelationship _banned;
-  ContributorRelationship _contributor;
+  late String _path;
+  SubredditRelationship? _banned;
+  ContributorRelationship? _contributor;
 
-  SubredditFilters _filters;
-  SubredditFlair _flair;
-  SubredditModeration _mod;
-  ModeratorRelationship _moderator;
-  Modmail _modmail;
-  SubredditRelationship _muted;
+  SubredditFilters? _filters;
+  SubredditFlair? _flair;
+  SubredditModeration? _mod;
+  ModeratorRelationship? _moderator;
+  Modmail? _modmail;
+  SubredditRelationship? _muted;
 
-  SubredditQuarantine _quarantine;
-  SubredditStream _stream;
+  SubredditQuarantine? _quarantine;
+  SubredditStream? _stream;
 
-  SubredditStyleSheet _stylesheet;
-  SubredditWiki _wiki;
+  SubredditStyleSheet? _stylesheet;
+  SubredditWiki? _wiki;
 
+  @override
   int get hashCode => _name.hashCode;
 
   SubredditRelationship get banned {
     _banned ??= SubredditRelationship(this, 'banned');
-    return _banned;
+    return _banned!;
   }
 
   ContributorRelationship get contributor {
     _contributor ??= ContributorRelationship(this, 'contributor');
-    return _contributor;
+    return _contributor!;
   }
 
   SubredditFilters get filters {
     _filters ??= SubredditFilters._(this);
-    return _filters;
+    return _filters!;
   }
 
   SubredditFlair get flair {
-    if (_flair == null) {
-      _flair = SubredditFlair(this);
-    }
-    return _flair;
+    _flair ??= SubredditFlair(this);
+    return _flair!;
   }
 
   SubredditModeration get mod {
     _mod ??= SubredditModeration(this);
-    return _mod;
+    return _mod!;
   }
 
   ModeratorRelationship get moderator {
     _moderator ??= ModeratorRelationship(this, 'moderator');
-    return _moderator;
+    return _moderator!;
   }
 
   Modmail get modmail {
-    if (_modmail == null) {
-      _modmail = Modmail._(this);
-    }
-    return _modmail;
+    _modmail ??= Modmail._(this);
+    return _modmail!;
   }
 
   SubredditRelationship get muted {
     _muted ??= SubredditRelationship(this, 'muted');
-    return _muted;
+    return _muted!;
   }
 
   SubredditQuarantine get quarantine {
     _quarantine ??= SubredditQuarantine._(this);
-    return _quarantine;
+    return _quarantine!;
   }
 
   SubredditStream get stream {
     _stream ??= SubredditStream(this);
-    return _stream;
+    return _stream!;
   }
 
   SubredditStyleSheet get stylesheet {
-    if (_stylesheet == null) {
-      _stylesheet = new SubredditStyleSheet(this);
-    }
-    return _stylesheet;
+    _stylesheet ??= SubredditStyleSheet(this);
+    return _stylesheet!;
   }
 
   SubredditWiki get wiki {
-    if (_wiki == null) {
-      _wiki = SubredditWiki(this);
-    }
-    return _wiki;
+    _wiki ??= SubredditWiki(this);
+    return _wiki!;
   }
 
   SubredditRef(Reddit reddit) : super(reddit);
@@ -189,8 +184,9 @@ class SubredditRef extends RedditBase
         apiPath['subreddit'].replaceAll(SubredditRef._subredditRegExp, _name);
   }
 
+  @override
   bool operator ==(other) {
-    return (_name == other._name);
+    return (other is SubredditRef) && (_name == other._name);
   }
 
   /// Returns a random submission from the [Subreddit].
@@ -203,7 +199,8 @@ class SubredditRef extends RedditBase
       // We expect this request to redirect to our random submission.
       return SubmissionRef.withPath(reddit, e.path);
     }
-    return null; // Shut the analyzer up.
+    // ignore: only_throw_errors
+    throw 'This will never happen';
   }
 
   /// Return the rules for the subreddit.
@@ -222,7 +219,7 @@ class SubredditRef extends RedditBase
       {Sort sort = Sort.relevance,
       SearchSyntax syntax = SearchSyntax.lucene,
       TimeFilter timeFilter = TimeFilter.all,
-      Map<String, String> params}) {
+      Map<String, String>? params}) {
     final timeStr = timeFilterToString(timeFilter);
     final isNotAll = !(_name.toLowerCase() == 'all');
     final data = (params != null)
@@ -251,7 +248,8 @@ class SubredditRef extends RedditBase
     } on DRAWRedirectResponse catch (e) {
       return SubmissionRef.withPath(reddit, e.path);
     }
-    return null; // Shut the analyzer up.
+    // ignore: only_throw_errors
+    throw 'This will never happen';
   }
 
   /// Creates a [Submission] on the [Subreddit].
@@ -267,10 +265,10 @@ class SubredditRef extends RedditBase
   ///
   /// Returns a [Submission] for the newly created submission.
   Future<Submission> submit(String title,
-      {String selftext,
-      String url,
-      String flairId,
-      String flairText,
+      {String? selftext,
+      String? url,
+      String? flairId,
+      String? flairText,
       bool resubmit = true,
       bool sendReplies = true,
       bool nsfw = false,
@@ -281,7 +279,7 @@ class SubredditRef extends RedditBase
           'provided');
     }
 
-    final data = {
+    final data = <String, String?>{
       'api_type': 'json',
       'sr': displayName,
       'resubmit': resubmit.toString(),
@@ -306,15 +304,16 @@ class SubredditRef extends RedditBase
       data['kind'] = 'link';
       data['url'] = url;
     }
-    return await _throwOnInvalidSubreddit(
-        () async => await reddit.post(apiPath['submit'], data)) as Submission;
+    return (await _throwOnInvalidSubreddit(
+            () async => await reddit.post(apiPath['submit'], data))
+        as Submission?)!;
   }
 
   /// Subscribes to the subreddit.
   ///
   /// When [otherSubreddits] is provided, the provided subreddits will also be
   /// subscribed to.
-  Future<void> subscribe({List<SubredditRef> otherSubreddits}) async {
+  Future<void> subscribe({List<SubredditRef>? otherSubreddits}) async {
     final data = {
       'action': 'sub',
       'skip_initial_defaults': 'true',
@@ -328,15 +327,15 @@ class SubredditRef extends RedditBase
   ///
   /// Raises an error when the traffic statistics aren't available to the
   /// authenticated user (i.e., not a moderator of the subreddit).
-  Future<Map> traffic() async => await _throwOnInvalidSubreddit(() async =>
+  Future<Map> traffic() async => (await _throwOnInvalidSubreddit(() async =>
       await reddit.get(apiPath['about_traffic']
-          .replaceAll(SubredditRef._subredditRegExp, _name))) as Map;
+          .replaceAll(SubredditRef._subredditRegExp, _name))) as Map?)!;
 
   /// Unsubscribes from the subreddit.
   ///
   /// When [otherSubreddits] is provided, the provided subreddits will also be
   /// unsubscribed from.
-  Future<void> unsubscribe({List<SubredditRef> otherSubreddits}) async {
+  Future<void> unsubscribe({List<SubredditRef>? otherSubreddits}) async {
     final data = {
       'action': 'unsub',
       'sr_name': _subredditList(this, otherSubreddits),
@@ -346,7 +345,7 @@ class SubredditRef extends RedditBase
   }
 
   static String _subredditList(SubredditRef subreddit,
-      [List<SubredditRef> others]) {
+      [List<SubredditRef>? others]) {
     if (others != null) {
       final srs = <String>[];
       srs.add(subreddit.displayName);
@@ -363,43 +362,34 @@ class SubredditRef extends RedditBase
 /// Subreddit.
 class Subreddit extends SubredditRef with RedditBaseInitializedMixin {
   /// The URL for the [Subreddit]'s header image, if it exists.
-  Uri get headerImage => GetterUtils.uriOrNull(data['header_img']);
+  Uri? get headerImage => GetterUtils.uriOrNull(data!['header_img']);
 
   /// The URL for the [Subreddit]'s icon, if it exists.
-  Uri get iconImage => GetterUtils.uriOrNull(data['icon_img']);
+  Uri? get iconImage => GetterUtils.uriOrNull(data!['icon_img']);
 
   /// Whether the currently authenticated Redditor is banned from the [Subreddit].
-  bool get isBanned => data['user_is_banned'];
+  bool? get isBanned => data!['user_is_banned'];
 
   /// Whether the currently authenticated Redditor is an approved submitter for
   /// the [Subreddit].
-  bool get isContributor => data['user_is_contributor'];
+  bool? get isContributor => data!['user_is_contributor'];
 
   /// The URL for the [Subreddit]'s mobile header image, if it exists.
-  Uri get mobileHeaderImage => GetterUtils.uriOrNull(data['banner_img']);
+  Uri? get mobileHeaderImage => GetterUtils.uriOrNull(data!['banner_img']);
 
   /// Is the [Subreddit] restricted to users 18+.
-  bool get over18 => data['over18'];
+  bool get over18 => data!['over18'];
 
   /// The title of the [Subreddit].
   ///
   /// For example, the title of /r/drawapitesting is 'DRAW API Testing'.
-  String get title => data['title'];
-
-  Subreddit._(Reddit reddit) : super(reddit);
+  String get title => data!['title'];
 
   @override
   Future<dynamic> refresh() async {
     final refreshed = await populate();
     setData(this, refreshed.data);
     return this;
-  }
-
-  Subreddit._fromSubreddit(Subreddit subreddit) : super(subreddit.reddit) {
-    setData(this, subreddit.data);
-    _name = subreddit._name;
-    _path =
-        apiPath['subreddit'].replaceAll(SubredditRef._subredditRegExp, _name);
   }
 
   Subreddit.parse(Reddit reddit, Map data)
@@ -432,12 +422,12 @@ class SubredditFilters {
 
   /// Returns a stream of all filtered subreddits.
   Stream<SubredditRef> call() async* {
-    final user = await _subreddit.reddit.user.me();
+    final user = (await _subreddit.reddit.user.me()) as Redditor;
     final path = apiPath['subreddit_filter_list']
         .replaceAll(_specialRegExp, _subreddit.displayName)
         .replaceAll(_userRegExp, user.displayName);
-    final Multireddit response = await _subreddit.reddit.get(path);
-    final filteredSubs = response.data['subreddits'];
+    final response = (await _subreddit.reddit.get(path)) as Multireddit;
+    final filteredSubs = response.data!['subreddits'];
     for (final sub in filteredSubs) {
       yield _subreddit.reddit.subreddit(sub['name']);
     }
@@ -459,7 +449,7 @@ class SubredditFilters {
           "Field 'subreddit' must be either a 'String' or 'SubredditRef'");
     }
 
-    final user = await _subreddit.reddit.user.me();
+    final user = (await _subreddit.reddit.user.me()) as Redditor;
     final path = apiPath['subreddit_filter']
         .replaceAll(SubredditRef._subredditRegExp, filteredSubreddit)
         .replaceAll(_userRegExp, user.displayName)
@@ -484,7 +474,7 @@ class SubredditFilters {
           "Field 'subreddit' must be either a 'String' or 'SubredditRef'");
     }
 
-    final user = await _subreddit.reddit.user.me();
+    final user = (await _subreddit.reddit.user.me()) as Redditor;
     final path = apiPath['subreddit_filter']
         .replaceAll(SubredditRef._subredditRegExp, filteredSubreddit)
         .replaceAll(_userRegExp, user.displayName)
@@ -497,32 +487,32 @@ class SubredditFilters {
 class SubredditFlair {
   static final RegExp _kSubredditRegExp = RegExp(r'{subreddit}');
   final SubredditRef _subreddit;
-  SubredditRedditorFlairTemplates _templates;
-  SubredditLinkFlairTemplates _linkTemplates;
+  SubredditRedditorFlairTemplates? _templates;
+  SubredditLinkFlairTemplates? _linkTemplates;
 
   SubredditFlair(this._subreddit);
 
   SubredditRedditorFlairTemplates get templates {
     _templates ??= SubredditRedditorFlairTemplates._(_subreddit);
-    return _templates;
+    return _templates!;
   }
 
   SubredditLinkFlairTemplates get linkTemplates {
     _linkTemplates ??= SubredditLinkFlairTemplates._(_subreddit);
-    return _linkTemplates;
+    return _linkTemplates!;
   }
 
   Stream<Flair> call(
-      {/* Redditor, String */ redditor, Map<String, String> params}) {
+      {/* Redditor, String */ redditor, Map<String, String>? params}) {
     final data = (params != null) ? Map.from(params) : null;
     if (redditor != null) {
-      data['user'] = _redditorNameHelper(redditor);
+      data!['user'] = _redditorNameHelper(redditor);
     }
     return ListingGenerator.createBasicGenerator(
         _subreddit.reddit,
         apiPath['flairlist']
             .replaceAll(_kSubredditRegExp, _subreddit.displayName),
-        params: data);
+        params: data as Map<String, String>?);
   }
 
   /// Update the [Subreddit]'s flair configuration.
@@ -644,9 +634,6 @@ class SubredditFlair {
         final name = f.user.displayName;
         final tmpText = f.flairText ?? text;
         final tmpCssClass = f.flairCssClass ?? cssClass;
-        if (name == null) {
-          continue;
-        }
         lines.add('"$name","$tmpText","$tmpCssClass"');
       } else {
         throw DRAWInternalError('Invalid flair format');
@@ -815,16 +802,16 @@ class SubredditRelationship {
   SubredditRelationship(this._subreddit, this.relationship);
 
   Stream<Redditor> call(
-      {/* String, Redditor */ redditor, Map<String, String> params}) {
+      {/* String, Redditor */ redditor, Map<String, String>? params}) {
     final data = (params != null) ? Map.from(params) : <String, String>{};
     if (redditor != null) {
       data['user'] = _redditorNameHelper(redditor);
     }
     return ListingGenerator.createBasicGenerator(
         _subreddit.reddit,
-        apiPath['list_${relationship}']
+        apiPath['list_$relationship']
             .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName),
-        params: data);
+        params: data as Map<String, String>?);
   }
 
   // TODO(bkonyi): add field for 'other settings'.
@@ -833,7 +820,7 @@ class SubredditRelationship {
   /// `redditor` can be either an instance of [Redditor] or the name of a
   /// Redditor.
   Future<void> add(/* String, Redditor */ redditor,
-      {Map<String, String> params}) async {
+      {Map<String, String>? params}) async {
     final data = {
       'name': _redditorNameHelper(redditor),
       'type': relationship,
@@ -853,7 +840,7 @@ class SubredditRelationship {
   /// `redditor` can be either an instance of [Redditor] or the name of a
   /// Redditor.
   Future<void> remove(/* String, Redditor */ redditor,
-      {Map<String, String> params}) async {
+      {Map<String, String>? params}) async {
     final data = {
       'name': _redditorNameHelper(redditor),
       'type': relationship,
@@ -922,6 +909,7 @@ class SubredditTraffic {
         subscriptions = (isDay ? rawTraffic[3] : 0),
         uniques = rawTraffic[1];
 
+  @override
   String toString() {
     return '${periodStart.toUtc()} => unique visits: $uniques, page views: $pageviews'
         ' subscriptions: $subscriptions';
@@ -963,8 +951,14 @@ class ModeratorRelationship extends SubredditRelationship {
   ModeratorRelationship(SubredditRef subreddit, String relationship)
       : super(subreddit, relationship);
 
-  final _validPermissions =
-      ['access', 'config', 'flair', 'mail', 'posts', 'wiki'].toSet();
+  final _validPermissions = {
+    'access',
+    'config',
+    'flair',
+    'mail',
+    'posts',
+    'wiki'
+  };
 
   Map<String, String> _handlePermissions(
           List<ModeratorPermission> permissions) =>
@@ -978,8 +972,9 @@ class ModeratorRelationship extends SubredditRelationship {
   /// When `redditor` is provided, the resulting stream will contain at most
   /// one [Redditor]. This is useful to confirm if a relationship exists, or to
   /// fetch the metadata associated with a particular relationship.
+  @override
   Stream<Redditor> call(
-          {/* String, RedditorRef */ redditor, Map<String, String> params}) =>
+          {/* String, RedditorRef */ redditor, Map<String, String>? params}) =>
       super.call(redditor: redditor, params: params);
 
   /// Add or invite `redditor` to be a moderator of the subreddit.
@@ -990,9 +985,10 @@ class ModeratorRelationship extends SubredditRelationship {
   /// (default).
   ///
   /// An invite will be sent unless the user making this call is an admin.
+  @override
   Future<void> add(/* RedditorRef, String */ redditor,
       {List<ModeratorPermission> permissions = const <ModeratorPermission>[],
-      Map<String, String> params}) async {
+      Map<String, String>? params}) async {
     final data = _handlePermissions(permissions);
     if (params != null) {
       data.addAll(params);
@@ -1028,12 +1024,12 @@ class ModeratorRelationship extends SubredditRelationship {
   Future<void> leave() async {
     String fullname;
     if (_subreddit is Subreddit) {
-      fullname = (_subreddit as Subreddit).fullname;
+      fullname = (_subreddit as Subreddit).fullname!;
     } else {
-      fullname = (await _subreddit.populate()).fullname;
+      fullname = (await _subreddit.populate()).fullname!;
     }
     await _subreddit.reddit.post(
-        apiPath['leavemoderator'], <String, String>{'id': fullname},
+        apiPath['leavemoderator'], <String, String?>{'id': fullname},
         discardResponse: true);
   }
 
@@ -1154,7 +1150,7 @@ class Modmail {
   final SubredditRef _subreddit;
   Modmail._(this._subreddit);
 
-  String _buildSubredditList(List<SubredditRef> otherSubreddits) {
+  String _buildSubredditList(List<SubredditRef>? otherSubreddits) {
     final subreddits = <SubredditRef>[_subreddit];
     if (otherSubreddits != null) {
       subreddits.addAll(otherSubreddits);
@@ -1177,7 +1173,7 @@ class Modmail {
   /// Returns a [List] of [ModmailConversation] instances which were marked as
   /// read.
   Future<List<ModmailConversationRef>> bulkRead(
-      {List<SubredditRef> otherSubreddits,
+      {List<SubredditRef>? otherSubreddits,
       ModmailState state = ModmailState.all}) async {
     final params = {
       'entity': _buildSubredditList(otherSubreddits),
@@ -1201,9 +1197,9 @@ class Modmail {
   /// `sort`: Determines the order that the conversations will be sorted.
   /// `state`:
   Stream<ModmailConversation> conversations(
-      {String after,
-      int limit,
-      List<SubredditRef> otherSubreddits,
+      {String? after,
+      int? limit,
+      List<SubredditRef>? otherSubreddits,
       ModmailSort sort = ModmailSort.recent,
       ModmailState state = ModmailState.all}) async* {
     final params = <String, String>{};
@@ -1219,16 +1215,13 @@ class Modmail {
       params['limit'] = limit.toString();
     }
 
-    if (sort != null) {
-      params['sort'] = modmailSortToString(sort);
-    }
+    params['sort'] = modmailSortToString(sort);
 
-    if (state != null) {
-      params['state'] = modmailStateToString(state);
-    }
+    params['state'] = modmailStateToString(state);
 
-    final Map<String, dynamic> response = await _subreddit.reddit
-        .get(apiPath['modmail_conversations'], params: params);
+    final response = (await _subreddit.reddit
+            .get(apiPath['modmail_conversations'], params: params))
+        as Map<String, dynamic>;
     final ids = (response['conversationIds'] as List).cast<String>();
     for (final id in ids) {
       final data = {
@@ -1262,8 +1255,8 @@ class Modmail {
     };
     return ModmailConversation.parse(
         _subreddit.reddit,
-        await _subreddit.reddit
-            .post(apiPath['modmail_conversations'], data, objectify: false));
+        (await _subreddit.reddit.post(apiPath['modmail_conversations'], data,
+            objectify: false)) as Map<String, dynamic>);
   }
 
   /// A [Stream] of subreddits which use the new modmail that the authenticated
@@ -1300,20 +1293,20 @@ class Modmail {
 
 /// A representation of the number of unread Modmail conversations by state.
 class ModmailUnreadStatistics {
-  final Map<String, int> _data;
+  final Map<String, int>? _data;
   ModmailUnreadStatistics._(this._data);
 
-  int get archived => _data['archived'];
+  int get archived => _data!['archived']!;
 
-  int get highlighted => _data['highlighted'];
+  int get highlighted => _data!['highlighted']!;
 
-  int get inProgress => _data['inprogress'];
+  int get inProgress => _data!['inprogress']!;
 
-  int get mod => _data['mod'];
+  int get mod => _data!['mod']!;
 
-  int get newMail => _data['new'];
+  int get newMail => _data!['new']!;
 
-  int get notifications => _data['notifications'];
+  int get notifications => _data!['notifications']!;
 
   @override
   String toString() => JsonEncoder.withIndent('  ').convert(_data);
@@ -1333,12 +1326,12 @@ class Rule {
 
   int get priority => _priority;
 
-  bool _isLink;
-  String _description;
-  String _shortName;
-  String _violationReason;
-  double _createdUtc;
-  int _priority;
+  late bool _isLink;
+  late String _description;
+  late String _shortName;
+  late String _violationReason;
+  late double _createdUtc;
+  late int _priority;
 
   Rule.parse(Map data) {
     _isLink = (data['kind'] == 'link');
@@ -1349,6 +1342,7 @@ class Rule {
     _priority = data['priority'];
   }
 
+  @override
   String toString() => '$_shortName: $_violationReason';
 }
 
@@ -1364,7 +1358,7 @@ class SubredditStream {
   /// initially be returned. If [limit] is provided, the stream will close
   /// after [limit] iterations. If [pauseAfter] is provided, null will be
   /// returned after [pauseAfter] requests without new items.
-  Stream<Comment> comments({int limit, int pauseAfter}) =>
+  Stream<Comment?> comments({int? limit, int? pauseAfter}) =>
       streamGenerator<Comment>(_subreddit.comments,
           itemLimit: limit, pauseAfter: pauseAfter);
 
@@ -1374,7 +1368,7 @@ class SubredditStream {
   /// will initially be returned. If [limit] is provided, the stream will close
   /// after [limit] iterations. If [pauseAfter] is provided, null will be
   /// returned after [pauseAfter] requests without new items.
-  Stream<Submission> submissions({int limit, int pauseAfter}) =>
+  Stream<Submission?> submissions({int? limit, int? pauseAfter}) =>
       streamGenerator<Submission>(_subreddit.newest,
           itemLimit: limit, pauseAfter: pauseAfter);
 }
@@ -1426,10 +1420,10 @@ class SubredditStyleSheet {
   Future<StyleSheet> call() async {
     final uri = apiPath['about_stylesheet']
         .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
-    return await _subreddit.reddit.get(uri);
+    return (await _subreddit.reddit.get(uri)) as StyleSheet;
   }
 
-  Future<Uri> _uploadImage(Uri imagePath, Uint8List imageBytes,
+  Future<Uri> _uploadImage(Uri? imagePath, Uint8List? imageBytes,
       ImageFormat format, Map<String, dynamic> data) async {
     const kImgType = 'img_type';
     if ((imagePath == null) && (imageBytes == null)) {
@@ -1438,7 +1432,7 @@ class SubredditStyleSheet {
     }
 
     if (imageBytes == null) {
-      final imageInfo = await loadImage(imagePath);
+      final imageInfo = await loadImage(imagePath!);
       // ignore: parameter_assignments
       format = imageInfo['imageType'];
       // ignore: parameter_assignments
@@ -1448,8 +1442,9 @@ class SubredditStyleSheet {
     data['api_type'] = 'json';
     final uri = apiPath['upload_image']
         .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
-    final response = await _subreddit.reddit
-        .post(uri, data, files: {'file': imageBytes}, objectify: false) as Map;
+    final response = await _subreddit.reddit.post(
+        uri, data as Map<String, String?>?,
+        files: {'file': imageBytes}, objectify: false) as Map;
     const kImgSrc = 'img_src';
     const kErrors = 'errors';
     const kErrorsValues = 'errors_values';
@@ -1500,11 +1495,11 @@ class SubredditStyleSheet {
   /// Update the stylesheet for the [Subreddit].
   ///
   /// `stylesheet` is the CSS for the new stylesheet.
-  Future<void> update(String stylesheet, {String reason}) async {
+  Future<void> update(String stylesheet, {String? reason}) async {
     final uri = apiPath['subreddit_stylesheet']
         .replaceAll(SubredditRef._subredditRegExp, _subreddit.displayName);
 
-    final data = <String, String>{
+    final data = <String, String?>{
       'api_type': 'json',
       'op': 'save',
       'reason': reason,
@@ -1530,7 +1525,9 @@ class SubredditStyleSheet {
   /// On success, the [Uri] for the uploaded image is returned. On failure,
   /// [DRAWImageUploadException] is thrown.
   Future<Uri> upload(String name,
-          {Uri imagePath, Uint8List bytes, ImageFormat format}) async =>
+          {Uri? imagePath,
+          Uint8List? bytes,
+          required ImageFormat format}) async =>
       await _uploadImage(imagePath, bytes, format, <String, String>{
         'name': name,
         _kUploadType: 'img',
@@ -1549,7 +1546,9 @@ class SubredditStyleSheet {
   /// On success, the [Uri] for the uploaded image is returned. On failure,
   /// [DRAWImageUploadException] is thrown.
   Future<Uri> uploadHeader(
-          {Uri imagePath, Uint8List bytes, ImageFormat format}) async =>
+          {Uri? imagePath,
+          Uint8List? bytes,
+          required ImageFormat format}) async =>
       await _uploadImage(imagePath, bytes, format, <String, String>{
         _kUploadType: 'header',
       });
@@ -1567,7 +1566,9 @@ class SubredditStyleSheet {
   /// On success, the [Uri] for the uploaded image is returned. On failure,
   /// [DRAWImageUploadException] is thrown.
   Future<Uri> uploadMobileHeader(
-          {Uri imagePath, Uint8List bytes, ImageFormat format}) async =>
+          {Uri? imagePath,
+          Uint8List? bytes,
+          required ImageFormat format}) async =>
       await _uploadImage(imagePath, bytes, format, <String, String>{
         _kUploadType: 'banner',
       });
@@ -1585,7 +1586,9 @@ class SubredditStyleSheet {
   /// On success, the [Uri] for the uploaded image is returned. On failure,
   /// [DRAWImageUploadException] is thrown.
   Future<Uri> uploadMobileIcon(
-          {Uri imagePath, Uint8List bytes, ImageFormat format}) async =>
+          {Uri? imagePath,
+          Uint8List? bytes,
+          required ImageFormat format}) async =>
       await _uploadImage(imagePath, bytes, format, <String, String>{
         _kUploadType: 'icon',
       });
@@ -1612,7 +1615,7 @@ class SubredditWiki {
   /// `content` is the initial content of the page.
   ///
   /// `reason` is the optional message explaining why the page was created.
-  Future<WikiPage> create(String name, String content, {String reason}) async {
+  Future<WikiPage> create(String name, String content, {String? reason}) async {
     final newName = name.replaceAll(' ', '_').toLowerCase();
     final newPage = WikiPageRef(_subreddit.reddit, _subreddit, newName);
     await newPage.edit(content, reason: reason);

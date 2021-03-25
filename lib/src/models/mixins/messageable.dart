@@ -24,12 +24,12 @@ mixin MessageableMixin {
   /// moderator of and has permissions to send mail on behalf of the subreddit.
   // TODO(bkonyi): error handling
   Future<void> message(String subject, String message,
-      {SubredditRef fromSubreddit}) async {
+      {SubredditRef? fromSubreddit}) async {
     var messagePrefix = '';
     if (this is Subreddit) {
       messagePrefix = '#';
     }
-    final Map<String, String> data = {
+    final data = {
       'subject': subject,
       'text': message,
       'to': messagePrefix + displayName,
@@ -45,7 +45,7 @@ mixin MessageableMixin {
     } on DRAWInvalidSubredditException catch (e) {
       String name;
       if (e.subredditName == 'from_sr') {
-        name = fromSubreddit.displayName;
+        name = fromSubreddit!.displayName;
       } else {
         name = displayName;
       }

@@ -8,7 +8,7 @@ import 'package:draw/src/models/subreddit.dart';
 import 'package:draw/src/reddit.dart';
 
 abstract class GetterUtils {
-  static DateTime dateTimeOrNull(double time) {
+  static DateTime? dateTimeOrNull(double? time) {
     if (time == null) {
       return null;
     }
@@ -16,18 +16,18 @@ abstract class GetterUtils {
         isUtc: true);
   }
 
-  static DateTime dateTimeOrNullFromString(String time) {
+  static DateTime? dateTimeOrNullFromString(String? time) {
     if (time == null) {
       return null;
     }
     return DateTime.parse(time);
   }
 
-  static RedditorRef redditorRefOrNull(Reddit reddit, String redditor) =>
+  static RedditorRef? redditorRefOrNull(Reddit reddit, String? redditor) =>
       (redditor == null) ? null : reddit.redditor(redditor);
 
-  static SubredditRef subredditRefOrNull(Reddit reddit, String subreddit) =>
+  static SubredditRef? subredditRefOrNull(Reddit reddit, String? subreddit) =>
       (subreddit == null) ? null : reddit.subreddit(subreddit);
 
-  static Uri uriOrNull(String uri) => (uri == null) ? null : Uri.parse(uri);
+  static Uri? uriOrNull(String? uri) => (uri == null) ? null : Uri.parse(uri);
 }

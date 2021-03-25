@@ -7,13 +7,9 @@ import 'dart:async';
 
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base_impl.dart';
-import 'package:draw/src/reddit.dart';
 
 /// Interface for ReddieBase classes that can be reported.
 mixin ReportableMixin implements RedditBaseInitializedMixin {
-  Reddit get reddit;
-  String get fullname;
-
   /// Report this object to the moderators of its [Subreddit].
   ///
   /// [reason] is the reason for the report.

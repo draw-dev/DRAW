@@ -57,7 +57,7 @@ Future<void> main() async {
       await prettyPrint(comments, 0);
     };
 
-    var output = "";
+    var output = '';
     await runZoned(printer, zoneSpecification:
         ZoneSpecification(print: (self, parent, zone, message) {
       output += message + '\n';
@@ -70,20 +70,20 @@ Future<void> main() async {
   test('lib/comment/more_comment_expand_test', () async {
     final reddit =
         await createRedditTestInstance('test/comment/more_comment_expand_test');
-    final Comment comment = await reddit.comment(id: 'e1mnhdn').populate();
+    final comment = await reddit.comment(id: 'e1mnhdn').populate();
     submissionChecker(comment.submission, comment.replies);
 
-    await comment.replies.replaceMore();
+    await comment.replies!.replaceMore();
     final printer = () async {
       await prettyPrint(<Comment>[comment], 0);
     };
 
-    var output = "";
+    var output = '';
     var count = 0;
     await runZoned(printer, zoneSpecification:
         ZoneSpecification(print: (self, parent, zone, message) {
       count++;
-      output += "$count" + message + '\n';
+      output += '$count' + message + '\n';
     }));
     final expected = File('test/comment/more_comment_expand_test_expected.out')
         .readAsStringSync();
@@ -91,8 +91,8 @@ Future<void> main() async {
   });
 
   int getMoreCommentsCount(Submission submission) {
-    int moreComments = 0;
-    submission.comments.toList().forEach((v) {
+    var moreComments = 0;
+    submission.comments!.toList().forEach((v) {
       if (v is MoreComments) {
         moreComments++;
       }
@@ -101,8 +101,8 @@ Future<void> main() async {
   }
 
   void checkNoDuplicates(Submission submission) {
-    final Set ids = new Set<String>();
-    final comments = submission.comments.toList();
+    final Set ids = <String?>{};
+    final comments = submission.comments!.toList();
     for (dynamic comment in comments) {
       if (ids.contains(comment.fullname)) {
         fail('Multiple comments with the same ID are in the CommentForest');
@@ -116,17 +116,17 @@ Future<void> main() async {
         'test/comment/more_comment_count_test.json');
     final submission = await reddit.submission(id: 'bpvpfm').populate();
     expect(getMoreCommentsCount(submission), 2);
-    expect(submission.comments.toList().length, 202);
+    expect(submission.comments!.toList().length, 202);
     checkNoDuplicates(submission);
 
-    await submission.comments.replaceMore();
+    await submission.comments!.replaceMore();
     expect(getMoreCommentsCount(submission), 0);
-    expect(submission.comments.toList().length, 501);
+    expect(submission.comments!.toList().length, 501);
     checkNoDuplicates(submission);
 
-    await submission.comments.replaceMore();
+    await submission.comments!.replaceMore();
     expect(getMoreCommentsCount(submission), 0);
-    expect(submission.comments.toList().length, 501);
+    expect(submission.comments!.toList().length, 501);
     checkNoDuplicates(submission);
   });
 
@@ -140,12 +140,12 @@ Future<void> main() async {
       await prettyPrint(comments, 0);
     };
 
-    var output = "";
+    var output = '';
     var count = 0;
     await runZoned(printer, zoneSpecification:
         ZoneSpecification(print: (self, parent, zone, message) {
       count++;
-      output += "$count" + message + '\n';
+      output += '$count' + message + '\n';
     }));
     final expected =
         File('test/comment/tons_of_comments_expected.out').readAsStringSync();
@@ -174,7 +174,7 @@ Future<void> main() async {
     final reddit =
         await createRedditTestInstance('test/comment/continue_test.json');
     final submission = await reddit.submission(id: '7czz1q').populate();
-    final comment = submission.comments[0] as Comment;
+    final comment = submission.comments![0] as Comment;
 
     expect(comment.approved, isFalse);
     expect(comment.approvedAtUtc, isNull);

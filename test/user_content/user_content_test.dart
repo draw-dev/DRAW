@@ -94,7 +94,7 @@ Future<void> main() async {
       final upvoted = <String>[];
       await for (final submission in redditor.upvoted()) {
         expect(submission is Submission, isTrue);
-        upvoted.add((submission as Submission).fullname);
+        upvoted.add((submission as Submission).fullname!);
       }
       return upvoted;
     }
@@ -103,7 +103,7 @@ Future<void> main() async {
       final upvoted = <String>[];
       await for (final submission in redditor.downvoted()) {
         expect(submission is Submission, isTrue);
-        upvoted.add((submission as Submission).fullname);
+        upvoted.add((submission as Submission).fullname!);
       }
       return upvoted;
     }

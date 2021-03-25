@@ -15,22 +15,22 @@ import 'gilded.dart';
 mixin SubredditListingMixin {
   Reddit get reddit;
   String get path;
-  CommentHelper _commentHelper;
+  CommentHelper? _commentHelper;
   CommentHelper get comments {
-    if (_commentHelper == null) {
-      _commentHelper = CommentHelper(this);
-    }
-    return _commentHelper;
+    _commentHelper ??= CommentHelper(this as SubredditRef);
+    return _commentHelper!;
   }
 }
 
 class CommentHelper extends RedditBase with GildedListingMixin {
+  @override
   String get path => _subreddit.path;
   final SubredditRef _subreddit;
   CommentHelper(this._subreddit) : super(_subreddit.reddit);
 
   // TODO(bkonyi): document.
-  Stream<Comment> call({int limit, String after, Map<String, String> params}) =>
+  Stream<Comment> call(
+          {int? limit, String? after, Map<String, String>? params}) =>
       ListingGenerator.generator<Comment>(reddit, _path(),
           limit: limit ?? ListingGenerator.getLimit(params),
           after: after,
