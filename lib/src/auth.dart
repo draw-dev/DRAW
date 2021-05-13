@@ -234,13 +234,13 @@ abstract class Authenticator {
 
     final httpClient = http.Client();
     final start = DateTime.now();
-    final headers = <String, String?>{};
-    headers[_kUserAgentKey] = _config.userAgent;
+    final headers = <String, String>{};
+    headers[_kUserAgentKey] = _config.userAgent!;
 
     // Request the token from the server.
     final response = await httpClient.post(
         _grant.tokenEndpoint.replace(userInfo: userInfo),
-        headers: headers as Map<String, String>?,
+        headers: headers,
         body: accountInfo);
 
     // Check for error response.
