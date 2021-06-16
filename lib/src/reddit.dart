@@ -4,7 +4,6 @@
 // can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:draw/src/auth.dart';
@@ -663,14 +662,13 @@ class Reddit {
     return _objector.objectify(response);
   }
 
-  Future<dynamic> patch(String api,
-      {Map<String, String>? body}) async {
+  Future<dynamic> patch(String api, {Map<String, String>? body}) async {
     if (!_initialized) {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
     final path = Uri.https(defaultOAuthApiEndpoint, api);
-    final response = await auth.patch(path, body: {'json': jsonEncode(body)});
+    final response = await auth.patch(path, body: body);
     return response;
   }
 

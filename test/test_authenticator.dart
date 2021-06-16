@@ -10,6 +10,7 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
+
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:reply/reply.dart';
 
@@ -26,6 +27,7 @@ class TestAuthenticator extends Authenticator {
   final String _recordingPath;
   final Authenticator? _recordAuth;
   final _recorder = Recorder<List, dynamic>();
+
   bool get isRecording => (_recordAuth == null);
   late Recording _recording;
 
@@ -195,6 +197,27 @@ class TestAuthenticator extends Authenticator {
           .once();
     }
     return (result == '') ? null : result;
+  }
+
+  @override
+  Future<dynamic> patch(Uri path, {Map<String, String>? body}) async {
+    var result;
+    if (isRecording) {
+      result = _recording.reply([path.toString(), body.toString()]);
+      _throwOnError(result);
+    } else {
+      try {
+        result = await _recordAuth!.patch(path, body: body);
+      } catch (e) {
+        // Throws.
+        _recordException(path, body, e as Exception);
+      }
+      _recorder
+          .given([path.toString(), body.toString()])
+          .reply(_copyResponse(result))
+          .once();
+    }
+    return result;
   }
 
   @override
