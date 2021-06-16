@@ -173,7 +173,6 @@ abstract class Authenticator {
   /// that will be sent with the request.
   Future<dynamic> patch(Uri path, {Map<String, String>? body}) async {
     _logger.info('PATCH: $path body: ${DRAWLoggingUtils.jsonify(body)}');
-    print(DRAWLoggingUtils.jsonify(body));
     return _request(_kPatchRequest, path, body: body);
   }
 
