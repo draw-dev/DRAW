@@ -664,14 +664,14 @@ class Reddit {
   }
 
   Future<dynamic> patch(String api,
-      {Map<String, String>? body, bool objectify = true}) async {
+      {Map<String, String>? body}) async {
     if (!_initialized) {
       throw DRAWAuthenticationError(
           'Cannot make requests using unauthenticated client.');
     }
     final path = Uri.https(defaultOAuthApiEndpoint, api);
     final response = await auth.patch(path, body: {'json': jsonEncode(body)});
-    return objectify ? _objector.objectify(response) : response;
+    return response;
   }
 
   void _initializationCallback(Authenticator auth) {
