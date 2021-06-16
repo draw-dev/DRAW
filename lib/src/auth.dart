@@ -20,6 +20,7 @@ const String _kDeleteRequest = 'DELETE';
 const String _kGetRequest = 'GET';
 const String _kPostRequest = 'POST';
 const String _kPutRequest = 'PUT';
+const String _kPatchRequest = 'PATCH';
 
 const String _kAuthorizationKey = 'Authorization';
 const String _kDurationKey = 'duration';
@@ -164,6 +165,15 @@ abstract class Authenticator {
   Future<dynamic> delete(Uri path, {Map<String, String>? body}) async {
     _logger.info('DELETE: $path body: ${DRAWLoggingUtils.jsonify(body)}');
     return _request(_kDeleteRequest, path, body: body);
+  }
+
+  /// Make a simple `PATCH` request.
+  ///
+  /// [path] is the destination URI and [body] contains the PATCH parameters
+  /// that will be sent with the request.
+  Future<dynamic> patch(Uri path, {Map<String, String>? body}) async {
+    _logger.info('PATCH: $path body: ${DRAWLoggingUtils.jsonify(body)}');
+    return _request(_kPatchRequest, path, body: body);
   }
 
   /// Request data from Reddit using our OAuth2 client.
