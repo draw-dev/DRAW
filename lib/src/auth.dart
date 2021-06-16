@@ -200,6 +200,7 @@ abstract class Authenticator {
 
     if (body != null) {
       request.fields.addAll(body as Map<String, String>);
+      print(request.fields);
     }
     if (files != null) {
       request.files.addAll([
