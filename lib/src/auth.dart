@@ -270,14 +270,17 @@ abstract class Authenticator {
 
     final httpClient = http.Client();
     final start = DateTime.now();
-    final headers = <String, String?>{};
-    headers[_kUserAgentKey] = _config.userAgent;
-    headers[_kAuthorizationKey] =
-        'Basic ${base64Encode((clientId + ":").codeUnits)})';
+    final headers = <String, String>{
+      _kAuthorizationKey: 'Basic ${base64Encode((clientId + ":").codeUnits)})',
+      if (_config.userAgent != null) _kUserAgentKey: _config.userAgent!
+    };
 
     // Request the token from the server.
-    final response = await httpClient.post(_grant.tokenEndpoint,
-        headers: headers as Map<String, String>?, body: accountInfo);
+    final response = await httpClient.post(
+      _grant.tokenEndpoint,
+      headers: headers,
+      body: accountInfo,
+    );
 
     // Check for error response.
     final responseMap = json.decode(response.body);
