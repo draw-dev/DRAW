@@ -27,6 +27,12 @@ class Redditor extends RedditorRef with RedditBaseInitializedMixin {
   /// The amount of comment karma earned by the Redditor.
   int? get commentKarma => data!['comment_karma'];
 
+  /// The amount of awarder karma earned by the Redditor.
+  int? get awarderKarma => data!['awarder_karma'];
+
+  /// The amount of awardee karma earned by the Redditor.
+  int? get awardeeKarma => data!['awardee_karma'];
+
   /// The time the Redditor's account was created.
   DateTime? get createdUtc => GetterUtils.dateTimeOrNull(data!['created_utc']);
 
