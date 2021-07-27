@@ -620,7 +620,8 @@ class Reddit {
           'Cannot make requests using unauthenticated client.');
     }
     final path = Uri.https(defaultOAuthApiEndpoint, api);
-    params ??= {'raw_json': '1'}; // only on null
+    params ??= {};
+    params['raw_json'] = '1';
     final response =
         await auth.get(path, params: params, followRedirects: followRedirects);
     return objectify ? _objector.objectify(response) : response;
