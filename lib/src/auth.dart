@@ -189,7 +189,7 @@ abstract class Authenticator {
     request.followRedirects = followRedirects;
 
     if (body != null) {
-      request.fields.addAll(body as Map<String, String>);
+      request.fields.addAll(Map<String, String>.from(body));
     }
     if (files != null) {
       request.files.addAll([
