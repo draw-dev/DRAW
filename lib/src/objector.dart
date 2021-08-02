@@ -98,6 +98,8 @@ class Objector extends RedditBase {
       final value = {
         'commentKarma': data['comment_karma'],
         'linkKarma': data['link_karma'],
+        'awarderKarma': data['awarder_karma'],
+        'awardeeKarma': data['awardee_karma'],
       };
       return {subreddit: value};
     } else if ((data.length == 3) &&
