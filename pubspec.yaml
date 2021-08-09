@@ -23,7 +23,8 @@ dev_dependencies:
   reply: '^0.1.2-dev'
   test: '^1.16.0'
 
-# TODO(bkonyi): remove these.
-# Temporary until package SDK restrictions are updated.
+# Use reply with null-safety fork in third_party folder, 
+# to allow sound null-safety tests
 dependency_overrides:
-  reply: '0.1.2-dev'
+  reply:
+    path: third_party/reply
