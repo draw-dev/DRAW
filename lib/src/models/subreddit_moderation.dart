@@ -346,8 +346,9 @@ class SubredditSettings {
   String get submitText => _data['submit_text'];
   set submitText(String x) => _data['submit_text'] = x;
 
-  // TODO(bkonyi): figure out what this is.
-  // get spamLinks => _data['spam_links'];
+  // Returns the filter strength set for spam links for subreddit.
+  // Possible values: all, low, high.
+  String get spamLinks => _data['spam_links'];
 
   String get title => _data['title'];
   set title(String x) => _data['title'] = x;
@@ -355,8 +356,9 @@ class SubredditSettings {
   bool get collapseDeletedComments => _data['collapse_deleted_comments'];
   set collapseDeletedComments(bool x) => _data['collapse_deleted_comments'] = x;
 
-  // TODO(bkonyi): figure out what this is.
-  // get wikimode => _data['wikimode'];
+  // Returns who can access wiki mode.
+  // Possible Values: anyone, disabled, modonly.
+  String get wikimode => _data['wikimode'];
 
   bool get publicTraffic => _data['public_traffic'];
   set publicTraffic(bool x) => _data['public_traffic'] = x;
@@ -370,10 +372,10 @@ class SubredditSettings {
   bool get spoilersEnabled => _data['spoilers_enabled'];
   set spoilersEnabled(bool x) => _data['spoilers_enabled'] = x;
 
-  // TODO(bkonyi): figure out what this is.
-  // get suggestedCommentSort => _data['suggested_comment_sort'];
+  // The comment sorting method to choose by default.
+  String? get suggestedCommentSort => _data['suggested_comment_sort'];
 
-  String get description => _data['description'];
+  String? get description => _data['description'];
   set description(String? x) => _data['description'] = x;
 
   String get submitLinkLabel => _data['submit_link_label'];
@@ -382,17 +384,17 @@ class SubredditSettings {
   bool get allowPostCrossposts => _data['allow_post_crossposts'];
   set allowPostCrossposts(bool x) => _data['allow_post_crossposts'] = x;
 
-  // TODO(bkonyi): figure out what this is.
-  // get spamComments => _data['spam_comments'];
+  // Filter strength for comments.
+  get spamComments => _data['spam_comments'];
 
-  // TODO(bkonyi): figure out what this is.
-  // get spamSelfposts => _data['spam_selfposts'];
+  // Filter strength for self posts.
+  get spamSelfposts => _data['spam_selfposts'];
 
   String? get submitTextLabel => _data['submit_text_label'];
   set submitTextLabel(String? x) => _data['submit_text_label'] = x;
 
   // TODO(bkonyi): we might want to use a color class for this.
-  // get keyColor => _data['key_color];
+  // get keyColor => _data['key_color'];
 
   String get language => _data['language'];
   set language(String x) => _data['language'] = x;
@@ -428,8 +430,9 @@ class SubredditSettings {
   bool get excludeBannedModQueue => _data['exclude_banned_modqueue'];
   set excludeBannedModQueue(bool x) => _data['exclude_banned_modqueue'] = x;
 
-  // TODO(bkonyi): figure out what this is for.
-  // get contentOptions => _data['content_options'];
+  // Which post types users can use.
+  // Possible values: any, link, self
+  String get contentOptions => _data['content_options'];
 
   @override
   String toString() {
@@ -466,6 +469,7 @@ class ModeratorAction {
 }
 
 /// Provides a set of moderation functions to a [Subreddit].
+/// You must be a mod of the subreddit to acess these.
 class SubredditModeration {
   static final _subredditRegExp = RegExp(r'{subreddit}');
   final SubredditRef _subreddit;
