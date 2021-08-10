@@ -123,7 +123,7 @@ enum SuggestedCommentSort {
   confidence,
   controversial,
   live,
-  newer,
+  newest,
   old,
   qa,
   random,
