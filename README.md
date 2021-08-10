@@ -135,6 +135,8 @@ For usage in environments where it is impossible to keep a client secret secure,
 
 The installed application authentication flow is almost identical to the web authentication flow described above, and it is also possible to save and restore credentials for installed applications in a similar fashion.
 
+Read up more about how to use this authentication flow on [here](https://github.com/draw-dev/DRAW/issues/196#issuecomment-891084560).
+
 Here is a simple example of how to use the installed application authentication flow with DRAW:
 
 ```dart
