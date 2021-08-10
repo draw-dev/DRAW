@@ -373,7 +373,7 @@ class SubredditSettings {
   // TODO(bkonyi): figure out what this is.
   // get suggestedCommentSort => _data['suggested_comment_sort'];
 
-  String get description => _data['description'];
+  String? get description => _data['description'];
   set description(String? x) => _data['description'] = x;
 
   String get submitLinkLabel => _data['submit_link_label'];
@@ -409,7 +409,7 @@ class SubredditSettings {
   bool get allowDiscovery => _data['allow_discovery'];
   set allowDiscovery(bool x) => _data['allow_discovery'] = x;
 
-  String get publicDescription => _data['public_description'];
+  String? get publicDescription => _data['public_description'];
   set publicDescription(String? x) => _data['public_description'] = x;
 
   bool get showMediaPreview => _data['show_media_preview'];
