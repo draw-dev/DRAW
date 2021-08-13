@@ -3,7 +3,7 @@
     "always": false,
     "request": [
       "https://oauth.reddit.com/r/drawapitesting/comments/",
-      "{limit: 10, before: null}"
+      "{limit: 10}"
     ],
     "response": {
       "kind": "Listing",
@@ -713,7 +713,6 @@
           }
         ],
         "after": "t1_dqmsnfp",
-        "before": null
       }
     }
   }
