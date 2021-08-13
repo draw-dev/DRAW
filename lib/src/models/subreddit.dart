@@ -177,6 +177,7 @@ class SubredditRef extends RedditBase
 
   SubredditRef(Reddit reddit) : super(reddit);
 
+  /// [name] is the name of the subreddit without the 'r/' prefix.
   SubredditRef.name(Reddit reddit, String name)
       : _name = name,
         super.withPath(reddit, _generateInfoPath(name)) {
