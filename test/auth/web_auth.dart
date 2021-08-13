@@ -139,5 +139,5 @@ Future<void> main() async {
     // and file an issue against package:test if needed.
     // expect(() async => await redditRestored.user.me(),
     //    throwsA(isInstanceOf<DRAWAuthenticationError>()));
-  });
+  }, skip: 'https://github.com/draw-dev/DRAW/issues/209');
 }
