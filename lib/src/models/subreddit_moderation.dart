@@ -116,6 +116,20 @@ enum ModeratorActionType {
   wikiUnbanned,
 }
 
+enum SpamSensitivity { all, low, high }
+enum WikiAccessMode { anyone, disabled, modonly }
+enum PostContentType { any, link, self }
+enum SuggestedCommentSort {
+  confidence,
+  controversial,
+  live,
+  newest,
+  old,
+  qa,
+  random,
+  top,
+}
+
 String moderatorActionTypesToString(ModeratorActionType a) {
   switch (a) {
     case ModeratorActionType.acceptModeratorInvite:
@@ -314,6 +328,72 @@ ModeratorActionType stringToModeratorActionType(String s) {
   }
 }
 
+SpamSensitivity stringToSpamSensitivity(String s) {
+  switch (s) {
+    case 'all':
+      return SpamSensitivity.all;
+    case 'low':
+      return SpamSensitivity.low;
+    case 'high':
+      return SpamSensitivity.high;
+    default:
+      throw DRAWInternalError('Invalid spam sensitivity type: $s.');
+  }
+}
+
+WikiAccessMode stringToWikiAccessMode(String s) {
+  switch (s) {
+    case 'anyone':
+      return WikiAccessMode.anyone;
+    case 'modonly':
+      return WikiAccessMode.modonly;
+    case 'disabled':
+      return WikiAccessMode.disabled;
+    default:
+      throw DRAWInternalError('Invalid Wiki Access Mode: $s.');
+  }
+}
+
+PostContentType stringToContentType(String s) {
+  switch (s) {
+    case 'any':
+      return PostContentType.any;
+    case 'self':
+      return PostContentType.self;
+    case 'link':
+      return PostContentType.link;
+    default:
+      throw DRAWInternalError('Invalid Post Content type: $s.');
+  }
+}
+
+SuggestedCommentSort? stringToSuggestedCommentSort(String? s) {
+  if (s == null) {
+    return null;
+  }
+
+  switch (s) {
+    case 'confidence':
+      return SuggestedCommentSort.confidence;
+    case 'controversial':
+      return SuggestedCommentSort.controversial;
+    case 'live':
+      return SuggestedCommentSort.live;
+    case 'new':
+      return SuggestedCommentSort.newest;
+    case 'old':
+      return SuggestedCommentSort.old;
+    case 'qa':
+      return SuggestedCommentSort.qa;
+    case 'random':
+      return SuggestedCommentSort.random;
+    case 'top':
+      return SuggestedCommentSort.top;
+    default:
+      throw DRAWInternalError('Invalid Suggested Comment Sort: $s.');
+  }
+}
+
 /// A structure which represents the settings of a [Subreddit].
 ///
 /// Any [Subreddit] settings changed here will not be applied unless
@@ -340,14 +420,15 @@ class SubredditSettings {
   bool get showMedia => _data['show_media'];
   set showMedia(bool x) => _data['show_media'] = x;
 
+  /// Age required to edit wiki
   int get wikiEditAge => _data['wiki_edit_age'];
   set wikiEditAge(int x) => _data['wiki_edit_age'] = x;
 
   String get submitText => _data['submit_text'];
   set submitText(String x) => _data['submit_text'] = x;
 
-  // TODO(bkonyi): figure out what this is.
-  // get spamLinks => _data['spam_links'];
+  /// Returns the filter strength set for spam links for subreddit.
+  SpamSensitivity get spamLinks => stringToSpamSensitivity(_data['spam_links']);
 
   String get title => _data['title'];
   set title(String x) => _data['title'] = x;
@@ -355,9 +436,10 @@ class SubredditSettings {
   bool get collapseDeletedComments => _data['collapse_deleted_comments'];
   set collapseDeletedComments(bool x) => _data['collapse_deleted_comments'] = x;
 
-  // TODO(bkonyi): figure out what this is.
-  // get wikimode => _data['wikimode'];
+  /// Returns who can access wiki mode.
+  WikiAccessMode get wikimode => stringToWikiAccessMode(_data['wikimode']);
 
+  /// Whether the traffic stats are visible publicly.
   bool get publicTraffic => _data['public_traffic'];
   set publicTraffic(bool x) => _data['public_traffic'] = x;
 
@@ -370,33 +452,39 @@ class SubredditSettings {
   bool get spoilersEnabled => _data['spoilers_enabled'];
   set spoilersEnabled(bool x) => _data['spoilers_enabled'] = x;
 
-  // TODO(bkonyi): figure out what this is.
-  // get suggestedCommentSort => _data['suggested_comment_sort'];
+  /// The comment sorting method to choose by default.
+  SuggestedCommentSort? get suggestedCommentSort =>
+      stringToSuggestedCommentSort(_data['suggested_comment_sort']);
 
   String? get description => _data['description'];
   set description(String? x) => _data['description'] = x;
 
-  String get submitLinkLabel => _data['submit_link_label'];
-  set submitLinkLabel(String x) => _data['submit_link_label'] = x;
+  /// Custom label for submit link button.
+  String? get submitLinkLabel => _data['submit_link_label'];
+  set submitLinkLabel(String? x) => _data['submit_link_label'] = x;
 
   bool get allowPostCrossposts => _data['allow_post_crossposts'];
   set allowPostCrossposts(bool x) => _data['allow_post_crossposts'] = x;
 
-  // TODO(bkonyi): figure out what this is.
-  // get spamComments => _data['spam_comments'];
+  /// Filter strength for comments.
+  SpamSensitivity get spamComments =>
+      stringToSpamSensitivity(_data['spam_comments']);
 
-  // TODO(bkonyi): figure out what this is.
-  // get spamSelfposts => _data['spam_selfposts'];
+  /// Filter strength for self posts.
+  SpamSensitivity get spamSelfposts =>
+      stringToSpamSensitivity(_data['spam_selfposts']);
 
+  /// Custom label for submit text post button.
   String? get submitTextLabel => _data['submit_text_label'];
   set submitTextLabel(String? x) => _data['submit_text_label'] = x;
 
   // TODO(bkonyi): we might want to use a color class for this.
-  // get keyColor => _data['key_color];
+  // get keyColor => _data['key_color'];
 
   String get language => _data['language'];
   set language(String x) => _data['language'] = x;
 
+  /// Karma required to edit wiki.
   int get wikiEditKarma => _data['wiki_edit_karma'];
   set wikiEditKarma(int x) => _data['wiki_edit_karma'] = x;
 
@@ -428,8 +516,9 @@ class SubredditSettings {
   bool get excludeBannedModQueue => _data['exclude_banned_modqueue'];
   set excludeBannedModQueue(bool x) => _data['exclude_banned_modqueue'] = x;
 
-  // TODO(bkonyi): figure out what this is for.
-  // get contentOptions => _data['content_options'];
+  /// Which post types users can use.
+  PostContentType get contentOptions =>
+      stringToContentType(_data['content_options']);
 
   @override
   String toString() {
@@ -466,6 +555,7 @@ class ModeratorAction {
 }
 
 /// Provides a set of moderation functions to a [Subreddit].
+/// You must be a mod of the subreddit to acess these.
 class SubredditModeration {
   static final _subredditRegExp = RegExp(r'{subreddit}');
   final SubredditRef _subreddit;
