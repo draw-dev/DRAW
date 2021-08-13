@@ -380,7 +380,7 @@ SuggestedCommentSort? stringToSuggestedCommentSort(String? s) {
     case 'live':
       return SuggestedCommentSort.live;
     case 'new':
-      return SuggestedCommentSort.newer;
+      return SuggestedCommentSort.newest;
     case 'old':
       return SuggestedCommentSort.old;
     case 'qa':
