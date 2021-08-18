@@ -79,8 +79,7 @@ Stream<T?> streamGenerator<T>(function,
     }
 
     final results = [];
-    // TODO(SupremeDeity): Confirm if the ?? is necessary
-    await for (final item in function(params: <String, String?>{
+    await for (final item in function(params: <String, String>{
       'limit': min(limit, itemLimit ?? limit).toString(),
       if (beforeFullname != null) 'before': beforeFullname,
     })) {
