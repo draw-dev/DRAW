@@ -1,7 +1,7 @@
 DRAW: The Dart Reddit API Wrapper
 =================================
 
-[![Build Status](https://travis-ci.org/draw-dev/DRAW.svg?branch=master)](https://travis-ci.org/draw-dev/DRAW/) [![Pub Version](https://img.shields.io/pub/v/draw.svg)](https://pub.dartlang.org/packages/draw) [![Coverage Status](https://coveralls.io/repos/github/draw-dev/DRAW/badge.svg?branch=master&service=github)](https://coveralls.io/github/draw-dev/DRAW?branch=master&service=github) [![Join Gitter Chat Channel -](https://badges.gitter.im/DRAW-reddit/DRAW-reddit.svg)](https://gitter.im/DRAW-reddit/DRAW?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://api.travis-ci.com/draw-dev/DRAW.svg?branch=master)](https://app.travis-ci.com/github/draw-dev/DRAW) [![Pub Version](https://img.shields.io/pub/v/draw.svg)](https://pub.dartlang.org/packages/draw) [![Coverage Status](https://coveralls.io/repos/github/draw-dev/DRAW/badge.svg?branch=master&service=github)](https://coveralls.io/github/draw-dev/DRAW?branch=master&service=github)
 
 DRAW, also known as the Dart Reddit API Wrapper, is a Dart package that
 provides simple access to the Reddit API. DRAW is inspired by
@@ -134,6 +134,8 @@ main() async {
 For usage in environments where it is impossible to keep a client secret secure, the installed application flow should be used. This requires that an installed application is registered with a valid Reddit account, which provides a `client-id`. As part of this process, a `redirect URL` is associated with the registered installed application. These two values are all that is needed to complete the installed application authentication flow.
 
 The installed application authentication flow is almost identical to the web authentication flow described above, and it is also possible to save and restore credentials for installed applications in a similar fashion.
+
+Read up more about how to use this authentication flow on [here](https://github.com/draw-dev/DRAW/issues/196#issuecomment-891084560).
 
 Here is a simple example of how to use the installed application authentication flow with DRAW:
 

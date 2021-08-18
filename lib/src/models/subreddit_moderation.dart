@@ -380,7 +380,7 @@ SuggestedCommentSort? stringToSuggestedCommentSort(String? s) {
     case 'live':
       return SuggestedCommentSort.live;
     case 'new':
-      return SuggestedCommentSort.newer;
+      return SuggestedCommentSort.newest;
     case 'old':
       return SuggestedCommentSort.old;
     case 'qa':
@@ -497,7 +497,7 @@ class SubredditSettings {
   bool get allowDiscovery => _data['allow_discovery'];
   set allowDiscovery(bool x) => _data['allow_discovery'] = x;
 
-  String get publicDescription => _data['public_description'];
+  String? get publicDescription => _data['public_description'];
   set publicDescription(String? x) => _data['public_description'] = x;
 
   bool get showMediaPreview => _data['show_media_preview'];
