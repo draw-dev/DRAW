@@ -28,11 +28,12 @@ int _voteStateToIndex(VoteState vote) {
 
 /// A mixin which provides voting functionality for [Comment] and [Submission].
 mixin VoteableMixin implements RedditBaseInitializedMixin {
-  /// The author of the item.
-  // String get author => data!['author'];
+  
+  /// The name of the author associated with this item.
+  String get author => data!['author'];
 
   /// Returns the [Redditor] associated with this item.
-  RedditorRef get author => RedditorRef.name(reddit, data!['author']);
+  RedditorRef get redditor => RedditorRef.name(reddit, data!['author']);
 
   /// The body of the item.
   ///
