@@ -7,6 +7,7 @@ import 'dart:async';
 
 import 'package:draw/src/api_paths.dart';
 import 'package:draw/src/base.dart';
+import 'package:draw/src/models/redditor.dart';
 
 enum VoteState {
   none,
@@ -28,7 +29,10 @@ int _voteStateToIndex(VoteState vote) {
 /// A mixin which provides voting functionality for [Comment] and [Submission].
 mixin VoteableMixin implements RedditBaseInitializedMixin {
   /// The author of the item.
-  String get author => data!['author'];
+  // String get author => data!['author'];
+
+  /// Returns the [Redditor] associated with this item.
+  RedditorRef get author => RedditorRef.name(reddit, data!['author']);
 
   /// The body of the item.
   ///

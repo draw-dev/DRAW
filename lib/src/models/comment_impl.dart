@@ -259,9 +259,6 @@ class Comment extends CommentRef
   /// Is this [Comment] archived.
   bool get archived => data!['archived'];
 
-  // TODO(bkonyi): update this definition.
-  // RedditorRef get author => reddit.redditor(data['author']);
-
   /// The author's flair text, if set.
   ///
   /// Returns `null` if the author does not have any flair text set.
