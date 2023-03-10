@@ -80,10 +80,12 @@ class User extends RedditBase {
   ///
   /// [limit] is the number of [Subreddit]s to request, and [params] should
   /// contain any additional parameters that should be sent as part of the API
-  /// request.
+  /// request. If provided, `after` specifies from which point
+  /// Reddit will return objects of the requested type.
   Stream<Subreddit> subreddits(
           {int limit = ListingGenerator.defaultRequestLimit,
+          String? after,
           Map<String, String>? params}) =>
       ListingGenerator.generator<Subreddit>(reddit, apiPath['my_subreddits'],
-          limit: limit, params: params);
+          limit: limit, after: after, params: params);
 }
