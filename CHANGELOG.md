@@ -1,5 +1,14 @@
 # Change Log
 
+## Version 1.1.0 (2023/03/13)
+- Added support for Dart 3.0
+- Added `after` parameter to `User.subreddits`
+
+## Version 1.0.2 (2021/09/01)
+- Fixed some failing null assertions
+- Updated documentation
+- Tests can now be run with sound null safety
+
 ## Version 1.0.1 (2021/05/13)
 
 - Fix issue draw-dev/DRAW#192.

@@ -1,10 +1,10 @@
 name: draw
-version: 1.0.1
+version: 1.0.2
 description: 'A fully-featured Reddit API wrapper for Dart, inspired by PRAW.'
 homepage: 'https://github.com/draw-dev/DRAW'
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.12.0 <4.0.0'
 
 dependencies:
   collection: ^1.15.0
