@@ -238,24 +238,25 @@ class Submission extends SubmissionRef
   ///  eg: [{"gif": [SubmissionPreview]}]
   ///
   /// Returns an empty List if the [Submission] does not have any image variations.
-  List<Map<String, SubmissionPreview>> get variants {
-    final List<Map<String?, SubmissionPreview>> previews =
-        <Map<String, SubmissionPreview>>[];
+  List<Map<String?, SubmissionPreview>> get variants {
+    final previews = <Map<String?, SubmissionPreview>>[];
     if (!data!.containsKey('preview')) {
-      return previews as List<Map<String, SubmissionPreview>>;
+      return previews;
     }
     assert(data!['preview'].containsKey('images'));
-    final raw = data!['preview']['images'].cast<Map<String, dynamic>>();
+    final raw = data!['preview']['images'].cast<Map<String?, dynamic>>();
     for (final image in raw) {
       if (image.containsKey('variants')) {
         final _variants = image['variants'];
         for (final variant in _variants.keys) {
+          print('variant_key: $variant');
+          print('variant_key: ${_variants[variant]}');
           previews
               .add({variant: SubmissionPreview._fromMap(_variants[variant])});
         }
       }
     }
-    return previews as List<Map<String, SubmissionPreview>>;
+    return previews;
   }
 
   /// Is this [Submission] pinned.
@@ -467,7 +468,7 @@ class SubmissionRef extends UserContent {
 /// A representation of a submission's preview.
 class SubmissionPreview {
   /// The preview ID.
-  String get id => _id;
+  String? get id => _id;
 
   /// A list of preview images scaled to various resolutions.
   List<PreviewImage> get resolutions => _resolutions;
@@ -477,7 +478,7 @@ class SubmissionPreview {
 
   late PreviewImage _source;
   late List<PreviewImage> _resolutions;
-  late String _id;
+  String? _id;
 
   SubmissionPreview._fromMap(Map<String, dynamic> map) {
     final sourceMap = map['source'];
